@@ -1,0 +1,14 @@
+{
+  "name": "dekeku-api",
+  "version": "1.0.0",
+  "description": "Modular API Gateway for Dekeku Services",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "check": "node --check src/index.js"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
