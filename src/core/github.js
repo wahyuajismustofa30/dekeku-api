@@ -1,4 +1,5 @@
 import { HttpError } from "./errors.js";
+import { validatePublicPath } from "../utils/github-content.js";
 
 export class GitHubClient {
   constructor(env) {
@@ -65,7 +66,7 @@ export class GitHubClient {
 
     let decodedPath;
     try {
-      // Decode twice to catch double-encoded traversal segments like %252e                                                                                                                                                                                                                                                0.000000e+00
+      // Decode twice to catch double-encoded traversal segments
       decodedPath = decodeURIComponent(decodeURIComponent(path));
     } catch (e) {
       try {
@@ -81,15 +82,19 @@ export class GitHubClient {
     }
 
     const segments = decodedPath.split("/");
-    for (const segment of segments) {
-      // Block traversal segments and empty segments (no leading/trailing/double slash)
-      if (segment === "." || segment === ".." || segment === "") {
-        throw new HttpError("Invalid file path", 400);
-      }
-      // Block any segment containing ".." to prevent "folder../file" patterns
-      if (segment === ".." || segment === ".") {
-        throw new HttpError("Invalid file path", 400);
-      }
+    if (segments.some(s => s === "")) {
+      throw new HttpError("Invalid file path", 400);
+    }
+
+    // Traversal check
+    if (segments.some(s => s === "." || s === "..")) {
+      throw new HttpError("Invalid file path", 400);
+    }
+
+    // PUBLIC ACCESS POLICY VALIDATION
+    const validation = validatePublicPath(segments);
+    if (!validation.valid) {
+      throw new HttpError(validation.error, validation.status);
     }
 
     const encodedPath = segments.map(encodeURIComponent).join("/");

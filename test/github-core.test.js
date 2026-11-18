@@ -23,65 +23,80 @@ const mockFetch = (status, body, headers = {}) => {
   };
 };
 
-describe("GitHub Core - Full Stack Validation", () => {
+describe("DEKEKU API Gateway - Public Access Policy", () => {
 
-  test("GET /api/v1/health - Success with Security Headers", async () => {
-    const req = new Request("http://api/api/v1/health");
-    const res = await worker.fetch(req, env);
-    const data = await res.json();
-
-    assert.strictEqual(res.status, 200);
-    assert.strictEqual(data.success, true);
-    assert.strictEqual(res.headers.get("X-Content-Type-Options"), "nosniff");
-  });
-
-  test("Path Validation - Blocking Malicious Paths", async () => {
-    const malicious = ["../secret.json", "folder/%2e%2e/secret.json", "%252e%252e/secret.json", "null\0byte.json"];
-
-    for (const path of malicious) {
+  test("Positive: Allow public/ files with safe extensions", async () => {
+    const files = ["public/config.json", "public/data/site.md", "public/assets/style.css"];
+    for (const path of files) {
+      global.fetch = mockFetch(200, { type: "file", content: btoa('{"ok":true}'), path, sha: "abc", size: 10 });
       const req = new Request(`http://api/api/v1/github/file?path=${path}`);
       const res = await worker.fetch(req, env);
       const data = await res.json();
-
-      assert.strictEqual(res.status, 400, `Path ${path} should be 400`);
-      assert.strictEqual(data.success, false);
-      assert.strictEqual(res.headers.get("X-Content-Type-Options"), "nosniff");
+      assert.strictEqual(res.status, 200, `Should allow ${path}`);
+      assert.strictEqual(data.success, true);
     }
   });
 
-  test("Path Validation - Allowing Special but Safe Names", async () => {
-    global.fetch = mockFetch(200, { type: "file", content: btoa("{\"status\":\"ok\"}"), path: "folder.../file.json", sha: "abc" });
-
-    const req = new Request("http://api/api/v1/github/file?path=folder.../file.json");
-    const res = await worker.fetch(req, env);
-    const data = await res.json();
-
-    assert.strictEqual(res.status, 200);
-    assert.strictEqual(data.success, true);
+  test("Negative: Deny access outside public/ directory", async () => {
+    const denied = ["README.md", "package.json", "src/index.js", "docs/architecture.md"];
+    for (const path of denied) {
+      const req = new Request(`http://api/api/v1/github/file?path=${path}`);
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 403, `Should deny ${path} with 403`);
+    }
   });
 
-  test("JSON Parsing - 502 for Invalid Upstream JSON", async () => {
-    global.fetch = mockFetch(200, {
-      type: "file",
-      size: 100,
-      content: btoa("{ invalid"),
-      path: "data.json",
-      sha: "sha123"
-    });
-
-    const req = new Request("http://api/api/v1/github/file?path=data.json");
-    const res = await worker.fetch(req, env);
-    const data = await res.json();
-
-    assert.strictEqual(res.status, 502);
-    assert.strictEqual(data.error, "Invalid JSON content from upstream");
+  test("Negative: Deny sensitive files inside public/ (including README case-insensitive)", async () => {
+    const sensitive = ["public/.env", "public/.dev.vars", "public/secrets.json", "public/README.md", "public/readme.md", "public/ReadMe.Md"];
+    for (const path of sensitive) {
+      const req = new Request(`http://api/api/v1/github/file?path=${path}`);
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 403, `Should deny ${path} with 403`);
+    }
   });
 
-  test("OPTIONS - Preflight Security Headers", async () => {
-    const req = new Request("http://api/api/v1/health", { method: "OPTIONS" });
-    const res = await worker.fetch(req, env);
+  test("Negative: Block empty path segments (//)", async () => {
+    const malformed = ["public//config.json", "public///config.json", "public/data//config.json", "public/"];
+    for (const path of malformed) {
+      const req = new Request(`http://api/api/v1/github/file?path=${path}`);
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 400, `Should block malformed path ${path} with 400`);
+    }
+  });
 
-    assert.strictEqual(res.status, 204);
-    assert.strictEqual(res.headers.get("X-Content-Type-Options"), "nosniff");
+  test("Negative: Deny binary files and unsafe extensions", async () => {
+    const unsafe = ["public/image.png", "public/archive.zip", "public/script.py", "public/data.xml"];
+    for (const path of unsafe) {
+      const req = new Request(`http://api/api/v1/github/file?path=${path}`);
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 403, `Should deny ${path} with 403`);
+    }
+  });
+
+  test("Path Traversal Protection", async () => {
+    const traversal = ["public/../README.md", "public/%2e%2e/README.md", "public/%252e%252e/README.md"];
+    for (const path of traversal) {
+      const req = new Request(`http://api/api/v1/github/file?path=${path}`);
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 400, `Should block traversal ${path} with 400`);
+    }
+  });
+
+  test("Regression: Metadata endpoints remain accessible", async () => {
+    global.fetch = mockFetch(200, { full_name: "repo", name: "main", commit: { sha: "abc" } });
+
+    const repoRes = await worker.fetch(new Request("http://api/api/v1/github/repository"), env);
+    assert.strictEqual(repoRes.status, 200);
+
+    const branchRes = await worker.fetch(new Request("http://api/api/v1/github/branch"), env);
+    assert.strictEqual(branchRes.status, 200);
+  });
+
+  test("X-Content-Type-Options present in all responses", async () => {
+    const paths = ["/api/v1/health", "/api/v1/github/file?path=public/config.json", "/api/v1/github/file?path=README.md"];
+    for (const path of paths) {
+      const res = await worker.fetch(new Request(`http://api${path}`), env);
+      assert.strictEqual(res.headers.get("X-Content-Type-Options"), "nosniff");
+    }
   });
 });

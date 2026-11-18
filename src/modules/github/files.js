@@ -1,13 +1,12 @@
 import { success, error } from "../../utils/response.js";
 import { GitHubClient } from "../../core/github.js";
-import { decodeBase64, parseJson, isBinaryFile, MAX_FILE_SIZE } from "../../utils/github-content.js";
+import { decodeBase64, parseJson, MAX_FILE_SIZE } from "../../utils/github-content.js";
 
 export const getFileContent = async (request, env) => {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path");
 
   if (!path) return error("Path parameter is required", 400);
-  if (isBinaryFile(path)) return error("Access to binary files is restricted", 403);
 
   const client = new GitHubClient(env);
   const file = await client.getFile(path);
@@ -18,7 +17,7 @@ export const getFileContent = async (request, env) => {
   const rawContent = decodeBase64(file.content);
   if (rawContent === null) return error("Failed to decode file content", 500);
 
-  const isJson = path.endsWith(".json");
+  const isJson = file.path.toLowerCase().endsWith(".json");
   const data = isJson ? parseJson(rawContent) : rawContent;
 
   if (isJson && data === null) {
