@@ -2,6 +2,33 @@
 
 ## [Unreleased] - 2026-11-19
 ### Added
+- Phase 2.2 Stage 1: Write Engine Validation Foundation
+  - Streaming HTTP request body with size limiting (1.1 MB)
+  - UTF-8 decoding with fatal error mode
+  - JSON parsing and structure validation (Object/Array root only)
+  - File size validation (1 MB UTF-8 after JSON.stringify)
+  - Writable path validator (public/data/*.json only)
+  - Separate validator for write operations (validateWritablePath)
+  - Comprehensive test suite (12 tests)
+- Phase 2.2 Stage 2: GitHub Client PUT/DELETE Operations
+  - putFile(path, content, sha, message) — UPDATE with mandatory SHA
+  - deleteFile(path, sha, message) — DELETE with mandatory SHA
+  - createFile(path, content, message) — CREATE without SHA
+  - SHA validation: 40-char hex string, strict format check
+  - Optimistic concurrency: SHA passed through unchanged to GitHub
+  - No auto-retry on conflict
+  - Error mapping per design: 401/403(perm)→502, 403/422(rate)→429, 409→409, 429→429, 5xx→502, timeout→504, network→502
+  - Retry-After header forwarded when available
+  - UTF-8 multibyte Base64 encoding support
+  - Secret leakage prevention in errors
+  - Comprehensive mock test suite (34 tests)
+- Phase 2.2 Stage 3: Router Integration
+  - POST /api/v1/admin/write/create — Create JSON file in public/data/
+  - PUT /api/v1/admin/write/update — Update JSON file (requires SHA)
+  - DELETE /api/v1/admin/write/delete — Delete JSON file (requires SHA)
+  - All write endpoints protected by authMiddleware (admin role required)
+  - Public GET endpoints unchanged and regression tested
+  - Integration test suite (22 tests)
 - Regression tests for JWT and PBKDF2 (29 cases).
 - Constant-time comparison for password verification.
 - Comprehensive validation for hash format and iterations.
@@ -12,11 +39,20 @@
 - JWT: Added 30-second clock skew tolerance.
 - Hash: Added strict length validation for salt (16 bytes) and hash (32 bytes).
 - Hash: Improved resilience against malformed input and non-hex characters.
+- Write Engine: Percent-encoded traversal paths blocked in validateWritablePath.
+- Write Engine: Backslash, control characters, double encoding rejected.
 
 ### Changed
 - `src/utils/jwt.js`: Tightened claims validation logic.
 - `src/utils/hash.js`: Refactored to include strict format checks and constant-time compare.
+- `src/core/github.js`: Added putFile, deleteFile, validateSha, refined error mapping.
+- `src/modules/github/write.js`: Added createFile, updateFile, deleteFile, parseAndValidateBody, validateWritablePath.
+- `src/modules/github/index.js`: Extended to handle write endpoints under auth.
+- `src/core/router.js`: Added protected write route prefix /api/v1/admin/write/.
 - `test/auth.test.js`: Expanded to include regression suites.
+- `test/github-write.test.js`: New — 34 mock integration tests for GitHub Client PUT/DELETE.
+- `test/write-foundation.test.js`: New — 12 validation foundation tests.
+- `test/write-router.test.js`: New — 22 router integration tests.
 
 ## [2026-11-19] - Secret Provisioning (Dev)
 ### Added

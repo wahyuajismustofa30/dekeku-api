@@ -1,6 +1,8 @@
 import { HttpError } from "./errors.js";
 import { validatePublicPath } from "../utils/github-content.js";
 
+const SHA_REGEX = /^[0-9a-fA-F]{40}$/;
+
 export class GitHubClient {
   constructor(env) {
     this.token = env.GITHUB_TOKEN;
@@ -32,6 +34,30 @@ export class GitHubClient {
     };
   }
 
+  isRateLimitError(status, headers, body) {
+    if (status === 429) return true;
+    if (status === 403) {
+      const remaining = headers.get("x-ratelimit-remaining");
+      if (remaining === "0") return true;
+      // Check for secondary rate limit indicators in body
+      if (body && typeof body === "object") {
+        const message = String(body.message || "").toLowerCase();
+        if (message.includes("rate limit") || message.includes("abuse") || message.includes("secondary rate limit")) {
+          return true;
+        }
+      }
+    }
+    if (status === 422) {
+      if (body && typeof body === "object") {
+        const message = String(body.message || "").toLowerCase();
+        if (message.includes("rate limit") || message.includes("abuse") || message.includes("secondary rate limit")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   async request(path, options = {}) {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();
@@ -59,22 +85,62 @@ export class GitHubClient {
         return await response.json();
       }
 
-      // Handle specific GitHub error codes
-      let errorMessage = `GitHub API error: ${response.status}`;
-      const status = response.status;
-
-      if (status === 401) errorMessage = "GitHub authentication failed (Invalid Token)";
-      else if (status === 403) {
-        const remaining = response.headers.get("x-ratelimit-remaining");
-        errorMessage = remaining === "0" ? "GitHub API rate limit exceeded" : "GitHub access forbidden";
+      // Parse error response for better error mapping
+      let errorBody = null;
+      try {
+        errorBody = await response.json();
+      } catch (e) {
+        // Ignore JSON parse errors for error responses
       }
-      else if (status === 404) errorMessage = "GitHub resource not found";
-      else if (status === 409) errorMessage = "GitHub resource conflict";
-      else if (status === 422) errorMessage = "GitHub validation failed (Unprocessable Entity)";
-      else if (status === 429) errorMessage = "GitHub too many requests";
-      else if (status >= 500) errorMessage = "GitHub server error";
 
-      throw new HttpError(errorMessage, status);
+      // Handle specific GitHub error codes with refined mapping
+      const status = response.status;
+      let gatewayStatus = status;
+      let errorMessage = "GitHub API error";
+
+      if (status === 401) {
+        gatewayStatus = 502;
+        errorMessage = "Internal server error";
+      } else if (status === 403) {
+        if (this.isRateLimitError(status, response.headers, errorBody)) {
+          gatewayStatus = 429;
+          errorMessage = "Rate limit exceeded";
+        } else {
+          gatewayStatus = 502;
+          errorMessage = "Internal server error";
+        }
+      } else if (status === 404) {
+        gatewayStatus = 404;
+        errorMessage = "File not found";
+      } else if (status === 409) {
+        gatewayStatus = 409;
+        errorMessage = "Conflict: file has been modified";
+      } else if (status === 422) {
+        if (this.isRateLimitError(status, response.headers, errorBody)) {
+          gatewayStatus = 429;
+          errorMessage = "Rate limit exceeded";
+        } else {
+          gatewayStatus = 422;
+          errorMessage = "Validation failed";
+        }
+      } else if (status === 429) {
+        gatewayStatus = 429;
+        errorMessage = "Rate limit exceeded";
+      } else if (status >= 500) {
+        gatewayStatus = 502;
+        errorMessage = "Upstream server error";
+      }
+
+      // Create HttpError with mapped status
+      const httpError = new HttpError(errorMessage, gatewayStatus);
+
+      // Attach Retry-After header if present
+      const retryAfter = response.headers.get("retry-after");
+      if (retryAfter) {
+        httpError.retryAfter = retryAfter;
+      }
+
+      throw httpError;
 
     } catch (err) {
       if (err instanceof HttpError) throw err;
@@ -83,11 +149,11 @@ export class GitHubClient {
         if (options.signal?.aborted) {
           throw new HttpError("Request aborted by caller", 499);
         }
-        throw new HttpError("GitHub API request timeout", 408);
+        throw new HttpError("Gateway timeout", 504);
       }
 
       // Network or other fetch errors
-      throw new HttpError("GitHub API network error or connection failed", 502);
+      throw new HttpError("Bad gateway", 502);
     } finally {
       clearTimeout(timeoutId);
     }
@@ -137,5 +203,57 @@ export class GitHubClient {
 
     const encodedPath = segments.map(encodeURIComponent).join("/");
     return this.request(`/contents/${encodedPath}?ref=${this.branch}`);
+  }
+
+  validateSha(sha) {
+    if (typeof sha !== "string" || !SHA_REGEX.test(sha)) {
+      throw new HttpError("Invalid SHA format", 400);
+    }
+  }
+
+  async putFile(path, content, sha, message) {
+    // Validate SHA
+    this.validateSha(sha);
+
+    // Encode content to Base64
+    const encoder = new TextEncoder();
+    const contentBytes = encoder.encode(content);
+    const base64Content = btoa(String.fromCharCode(...contentBytes));
+
+    // Prepare request body
+    const body = {
+      message,
+      content: base64Content,
+      sha,
+      branch: this.branch
+    };
+
+    // Encode path for URL
+    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+
+    return this.request(`/contents/${encodedPath}`, {
+      method: "PUT",
+      body: JSON.stringify(body)
+    });
+  }
+
+  async deleteFile(path, sha, message) {
+    // Validate SHA
+    this.validateSha(sha);
+
+    // Prepare request body
+    const body = {
+      message,
+      sha,
+      branch: this.branch
+    };
+
+    // Encode path for URL
+    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+
+    return this.request(`/contents/${encodedPath}`, {
+      method: "DELETE",
+      body: JSON.stringify(body)
+    });
   }
 }

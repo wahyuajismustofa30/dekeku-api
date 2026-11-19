@@ -20,7 +20,7 @@ export const router = async (request, env) => {
     return adminLogin(request, env);
   }
 
-  // 3. GitHub Routes (Public GET)
+  // 3. GitHub Routes (Public GET only)
   if (pathname.startsWith("/api/v1/github/")) {
     if (method !== "GET") {
       return error("Method Not Allowed", 405);
@@ -28,7 +28,14 @@ export const router = async (request, env) => {
     return githubRouter(request, env);
   }
 
-  // 4. Protected Admin Routes
+  // 4. Protected Admin Write Routes
+  if (pathname.startsWith("/api/v1/admin/write/")) {
+    return authMiddleware(request, env, async (req, e) => {
+      return githubRouter(req, e);
+    });
+  }
+
+  // 5. Other Protected Admin Routes (for testing/future)
   if (pathname.startsWith("/api/v1/admin/")) {
     return authMiddleware(request, env, async (req, e) => {
       // Test protected endpoint (Fixture)
