@@ -7,6 +7,7 @@ export class GitHubClient {
     this.owner = env.GITHUB_OWNER;
     this.repo = env.GITHUB_REPO;
     this.branch = env.GITHUB_BRANCH || "main";
+    this.timeout = 8000;
 
     if (!this.token || !this.owner || !this.repo) {
       throw new HttpError("GitHub configuration is missing", 500);
@@ -23,6 +24,7 @@ export class GitHubClient {
   }
 
   extractRateLimit(headers) {
+    if (!headers) return;
     this.rateLimit = {
       limit: headers.get("x-ratelimit-limit"),
       remaining: headers.get("x-ratelimit-remaining"),
@@ -32,23 +34,63 @@ export class GitHubClient {
 
   async request(path, options = {}) {
     const url = `${this.baseUrl}${path}`;
-    const response = await fetch(url, {
-      ...options,
-      headers: { ...this.headers, ...options.headers },
-      signal: AbortSignal.timeout(8000)
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-    this.extractRateLimit(response.headers);
-
-    if (response.status === 404) {
-      throw new HttpError("GitHub resource not found", 404);
+    // Link caller signal if provided
+    if (options.signal) {
+      if (options.signal.aborted) {
+        clearTimeout(timeoutId);
+        throw new HttpError("Request aborted by caller", 499);
+      }
+      options.signal.addEventListener("abort", () => controller.abort());
     }
 
-    if (!response.ok) {
-      throw new HttpError(`GitHub API error: ${response.status}`, response.status);
-    }
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: { ...this.headers, ...options.headers },
+        signal: controller.signal
+      });
 
-    return response.json();
+      this.extractRateLimit(response.headers);
+
+      if (response.ok) {
+        return await response.json();
+      }
+
+      // Handle specific GitHub error codes
+      let errorMessage = `GitHub API error: ${response.status}`;
+      const status = response.status;
+
+      if (status === 401) errorMessage = "GitHub authentication failed (Invalid Token)";
+      else if (status === 403) {
+        const remaining = response.headers.get("x-ratelimit-remaining");
+        errorMessage = remaining === "0" ? "GitHub API rate limit exceeded" : "GitHub access forbidden";
+      }
+      else if (status === 404) errorMessage = "GitHub resource not found";
+      else if (status === 409) errorMessage = "GitHub resource conflict";
+      else if (status === 422) errorMessage = "GitHub validation failed (Unprocessable Entity)";
+      else if (status === 429) errorMessage = "GitHub too many requests";
+      else if (status >= 500) errorMessage = "GitHub server error";
+
+      throw new HttpError(errorMessage, status);
+
+    } catch (err) {
+      if (err instanceof HttpError) throw err;
+
+      if (err.name === "AbortError") {
+        if (options.signal?.aborted) {
+          throw new HttpError("Request aborted by caller", 499);
+        }
+        throw new HttpError("GitHub API request timeout", 408);
+      }
+
+      // Network or other fetch errors
+      throw new HttpError("GitHub API network error or connection failed", 502);
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 
   async getRepository() {
@@ -66,7 +108,6 @@ export class GitHubClient {
 
     let decodedPath;
     try {
-      // Decode twice to catch double-encoded traversal segments
       decodedPath = decodeURIComponent(decodeURIComponent(path));
     } catch (e) {
       try {
@@ -76,7 +117,6 @@ export class GitHubClient {
       }
     }
 
-    // Block forbidden characters: backslash, null byte, control characters
     if (decodedPath.includes("\\") || /[\x00-\x1F\x7F]/.test(decodedPath)) {
       throw new HttpError("Invalid file path", 400);
     }
@@ -86,12 +126,10 @@ export class GitHubClient {
       throw new HttpError("Invalid file path", 400);
     }
 
-    // Traversal check
     if (segments.some(s => s === "." || s === "..")) {
       throw new HttpError("Invalid file path", 400);
     }
 
-    // PUBLIC ACCESS POLICY VALIDATION
     const validation = validatePublicPath(segments);
     if (!validation.valid) {
       throw new HttpError(validation.error, validation.status);

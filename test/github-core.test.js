@@ -1,6 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert";
 import worker from "../src/index.js";
+import { GitHubClient } from "../src/core/github.js";
 
 const env = {
   GITHUB_TOKEN: "mock-token",
@@ -97,6 +98,106 @@ describe("DEKEKU API Gateway - Public Access Policy", () => {
     for (const path of paths) {
       const res = await worker.fetch(new Request(`http://api${path}`), env);
       assert.strictEqual(res.headers.get("X-Content-Type-Options"), "nosniff");
+    }
+  });
+});
+
+describe("GitHub Client - Resilience & Error Handling", () => {
+
+  test("Timeout: Should throw 408 on request timeout", async () => {
+    global.fetch = async (url, options) => {
+      return new Promise((_, reject) => {
+        const err = new Error("AbortError");
+        err.name = "AbortError";
+        // Simulate immediate abort for testing
+        reject(err);
+      });
+    };
+
+    const client = new GitHubClient(env);
+    try {
+      await client.getRepository();
+      assert.fail("Should have thrown");
+    } catch (err) {
+      assert.strictEqual(err.status, 408);
+      assert.strictEqual(err.message, "GitHub API request timeout");
+    }
+  });
+
+  test("Manual Abort: Should throw 499 when aborted by caller", async () => {
+    const controller = new AbortController();
+    global.fetch = async (url, options) => {
+      return new Promise((_, reject) => {
+        const err = new Error("AbortError");
+        err.name = "AbortError";
+        reject(err);
+      });
+    };
+
+    const client = new GitHubClient(env);
+    // Simulate caller aborting
+    controller.abort();
+
+    try {
+      await client.request("", { signal: controller.signal });
+      assert.fail("Should have thrown");
+    } catch (err) {
+      assert.strictEqual(err.status, 499);
+      assert.strictEqual(err.message, "Request aborted by caller");
+    }
+  });
+
+  test("Network Error: Should throw 502 on fetch failure", async () => {
+    global.fetch = async () => {
+      throw new TypeError("Failed to fetch");
+    };
+
+    const client = new GitHubClient(env);
+    try {
+      await client.getRepository();
+      assert.fail("Should have thrown");
+    } catch (err) {
+      assert.strictEqual(err.status, 502);
+      assert.strictEqual(err.message, "GitHub API network error or connection failed");
+    }
+  });
+
+  const errorScenarios = [
+    { status: 401, msg: "GitHub authentication failed (Invalid Token)" },
+    { status: 403, msg: "GitHub access forbidden" },
+    { status: 409, msg: "GitHub resource conflict" },
+    { status: 422, msg: "GitHub validation failed (Unprocessable Entity)" },
+    { status: 429, msg: "GitHub too many requests" },
+    { status: 500, msg: "GitHub server error" }
+  ];
+
+  for (const scenario of errorScenarios) {
+    test(`Error Mapping: Should map ${scenario.status} to correct message`, async () => {
+      global.fetch = mockFetch(scenario.status, { message: "Error" });
+      const client = new GitHubClient(env);
+      try {
+        await client.getRepository();
+        assert.fail("Should have thrown");
+      } catch (err) {
+        assert.strictEqual(err.status, scenario.status);
+        assert.strictEqual(err.message, scenario.msg);
+      }
+    });
+  }
+
+  test("Rate Limit: Should extract rate limit metadata on errors", async () => {
+    global.fetch = mockFetch(403, { message: "Forbidden" }, {
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "0",
+      "x-ratelimit-reset": "123456789"
+    });
+
+    const client = new GitHubClient(env);
+    try {
+      await client.getRepository();
+    } catch (err) {
+      assert.strictEqual(client.rateLimit.remaining, "0");
+      assert.strictEqual(err.message, "GitHub API rate limit exceeded");
     }
   });
 });
