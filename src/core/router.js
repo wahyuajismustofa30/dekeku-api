@@ -4,11 +4,17 @@ import { adminLogin } from "../modules/auth/login.js";
 import { error, success } from "../utils/response.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { handlePublicSubmit } from "../modules/public/submit.js";
+import { getTesterPage } from "../modules/tester/index.js";
 
 export const router = async (request, env) => {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const method = request.method;
+
+  // 0. Dashboard Tester (Public)
+  if ((pathname === "/" || pathname === "/tester") && method === "GET") {
+    return getTesterPage(request, env);
+  }
 
   // 1. Health check (Public)
   if (pathname === "/api/v1/health" && method === "GET") {

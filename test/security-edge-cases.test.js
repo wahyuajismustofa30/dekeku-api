@@ -150,7 +150,8 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
         status: 403,
         headers: { "Content-Type": "application/json", "x-ratelimit-remaining": "5000" }
       });
-      res = await worker.fetch(req, env);
+      const req2 = new Request("http://api/api/v1/admin/write/delete", { method: "DELETE", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ path: "public/data/test.json", sha: "0123456789abcdef0123456789abcdef01234567" }) });
+      res = await worker.fetch(req2, env);
       assert.strictEqual(res.status, 502);
 
       global.fetch = originalFetch;

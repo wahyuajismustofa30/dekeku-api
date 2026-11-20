@@ -20,6 +20,10 @@ export default {
 
       return finalResponse;
     } catch (err) {
+      // Log error details for internal auditing
+      const url = new URL(request.url);
+      console.error(`[ERROR] ${request.method} ${url.pathname}:${err.message}`);
+
       const extraHeaders = {};
       if (err instanceof HttpError) {
         if (err.retryAfter) {
