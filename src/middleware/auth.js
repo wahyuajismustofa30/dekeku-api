@@ -21,12 +21,15 @@ export const authMiddleware = async (request, env, next) => {
 
   const result = await verifyJwt(token, jwtSecret, {
     iss: "dekeku-api",
-    aud: "dekeku-admin",
-    role: "admin"
+    aud: "dekeku-admin"
   });
 
   if (!result.valid) {
     return error(`Authentication failed: ${result.error}`, 401);
+  }
+
+  if (result.payload.role !== "admin") {
+    return error("Forbidden: Insufficient privileges", 403);
   }
 
   // Attach verified user to request object

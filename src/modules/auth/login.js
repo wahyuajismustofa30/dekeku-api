@@ -10,9 +10,15 @@ export const adminLogin = async (request, env) => {
     return error("Method Not Allowed", 405);
   }
 
+  let body;
   try {
-    const body = await request.json();
-    const { username, password } = body;
+    body = await request.json();
+  } catch (err) {
+    return error("Malformed or empty JSON body", 422);
+  }
+
+  try {
+    const { username, password } = body || {};
 
     if (!username || !password) {
       return error("Authentication failed", 401);

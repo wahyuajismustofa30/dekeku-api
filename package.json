@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "build": "node --check src/index.js",
     "check": "node --check src/index.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "wrangler": "^4.165.0"
   }
 }

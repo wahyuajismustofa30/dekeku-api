@@ -69,3 +69,11 @@ Dilarang keras tanpa instruksi eksplisit dari Wahyu:
 - Mengubah Secret atau kredensial.
 - Melakukan deployment otomatis ke lingkungan produksi.
 - Mengubah kebijakan keamanan inti.
+
+
+### E. Standar Audit Berbasis Bukti (Evidence-Based Audit)
+1. **Hirarki Bukti**: Sumber kebenaran tertinggi adalah hasil pemeriksaan aktual pada repository dan runtime, diikuti source code aktual, riwayat Git, dan dokumentasi proyek. Dokumentasi historis tidak boleh mengalahkan bukti implementasi terbaru. Source code adalah *source of truth*.
+2. **Konflik Dokumentasi dan Implementasi**: Jika terdapat perbedaan antara dokumentasi dan kode aktual, tampilkan klaim dokumentasi, bukti implementasi aktual, jelaskan perbedaannya, dan tentukan status berdasarkan bukti terbaru.
+3. **Keputusan Deployment (GO / CONDITIONAL GO / NO-GO)**: Keputusan deployment wajib mencantumkan bukti pendukung, temuan blocker, hasil test aktual, pengujian yang belum dilakukan, dan batasan audit. Tidak boleh menyatakan siap deploy hanya berdasarkan dokumentasi atau hasil test yang tidak dapat direproduksi.
+4. **Evidence Register**: Untuk audit dengan banyak temuan, gunakan format register:
+   `Evidence ID | Jenis | Sumber | Lokasi / Referensi | Kesimpulan`
