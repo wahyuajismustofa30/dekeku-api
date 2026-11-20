@@ -22,29 +22,15 @@ const parseHttpsOrigin = (value) => {
   }
 };
 
-export const handleCors = (request, env = {}) => {
-  const headers = new Headers();
-  headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  headers.set("X-Content-Type-Options", "nosniff");
-
-  const rawOrigin = request?.headers?.get
-    ? request.headers.get("Origin")?.trim().toLowerCase()
-    : null;
-
-  if (rawOrigin) {
-    // Origin-dependent responses must not be reused for a different origin.
-    headers.set("Vary", "Origin");
-  }
-
-  const requestOrigin = parseHttpsOrigin(rawOrigin);
-  if (!requestOrigin || typeof env.ALLOWED_ORIGINS !== "string") {
-    return headers;
-  }
+export const getAllowedOrigin = (value, env = {}) => {
+  const requestOrigin = parseHttpsOrigin(
+    typeof value === "string" ? value.trim().toLowerCase() : value
+  );
+  if (!requestOrigin || typeof env.ALLOWED_ORIGINS !== "string") return null;
 
   const allowedPatterns = env.ALLOWED_ORIGINS
     .split(",")
-    .map((value) => value.trim().toLowerCase())
+    .map((pattern) => pattern.trim().toLowerCase())
     .filter(Boolean);
 
   const isAllowed = allowedPatterns.some((pattern) => {
@@ -52,7 +38,6 @@ export const handleCors = (request, env = {}) => {
       const domain = parseHttpsOrigin("https://" + pattern.slice(2));
       if (!domain) return false;
 
-      // Wildcards allow subdomains only; the apex must be listed explicitly.
       return (
         requestOrigin.hostname !== domain.hostname &&
         requestOrigin.hostname.endsWith("." + domain.hostname)
@@ -63,8 +48,26 @@ export const handleCors = (request, env = {}) => {
     return exactOrigin?.origin === requestOrigin.origin;
   });
 
-  if (isAllowed) {
-    headers.set("Access-Control-Allow-Origin", requestOrigin.origin);
+  return isAllowed ? requestOrigin.origin : null;
+};
+
+export const handleCors = (request, env = {}) => {
+  const headers = new Headers();
+  headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  headers.set("X-Content-Type-Options", "nosniff");
+
+  const rawOrigin = request?.headers?.get
+    ? request.headers.get("Origin")
+    : null;
+
+  if (rawOrigin) {
+    headers.set("Vary", "Origin");
+  }
+
+  const allowedOrigin = getAllowedOrigin(rawOrigin, env);
+  if (allowedOrigin) {
+    headers.set("Access-Control-Allow-Origin", allowedOrigin);
   }
 
   return headers;

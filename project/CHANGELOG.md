@@ -1,6 +1,17 @@
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
+### Added — Caller Repository Metadata
+- `GET /api/v1/github/repository` now reads the calling site's `Origin`, fetches that origin's fixed `/config.json`, and uses `repository.username` / `repository.repo` to resolve GitHub metadata.
+- Shared `getAllowedOrigin()` helper ensures the origin is accepted by the same HTTPS `ALLOWED_ORIGINS` policy as CORS.
+- Added strict config validation, owner pinning to `GITHUB_OWNER`, public-repository-only response, 8-second timeout, 32 KiB streamed body limit, and redirect rejection.
+- Added `test/repository-metadata.test.js` and registered it in `npm test`.
+- Added `docs/caller-repository-metadata.md`.
+### Verification
+- Automated tests and syntax checks: NOT RUN in this environment. Development deployment/runtime: NOT VERIFIED.
+- No Wrangler configuration, secrets, Cloudflare settings, or Production resources changed.
+
+## [Unreleased] - 2026-11-21
 ### Documentation & Verification Update
 - Sinkronisasi `PROGRESS.md`, `CHECKPOINT.md`, `BACKLOG.md`, `RECOMMENDATIONS.md`, `ROADMAP.md`, dan `README.md`.
 - Mencatat `npm run check`: PASS dan `npm test`: 149 PASS, 0 FAIL, 0 SKIP berdasarkan laporan pengguna pada 2026-11-21 untuk branch `dev`, commit `a6a089d`; hasil tidak diklaim sebagai eksekusi independen sesi dokumentasi.
@@ -121,3 +132,16 @@
 - Rotated `ADMIN_PASSWORD_HASH` for `dekeku-api-dev` after initial password exposure.
 - New password generated internally (48 chars hex) and hashed with fresh salt.
 - Provisioned via Versions API (staged).
+
+
+## [Unreleased] — Guestbook Per-Origin Storage (2026-11-21)
+### Changed
+- Public Guestbook submissions now append to one JSON array file per validated Origin hostname at public/data/{hostname}/bukutamu.json.
+- Hostname dots are preserved; Origin must pass the shared HTTPS ALLOWED_ORIGINS validator.
+- Writes use Git blob SHA and bounded read-again retry after 409 conflicts.
+### Added
+- Regression tests for create, append, conflict retry, Origin rejection, and validation.
+- docs/guestbook-storage.md describing layout, limits, concurrency, and security boundaries.
+### Verification
+- Tests and syntax checks: NOT RUN. Development runtime/deployment: NOT VERIFIED.
+- No deployment, Worker settings, secrets, Production resources, or database repository content changed.
