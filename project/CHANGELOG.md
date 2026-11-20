@@ -1,6 +1,17 @@
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
+### Added — Caller Repository Metadata
+- `GET /api/v1/github/repository` now reads the calling site's `Origin`, fetches that origin's fixed `/config.json`, and uses `repository.username` / `repository.repo` to resolve GitHub metadata.
+- Shared `getAllowedOrigin()` helper ensures the origin is accepted by the same HTTPS `ALLOWED_ORIGINS` policy as CORS.
+- Added strict config validation, owner pinning to `GITHUB_OWNER`, public-repository-only response, 8-second timeout, 32 KiB streamed body limit, and redirect rejection.
+- Added `test/repository-metadata.test.js` and registered it in `npm test`.
+- Added `docs/caller-repository-metadata.md`.
+### Verification
+- Automated tests and syntax checks: NOT RUN in this environment. Development deployment/runtime: NOT VERIFIED.
+- No Wrangler configuration, secrets, Cloudflare settings, or Production resources changed.
+
+## [Unreleased] - 2026-11-21
 ### Documentation & Verification Update
 - Sinkronisasi `PROGRESS.md`, `CHECKPOINT.md`, `BACKLOG.md`, `RECOMMENDATIONS.md`, `ROADMAP.md`, dan `README.md`.
 - Mencatat `npm run check`: PASS dan `npm test`: 149 PASS, 0 FAIL, 0 SKIP berdasarkan laporan pengguna pada 2026-11-21 untuk branch `dev`, commit `a6a089d`; hasil tidak diklaim sebagai eksekusi independen sesi dokumentasi.
