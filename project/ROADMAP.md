@@ -15,12 +15,9 @@
 - **Tujuan**: Memungkinkan pengelolaan file melalui API.
 - **Ruang Lingkup**: Create/Update/Delete file JSON di direktori `public/data/` via GitHub Contents API dengan validasi path, size limit (1MB), optimistic concurrency (SHA), dan perbaikan F-01 s/d F-04.
 - **Dependensi**: Phase 2.1.
-- **Status**: COMPLETED & VERIFIED (121/121 PASS).
+- **Status**: COMPLETED & VERIFIED.
 
 ## Phase 2.3: Public Submission & Guestbook
-- **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman.
-- **Status**: PLANNED.
-- **Prasyarat Implementasi**:
-  1. Perbaikan isu F-01 s/d F-04 pada Write Engine (Selesai).
-  2. Penerapan Rate Limiting pada Cloudflare WAF.
-  3. Konfirmasi kebijakan CORS terisolasi (`ALLOWED_ORIGINS`).
+- **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman tanpa auth admin.
+- **Ruang Lingkup**: Endpoint `POST /api/v1/public/submit`, validasi payload (name, message), penyimpanan concurrent-safe ke `public/data/guestbook/`, CORS wildcard (`*.artoprintingpbg.com`, `*.dekeku.my.id`).
+- **Status**: COMPLETED & VERIFIED (126/126 PASS).

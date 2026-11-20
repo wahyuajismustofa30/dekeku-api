@@ -206,6 +206,20 @@ export class GitHubClient {
     return this.request(`/contents/${encodedPath}?ref=${this.branch}`);
   }
 
+  async createFile(path, content, message) {
+    const base64Content = uint8ArrayToBase64(content);
+    const body = {
+      message,
+      content: base64Content,
+      branch: this.branch
+    };
+    const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+    return this.request(`/contents/${encodedPath}`, {
+      method: "PUT",
+      body: JSON.stringify(body)
+    });
+  }
+
   validateSha(sha) {
     if (typeof sha !== "string" || !SHA_REGEX.test(sha)) {
       throw new HttpError("Invalid SHA format", 400);
