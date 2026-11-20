@@ -1,4 +1,5 @@
 import { HttpError } from "../../core/errors.js";
+import { uint8ArrayToBase64 } from "../../utils/base64.js";
 
 const MAX_BODY_SIZE = 1153434; // 1.1 MB
 const MAX_FILE_SIZE = 1048576; // 1 MB
@@ -16,7 +17,7 @@ export const validateWritablePath = (path) => {
     return { valid: false, status: 400, error: "Invalid path" };
   }
 
-  if (/[\\x00-\\x1F\\x7F]/.test(path)) {
+  if (/[\x00-\x1F\x7F]/.test(path)) {
     return { valid: false, status: 400, error: "Invalid characters in path" };
   }
 
@@ -31,8 +32,9 @@ export const validateWritablePath = (path) => {
  * Parses and validates request body for write operations
  */
 export const parseAndValidateBody = async (request) => {
-  // 1. Content-Type check
-  if (request.headers.get("Content-Type") !== "application/json") {
+  // 1. Content-Type check (accept application/json with optional parameters like ; charset=utf-8)
+  const contentType = request.headers.get("Content-Type") || "";
+  if (!contentType.toLowerCase().startsWith("application/json")) {
     throw new HttpError("Content-Type must be application/json", 415);
   }
 
@@ -95,6 +97,16 @@ export const parseAndValidateBody = async (request) => {
     throw new HttpError("Root must be object or array", 422);
   }
 
+  // 6b. Reject missing content field
+  if (!("content" in data) || data.content === undefined) {
+    throw new HttpError("Field 'content' is required", 422);
+  }
+
+  // 6c. Validate message length if provided
+  if (data.message !== undefined && (typeof data.message !== "string" || data.message.length > 256)) {
+    throw new HttpError("Commit message must be a string up to 256 characters", 400);
+  }
+
   // 7. Validate path and content size
   const pathValidation = validateWritablePath(data.path);
   if (!pathValidation.valid) {
@@ -117,10 +129,7 @@ export const parseAndValidateBody = async (request) => {
  * Note: GitHub will return 409 if file already exists since we don't provide SHA
  */
 export const createFile = async (githubClient, path, content, message) => {
-  // Encode content to Base64
-  const encoder = new TextEncoder();
-  const contentBytes = encoder.encode(content);
-  const base64Content = btoa(String.fromCharCode(...contentBytes));
+  const base64Content = uint8ArrayToBase64(content);
 
   // Prepare request body (no SHA for create)
   const body = {
@@ -148,10 +157,7 @@ export const updateFile = async (githubClient, path, content, sha, message) => {
     throw new HttpError("Invalid SHA format", 400);
   }
 
-  // Encode content to Base64
-  const encoder = new TextEncoder();
-  const contentBytes = encoder.encode(content);
-  const base64Content = btoa(String.fromCharCode(...contentBytes));
+  const base64Content = uint8ArrayToBase64(content);
 
   // Prepare request body with SHA
   const body = {

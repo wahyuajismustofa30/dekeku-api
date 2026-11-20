@@ -13,14 +13,14 @@
 
 ## Phase 2.2: Write Engine & File Management
 - **Tujuan**: Memungkinkan pengelolaan file melalui API.
-- **Ruang Lingkup**: Create/Update/Delete file JSON di direktori `public/data/` via GitHub Contents API dengan validasi path, size limit (1MB), dan optimistic concurrency (SHA).
+- **Ruang Lingkup**: Create/Update/Delete file JSON di direktori `public/data/` via GitHub Contents API dengan validasi path, size limit (1MB), optimistic concurrency (SHA), dan perbaikan F-01 s/d F-04.
 - **Dependensi**: Phase 2.1.
-- **Status**: COMPLETED (dengan Known Issues F-01 s/d F-04 yang terdaftar di `PROGRESS.md`).
+- **Status**: COMPLETED & VERIFIED (121/121 PASS).
 
 ## Phase 2.3: Public Submission & Guestbook
 - **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman.
 - **Status**: PLANNED.
 - **Prasyarat Implementasi**:
-  1. Perbaikan isu F-01 s/d F-04 pada Write Engine.
+  1. Perbaikan isu F-01 s/d F-04 pada Write Engine (Selesai).
   2. Penerapan Rate Limiting pada Cloudflare WAF.
   3. Konfirmasi kebijakan CORS terisolasi (`ALLOWED_ORIGINS`).

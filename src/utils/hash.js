@@ -61,7 +61,7 @@ export const verifyPassword = async (password, storedHash) => {
   if (saltHex.length !== 32) return false; // 16 bytes = 32 hex chars
   const saltBytes = saltHex.match(/.{1,2}/g);
   if (!saltBytes) return false;
-  
+
   let salt;
   try {
     salt = new Uint8Array(saltBytes.map(byte => {

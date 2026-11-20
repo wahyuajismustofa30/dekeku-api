@@ -1,39 +1,32 @@
-DEKEKU API GATEWAY — PROJECT CHECKPOINT
+DEKEKU GATEWAY — PROJECT CHECKPOINT
 
 Tanggal checkpoint: 2026-11-20
-Status: PHASE 2.2 COMPLETED (DENGAN CATATAN TEMUAN F-01 S/D F-04) — BRANCH DEV ACTIVE
+Status: PHASE 2.2 COMPLETED & VERIFIED (121/121 PASS) — BRANCH DEV ACTIVE
 
-*Catatan Acuan*: Sumber status fitur dan riwayat tes terpusat adalah [PROGRESS.md](PROGRESS.md).
+*Acuan Utama*: Sumber status fitur adalah [PROGRESS.md](PROGRESS.md).
 
-1. Identitas Proyek & Status Branch
+## 1. Identitas Proyek & Status Branch
 - Project: DEKEKU API Gateway
 - Branch Aktif: dev
-- Remote Branch: origin/dev (Pull Request #1 dev -> main telah digabungkan)
-- Development Worker: dekeku-api-dev (Targeted)
-- Production Worker: github (UNTOUCHED)
+- Development Worker: dekeku-api-dev (development)
+- Production Worker: github (not modified)
 
-2. Status Pengembangan
+## 2. Status Pengembangan
 - Phase 1 Foundation & Read: COMPLETED.
 - Phase 2.1 Admin Login & JWT: COMPLETED & VERIFIED.
-- Phase 2.2 Write Engine (CREATE/UPDATE/DELETE): COMPLETED & VERIFIED (Teridentifikasi temuan review F-01 s/d F-04 yang terdaftar di `PROGRESS.md` dan `BACKLOG.md`).
-- Secret Rotation (Dev): SUCCESSFUL. Password awal compromised telah dirotasi pada 2026-11-19.
+- Phase 2.2 Write Engine (CREATE/UPDATE/DELETE) & Security Fixes (F-01 s/d F-04): COMPLETED & VERIFIED.
 
-3. Temuan Keamanan & Konfigurasi Repository (Audit 2026-11-20)
-- Repository Privacy Check: Hasil pemeriksaan `gh repo view` menunjukkan repositori `wahyuajismustofa30/dekeku-api` saat ini berstatus PUBLIC (`isPrivate: false`).
-- Rekomendasi Penting: Segera verifikasi apakah status publik ini sesuai dengan maksud di `MASTER.md` (yang menyebutkan repositori privat). Pastikan nilai secret/kredensial asli tidak pernah di-commit ke dalam file repository.
+## 3. Status Keamanan & Hasil Audit (2026-11-20)
+- F-01 (Regex control char escape): RESOLVED & VERIFIED.
+- F-02 (Base64 large file chunking): RESOLVED & VERIFIED (`src/utils/base64.js`).
+- F-03 (Missing content check): RESOLVED & VERIFIED (HTTP 422).
+- F-04 (CORS allowlist & error headers): RESOLVED & VERIFIED (`src/middleware/cors.js` & `src/index.js`).
+- 9 legacy core tests: RESOLVED & VERIFIED (18/18 PASS in `test/github-core.test.js`).
 
-4. Riwayat Secret Provisioning (Development Only)
-- Mechanism: wrangler versions secret put (Non-active versions created).
-- Latest Version (Rotated Pass): 2078cc46-51ed-4543-8f77-72fb75551bc1 (Catatan riwayat 2026-11-19).
-- JWT_SECRET Version: 4ed10f2b-c0a0-4b41-93d7-a2d38368855b (Catatan riwayat 2026-11-19).
+## 4. Pengujian
+- Total Test Suite: 121 PASS / 0 FAIL / 121 TOTAL across 5 test files.
 
-5. Risiko Keamanan & Technical Debt (Backlog)
-- Isu F-01 (Regex double-escape), F-02 (Base64 large file RangeError), F-03 (Missing content check), dan F-04 (CORS allowlist & error headers).
-- Login rate limiting (disarankan via Cloudflare WAF).
-- Pembaruan 9 tes legacy di `test/github-core.test.js`.
-- JWT revocation.
-
-6. Task Berikutnya
-1. Memperbaiki temuan F-01 s/d F-04 pada codebase melalui commit lokal di branch `dev`.
-2. Memperbarui 9 tes legacy di `test/github-core.test.js` agar sesuai dengan desain error gateway terbaru.
-3. Menyiapkan persiapan Phase 2.3 (Guestbook / Public Submission Module).
+## 5. Langkah Berikutnya
+1. Commit & Push perubahan ke `origin/dev`.
+2. Buat Pull Request `dev` -> `main`.
+3. Menyiapkan persiapan Phase 2.3 (Public Submission / Guestbook Module).

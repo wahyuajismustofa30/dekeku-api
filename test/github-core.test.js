@@ -104,12 +104,11 @@ describe("DEKEKU API Gateway - Public Access Policy", () => {
 
 describe("GitHub Client - Resilience & Error Handling", () => {
 
-  test("Timeout: Should throw 408 on request timeout", async () => {
+  test("Timeout: Should throw 504 on request timeout", async () => {
     global.fetch = async (url, options) => {
       return new Promise((_, reject) => {
         const err = new Error("AbortError");
         err.name = "AbortError";
-        // Simulate immediate abort for testing
         reject(err);
       });
     };
@@ -119,8 +118,8 @@ describe("GitHub Client - Resilience & Error Handling", () => {
       await client.getRepository();
       assert.fail("Should have thrown");
     } catch (err) {
-      assert.strictEqual(err.status, 408);
-      assert.strictEqual(err.message, "GitHub API request timeout");
+      assert.strictEqual(err.status, 504);
+      assert.strictEqual(err.message, "Gateway timeout");
     }
   });
 
@@ -135,7 +134,6 @@ describe("GitHub Client - Resilience & Error Handling", () => {
     };
 
     const client = new GitHubClient(env);
-    // Simulate caller aborting
     controller.abort();
 
     try {
@@ -158,29 +156,29 @@ describe("GitHub Client - Resilience & Error Handling", () => {
       assert.fail("Should have thrown");
     } catch (err) {
       assert.strictEqual(err.status, 502);
-      assert.strictEqual(err.message, "GitHub API network error or connection failed");
+      assert.strictEqual(err.message, "Bad gateway");
     }
   });
 
   const errorScenarios = [
-    { status: 401, msg: "GitHub authentication failed (Invalid Token)" },
-    { status: 403, msg: "GitHub access forbidden" },
-    { status: 409, msg: "GitHub resource conflict" },
-    { status: 422, msg: "GitHub validation failed (Unprocessable Entity)" },
-    { status: 429, msg: "GitHub too many requests" },
-    { status: 500, msg: "GitHub server error" }
+    { upstreamStatus: 401, expectedStatus: 502, expectedMsg: "Internal server error" },
+    { upstreamStatus: 403, expectedStatus: 502, expectedMsg: "Internal server error" },
+    { upstreamStatus: 409, expectedStatus: 409, expectedMsg: "Conflict: file has been modified" },
+    { upstreamStatus: 422, expectedStatus: 422, expectedMsg: "Validation failed" },
+    { upstreamStatus: 429, expectedStatus: 429, expectedMsg: "Rate limit exceeded" },
+    { upstreamStatus: 500, expectedStatus: 502, expectedMsg: "Upstream server error" }
   ];
 
   for (const scenario of errorScenarios) {
-    test(`Error Mapping: Should map ${scenario.status} to correct message`, async () => {
-      global.fetch = mockFetch(scenario.status, { message: "Error" });
+    test(`Error Mapping: Should map ${scenario.upstreamStatus} to gateway ${scenario.expectedStatus}`, async () => {
+      global.fetch = mockFetch(scenario.upstreamStatus, { message: "Error" });
       const client = new GitHubClient(env);
       try {
         await client.getRepository();
         assert.fail("Should have thrown");
       } catch (err) {
-        assert.strictEqual(err.status, scenario.status);
-        assert.strictEqual(err.message, scenario.msg);
+        assert.strictEqual(err.status, scenario.expectedStatus);
+        assert.strictEqual(err.message, scenario.expectedMsg);
       }
     });
   }
@@ -197,7 +195,7 @@ describe("GitHub Client - Resilience & Error Handling", () => {
       await client.getRepository();
     } catch (err) {
       assert.strictEqual(client.rateLimit.remaining, "0");
-      assert.strictEqual(err.message, "GitHub API rate limit exceeded");
+      assert.strictEqual(err.message, "Rate limit exceeded");
     }
   });
 });
