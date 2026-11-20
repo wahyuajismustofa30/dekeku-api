@@ -9,13 +9,14 @@
 - [ ] Failed-login Audit Logging.
 
 ## Medium Priority (Features & Refinements)
-- [ ] Phase 2.3: Guestbook Module.
+- [x] Phase 2.3: Guestbook Module (`POST /api/v1/public/submit`) - COMPLETED & VERIFIED (PR #7 MERGED).
+- [ ] Integrasi Frontend Statis dengan endpoint publik.
 - [ ] JWT Revocation.
 - [ ] Reduksi Metadata Public Endpoints.
 - [ ] Validasi Tipe Konten File.
 - [ ] GitHub Client Retry Logic.
 
 ## Low Priority (Maintenance)
-- [ ] Sinkronisasi Dev & Main Routine.
+- [x] Sinkronisasi Dev & Main Routine - COMPLETED.
 - [ ] Structured Logging.
 - [ ] API Versioning Strategy.
