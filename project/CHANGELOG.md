@@ -1,5 +1,19 @@
 # CHANGELOG — DEKEKU API Gateway
 
+## [Unreleased] - 2026-11-21
+### Added
+- Dokumentasi rekomendasi hasil review pada `project/RECOMMENDATIONS.md`:
+  - P0: pembatasan origin Tester Dashboard untuk mencegah kebocoran JWT.
+  - P1: sinkronisasi kontrak token login dan header Guestbook.
+  - P1: hardening wildcard CORS serta pemisahan tes lokal dan remote.
+  - P1/P2: verifikasi WAF, failed-login audit logging, dan sinkronisasi dokumentasi.
+  - P2: prosedur rotasi secret, evaluasi GitHub App, dan Workers Analytics Engine.
+- Backlog dan checkpoint diperbarui agar prioritas tindak lanjut, status NOT VERIFIED, dan batasan Production tercatat.
+
+### Notes
+- Perubahan ini hanya dokumentasi. Tidak ada source code, konfigurasi Cloudflare, secret, deployment, atau runtime Production yang diubah.
+- Rekomendasi belum dianggap sebagai implementasi atau verifikasi.
+
 ## [Unreleased] - 2026-11-20
 ### Added
 - Kebijakan Alur Kerja Git & GitHub (`AGENTS.md` & `project/MASTER.md`):
