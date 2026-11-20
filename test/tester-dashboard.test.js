@@ -30,7 +30,7 @@ describe("Tester Dashboard security and request contract", () => {
       assert.match(script, /url\.origin !== currentOrigin\.origin/);
       assert.match(script, /redirect: 'error'/);
       assert.doesNotMatch(html, /id="baseUrl"/);
-      assert.doesNotMatch(script, /localStorage\\.(getItem|setItem)/);
+      assert.doesNotMatch(script, /localStorage\.(getItem|setItem)/);
       assert.ok(!script.includes("fetch(") || script.includes("fetch(url"));
       assert.ok(name);
     }
@@ -54,7 +54,7 @@ describe("Tester Dashboard security and request contract", () => {
       assert.match(script, /res\.data\.access_token/);
       assert.doesNotMatch(script, /res\.data\.token/);
       assert.match(script, /Token is kept in memory only/);
-      assert.doesNotMatch(script, /localStorage\\.(getItem|setItem)/);
+      assert.doesNotMatch(script, /localStorage\.(getItem|setItem)/);
     }
   });
 
