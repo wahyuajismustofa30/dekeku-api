@@ -1,10 +1,10 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-20
+Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
 - **Fase Aktif**: Phase 2.3 (Public Submission & Guestbook) — COMPLETED & VERIFIED.
-- **Status Keseluruhan**: Public Submission (`POST /api/v1/public/submit`), Wildcard CORS (`*.artoprintingpbg.com`, `*.dekeku.my.id`), Write Engine, dan seluruh pengujian (126 tes) LULUS 100%.
+- **Status Keseluruhan**: Public Submission (`POST /api/v1/public/submit`), Wildcard CORS (`*.artoprintingpbg.com`, `*.dekeku.my.id`), Write Engine, dan seluruh pengujian (140 tes) LULUS 100%.
 - **Acuan Utama**: Dokumen ini adalah satu-satunya sumber status terpusat (*single source of truth*) untuk seluruh progres fitur proyek.
 
 ## Daftar Fitur & Status
@@ -35,13 +35,14 @@ Tanggal Pembaruan: 2026-11-20
 4. **F-04 (CORS Allowlist & Error Headers)**: Handled di `src/middleware/cors.js` dan `src/index.js`. Wildcard subdomains ditambahkan.
 5. **Legacy Core Tests**: 18 tes di `test/github-core.test.js` diperbarui dan lulus 100%.
 
-## Hasil Pengujian Aktual (Per 2026-11-20)
+## Hasil Pengujian Aktual (Per 2026-11-21)
 Pengujian dijalankan secara otomatis menggunakan Node.js test runner pada seluruh suite:
-- **Total Pengujian**: 126 tes (126 PASS, 0 FAIL, 0 SKIP).
+- **Total Pengujian**: 140 tes (140 PASS, 0 FAIL, 0 SKIP).
 - **Auth Module (`test/auth.test.js`)**: 26/26 PASS.
 - **Write Foundation (`test/write-foundation.test.js`)**: 21/21 PASS.
 - **GitHub Client PUT/DELETE (`test/github-write.test.js`)**: 34/34 PASS.
-- **Router Integration (`test/write-router.test.js`)**: 22/22 PASS.
+- **Router Integration (`test/write-router.test.js`)**: 23/23 PASS.
+- **Comprehensive Security Edge Cases (`test/security-edge-cases.test.js`)**: 14/14 PASS.
 - **Public Submission (`test/public-submission.test.js`)**: 4/4 PASS.
 - **Public Policy & Resilience (`test/github-core.test.js`)**: 18/18 PASS.
 
