@@ -8,7 +8,7 @@
     "dev": "wrangler dev",
     "build": "node --check src/index.js",
     "check": "node --check src/index.js",
-    "test": "node --test test/auth.test.js test/github-core.test.js test/write-foundation.test.js test/github-write.test.js test/write-router.test.js test/public-submission.test.js test/security-edge-cases.test.js"
+    "test": "node --test test/auth.test.js test/github-core.test.js test/write-foundation.test.js test/github-write.test.js test/write-router.test.js test/public-submission.test.js test/security-edge-cases.test.js test/tester-dashboard.test.js"
   },
   "dependencies": {
     "wrangler": "^4.165.0"
