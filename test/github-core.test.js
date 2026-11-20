@@ -1,7 +1,12 @@
-import { test, describe } from "node:test";
+import { test, describe, afterEach } from "node:test";
 import assert from "node:assert";
 import worker from "../src/index.js";
 import { GitHubClient } from "../src/core/github.js";
+
+const originalGlobalFetch = globalThis.fetch;
+afterEach(() => {
+  globalThis.fetch = originalGlobalFetch;
+});
 
 const env = {
   GITHUB_TOKEN: "mock-token",

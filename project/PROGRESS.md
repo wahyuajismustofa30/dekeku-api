@@ -4,7 +4,7 @@ Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
 - **Fase Aktif**: Phase 2.3 (Public Submission & Guestbook) — COMPLETED & VERIFIED.
-- **Status Keseluruhan**: Public Submission (`POST /api/v1/public/submit`), Wildcard CORS (`*.artoprintingpbg.com`, `*.dekeku.my.id`), Write Engine, dan seluruh pengujian (140 tes) LULUS 100%.
+- **Status Keseluruhan**: Public Submission (`POST /api/v1/public/submit`), Wildcard CORS (`*.artoprintingpbg.com`, `*.dekeku.my.id`), dan Write Engine tercatat selesai. Klaim historis 140/140 PASS belum dijalankan ulang pada checkpoint ini; lihat status pengujian aktual di bawah.
 - **Acuan Utama**: Dokumen ini adalah satu-satunya sumber status terpusat (*single source of truth*) untuk seluruh progres fitur proyek.
 
 ## Daftar Fitur & Status
@@ -28,6 +28,21 @@ Tanggal Pembaruan: 2026-11-21
 | **Write** | GitHub Client PUT/DELETE | COMPLETED | Validasi SHA, error mapping, concurrency OK. Header `Retry-After` dikirim jika tersedia dari GitHub API. |
 | **Write** | Router Integration | COMPLETED | Endpoints CREATE/UPDATE/DELETE terpasang di bawah authMiddleware. |
 
+## Tester Dashboard Hardening (2026-11-21)
+- **R-001 — IMPLEMENTED**: API target dikunci ke same-origin, HTTPS diwajibkan untuk remote, redirect ditolak, helper publik/admin dipisah, JWT hanya di memori, legacy localStorage token dibersihkan saat load, dan 401/logout menghapus sesi.
+- **R-002 — IMPLEMENTED**: Login memakai `access_token`, validasi token non-empty, password field dibersihkan, dan token direduksi dari log.
+- **R-003 — IMPLEMENTED**: Guestbook mengirim `Content-Type: application/json` dan `Accept: application/json`, memvalidasi input, mencegah double-submit, serta hanya reset setelah sukses.
+- `test/tester-dashboard.test.js` ditambahkan ke script `npm test`.
+- Isolated JavaScript harness terhadap script aktual: PASS untuk same-origin, JWT scoping, login, 401, dan alur Guestbook.
+- Node test suite (`npm test`): NOT RUN. Development deployment: NOT VERIFIED. Hasil historis 140/140 tidak dianggap sebagai verifikasi untuk commit saat ini.
+
+## Security Review Remediation (2026-11-21)
+- **R-001 s/d R-003 — IMPLEMENTED**: Tester Dashboard same-origin JWT boundary, `access_token` contract, dan Guestbook JSON/double-submit behavior. Isolated JavaScript harness PASS.
+- **R-004 — IMPLEMENTED**: strict HTTPS origin parsing, exact/wildcard hostname validation, wildcard apex exclusion, port/credentials/path rejection, dan `Vary: Origin` untuk request ber-Origin. CORS isolated harness PASS.
+- **R-005 — IMPLEMENTED**: `npm test` berisi daftar suite lokal eksplisit dan mengecualikan remote test; `npm run test:remote` menjalankan remote suite secara eksplisit. Mock `global.fetch` dipulihkan dengan `afterEach`/`finally`.
+- `test/tester-dashboard.test.js` dan `test/cors-policy.test.js` ditambahkan ke suite lokal.
+- Syntax parsing test files terkait: PASS. Full Node suite (`npm test`): NOT RUN. Remote suite: NOT RUN. Deployment Development: NOT VERIFIED.
+
 ## Perbaikan Temuan Keamanan & Error Mapping (2026-11-20)
 1. **F-01 (Regex Escape)**: Diperbaiki ke `/[\x00-\x1F\x7F]/` di `src/modules/github/write.js`.
 2. **F-02 (Base64 Large Files)**: Helper `uint8ArrayToBase64` ditambahkan di `src/utils/base64.js` dengan chunking 32KB.
@@ -35,8 +50,8 @@ Tanggal Pembaruan: 2026-11-21
 4. **F-04 (CORS Allowlist & Error Headers)**: Handled di `src/middleware/cors.js` dan `src/index.js`. Wildcard subdomains ditambahkan.
 5. **Legacy Core Tests**: 18 tes di `test/github-core.test.js` diperbarui dan lulus 100%.
 
-## Hasil Pengujian Aktual (Per 2026-11-21)
-Pengujian dijalankan secara otomatis menggunakan Node.js test runner pada seluruh suite:
+## Riwayat Hasil Pengujian Terdokumentasi (2026-11-21 — belum dijalankan ulang pada commit remediation)
+Angka berikut merupakan hasil historis yang tercatat sebelum remediation R-001 s/d R-005. Hasil ini bukan bukti bahwa suite pada commit saat ini telah dijalankan:
 - **Total Pengujian**: 140 tes (140 PASS, 0 FAIL, 0 SKIP).
 - **Auth Module (`test/auth.test.js`)**: 26/26 PASS.
 - **Write Foundation (`test/write-foundation.test.js`)**: 21/21 PASS.

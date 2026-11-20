@@ -1,6 +1,23 @@
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
+### Fixed
+- CORS: memvalidasi origin melalui URL parser; hanya HTTPS tanpa port non-default, credentials, path/query/fragment, atau malformed origin. Wildcard hanya menerima subdomain, bukan apex; `Vary: Origin` selalu disetel untuk request dengan Origin.
+- Test isolation: menambahkan pemulihan global fetch melalui `afterEach` pada `github-core`, `security-edge-cases`, dan `live-remote`; mock remote simulation memakai `try/finally`.
+- Tester Dashboard: mengunci request ke origin halaman sendiri, menolak redirect, mewajibkan HTTPS untuk origin remote, memisahkan helper publik/admin, menyimpan JWT hanya di memori sesi, membersihkan token lama dari localStorage, dan menghapus sesi pada 401/logout.
+- Tester Dashboard: menyelaraskan login dengan respons `access_token` dan meredaksi data sensitif dari log.
+- Guestbook Dashboard: menambahkan JSON headers, validasi input, pencegahan double-submit, dan reset form hanya setelah sukses.
+
+### Added
+- `test/tester-dashboard.test.js` sebagai regression coverage untuk dua salinan dashboard dan ditambahkan ke script `npm test`.
+- `test/cors-policy.test.js` untuk exact origin, wildcard, apex, protocol, port, credentials, malformed origin, dan deceptive hostname.
+- `npm run test:remote` sebagai script eksplisit untuk suite yang mengakses Development Worker; script default tetap mengisolasi remote test.
+
+### Verification
+- Isolated JavaScript harness terhadap script Dashboard aktual: PASS untuk origin binding, JWT scoping, login token handling, 401 cleanup, dan Guestbook double-submit/success flow.
+- Isolated CORS harness: PASS untuk exact origin, wildcard subdomain, apex exclusion, dan 9 kelas origin yang ditolak.
+- Syntax parsing untuk test files terkait: PASS. Node test suite (`npm test`): NOT RUN; remote test: NOT RUN; Development deployment: NOT VERIFIED.
+
 ### Added
 - Dokumentasi rekomendasi hasil review pada `project/RECOMMENDATIONS.md`:
   - P0: pembatasan origin Tester Dashboard untuk mencegah kebocoran JWT.

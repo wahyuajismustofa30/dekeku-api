@@ -39,19 +39,24 @@ dekeku-api/
 │   │   │   ├── write.js       # Write engine
 │   │   │   └── write-router.js
 │   │   ├── public/            # Public guestbook submission
+│   │   ├── tester/            # Same-origin Tester Dashboard
 │   │   └── health/            # /health endpoint
 │   └── utils/                 # Utilities
 │       ├── jwt.js             # JWT utilities
 │       ├── hash.js            # PBKDF2 password verification
 │       ├── response.js        # JSON response formatter
 │       └── github-content.js  # GitHub content processing
-├── test/                      # Test suites
+├── test/                      # Isolated local and explicit remote suites
 │   ├── auth.test.js
-│   ├── public-access.test.js
-│   ├── github-client.test.js
-│   ├── write-engine.test.js
+│   ├── github-core.test.js
+│   ├── write-foundation.test.js
+│   ├── github-write.test.js
+│   ├── write-router.test.js
 │   ├── public-submission.test.js
-│   └── security-edge-cases.test.js
+│   ├── security-edge-cases.test.js
+│   ├── tester-dashboard.test.js
+│   ├── cors-policy.test.js
+│   └── live-remote.test.js     # Explicit remote test; may write Guestbook data
 ├── project/                    # Project documentation
 │   ├── MASTER.md              # Core rules & authority
 │   ├── PROGRESS.md            # Feature status (authoritative)
@@ -98,7 +103,7 @@ dekeku-api/
 
 ## Environment Variables (Dev)
 
-### Secrets (Production)
+### Worker Secrets (configured separately per environment)
 - `GITHUB_TOKEN` - GitHub Personal Access Token (write access to repo)
 - `JWT_SECRET` - JWT signing secret (32 chars or longer)
 - `ADMIN_PASSWORD_HASH` - Hashed admin password (PBKDF2-SHA256)
@@ -130,19 +135,23 @@ npm run build
 ## Testing
 
 \`\`\`bash
-# Run full test suite
-node --test test/*.test.js
+# Run syntax check and isolated local test suite
+npm run check
+npm test
+
+# Explicitly run Development Worker tests (may write Guestbook data)
+npm run test:remote
 \`\`\`
 
-Current test results: 126 PASS / 0 FAIL (126 total tests across 6 test suites).
+`npm test` excludes `test/live-remote.test.js`. The remote suite accesses the active Development Worker and includes a Guestbook submission that writes to the configured GitHub repository. Run it only when explicitly intended. Historical test totals are not a substitute for a fresh test run.
 
 ## Development Workflow
 
-1. Create branch (if needed): `git checkout -b feature/xyz`
-2. Develop and test: Coding followed by `node --test test/*.test.js`
-3. Commit: `git commit -m "feat: description"`
+1. Update the development branch: `git fetch origin && git switch dev && git pull --ff-only origin dev`
+2. Develop and verify: `npm run check && npm test`
+3. Commit the completed work on `dev`: `git commit -m "type: description"`
 4. Push: `git push origin dev`
-5. Create PR: PR `dev` → `main` reviewed by human before merge
+5. Open/update PR `dev` → `main`; a human reviews and merges it.
 
 For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) and [AGENTS.md](AGENTS.md).
 

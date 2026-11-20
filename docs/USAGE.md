@@ -10,7 +10,7 @@ DEKEKU API Gateway adalah Cloudflare Worker modular yang berinteraksi dengan rep
 
 ### Environment Variables (`wrangler.jsonc` & `.dev.vars`)
 - `GITHUB_OWNER`: Pemilik repository GitHub (contoh: `wahyuajismustofa30`).
-- `GITHUB_REPO`: Nama repository (contoh: `dekeku-api`).
+- `GITHUB_REPO`: Nama repository (konfigurasi development saat ini pada `wrangler.jsonc`: `dekeku-db`).
 - `GITHUB_BRANCH`: Branch target (contoh: `main`).
 - `ALLOWED_ORIGINS`: Daftar origin CORS yang diizinkan (mendukung domain eksak dan wildcard subdomain seperti `*.dekeku.my.id`, `*.artoprintingpbg.com`).
 - `GITHUB_TOKEN`: Personal Access Token GitHub (Secret, disimpan di Cloudflare Secrets / `.dev.vars`).
@@ -26,11 +26,24 @@ DEKEKU API Gateway adalah Cloudflare Worker modular yang berinteraksi dengan rep
 - npm
 
 ### Menjalankan Tes Lokal
-Gateway menyediakan test suite lengkap menggunakan Node.js test runner:
+Jalankan pemeriksaan syntax dan suite lokal yang terisolasi:
 ```bash
 npm run check
-node --test test/*.test.js
+npm test
 ```
+
+Tes remote Development harus dijalankan secara terpisah dan eksplisit:
+```bash
+npm run test:remote
+```
+**Peringatan:** `test:remote` mengakses Worker Development aktif. Salah satu skenarionya mengirim Guestbook yang menulis data ke repository GitHub. Jangan jalankan sebagai bagian dari tes default atau tanpa persetujuan.
+
+### Tester Dashboard
+Dashboard tersedia pada route `/` dan `/tester`.
+- Tujuan API mengikuti origin halaman yang sedang dibuka; dashboard tidak menerima URL API bebas.
+- Origin remote wajib HTTPS. HTTP hanya diizinkan untuk host loopback saat pengembangan lokal.
+- JWT admin hanya disimpan di memori halaman, tidak ditampilkan, dan tidak dipersistenkan. Memuat ulang halaman, logout, atau respons HTTP 401 menghapus sesi.
+- Request publik tidak membawa Authorization; hanya request administratif yang menggunakan helper terpisah.
 
 ### Pengembangan Lokal (Wrangler Dev)
 Catatan lingkungan Termux/PRoot mungkin memerlukan penanganan khusus TCMalloc; dianjurkan menjalankan pengujian berbasis Node.js test runner atau menggunakan remote/simulation testing.

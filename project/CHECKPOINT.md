@@ -19,22 +19,24 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Perubahan konfigurasi Cloudflare dan secret tidak dilakukan.
 
 ## 3. Temuan Review yang Menunggu Tindak Lanjut
-- **P0 R-001:** Batasi origin Tester Dashboard sebelum mengirim JWT administratif.
-- **P1 R-002/R-003:** Perbaiki kontrak token login dan header JSON Guestbook Dashboard.
-- **P1 R-004:** Perketat wildcard CORS dan tambahkan regression tests.
-- **P1 R-005:** Pisahkan tes lokal dan remote; pola test glob di panduan penggunaan perlu diperiksa agar tidak menjalankan remote test secara tidak sengaja.
+- **P0 R-001:** IMPLEMENTED pada kedua salinan Dashboard; same-origin enforced, JWT sesi memori, public/admin helper dipisah. Isolated harness PASS; Node test suite NOT RUN; deployment NOT VERIFIED.
+- **P1 R-002:** IMPLEMENTED — login memakai `access_token` dan token direduksi dari log.
+- **P1 R-003:** IMPLEMENTED — JSON headers, input validation, double-submit guard, success-only reset. Regression tests ditambahkan; Node test suite NOT RUN.
+- **P1 R-004:** IMPLEMENTED — strict HTTPS origin parser, wildcard subdomain-only, apex explicit allowlist, port/credentials/path checks, `Vary: Origin`; regression test ditambahkan. Isolated harness PASS; Node suite NOT RUN.
+- **P1 R-005:** IMPLEMENTED — `npm test` lokal eksplisit; remote test hanya melalui `npm run test:remote`; global fetch cleanup memakai `afterEach`/`finally`. Syntax checks PASS; Node suite NOT RUN.
 - **P1 R-006:** WAF rate limiting disetujui pada D-013, tetapi konfigurasi aktual NOT VERIFIED.
 - **P1 R-007:** Rancang failed-login audit logging tanpa secret.
 - Rincian lengkap dan acceptance criteria: [RECOMMENDATIONS.md](RECOMMENDATIONS.md).
 
 ## 4. Langkah Berikutnya
-1. Mulai dari R-001, keamanan pengiriman JWT pada Tester Dashboard.
-2. Lanjutkan R-002 dan R-003 untuk memperbaiki fungsionalitas dashboard.
-3. Kerjakan R-004 dan R-005 beserta regression tests.
-4. Verifikasi WAF Development untuk R-006; jangan menyentuh Production.
-5. Setelah implementasi, jalankan tes lokal yang aman dan catat bukti aktual sebelum memperbarui status.
+1. Jalankan `npm test` pada working tree lokal untuk memverifikasi regression tests baru dan suite yang ada.
+2. Lanjutkan R-006: verifikasi WAF Development untuk admin login; jangan menyentuh Production.
+3. Rancang R-007 audit logging yang aman.
+4. Lanjutkan R-008 sinkronisasi dokumentasi setelah test suite aktual tersedia.
+5. R-009 s/d R-011 tetap pekerjaan evaluasi terpisah.
 
 ## 5. Batasan Pekerjaan Terakhir
-- Pekerjaan ini hanya memperbarui dokumentasi rekomendasi/backlog/checkpoint.
-- Tidak ada source code, secret, konfigurasi Worker, deployment, atau runtime Production yang diubah.
-- Tidak ada pengujian runtime atau suite test yang dijalankan.
+- Source Dashboard, salinan HTML, regression test, dan script `npm test` diperbarui pada branch `dev`.
+- Isolated JavaScript harness dijalankan terhadap script Dashboard dan CORS aktual; skenario inti PASS.
+- Syntax parsing untuk test files terkait PASS; Node test suite belum dijalankan; remote test NOT RUN; deployment/runtime Development NOT VERIFIED.
+- Tidak ada secret, konfigurasi Worker, deployment, atau runtime Production yang diubah.
