@@ -1,9 +1,14 @@
-import test, { describe } from "node:test";
+import test, { describe, afterEach } from "node:test";
 import assert from "node:assert";
 import worker from "../src/index.js";
 import { verifyJwt, signJwt } from "../src/utils/jwt.js";
 import { verifyPassword } from "../src/utils/hash.js";
 import { handleCors } from "../src/middleware/cors.js";
+
+const originalGlobalFetch = globalThis.fetch;
+afterEach(() => {
+  globalThis.fetch = originalGlobalFetch;
+});
 
 const env = {
   GITHUB_TOKEN: "mock-secret-token-12345",
