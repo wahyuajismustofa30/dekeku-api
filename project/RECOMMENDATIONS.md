@@ -2,7 +2,7 @@
 
 Tanggal pencatatan: 2026-11-21
 
-Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. Rekomendasi di bawah **belum berarti sudah diimplementasikan atau diverifikasi**. Status implementasi harus diperbarui berdasarkan perubahan source code, hasil tes aktual, dan bukti konfigurasi runtime.
+Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. Status tiap rekomendasi dibedakan antara implementasi kode, pengujian lokal, dan verifikasi runtime. R-001 s/d R-005 telah diimplementasikan; suite lokal 149 PASS dan `npm run check` PASS berdasarkan laporan pengguna pada 2026-11-21 (branch `dev`, commit `a6a089d`). Hasil tersebut belum diverifikasi ulang secara independen dalam sesi dokumentasi ini. Rekomendasi yang memerlukan bukti konfigurasi/runtime tetap berstatus NOT VERIFIED.
 
 ## Prioritas P0 — Keamanan Dashboard Tester
 
@@ -17,7 +17,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
   6. Jangan pernah menulis JWT atau kredensial ke console maupun pesan error.
 - **Tes penerimaan**: origin eksternal, HTTP, URL dengan credentials, deceptive hostname/suffix, perubahan base URL, logout, respons 401, dan request publik tidak boleh membawa JWT.
 - **Prioritas**: P0 — selesaikan sebelum Dashboard Tester digunakan untuk operasi admin.
-- **Status (2026-11-21)**: IMPLEMENTED pada kedua salinan Dashboard. API origin dikunci ke `window.location.origin`, remote wajib HTTPS, redirect ditolak, helper publik/admin dipisah, JWT hanya berada di memori sesi, token lama di `localStorage` dibersihkan saat pemuatan, dan sesi dibersihkan pada 401/logout. Perilaku inti diuji dengan isolated JavaScript harness; Node test suite NOT RUN dan deployment NOT VERIFIED.
+- **Status (2026-11-21)**: IMPLEMENTED pada kedua salinan Dashboard. API origin dikunci ke `window.location.origin`, remote wajib HTTPS, redirect ditolak, helper publik/admin dipisah, JWT hanya berada di memori sesi, token lama di `localStorage` dibersihkan saat pemuatan, dan sesi dibersihkan pada 401/logout. Perilaku inti diuji dengan isolated JavaScript harness; suite lokal `npm test` 149 PASS berdasarkan laporan pengguna; deployment/runtime NOT VERIFIED.
 
 ## Prioritas P1 — Fungsionalitas Dashboard
 
@@ -25,13 +25,13 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 - **Temuan review**: Dashboard mencari properti `token`, sedangkan kontrak respons login API menggunakan `access_token`.
 - **Rekomendasi**: Gunakan `access_token` sesuai kontrak API; validasi respons sukses dan token non-empty sebelum menyimpan sesi. Tampilkan error yang aman untuk respons invalid, 4xx/5xx, dan kegagalan jaringan.
 - **Tes penerimaan**: login sukses, password salah, respons tanpa token, JSON malformed, HTTP 500, dan network failure.
-- **Status (2026-11-21)**: IMPLEMENTED — Dashboard memakai `access_token`, memvalidasi token non-empty, mengosongkan password field, dan meredaksi token pada log. Pengujian perilaku login sukses dan sesi dilakukan dengan isolated JavaScript harness; skenario server error/network serta Node test suite NOT RUN.
+- **Status (2026-11-21)**: IMPLEMENTED — Dashboard memakai `access_token`, memvalidasi token non-empty, mengosongkan password field, dan meredaksi token pada log. Pengujian perilaku login sukses dan sesi dilakukan dengan isolated JavaScript harness; suite lokal 149 PASS berdasarkan laporan pengguna. Kasus server error/network tetap bergantung pada cakupan regression suite dan tidak diklaim terverifikasi terpisah di sini.
 
 ### R-003. Lengkapi header Guestbook Dashboard
 - **Temuan review**: Request Guestbook dari dashboard tidak menyertakan `Content-Type: application/json`, sedangkan endpoint mengharuskan JSON.
 - **Rekomendasi**: Kirim `Content-Type: application/json` dan `Accept: application/json`; validasi input di UI tanpa menggantikan validasi backend; cegah submit ganda; reset form hanya setelah respons sukses terkonfirmasi.
 - **Tes penerimaan**: payload valid, input kosong/tidak valid, server menolak payload, network failure, dan double-submit.
-- **Status (2026-11-21)**: IMPLEMENTED — Header JSON/Accept, validasi input, guard double-submit, tombol disabled selama request, dan reset hanya pada HTTP 201 dengan `success: true`. Skenario sukses dan double-submit diuji dengan isolated JavaScript harness; skenario gagal dan Node test suite NOT RUN.
+- **Status (2026-11-21)**: IMPLEMENTED — Header JSON/Accept, validasi input, guard double-submit, tombol disabled selama request, dan reset hanya pada HTTP 201 dengan `success: true`. Skenario sukses dan double-submit diuji dengan isolated JavaScript harness; suite lokal 149 PASS berdasarkan laporan pengguna.
 
 ## Prioritas P1 — CORS dan Pengujian
 
@@ -44,7 +44,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
   4. Tolak HTTP jika kebijakan hanya mengizinkan HTTPS, serta tolak deceptive suffix seperti `evil-dekeku.my.id` dan `dekeku.my.id.evil.com`.
   5. Pastikan preflight dan respons error mengikuti kebijakan yang sama.
 - **Tes penerimaan**: exact origin, subdomain valid, root domain, deceptive suffix, HTTP/HTTPS, port, malformed origin, dan preflight.
-- **Status (2026-11-21)**: IMPLEMENTED — origin diparse dengan URL parser, hanya HTTPS default-port, menolak credentials/path/query/fragment/malformed origin, wildcard hanya menerima subdomain (apex harus di-allowlist secara eksplisit), dan `Vary: Origin` diberikan pada seluruh respons dengan Origin. Regression tests ditambahkan; isolated harness PASS untuk exact/subdomain dan 9 kelas origin yang ditolak. Node test suite NOT RUN.
+- **Status (2026-11-21)**: IMPLEMENTED — origin diparse dengan URL parser, hanya HTTPS default-port, menolak credentials/path/query/fragment/malformed origin, wildcard hanya menerima subdomain (apex harus di-allowlist secara eksplisit), dan `Vary: Origin` diberikan pada seluruh respons dengan Origin. Regression tests ditambahkan; isolated harness PASS untuk exact/subdomain dan 9 kelas origin yang ditolak; suite lokal 149 PASS berdasarkan laporan pengguna.
 
 ### R-005. Pisahkan test lokal dan test remote
 - **Temuan review**: Panduan `docs/USAGE.md` menggunakan pola `node --test test/*.test.js` yang berisiko menyertakan `test/live-remote.test.js`. Tes remote dapat menulis data ke Development Worker aktif.
@@ -55,7 +55,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
   4. Pastikan mock global seperti `global.fetch` dipulihkan dalam blok `finally`.
   5. Gunakan fixture dan data uji yang tidak memuat secret.
 - **Tes penerimaan**: verifikasi daftar file yang dijalankan oleh setiap script, pastikan test default tidak mengakses Worker, dan pastikan remote test hanya berjalan melalui perintah eksplisit.
-- **Status (2026-11-21)**: IMPLEMENTED — `npm test` mencantumkan suite lokal secara eksplisit dan mengecualikan `test/live-remote.test.js`; `npm run test:remote` menjadi pemicu eksplisit untuk remote Development tests. `github-core`, `security-edge-cases`, dan `live-remote` memulihkan global fetch melalui `afterEach`; simulasi live-remote juga memakai `try/finally`. Syntax check file terkait PASS; suite Node.js NOT RUN. Remote tests tidak dijalankan.
+- **Status (2026-11-21)**: IMPLEMENTED — `npm test` mencantumkan suite lokal secara eksplisit dan mengecualikan `test/live-remote.test.js`; `npm run test:remote` menjadi pemicu eksplisit untuk remote Development tests. `github-core`, `security-edge-cases`, dan `live-remote` memulihkan global fetch melalui `afterEach`; simulasi live-remote juga memakai `try/finally`. `npm run check` PASS dan suite lokal `npm test` 149 PASS berdasarkan laporan pengguna. Remote tests tidak dijalankan.
 
 ## Prioritas P1/P2 — Proteksi Abuse dan Observabilitas
 
@@ -78,7 +78,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 - Gunakan status `VERIFIED`, `NOT VERIFIED`, `FAILED`, `NEEDS INVESTIGATION`, dan `NOT RUN` secara konsisten.
 - Jangan mengklaim 140/140 PASS tanpa command, environment, commit, exit code, dan output yang dapat diperiksa.
 - Perbaiki panduan `docs/USAGE.md` agar tidak mendorong eksekusi tes remote secara tidak sengaja.
-- **Status (2026-11-21)**: PARTIALLY IMPLEMENTED — README/USAGE kini memakai script lokal eksplisit, remote test dipisahkan, dan angka historis diberi label belum diverifikasi ulang. Final status menunggu output `npm test` dari working tree aktual.
+- **Status (2026-11-21)**: COMPLETED — README/USAGE memakai script lokal eksplisit dan memisahkan remote test; PROGRESS, CHECKPOINT, BACKLOG, ROADMAP, dan CHANGELOG diselaraskan dengan hasil `npm run check` PASS serta `npm test` 149 PASS berdasarkan laporan pengguna (branch `dev`, commit `a6a089d`). Provenance hasil tes dicatat secara eksplisit.
 
 ### R-009. Tinjau rotasi secret dan kekuatan password admin
 - Pertahankan password admin dengan entropi tinggi dan penyimpanan hash PBKDF2 sesuai kebijakan implementasi.
@@ -99,8 +99,9 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 3. R-004 — hardening CORS dan regression tests.
 4. R-005 — isolasi test lokal dan remote serta pembaruan panduan.
 5. R-006 dan R-007 — verifikasi WAF dan audit logging.
-6. R-008 — sinkronisasi dokumentasi berdasarkan hasil aktual.
-7. R-009 sampai R-011 — pekerjaan pemeliharaan/evolusi berikutnya.
+6. R-009 sampai R-011 — pekerjaan pemeliharaan/evolusi berikutnya.
+
+R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 
 ## Batasan Pelaksanaan
 - Rekomendasi bukan izin otomatis untuk mengubah source code, konfigurasi Cloudflare, secrets, atau melakukan deployment.
