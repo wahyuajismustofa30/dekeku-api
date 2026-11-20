@@ -12,7 +12,7 @@ Adhere to the authority and security principles defined in `project/MASTER.md`.
 ## GIT & GITHUB WORKFLOW POLICY
 
 ### A. Fungsi GitHub
-- GitHub hanya berfungsi sebagai backup source code dan riwayat perubahan untuk sementara.
+- GitHub berfungsi sebagai backup source code dan riwayat perubahan untuk sementara.
 - GitHub bukan ketergantungan utama runtime aplikasi.
 - GitHub berfungsi sebagai jalur review kode melalui Pull Request (PR) dari branch `dev` ke `main`.
 - Jangan melakukan sinkronisasi hanya karena ada perubahan kecil.
@@ -20,6 +20,7 @@ Adhere to the authority and security principles defined in `project/MASTER.md`.
 ### B. Pemeriksaan Git
 - Hindari pemeriksaan Git berulang tanpa kebutuhan.
 - Diizinkan melakukan satu kali `git fetch` dan sinkronisasi branch `dev` di awal tugas yang akan mengubah source code.
+- Jika branch `dev` tertinggal atau menyimpang dari `main` (misalnya setelah squash merge di GitHub), sinkronkan dengan melakukan merge `origin/main` ke `dev`. Jangan menggunakan `rebase` atau `force-push`. Selesaikan konflik hanya jika sepele; jika tidak sepele, hentikan dan laporkan tanpa menebak.
 - Lakukan pemeriksaan ulang ketika pekerjaan siap di-commit.
 - Jangan menjalankan pemeriksaan remote atau pemeriksaan riwayat commit secara rutin jika tidak diperlukan.
 - Jangan melakukan audit Git menyeluruh untuk pekerjaan dokumentasi sederhana.

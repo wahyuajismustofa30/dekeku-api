@@ -30,7 +30,7 @@ Menjadi infrastruktur backend "serverless" yang handal untuk mengelola seluruh a
 
 ## 6. Prinsip Keamanan & Batasan
 - **Public READ**: Diizinkan hanya pada direktori `public/` dengan ekstensi yang disetujui.
-- **Admin WRITE**: Wajib menggunakan autentikasi (Phase 2).
+- **Admin WRITE**: Wajib menggunakan autentikasi JWT admin (sudah diimplementasikan).
 - **Size Limit**: Batas maksimal file 1 MB.
 - **No Direct GitHub Access**: Klien tidak boleh mengakses GitHub API secara langsung.
 - **Isolation**: Worker development dan production dipisahkan.
@@ -50,6 +50,7 @@ Codex wajib membaca dokumen di direktori `project/`:
 4. `DECISIONS.md`
 5. `CHECKPOINT.md`
 Kemudian melakukan audit source code terkait.
+*Catatan Acuan*: `AGENTS.md` di root repository adalah acuan utama untuk alur kerja Git & GitHub. Jika terdapat perbedaan/inkonsistensi antara dokumen proyek dan kode aktual, source code adalah sumber kebenaran utama (*source of truth*), dan perbedaannya wajib dilaporkan secara eksplisit kepada Wahyu.
 
 ### C. Prosedur Setelah Tugas
 Codex wajib:
@@ -58,9 +59,13 @@ Codex wajib:
 3. Memperbarui dokumentasi terkait berdasarkan fakta aktual.
 
 ### D. Perubahan Sensitif
-Dilarang tanpa instruksi eksplisit:
+Sesuai `AGENTS.md`, push ke branch `dev` dan pembuatan Pull Request `dev` -> `main` DIIZINKAN setelah kriteria Siap Commit terpenuhi dan pengujian lulus.
+
+Dilarang keras tanpa instruksi eksplisit dari Wahyu:
+- Push atau commit langsung ke branch `main`.
+- Melakukan merge Pull Request.
+- Melakukan force-push (`git push --force`).
 - Mengubah Worker produksi (`github`).
 - Mengubah Secret atau kredensial.
-- Melakukan deployment atau push ke GitHub.
+- Melakukan deployment otomatis ke lingkungan produksi.
 - Mengubah kebijakan keamanan inti.
-
