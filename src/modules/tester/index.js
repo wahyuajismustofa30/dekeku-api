@@ -125,6 +125,7 @@ export const getTesterPage = (request, env) => {
     <script>
 
         const API_ORIGIN = window.location.origin;
+        try { window.localStorage.removeItem('dekeku_jwt'); } catch {}
         let jwtToken = '';
         let guestbookSubmitting = false;
 
