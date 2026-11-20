@@ -33,3 +33,7 @@
 - Monitoring logs & error tracking.
 - Performance optimization (Worker latency).
 - Documentation refinement.
+## Caller Repository Metadata
+- **Implementation**: added on branch `dev` on 2026-11-21.
+- **Scope**: `GET /api/v1/github/repository` resolves the caller repository from the validated request Origin and its `/config.json`.
+- **Verification**: regression tests and syntax checks NOT RUN in this environment; Development deployment/runtime NOT VERIFIED.
