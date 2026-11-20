@@ -70,7 +70,8 @@ test("DEKEKU API Gateway - Live Remote & Simulation Test Suite", async (t) => {
   // --- PART 2: IN-MEMORY SIMULATION TESTS ---
   await t.test("Simulation: Simulate Upstream GitHub Rate Limit (429)", async () => {
     const originalFetch = global.fetch;
-    global.fetch = async () => new Response(JSON.stringify({ message: "Rate limit exceeded" }), {
+    try {
+      global.fetch = async () => new Response(JSON.stringify({ message: "Rate limit exceeded" }), {
       status: 429,
       headers: { "Retry-After": "60", "Content-Type": "application/json" }
     });
@@ -83,12 +84,15 @@ test("DEKEKU API Gateway - Live Remote & Simulation Test Suite", async (t) => {
     assert.strictEqual(data.success, false);
     assert.strictEqual(res.headers.get("Retry-After"), "60");
 
-    global.fetch = originalFetch;
+    } finally {
+      global.fetch = originalFetch;
+    }
   });
 
   await t.test("Simulation: Simulate Network Timeout (504)", async () => {
     const originalFetch = global.fetch;
-    global.fetch = async () => {
+    try {
+      global.fetch = async () => {
       const err = new Error("AbortError");
       err.name = "AbortError";
       throw err;
@@ -101,7 +105,9 @@ test("DEKEKU API Gateway - Live Remote & Simulation Test Suite", async (t) => {
     assert.strictEqual(res.status, 504);
     assert.strictEqual(data.success, false);
 
-    global.fetch = originalFetch;
+    } finally {
+      global.fetch = originalFetch;
+    }
   });
 
   await t.test("Simulation: Simulate CORS Wildcard Subdomain Matching", async () => {
