@@ -37,3 +37,11 @@
 - **Implementation**: added on branch `dev` on 2026-11-21.
 - **Scope**: `GET /api/v1/github/repository` resolves the caller repository from the validated request Origin and its `/config.json`.
 - **Verification**: regression tests and syntax checks NOT RUN in this environment; Development deployment/runtime NOT VERIFIED.
+
+
+## Guestbook Per-Origin Storage (2026-11-21)
+- **Implementation**: added on branch dev.
+- **Scope**: one JSON array file per allowlisted Origin hostname at public/data/{hostname}/bukutamu.json; dots retained.
+- **Concurrency**: SHA optimistic locking with bounded re-read/retry on 409 (maximum three writes).
+- **Limits**: 15 KiB request and 1 MiB serialized file.
+- **Verification**: regression tests added but NOT RUN in this environment; Development deployment/runtime NOT VERIFIED.

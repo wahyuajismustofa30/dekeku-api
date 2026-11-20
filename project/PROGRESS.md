@@ -74,3 +74,12 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - GitHub metadata is returned only for repositories GitHub identifies as public. The GitHub token is never sent to the caller origin.
 - Added `test/repository-metadata.test.js` to the local `npm test` command and documented the flow in `docs/caller-repository-metadata.md`.
 - **Verification**: automated tests and syntax checks have NOT RUN in this execution environment; Development deployment/runtime NOT VERIFIED. No Wrangler configuration, secrets, Cloudflare settings, or Production resources changed.
+
+
+## Guestbook Per-Origin Storage (2026-11-21)
+- Implemented on branch dev: POST /api/v1/public/submit derives a hostname-specific path from an HTTPS Origin accepted by ALLOWED_ORIGINS.
+- Storage format: public/data/{hostname}/bukutamu.json, JSON array; hostname dots are preserved.
+- Existing data is read with its blob SHA and updated optimistically. HTTP 409 triggers a fresh read and bounded retry (maximum three write attempts); exhausted conflicts return 409.
+- Request limit remains 15 KiB; serialized Guestbook file limit is 1 MiB. Full files are rejected without truncation. Legacy public/data/guestbook files are not migrated or deleted.
+- Added regression tests for first write, append, SHA conflict retry, Origin rejection, payload validation, and method handling.
+- Verification: NOT RUN in this environment. Development deployment/runtime: NOT VERIFIED. No Worker config, secrets, deployment, Production resource, or data repository contents were changed.

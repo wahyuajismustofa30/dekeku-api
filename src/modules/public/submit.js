@@ -115,5 +115,5 @@ export const handlePublicSubmit = async (request, env) => {
     }
   }
 
-  throw new HttpError("Guestbook is busy; please retry the submission", 409, { cause: lastConflict });
+  throw new HttpError("Guestbook is busy; please retry the submission", 409);
 };

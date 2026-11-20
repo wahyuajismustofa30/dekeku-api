@@ -132,3 +132,16 @@
 - Rotated `ADMIN_PASSWORD_HASH` for `dekeku-api-dev` after initial password exposure.
 - New password generated internally (48 chars hex) and hashed with fresh salt.
 - Provisioned via Versions API (staged).
+
+
+## [Unreleased] — Guestbook Per-Origin Storage (2026-11-21)
+### Changed
+- Public Guestbook submissions now append to one JSON array file per validated Origin hostname at public/data/{hostname}/bukutamu.json.
+- Hostname dots are preserved; Origin must pass the shared HTTPS ALLOWED_ORIGINS validator.
+- Writes use Git blob SHA and bounded read-again retry after 409 conflicts.
+### Added
+- Regression tests for create, append, conflict retry, Origin rejection, and validation.
+- docs/guestbook-storage.md describing layout, limits, concurrency, and security boundaries.
+### Verification
+- Tests and syntax checks: NOT RUN. Development runtime/deployment: NOT VERIFIED.
+- No deployment, Worker settings, secrets, Production resources, or database repository content changed.

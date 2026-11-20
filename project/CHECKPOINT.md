@@ -49,3 +49,12 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Design notes: `docs/caller-repository-metadata.md`.
 - Test execution, local syntax validation, and Development runtime/deployment: NOT RUN / NOT VERIFIED in this environment.
 - No secrets, Wrangler bindings, Cloudflare settings, Worker deployment, or Production resources changed.
+
+
+## 7. Guestbook Per-Origin Storage — Implemented on dev (2026-11-21)
+- Commit: see latest dev head after this checkpoint update.
+- Endpoint now derives hostname from validated HTTPS Origin and stores all submissions for that hostname in public/data/{hostname}/bukutamu.json as a JSON array.
+- Dots in hostname are preserved. No client-controlled path or repository selector is accepted.
+- Updates use current Git blob SHA. On 409, the Worker re-reads the latest file and retries with fresh SHA, at most three attempts.
+- Request max: 15 KiB; stored JSON max: 1 MiB. Full file returns 413. Existing legacy files are untouched.
+- Automated tests, syntax checks, and runtime verification: NOT RUN / NOT VERIFIED in this environment. No deployment, secrets, Worker config, Production, or data repository files were changed.
