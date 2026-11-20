@@ -3,6 +3,7 @@ import { githubRouter } from "../modules/github/index.js";
 import { adminLogin } from "../modules/auth/login.js";
 import { error, success } from "../utils/response.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { handlePublicSubmit } from "../modules/public/submit.js";
 
 export const router = async (request, env) => {
   const url = new URL(request.url);
@@ -14,7 +15,13 @@ export const router = async (request, env) => {
     return getHealth(request);
   }
 
-  // 2. Admin Login (Public POST)
+  // Public Submission (Guestbook - Public POST)
+  if (pathname === "/api/v1/public/submit") {
+    if (method !== "POST") return error("Method Not Allowed", 405);
+    return handlePublicSubmit(request, env);
+  }
+
+    // 2. Admin Login (Public POST)
   if (pathname === "/api/v1/admin/login") {
     if (method !== "POST") return error("Method Not Allowed", 405);
     return adminLogin(request, env);
