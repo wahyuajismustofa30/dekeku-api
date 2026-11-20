@@ -17,6 +17,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
   6. Jangan pernah menulis JWT atau kredensial ke console maupun pesan error.
 - **Tes penerimaan**: origin eksternal, HTTP, URL dengan credentials, deceptive hostname/suffix, perubahan base URL, logout, respons 401, dan request publik tidak boleh membawa JWT.
 - **Prioritas**: P0 — selesaikan sebelum Dashboard Tester digunakan untuk operasi admin.
+- **Status (2026-11-21)**: IMPLEMENTED pada kedua salinan Dashboard. API origin dikunci ke `window.location.origin`, remote wajib HTTPS, redirect ditolak, helper publik/admin dipisah, JWT hanya berada di memori sesi, token lama di `localStorage` dibersihkan saat pemuatan, dan sesi dibersihkan pada 401/logout. Perilaku inti diuji dengan isolated JavaScript harness; Node test suite NOT RUN dan deployment NOT VERIFIED.
 
 ## Prioritas P1 — Fungsionalitas Dashboard
 
@@ -24,11 +25,13 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 - **Temuan review**: Dashboard mencari properti `token`, sedangkan kontrak respons login API menggunakan `access_token`.
 - **Rekomendasi**: Gunakan `access_token` sesuai kontrak API; validasi respons sukses dan token non-empty sebelum menyimpan sesi. Tampilkan error yang aman untuk respons invalid, 4xx/5xx, dan kegagalan jaringan.
 - **Tes penerimaan**: login sukses, password salah, respons tanpa token, JSON malformed, HTTP 500, dan network failure.
+- **Status (2026-11-21)**: IMPLEMENTED — Dashboard memakai `access_token`, memvalidasi token non-empty, mengosongkan password field, dan meredaksi token pada log. Pengujian perilaku login sukses dan sesi dilakukan dengan isolated JavaScript harness; skenario server error/network serta Node test suite NOT RUN.
 
 ### R-003. Lengkapi header Guestbook Dashboard
 - **Temuan review**: Request Guestbook dari dashboard tidak menyertakan `Content-Type: application/json`, sedangkan endpoint mengharuskan JSON.
 - **Rekomendasi**: Kirim `Content-Type: application/json` dan `Accept: application/json`; validasi input di UI tanpa menggantikan validasi backend; cegah submit ganda; reset form hanya setelah respons sukses terkonfirmasi.
 - **Tes penerimaan**: payload valid, input kosong/tidak valid, server menolak payload, network failure, dan double-submit.
+- **Status (2026-11-21)**: IMPLEMENTED — Header JSON/Accept, validasi input, guard double-submit, tombol disabled selama request, dan reset hanya pada HTTP 201 dengan `success: true`. Skenario sukses dan double-submit diuji dengan isolated JavaScript harness; skenario gagal dan Node test suite NOT RUN.
 
 ## Prioritas P1 — CORS dan Pengujian
 
