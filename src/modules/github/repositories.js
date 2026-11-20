@@ -35,13 +35,34 @@ const fetchCallerRepositoryConfig = async (origin) => {
       throw new HttpError("Caller repository config is too large", 413);
     }
 
-    const text = await response.text();
-    if (new TextEncoder().encode(text).byteLength > CONFIG_MAX_BYTES) {
-      throw new HttpError("Caller repository config is too large", 413);
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new HttpError("Caller repository config is empty", 422);
+    }
+
+    const chunks = [];
+    let totalBytes = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      totalBytes += value.byteLength;
+      if (totalBytes > CONFIG_MAX_BYTES) {
+        await reader.cancel();
+        throw new HttpError("Caller repository config is too large", 413);
+      }
+      chunks.push(value);
+    }
+
+    const bytes = new Uint8Array(totalBytes);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
     }
 
     let config;
     try {
+      const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
       config = JSON.parse(text);
     } catch {
       throw new HttpError("Caller repository config is invalid JSON", 422);
