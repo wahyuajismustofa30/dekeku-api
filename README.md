@@ -39,6 +39,7 @@ dekeku-api/
 │   │   │   ├── write.js       # Write engine
 │   │   │   └── write-router.js
 │   │   ├── public/            # Public guestbook submission
+│   │   ├── tester/            # Same-origin Tester Dashboard
 │   │   └── health/            # /health endpoint
 │   └── utils/                 # Utilities
 │       ├── jwt.js             # JWT utilities
@@ -102,7 +103,7 @@ dekeku-api/
 
 ## Environment Variables (Dev)
 
-### Secrets (Production)
+### Worker Secrets (configured separately per environment)
 - `GITHUB_TOKEN` - GitHub Personal Access Token (write access to repo)
 - `JWT_SECRET` - JWT signing secret (32 chars or longer)
 - `ADMIN_PASSWORD_HASH` - Hashed admin password (PBKDF2-SHA256)
@@ -146,11 +147,11 @@ npm run test:remote
 
 ## Development Workflow
 
-1. Create branch (if needed): `git checkout -b feature/xyz`
-2. Develop and test: Coding followed by `npm test`
-3. Commit: `git commit -m "feat: description"`
+1. Update the development branch: `git fetch origin && git switch dev && git pull --ff-only origin dev`
+2. Develop and verify: `npm run check && npm test`
+3. Commit the completed work on `dev`: `git commit -m "type: description"`
 4. Push: `git push origin dev`
-5. Create PR: PR `dev` → `main` reviewed by human before merge
+5. Open/update PR `dev` → `main`; a human reviews and merges it.
 
 For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) and [AGENTS.md](AGENTS.md).
 
