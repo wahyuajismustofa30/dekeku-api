@@ -29,6 +29,12 @@
 - [ ] Structured Logging.
 - [ ] API Versioning Strategy.
 
+## Status Implementasi R-001 s/d R-003 (2026-11-21)
+- Source changes telah diterapkan pada `src/modules/tester/index.js` dan `public/tester.html`.
+- Regression test baru ditambahkan pada `test/tester-dashboard.test.js` dan dimasukkan ke script `npm test`.
+- Isolated JavaScript harness terhadap script aktual: PASS untuk same-origin, pemisahan JWT publik/admin, login `access_token`, penanganan 401, JSON Guestbook, dan double-submit.
+- Node test suite (`npm test`): NOT RUN. Deployment Development: NOT VERIFIED. Item backlog tetap terbuka sampai test suite aktual dijalankan.
+
 ## Catatan Status
 - Item yang belum dicentang adalah pekerjaan yang belum dinyatakan selesai.
 - Persetujuan keputusan arsitektur tidak sama dengan bukti konfigurasi runtime telah diterapkan.
