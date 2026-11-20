@@ -66,3 +66,4 @@
 - Phase 2.3: Public Submission & Guestbook (Planned).
 - Commit and push Phase 2.2 changes after user approval.
 - Consider updating legacy github-core tests to match new error mapping.
+- [COMPLETED] Phase 2.2 Deployment to Development Worker (dekeku-api-dev).

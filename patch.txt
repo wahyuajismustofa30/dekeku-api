@@ -1,0 +1,39 @@
+*** Begin Patch
+*** Update File: src/modules/github/write.js
+@@ -10,13 +10,13 @@
+   if (typeof path !== "string" || !path.startsWith("public/data/")) {
+     return { valid: false, status: 403, error: "Access restricted to public/data/ directory" };
+   }
+-  // Normalize: remove potential traversal, absolute, or control chars
+-  const normalized = path.replace(/\\/g, "/");
+-  if (normalized.includes("..") || normalized.includes("//")) {
++  // Strict path validation: no encoding, no backslashes, no traversal
++  if (path.includes("%") || path.includes("\\") || path.includes("..") || path.includes("//")) {
+     return { valid: false, status: 400, error: "Invalid path" };
+   }
+-  if (/[\\x00-\\x1F\\x7F]/.test(normalized)) {
++  if (/[\\x00-\\x1F\\x7F]/.test(path)) {
+     return { valid: false, status: 400, error: "Invalid characters in path" };
+   }
+-  if (!normalized.endsWith(".json")) {
++  if (!path.endsWith(".json")) {
+     return { valid: false, status: 403, error: "Only .json files allowed" };
+   }
+*** Update File: test/write-foundation.test.js
+@@ -23,6 +23,17 @@
+     test("Reject non-json", () => {
+       assert.strictEqual(validateWritablePath("public/data/test.txt").valid, false);
+     });
++    test("Reject encoded path", () => {
++      assert.strictEqual(validateWritablePath("public/data/%2e%2e/test.json").valid, false);
++      assert.strictEqual(validateWritablePath("public/data/%2f/test.json").valid, false);
++    });
++    test("Reject backslash", () => {
++      assert.strictEqual(validateWritablePath("public/data\\test.json").valid, false);
++    });
++    test("Reject characters", () => {
++        assert.strictEqual(validateWritablePath("public/data/test%.json").valid, false);
++    });
+   });
+   describe("Request Parsing & Size Limiting", () => {
+*** End Patch
