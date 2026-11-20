@@ -9,7 +9,7 @@ const ADMIN_PASSWORD = "secure-password";
 let ADMIN_HASH;
 
 describe("Auth Module - B-002 Implementation & Regression", async () => {
-  
+
   // Setup Hash
   ADMIN_HASH = await hashPassword(ADMIN_PASSWORD);
   const env = {
@@ -155,7 +155,7 @@ describe("Auth Module - B-002 Implementation & Regression", async () => {
       const t = now();
       const tokenFuture = await signJwt({ iat: t + 25, exp: t + 1800, sub: "admin" }, JWT_SECRET);
       const tokenExpired = await signJwt({ iat: t - 1800, exp: t - 5, sub: "admin" }, JWT_SECRET);
-      
+
       assert.strictEqual((await verifyJwt(tokenFuture, JWT_SECRET)).valid, true);
       assert.strictEqual((await verifyJwt(tokenExpired, JWT_SECRET)).valid, true);
     });
@@ -181,7 +181,7 @@ describe("Auth Module - B-002 Implementation & Regression", async () => {
       const t = now();
       const payload = { iss: "wrong-iss", aud: "wrong-aud", sub: "admin", role: "user", iat: t, exp: t + 1800 };
       const token = await signJwt(payload, JWT_SECRET);
-      
+
       const resIss = await verifyJwt(token, JWT_SECRET, { iss: "dekeku-api" });
       const resAud = await verifyJwt(token, JWT_SECRET, { aud: "dekeku-admin" });
       const resRole = await verifyJwt(token, JWT_SECRET, { role: "admin" });
@@ -232,7 +232,7 @@ describe("Auth Module - B-002 Implementation & Regression", async () => {
       });
       const testRes = await worker.fetch(testReq, env);
       const testData = await testRes.json();
-      
+
       assert.strictEqual(testRes.status, 200);
       assert.strictEqual(testData.success, true);
     });

@@ -67,8 +67,9 @@ export const handleUpdate = async (request, env) => {
  */
 export const handleDelete = async (request, env) => {
   try {
-    // 1. Content-Type check
-    if (request.headers.get("Content-Type") !== "application/json") {
+    // 1. Content-Type check (allows parameters like ; charset=utf-8)
+    const contentType = request.headers.get("Content-Type") || "";
+    if (!contentType.toLowerCase().startsWith("application/json")) {
       throw new HttpError("Content-Type must be application/json", 415);
     }
 
@@ -89,6 +90,10 @@ export const handleDelete = async (request, env) => {
     const { path, sha, message } = data;
     if (!path || typeof path !== "string") {
       throw new HttpError("Path is required", 400);
+    }
+
+    if (message !== undefined && (typeof message !== "string" || message.length > 256)) {
+      throw new HttpError("Commit message must be a string up to 256 characters", 400);
     }
 
     // 4. Validate writable path

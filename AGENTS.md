@@ -12,15 +12,14 @@ Adhere to the authority and security principles defined in `project/MASTER.md`.
 ## GIT & GITHUB WORKFLOW POLICY
 
 ### A. Fungsi GitHub
-- GitHub berfungsi sebagai backup source code dan riwayat perubahan untuk sementara.
-- GitHub bukan ketergantungan utama runtime aplikasi.
-- GitHub berfungsi sebagai jalur review kode melalui Pull Request (PR) dari branch `dev` ke `main`.
+- GitHub berfungsi sebagai backup source code, riwayat perubahan, dan jalur review kode.
+- GitHub **bukan** ketergantungan runtime tetapi menjadi jalur review melalui Pull Request dari branch `dev` ke `main`.
 - Jangan melakukan sinkronisasi hanya karena ada perubahan kecil.
 
 ### B. Pemeriksaan Git
 - Hindari pemeriksaan Git berulang tanpa kebutuhan.
 - Diizinkan melakukan satu kali `git fetch` dan sinkronisasi branch `dev` di awal tugas yang akan mengubah source code.
-- Jika branch `dev` tertinggal atau menyimpang dari `main` (misalnya setelah squash merge di GitHub), sinkronkan dengan melakukan merge `origin/main` ke `dev`. Jangan menggunakan `rebase` atau `force-push`. Selesaikan konflik hanya jika sepele; jika tidak sepele, hentikan dan laporkan tanpa menebak.
+- Jika branch `dev` tertinggal atau menyimpang dari `main` (misalnya setelah squash merge di GitHub), sinkronkan dengan melakukan merge `origin/main` ke `dev`. Jangan menggunakan `rebase` atau `force-push`. Selesaikan konflik hanya jika sepele; jika tidak sepele, berhenti dan laporkan tanpa menebak.
 - Lakukan pemeriksaan ulang ketika pekerjaan siap di-commit.
 - Jangan menjalankan pemeriksaan remote atau pemeriksaan riwayat commit secara rutin jika tidak diperlukan.
 - Jangan melakukan audit Git menyeluruh untuk pekerjaan dokumentasi sederhana.
@@ -43,7 +42,7 @@ Ketika pekerjaan sudah matang:
 3. Pastikan hanya file relevan yang disertakan.
 4. Buat commit dengan pesan yang jelas.
 5. Seluruh commit dan push hanya dilakukan ke branch `dev`. Jika branch `dev` lokal belum ada, buat dari `origin/main`. Pembuatan branch `dev` ini diizinkan tanpa persetujuan tambahan.
-6. Push ke `origin/dev` diizinkan apabila kriteria di Bagian C terpenuhi dan seluruh pengujian lulus (tidak ada tes baru yang gagal).
+6. Push ke `origin/dev` diizinkan setelah kriteria di Bagian C terpenuhi dan tes lulus (tidak ada tes baru yang gagal).
 7. Setelah push, pastikan terdapat Pull Request (PR) dari `dev` ke `main`:
    - Jika PR terbuka sudah ada: cukup push ke `dev` dan berikan komentar ringkas pada PR tersebut.
    - Jika PR belum ada: buat PR baru dengan deskripsi berisi ringkasan perubahan, daftar file yang diubah, hasil tes aktual (jumlah pass/fail/skip), risiko teknis, dan hal-hal yang tidak dapat diverifikasi.

@@ -37,7 +37,7 @@ function setupMockFetch() {
   const mockFetch = mock.fn(async (url, options) => {
     const method = options?.method || "GET";
     const path = url.split("repos/mock-owner/mock-repo/")[1] || "";
-    
+
     // GitHub Contents API responses
     if (method === "PUT" && path.startsWith("contents/")) {
       return mockResponse(200, {
@@ -50,7 +50,7 @@ function setupMockFetch() {
         commit: { sha: "commitsha1234567890123456789012345678901234567890" }
       });
     }
-    
+
     // GET file - return proper file response
     if (method === "GET" && path.startsWith("contents/")) {
       return mockResponse(200, {
@@ -62,7 +62,7 @@ function setupMockFetch() {
         encoding: "base64"
       });
     }
-    
+
     // GET branch/repository
     if (method === "GET" && path === "branches/main") {
       return mockResponse(200, { name: "main", commit: { sha: "abc" }, protected: true });
@@ -70,11 +70,11 @@ function setupMockFetch() {
     if (method === "GET" && path === "") {
       return mockResponse(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", html_url: "https://github.com/mock-owner/mock-repo", default_branch: "main", visibility: "private" });
     }
-    
+
     // Default: token validation etc
     return mockResponse(200, {});
   });
-  
+
   globalThis.fetch = mockFetch;
   return mockFetch;
 }
@@ -99,7 +99,7 @@ describe("Write Engine - Router Integration Tests", () => {
     const { hashPassword } = await import("../src/utils/hash.js");
     ADMIN_HASH = await hashPassword(ADMIN_PASSWORD);
   });
-  
+
   after(restoreFetch);
 
   describe("POST /api/v1/admin/write/create", () => {
@@ -124,7 +124,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
         body: JSON.stringify({
@@ -132,21 +132,21 @@ describe("Write Engine - Router Integration Tests", () => {
           content: { title: "Test", data: [1, 2, 3] },
           message: "Create new file"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       const data = await res.json();
-      
+
       assert.strictEqual(res.status, 200);
       assert.strictEqual(data.success, true);
       assert.strictEqual(data.path, "public/data/new.json");
       assert.ok(data.sha);
       assert.strictEqual(data.message, "File created successfully");
-      
+
       // Verify GitHub API was called with correct params
       const calls = mockFetch.mock.calls;
       assert.ok(calls.length > 0);
@@ -156,7 +156,7 @@ describe("Write Engine - Router Integration Tests", () => {
       assert.ok(!body.sha); // CREATE should not have SHA
       assert.ok(body.content); // Base64 content
       assert.ok(body.branch);
-      
+
       restoreFetch();
     });
 
@@ -164,7 +164,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
         body: JSON.stringify({
@@ -172,17 +172,17 @@ describe("Write Engine - Router Integration Tests", () => {
           content: { key: "value" },
           message: "Create test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 403);
       const data = await res.json();
       assert.strictEqual(data.success, false);
-      
+
       restoreFetch();
     });
 
@@ -190,7 +190,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
         body: JSON.stringify({
@@ -198,15 +198,15 @@ describe("Write Engine - Router Integration Tests", () => {
           content: { key: "value" },
           message: "Create test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 403);
-      
+
       restoreFetch();
     });
 
@@ -214,7 +214,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
         body: JSON.stringify({
@@ -222,15 +222,15 @@ describe("Write Engine - Router Integration Tests", () => {
           content: { key: "value" },
           message: "Create test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 400);
-      
+
       restoreFetch();
     });
 
@@ -238,7 +238,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const largeContent = { data: "x".repeat(1100000) };
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
@@ -247,15 +247,15 @@ describe("Write Engine - Router Integration Tests", () => {
           content: largeContent,
           message: "Create large file"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 413);
-      
+
       restoreFetch();
     });
 
@@ -263,22 +263,22 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       // Create request with invalid UTF-8 bytes
       const invalidUtf8 = new Uint8Array([0xFF, 0xFE, 0xFD]);
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
         body: invalidUtf8,
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       // Should be 422 for invalid UTF-8
       assert.strictEqual(res.status, 422);
-      
+
       restoreFetch();
     });
   });
@@ -304,7 +304,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/update", {
         method: "PUT",
         body: JSON.stringify({
@@ -312,17 +312,17 @@ describe("Write Engine - Router Integration Tests", () => {
           content: { key: "updated" },
           message: "Update test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 400);
       const data = await res.json();
       assert.ok(data.error.includes("SHA"));
-      
+
       restoreFetch();
     });
 
@@ -330,7 +330,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/update", {
         method: "PUT",
         body: JSON.stringify({
@@ -339,28 +339,28 @@ describe("Write Engine - Router Integration Tests", () => {
           sha: "a".repeat(40),
           message: "Update file"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       const data = await res.json();
-      
+
       assert.strictEqual(res.status, 200);
       assert.strictEqual(data.success, true);
       assert.strictEqual(data.path, "public/data/test.json");
       assert.ok(data.sha);
       assert.strictEqual(data.message, "File updated successfully");
-      
+
       // Verify GitHub API was called with correct params including SHA
       const calls = mockFetch.mock.calls;
       assert.ok(calls.length > 0);
       const call = calls[0];
       const body = JSON.parse(call.arguments[1].body);
       assert.strictEqual(body.sha, "a".repeat(40));
-      
+
       restoreFetch();
     });
 
@@ -368,7 +368,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/update", {
         method: "PUT",
         body: JSON.stringify({
@@ -377,15 +377,15 @@ describe("Write Engine - Router Integration Tests", () => {
           sha: "invalid-sha",
           message: "Update test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 400);
-      
+
       restoreFetch();
     });
 
@@ -393,7 +393,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/update", {
         method: "PUT",
         body: JSON.stringify({
@@ -402,15 +402,15 @@ describe("Write Engine - Router Integration Tests", () => {
           sha: "a".repeat(40),
           message: "Update test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 403);
-      
+
       restoreFetch();
     });
   });
@@ -435,24 +435,24 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/delete", {
         method: "DELETE",
         body: JSON.stringify({
           path: "public/data/test.json",
           message: "Delete test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 400);
       const data = await res.json();
       assert.ok(data.error.includes("SHA"));
-      
+
       restoreFetch();
     });
 
@@ -460,7 +460,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/delete", {
         method: "DELETE",
         body: JSON.stringify({
@@ -468,21 +468,21 @@ describe("Write Engine - Router Integration Tests", () => {
           sha: "b".repeat(40),
           message: "Delete file"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       const data = await res.json();
-      
+
       assert.strictEqual(res.status, 200);
       assert.strictEqual(data.success, true);
       assert.strictEqual(data.path, "public/data/test.json");
       assert.ok(data.sha);
       assert.strictEqual(data.message, "File deleted successfully");
-      
+
       // Verify GitHub API was called with correct params including SHA
       const calls = mockFetch.mock.calls;
       assert.ok(calls.length > 0);
@@ -491,7 +491,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const body = JSON.parse(call.arguments[1].body);
       assert.strictEqual(body.sha, "b".repeat(40));
       assert.ok(!body.content); // DELETE should not have content
-      
+
       restoreFetch();
     });
 
@@ -499,7 +499,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/delete", {
         method: "DELETE",
         body: JSON.stringify({
@@ -507,15 +507,15 @@ describe("Write Engine - Router Integration Tests", () => {
           sha: "not-valid-sha",
           message: "Delete test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 400);
-      
+
       restoreFetch();
     });
 
@@ -523,7 +523,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/delete", {
         method: "DELETE",
         body: JSON.stringify({
@@ -531,15 +531,15 @@ describe("Write Engine - Router Integration Tests", () => {
           sha: "a".repeat(40),
           message: "Delete test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 403);
-      
+
       restoreFetch();
     });
   });
@@ -554,21 +554,21 @@ describe("Write Engine - Router Integration Tests", () => {
     test("GET /api/v1/github/file requires no auth", async () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
-      
+
       const req = new Request("http://api/api/v1/github/file?path=public/config.json");
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 200);
-      
+
       restoreFetch();
     });
 
     test("GET /api/v1/github/repository is public", async () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
-      
+
       const res = await worker.fetch(new Request("http://api/api/v1/github/repository"), env);
       assert.strictEqual(res.status, 200);
-      
+
       restoreFetch();
     });
 
@@ -588,10 +588,10 @@ describe("Write Engine - Router Integration Tests", () => {
     test("Error responses don't contain GitHub token", async () => {
       const mockFetch = mock.fn(() => mockResponse(401, { message: "Bad credentials" }));
       globalThis.fetch = mockFetch;
-      
+
       const env = createEnv();
       const token = await getAuthToken(env);
-      
+
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
         body: JSON.stringify({
@@ -599,17 +599,17 @@ describe("Write Engine - Router Integration Tests", () => {
           content: { key: "value" },
           message: "test"
         }),
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       const res = await worker.fetch(req, env);
       const data = await res.json();
-      
+
       assert.ok(!JSON.stringify(data).includes("mock-github-token"));
-      
+
       restoreFetch();
     });
   });

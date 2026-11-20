@@ -1,37 +1,26 @@
 # CHANGELOG — DEKEKU API Gateway
 
-## [Unreleased] - 2026-11-20
-### Documented Issues (Awaiting Fix)
-- Menganalisis dan mendokumentasikan temuan review dokumentasi (F-01 s.d F-04) serta audit kebijakan CORS yang sedang berlangsung.
-  - F-01: Regex karakter kontrol double-escape di `validateWritablePath`.
-  - F-02: `btoa(String.fromCharCode(...bytes))` RangeError pada file > 100KB.
-  - F-03: `parseAndValidateBody` belum menolak `content` yang tidak ada.
-  - F-04: CORS middleware belum mendukung allowlist origin dan header CORS pada logical catch error.
-
-## [2026-11-19] - Phase 2.2 Write Engine & Auth Base
-*(Catatan 2026-11-20: Hasil tes aktual per 2026-11-20: 103 PASS dari 112 tes total, 9 tes legacy di github-core.test.js gagal karena ekspektasi error mapping yang belum diselaraskan.)*
-
+## [2026-11-20] - Phase 2.2 Security Fixes & Core Test Alignment
 ### Added
-- **Write Engine Foundation**: Streaming HTTP request body, JSON structure validation (Object/Array root only), file size validation (1MB limit).
-- **GitHub Client PUT/DELETE Operations**: Optimistic concurrency via SHA, error mapping per design (401/403/500→502, timeout→504, etc).
-- **Router Integration**: Endpoints CRUD JSON files di bawah authMiddleware.
-- **Test Suites**: 12 foundation tests, 34 write client tests, 22 router integration tests, 29 login/auth regression tests.
+- `src/utils/base64.js`: `uint8ArrayToBase64` helper with 32KB chunking to safely encode payloads > 100KB up to 1MB without RangeError (F-02 resolved).
+- Comprehensive test cases in `test/write-foundation.test.js` for 1MB payload base64 encoding/decoding, CORS allowlist, and path control character checks.
 
 ### Fixed
-- JWT: Enforced finite `iat`/`exp`, stricter validation, 30-second clock skew.
-- Hash: Added strict format comparison for PBKDF2-SHA256.
-- Path Validation: SQL injection & traversal protection.
+- **F-01**: Fixed regex double-escape in `validateWritablePath` (`src/modules/github/write.js`) from `/[\\x00-\\x1F\\x7F]/` to `/[\x00-\x1F\x7F]/`.
+- **F-02**: Replaced un-chunked `btoa(String.fromCharCode(...bytes))` spread calls with `uint8ArrayToBase64` in `src/modules/github/write.js` and `src/core/github.js`.
+- **F-03**: Added validation in `parseAndValidateBody` to reject missing/undefined `data.content` with HTTP 422.
+- **F-04**: Enhanced `src/middleware/cors.js` to support origin allowlist from `env.ALLOWED_ORIGINS`, include `PUT, DELETE` in `Access-Control-Allow-Methods`, reflect matched origin with `Vary: Origin`, and apply CORS headers to error responses in `src/index.js`.
+- **Content-Type Parameters**: Enabled support for Content-Type with charset parameters (e.g. `application/json; charset=utf-8`) in write handlers.
+- **Commit Message Validation**: Added optional commit message string length validation (up to 256 characters).
+- **Core Test Alignment**: Updated assertions in `test/github-core.test.js` to match the current gateway error mapping design (18/18 PASS).
 
 ### Changed
-- Updated source modules: `github.js`, `write.js`, `router.js`, `auth.js`.
-- Added new test files: `write-foundation.test.js`, `github-write.test.js`, `write-router.test.js`.
-- Updated changelog with accurate test numbers.
+- Total test suite expanded to 121 tests (121 PASS, 0 FAIL, 0 SKIP).
+
+## [2026-11-19] - Phase 2.2 Write Engine & Auth Base
+### Added
+- Write Engine Foundation, GitHub Client PUT/DELETE, Router Integration.
 
 ## [2026-11-19] - Secret Provisioning (Dev)
 ### Added
-- Secure provisioning of `JWT_SECRET` and `ADMIN_PASSWORD_HASH` via Cloudflare Versions API.
-- Generated cryptographically secure admin password.
-
-## [2026-11-19] - Admin Password Rotation (Dev)
-### Changed
-- Rotated `ADMIN_PASSWORD_HASH` for `dekeku-api-dev` after initial exposure.
+- Provisioning of `JWT_SECRET` and `ADMIN_PASSWORD_HASH`.

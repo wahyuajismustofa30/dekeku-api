@@ -17,7 +17,7 @@ Menjadi infrastruktur backend "serverless" yang handal untuk mengelola seluruh a
 - **Runtime**: Cloudflare Workers (Edge Computing).
 - **Storage**: GitHub Private Repository (API-driven).
 - **Komunikasi**: REST API (JSON).
-- **Security**: 
+- **Security**:
   - Public Access Policy untuk pembacaan publik.
   - JWT Authentication untuk operasi administratif.
   - Cloudflare Secrets untuk kredensial.

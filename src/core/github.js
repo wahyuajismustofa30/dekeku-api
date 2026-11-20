@@ -1,5 +1,6 @@
 import { HttpError } from "./errors.js";
 import { validatePublicPath } from "../utils/github-content.js";
+import { uint8ArrayToBase64 } from "../utils/base64.js";
 
 const SHA_REGEX = /^[0-9a-fA-F]{40}$/;
 
@@ -215,10 +216,8 @@ export class GitHubClient {
     // Validate SHA
     this.validateSha(sha);
 
-    // Encode content to Base64
-    const encoder = new TextEncoder();
-    const contentBytes = encoder.encode(content);
-    const base64Content = btoa(String.fromCharCode(...contentBytes));
+    // Encode content to Base64 in chunks
+    const base64Content = uint8ArrayToBase64(content);
 
     // Prepare request body
     const body = {
