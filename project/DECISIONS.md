@@ -13,5 +13,5 @@
 | **D-009** | Production Protection | Keamanan live service. | Worker `github` (`api.dekeku.my.id`) tidak boleh diubah tanpa izin eksplisit. |
 | **D-010** | Change Authority | Tata kelola proyek. | Perubahan tujuan, arsitektur, dan roadmap membutuhkan persetujuan Wahyu. |
 | **D-011** | Git Workflow Policy | Tata kelola perubahan kode & PR review. | **ACCEPTED** (Ditetapkan Wahyu): Semua commit pengembangan dilakukan pada branch `dev`, push ke `origin/dev`, dan penggabungan ke `main` melalui Pull Request (PR) dev -> main yang ditinjau dan digabungkan oleh manusia. |
-| **D-012** | CORS Policy | Keamanan akses cross-origin. | **PROPOSED** (Menunggu persetujuan Wahyu): Kebijakan deny-by-default dengan allowlist origin terkonfigurasi melalui environment variable `ALLOWED_ORIGINS` (dipisahkan koma), tanpa wildcard. |
+| **D-012** | CORS Policy | Keamanan akses cross-origin. | **APPROVED** (Disetujui Wahyu): Kebijakan deny-by-default dengan allowlist origin terkonfigurasi melalui environment variable `ALLOWED_ORIGINS` (mendukung domain eksak dan wildcard subdomain seperti `*.artoprintingpbg.com`, `*.dekeku.my.id`). |
 | **D-013** | Login Abuse Protection | Mitigasi brute force pada admin login. | **PROPOSED** (Menunggu persetujuan Wahyu): Rate limiting berbasis IP menggunakan Cloudflare WAF, bukan account lockout di tingkat aplikasi. |
