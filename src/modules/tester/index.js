@@ -185,7 +185,7 @@ export const getTesterPage = (request, env) => {
                 typeof safeMessage === 'object' ? JSON.stringify(safeMessage, null, 2) : String(safeMessage);
         }
 
-        async function apiRequest(path, options = {}) {
+        async function performRequest(path, options = {}) {
             let url;
             try {
                 url = getApiUrl(path);
@@ -223,6 +223,12 @@ export const getTesterPage = (request, env) => {
             }
         }
 
+        async function apiRequest(path, options = {}) {
+            const headers = new Headers(options.headers || {});
+            headers.delete('Authorization');
+            return performRequest(path, { ...options, headers });
+        }
+
         async function adminRequest(path, options = {}) {
             if (!jwtToken) {
                 log('Silakan login admin terlebih dahulu.', 'AUTH REQUIRED');
@@ -230,7 +236,7 @@ export const getTesterPage = (request, env) => {
             }
             const headers = new Headers(options.headers || {});
             headers.set('Authorization', 'Bearer ' + jwtToken);
-            return apiRequest(path, { ...options, headers });
+            return performRequest(path, { ...options, headers });
         }
 
         function testApi(path) {
