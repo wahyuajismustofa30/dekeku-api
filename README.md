@@ -7,11 +7,13 @@ Cloudflare Workers-based API gateway that centrally mediates access to GitHub pr
 DEKEKU API Gateway adalah layanan backend for website/app untuk:
 - **Membaca** data JSON di direktori `public/` - Gratis (no API key).
 - **Menulis** data JSON di direktori `public/data/` - Wajib login admin (JWT).
+- **Mengirim** guestbook publik via `POST /api/v1/public/submit` - Tanpa auth admin, concurrent-safe.
 - **Mengelola** repository GitHub menggunakan Contents API.
 
 ## Fitur
 
 - ✅ Public read access: GET data tanpa authenticated request.
+- ✅ Public guestbook submission: POST pesan guestbook publik ke `public/data/guestbook/`.
 - ✅ Admin write access: POST/PUT/DELETE data via JWT auth.
 - ✅ GitHub integration: Operasi performed through GitHub Contents API.
 - ✅ Optimistic concurrency: SHA-based conflict control on write operations.
@@ -34,8 +36,9 @@ dekeku-api/
 │   │   ├── github/            # File & repo handlers
 │   │   │   ├── files.js       # Public file GET
 │   │   │   ├── repositories.js
-│   │   │   ├── write.js       # Write engine (build phase IN PROGRESS)
+│   │   │   ├── write.js       # Write engine
 │   │   │   └── write-router.js
+│   │   ├── public/            # Public guestbook submission
 │   │   └── health/            # /health endpoint
 │   └── utils/                 # Utilities
 │       ├── jwt.js             # JWT utilities
@@ -43,11 +46,12 @@ dekeku-api/
 │       ├── response.js        # JSON response formatter
 │       └── github-content.js  # GitHub content processing
 ├── test/                      # Test suites
-│   ├── auth.test.js           # Login & JWT tests
-│   ├── write-foundation.test.js
-│   ├── github-write.test.js
-│   ├── write-router.test.js
-│   └── github-core.test.js
+│   ├── auth.test.js
+│   ├── public-access.test.js
+│   ├── github-client.test.js
+│   ├── write-engine.test.js
+│   ├── public-submission.test.js
+│   └── security-edge-cases.test.js
 ├── project/                    # Project documentation
 │   ├── MASTER.md              # Core rules & authority
 │   ├── PROGRESS.md            # Feature status (authoritative)
@@ -57,7 +61,8 @@ dekeku-api/
 │   ├── CHECKPOINT.md          # Operational checkpoint
 │   └── CHANGELOG.md           # History of changes
 ├── docs/
-│   └── architecture.md        # Architecture documentation
+│   ├── architecture.md        # Architecture documentation
+│   └── USAGE.md               # Usage guide
 ├── package.json               # Dependencies & scripts
 ├── wrangler.jsonc             # Cloudflare Workers config
 ├── AGENTS.md                  # Git workflow (dev + PR)
@@ -75,6 +80,7 @@ dekeku-api/
 | GET | `/api/v1/github/repository` | Repository metadata |
 | GET | `/api/v1/github/branch` | Branch metadata |
 | GET | `/api/v1/github/file?path=...` | Read JSON file from public/ |
+| POST | `/api/v1/public/submit` | Submit public guestbook entry |
 
 ### Admin Write (Require Admin JWT)
 
@@ -117,29 +123,23 @@ npm run dev
 # Validate source code syntax
 npm run check
 
-# Build for production (optional, for Fleet)
+# Build for production
 npm run build
 \`\`\`
-
-Development server runs in watch mode via Cloudflare Workers Dev.
 
 ## Testing
 
 \`\`\`bash
 # Run full test suite
-npm test
-
-# Run specific test files
-npm test test/auth.test.js
-npm test test/github-write.test.js
+node --test test/*.test.js
 \`\`\`
 
-Current test results: 103 PASS from 112 total tests (as of 2026-11-20).
+Current test results: 126 PASS / 0 FAIL (126 total tests across 6 test suites).
 
 ## Development Workflow
 
 1. Create branch (if needed): `git checkout -b feature/xyz`
-2. Develop and test: Coding followed by `npm test`
+2. Develop and test: Coding followed by `node --test test/*.test.js`
 3. Commit: `git commit -m "feat: description"`
 4. Push: `git push origin dev`
 5. Create PR: PR `dev` → `main` reviewed by human before merge
@@ -158,11 +158,11 @@ For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) a
 - **Project Rules**: [project/MASTER.md](project/MASTER.md)
 - **Feature Status**: [project/PROGRESS.md](project/PROGRESS.md) (authoritative, single source of truth)
 - **Architecture**: [docs/architecture.md](docs/architecture.md)
+- **Usage Guide**: [docs/USAGE.md](docs/USAGE.md)
 - **Roadmap**: [project/ROADMAP.md](project/ROADMAP.md)
 - **Decisions**: [project/DECISIONS.md](project/DECISIONS.md)
 - **Change History**: [project/CHANGELOG.md](project/CHANGELOG.md)
-- **Myself Guidance**: [AGENTS.md](AGENTS.md)
-- **Review Context**: [project/CLAUDE_PROJECT_CONTEXT.md](project/CLAUDE_PROJECT_CONTEXT.md)
+- **Reviewer Context**: [project/CLAUDE_PROJECT_CONTEXT.md](project/CLAUDE_PROJECT_CONTEXT.md)
 
 ## License
 
