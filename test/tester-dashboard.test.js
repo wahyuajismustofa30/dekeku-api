@@ -42,7 +42,8 @@ describe("Tester Dashboard security and request contract", () => {
       const adminHelper = script.match(/async function adminRequest\([\s\S]*?\n        }/);
       assert.ok(publicHelper);
       assert.ok(adminHelper);
-      assert.doesNotMatch(publicHelper[0], /Authorization|jwtToken/);
+      assert.doesNotMatch(publicHelper[0], /jwtToken/);
+      assert.match(publicHelper[0], /headers.delete\\('Authorization'\\)/);
       assert.match(adminHelper[0], /Authorization/);
       assert.match(script, /if \(response\.status === 401\) clearToken\(\)/);
       assert.match(script, /function clearToken\(\)/);
