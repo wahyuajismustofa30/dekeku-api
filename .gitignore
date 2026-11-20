@@ -2,3 +2,8 @@ node_modules
 .wrangler
 .dev.vars
 .dev.vars.*
+
+# Environment files and examples
+env.example
+.env
+.env.*
