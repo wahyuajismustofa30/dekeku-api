@@ -24,4 +24,4 @@ Status: TESTER DASHBOARD DEPLOYED — BRANCH DEV ACTIVE
 ## 4. Langkah Berikutnya
 1. Akses dashboard tester melalui URL development worker.
 2. Lakukan pengujian end-to-end melalui UI dashboard.
-3. Review PR #9 atau buat PR baru jika diperlukan untuk sinkronisasi main.
+3. Review Pull Request #12 dari dev ke main.
