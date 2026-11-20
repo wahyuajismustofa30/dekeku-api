@@ -1,6 +1,11 @@
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
+### Documentation & Verification Update
+- Sinkronisasi `PROGRESS.md`, `CHECKPOINT.md`, `BACKLOG.md`, `RECOMMENDATIONS.md`, `ROADMAP.md`, dan `README.md`.
+- Mencatat `npm run check`: PASS dan `npm test`: 149 PASS, 0 FAIL, 0 SKIP berdasarkan laporan pengguna pada 2026-11-21 untuk branch `dev`, commit `a6a089d`; hasil tidak diklaim sebagai eksekusi independen sesi dokumentasi.
+- R-001 s/d R-005 ditandai selesai pada sisi implementasi; R-006 WAF dan R-007 audit logging tetap terbuka.
+- Remote test tetap NOT RUN; Development runtime/deployment tetap NOT VERIFIED.
 ### Fixed
 - CORS: memvalidasi origin melalui URL parser; hanya HTTPS tanpa port non-default, credentials, path/query/fragment, atau malformed origin. Wildcard hanya menerima subdomain, bukan apex; `Vary: Origin` selalu disetel untuk request dengan Origin.
 - Test isolation: menambahkan pemulihan global fetch melalui `afterEach` pada `github-core`, `security-edge-cases`, dan `live-remote`; mock remote simulation memakai `try/finally`.
@@ -16,7 +21,7 @@
 ### Verification
 - Isolated JavaScript harness terhadap script Dashboard aktual: PASS untuk origin binding, JWT scoping, login token handling, 401 cleanup, dan Guestbook double-submit/success flow.
 - Isolated CORS harness: PASS untuk exact origin, wildcard subdomain, apex exclusion, dan 9 kelas origin yang ditolak.
-- Syntax parsing untuk test files terkait: PASS. Node test suite (`npm test`): NOT RUN; remote test: NOT RUN; Development deployment: NOT VERIFIED.
+- `npm run check`: PASS dan `npm test`: 149 PASS, 0 FAIL, 0 SKIP berdasarkan laporan pengguna (21-11-2026, branch `dev`, commit `a6a089d`). Remote test: NOT RUN; Development deployment/runtime: NOT VERIFIED.
 
 ### Added
 - Dokumentasi rekomendasi hasil review pada `project/RECOMMENDATIONS.md`:
