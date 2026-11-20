@@ -36,6 +36,13 @@ Tanggal Pembaruan: 2026-11-21
 - Isolated JavaScript harness terhadap script aktual: PASS untuk same-origin, JWT scoping, login, 401, dan alur Guestbook.
 - Node test suite (`npm test`): NOT RUN. Development deployment: NOT VERIFIED. Hasil historis 140/140 tidak dianggap sebagai verifikasi untuk commit saat ini.
 
+## Security Review Remediation (2026-11-21)
+- **R-001 s/d R-003 — IMPLEMENTED**: Tester Dashboard same-origin JWT boundary, `access_token` contract, dan Guestbook JSON/double-submit behavior. Isolated JavaScript harness PASS.
+- **R-004 — IMPLEMENTED**: strict HTTPS origin parsing, exact/wildcard hostname validation, wildcard apex exclusion, port/credentials/path rejection, dan `Vary: Origin` untuk request ber-Origin. CORS isolated harness PASS.
+- **R-005 — IMPLEMENTED**: `npm test` berisi daftar suite lokal eksplisit dan mengecualikan remote test; `npm run test:remote` menjalankan remote suite secara eksplisit. Mock `global.fetch` dipulihkan dengan `afterEach`/`finally`.
+- `test/tester-dashboard.test.js` dan `test/cors-policy.test.js` ditambahkan ke suite lokal.
+- Syntax parsing test files terkait: PASS. Full Node suite (`npm test`): NOT RUN. Remote suite: NOT RUN. Deployment Development: NOT VERIFIED.
+
 ## Perbaikan Temuan Keamanan & Error Mapping (2026-11-20)
 1. **F-01 (Regex Escape)**: Diperbaiki ke `/[\x00-\x1F\x7F]/` di `src/modules/github/write.js`.
 2. **F-02 (Base64 Large Files)**: Helper `uint8ArrayToBase64` ditambahkan di `src/utils/base64.js` dengan chunking 32KB.
