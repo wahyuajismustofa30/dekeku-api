@@ -62,7 +62,7 @@ describe("Caller repository metadata", () => {
 
     assert.equal(response.status, 200);
     assert.equal(body.success, true);
-    assert.equal(body.data.name, "wahyuajismustofa30/demo");
+    assert.equal(body.name, "wahyuajismustofa30/demo");
     assert.equal(calls.length, 2);
     assert.equal(calls[0].options.redirect, "error");
     assert.equal(calls[0].options.credentials, "omit");
@@ -127,7 +127,13 @@ describe("Caller repository metadata", () => {
       calls += 1;
       return calls === 1
         ? configResponse()
-        : githubResponse(200, { ...JSON.parse(await (async () => '"{}"')()), visibility: "private" });
+        : githubResponse(200, {
+            full_name: "wahyuajismustofa30/demo",
+            description: "Demo repository",
+            html_url: "https://github.com/wahyuajismustofa30/demo",
+            default_branch: "main",
+            visibility: "private"
+          });
     };
 
     const response = await worker.fetch(request(), env);
