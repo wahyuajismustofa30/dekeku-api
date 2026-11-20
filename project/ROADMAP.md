@@ -21,3 +21,8 @@
 - **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman tanpa auth admin.
 - **Ruang Lingkup**: Endpoint `POST /api/v1/public/submit`, validasi payload (name, message), penyimpanan concurrent-safe ke `public/data/guestbook/`, CORS wildcard (`*.artoprintingpbg.com`, `*.dekeku.my.id`).
 - **Status**: COMPLETED & VERIFIED (126/126 PASS).
+
+## Phase 3: Monitoring & Optimization (Future)
+- Monitoring logs & error tracking.
+- Performance optimization (Worker latency).
+- Documentation refinement.
