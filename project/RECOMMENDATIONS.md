@@ -44,6 +44,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
   4. Tolak HTTP jika kebijakan hanya mengizinkan HTTPS, serta tolak deceptive suffix seperti `evil-dekeku.my.id` dan `dekeku.my.id.evil.com`.
   5. Pastikan preflight dan respons error mengikuti kebijakan yang sama.
 - **Tes penerimaan**: exact origin, subdomain valid, root domain, deceptive suffix, HTTP/HTTPS, port, malformed origin, dan preflight.
+- **Status (2026-11-21)**: IMPLEMENTED — origin diparse dengan URL parser, hanya HTTPS default-port, menolak credentials/path/query/fragment/malformed origin, wildcard hanya menerima subdomain (apex harus di-allowlist secara eksplisit), dan `Vary: Origin` diberikan pada seluruh respons dengan Origin. Regression tests ditambahkan; isolated harness PASS untuk exact/subdomain dan 9 kelas origin yang ditolak. Node test suite NOT RUN.
 
 ### R-005. Pisahkan test lokal dan test remote
 - **Temuan review**: Panduan `docs/USAGE.md` menggunakan pola `node --test test/*.test.js` yang berisiko menyertakan `test/live-remote.test.js`. Tes remote dapat menulis data ke Development Worker aktif.
@@ -54,6 +55,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
   4. Pastikan mock global seperti `global.fetch` dipulihkan dalam blok `finally`.
   5. Gunakan fixture dan data uji yang tidak memuat secret.
 - **Tes penerimaan**: verifikasi daftar file yang dijalankan oleh setiap script, pastikan test default tidak mengakses Worker, dan pastikan remote test hanya berjalan melalui perintah eksplisit.
+- **Status (2026-11-21)**: IMPLEMENTED — `npm test` mencantumkan suite lokal secara eksplisit dan mengecualikan `test/live-remote.test.js`; `npm run test:remote` menjadi pemicu eksplisit untuk remote Development tests. `github-core`, `security-edge-cases`, dan `live-remote` memulihkan global fetch melalui `afterEach`; simulasi live-remote juga memakai `try/finally`. Syntax check file terkait PASS; suite Node.js NOT RUN. Remote tests tidak dijalankan.
 
 ## Prioritas P1/P2 — Proteksi Abuse dan Observabilitas
 
