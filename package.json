@@ -8,7 +8,7 @@
     "dev": "wrangler dev",
     "check": "node --check src/index.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "wrangler": "^4.165.0"
   }
 }
