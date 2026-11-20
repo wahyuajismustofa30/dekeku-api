@@ -46,5 +46,5 @@ Pengujian dijalankan secara otomatis menggunakan Node.js test runner pada seluru
 - **Public Policy & Resilience (`test/github-core.test.js`)**: 18/18 PASS.
 
 ## Next Steps
-- [x] Dashboard Tester HTML (/public/tester.html) implemented and audited.
+- [x] Dashboard Tester HTML served at / and /tester (VERIFIED).
 - Mempersiapkan integrasi frontend statis dengan endpoint publik `POST /api/v1/public/submit`.
