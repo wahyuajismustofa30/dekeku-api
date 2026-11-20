@@ -4,7 +4,7 @@ Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
 - **Fase Aktif**: Phase 2.3 (Public Submission & Guestbook) — COMPLETED & VERIFIED.
-- **Status Keseluruhan**: Public Submission (`POST /api/v1/public/submit`), Wildcard CORS (`*.artoprintingpbg.com`, `*.dekeku.my.id`), Write Engine, dan seluruh pengujian (140 tes) LULUS 100%.
+- **Status Keseluruhan**: Public Submission (`POST /api/v1/public/submit`), Wildcard CORS (`*.artoprintingpbg.com`, `*.dekeku.my.id`), dan Write Engine tercatat selesai. Klaim historis 140/140 PASS belum dijalankan ulang pada checkpoint ini; lihat status pengujian aktual di bawah.
 - **Acuan Utama**: Dokumen ini adalah satu-satunya sumber status terpusat (*single source of truth*) untuk seluruh progres fitur proyek.
 
 ## Daftar Fitur & Status
@@ -27,6 +27,14 @@ Tanggal Pembaruan: 2026-11-21
 | **Write** | Base64 Chunked Encoding | COMPLETED | `src/utils/base64.js` meng-encode payload 1MB per-chunk tanpa RangeError (F-02 fixed). |
 | **Write** | GitHub Client PUT/DELETE | COMPLETED | Validasi SHA, error mapping, concurrency OK. Header `Retry-After` dikirim jika tersedia dari GitHub API. |
 | **Write** | Router Integration | COMPLETED | Endpoints CREATE/UPDATE/DELETE terpasang di bawah authMiddleware. |
+
+## Tester Dashboard Hardening (2026-11-21)
+- **R-001 — IMPLEMENTED**: API target dikunci ke same-origin, HTTPS diwajibkan untuk remote, redirect ditolak, helper publik/admin dipisah, JWT hanya di memori, legacy localStorage token dibersihkan saat load, dan 401/logout menghapus sesi.
+- **R-002 — IMPLEMENTED**: Login memakai `access_token`, validasi token non-empty, password field dibersihkan, dan token direduksi dari log.
+- **R-003 — IMPLEMENTED**: Guestbook mengirim `Content-Type: application/json` dan `Accept: application/json`, memvalidasi input, mencegah double-submit, serta hanya reset setelah sukses.
+- `test/tester-dashboard.test.js` ditambahkan ke script `npm test`.
+- Isolated JavaScript harness terhadap script aktual: PASS untuk same-origin, JWT scoping, login, 401, dan alur Guestbook.
+- Node test suite (`npm test`): NOT RUN. Development deployment: NOT VERIFIED. Hasil historis 140/140 tidak dianggap sebagai verifikasi untuk commit saat ini.
 
 ## Perbaikan Temuan Keamanan & Error Mapping (2026-11-20)
 1. **F-01 (Regex Escape)**: Diperbaiki ke `/[\x00-\x1F\x7F]/` di `src/modules/github/write.js`.
