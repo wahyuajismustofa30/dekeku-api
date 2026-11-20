@@ -101,7 +101,7 @@ dekeku-api/
 - `GITHUB_OWNER` - GitHub repository owner
 - `GITHUB_REPO` - GitHub repository name
 - `GITHUB_BRANCH` - Default branch (usually main)
-- `ALLOWED_ORIGINS` - Comma-separated allowed origins for CORS (e.g., `https://example.com,https://app.example.com`)
+- `ALLOWED_ORIGINS` - Comma-separated allowed origins (supports wildcard `*.domain.com`, e.g., `*.dekeku.my.id,*.artoprintingpbg.com`)
 
 ## Running Development
 

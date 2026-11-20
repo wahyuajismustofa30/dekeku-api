@@ -124,8 +124,28 @@ describe("Write Engine - Validation Foundation", () => {
       assert.strictEqual(res.headers.get("Vary"), "Origin");
     });
 
+    test("Allow wildcard subdomains from ALLOWED_ORIGINS", async () => {
+      const env = { ALLOWED_ORIGINS: "*.dekeku.my.id, *.artoprintingpbg.com" };
+      
+      // Subdomain test 1
+      const req1 = new Request("http://api/api/v1/health", {
+        method: "GET",
+        headers: { "Origin": "https://a.dekeku.my.id" }
+      });
+      const res1 = await worker.fetch(req1, env);
+      assert.strictEqual(res1.headers.get("Access-Control-Allow-Origin"), "https://a.dekeku.my.id");
+
+      // Subdomain test 2
+      const req2 = new Request("http://api/api/v1/health", {
+        method: "GET",
+        headers: { "Origin": "https://shop.artoprintingpbg.com" }
+      });
+      const res2 = await worker.fetch(req2, env);
+      assert.strictEqual(res2.headers.get("Access-Control-Allow-Origin"), "https://shop.artoprintingpbg.com");
+    });
+
     test("Deny origin not in ALLOWED_ORIGINS", async () => {
-      const env = { ALLOWED_ORIGINS: "https://example.com" };
+      const env = { ALLOWED_ORIGINS: "https://example.com, *.dekeku.my.id" };
       const req = new Request("http://api/api/v1/health", {
         method: "GET",
         headers: { "Origin": "https://evil.com" }
