@@ -12,3 +12,6 @@
 | **D-008** | Environment Isolation | Stabilitas produksi. | Worker `dekeku-api-dev` dan `github` (prod) dipisahkan. |
 | **D-009** | Production Protection | Keamanan live service. | Worker `github` (`api.dekeku.my.id`) tidak boleh diubah tanpa izin eksplisit. |
 | **D-010** | Change Authority | Tata kelola proyek. | Perubahan tujuan, arsitektur, dan roadmap membutuhkan persetujuan Wahyu. |
+| **D-011** | Git Workflow Policy | Tata kelola perubahan kode & PR review. | **Accepted** (Ditetapkan Wahyu): Seluruh commit pengembangan dilakukan pada branch `dev`, push ke `origin/dev`, dan penggabungan ke `main` melalui Pull Request (PR) dev -> main yang ditinjau dan digabungkan oleh manusia. |
+| **D-012** | Strict CORS Policy | Keamanan akses cross-origin. | **Proposed** (Menunggu persetujuan Wahyu): Kebijakan deny-by-default dengan allowlist origin terkonfigurasi melalui environment variable `ALLOWED_ORIGINS` (dipisahkan koma), tanpa wildcard. *(Catatan: Saat ini belum terimplementasi di kode, CORS masih menggunakan header umum).* |
+| **D-013** | Login Abuse Protection | Mitigasi brute force pada admin login. | **Proposed** (Menunggu persetujuan Wahyu): Rate limiting berbasis IP menggunakan Cloudflare WAF, bukan account lockout di tingkat aplikasi (untuk mengeliminasi risiko DoS pada username admin tunggal). |

@@ -1,109 +1,45 @@
-# DEKEKU API Gateway - Project Context for Claude
+# DEKEKU API Gateway — Project Context for Claude Reviewer
 
-## A. Project Overview
-- **Identitas**: DEKEKU API Gateway, layanan API terpusat berbasis Cloudflare Workers.
-- **Tujuan**: Memusatkan logika akses data dan pengelolaan file. Bertindak sebagai perantara aman antara klien dan repositori GitHub privat.
-- **Masalah**: Membutuhkan satu API untuk banyak aplikasi DEKEKU, penyimpanan aman, abstraksi GitHub API, dan perlindungan kredensial.
-- **Fungsi**: REST API (JSON) untuk akses data (READ) dan pengelolaan file (WRITE/CREATE/UPDATE/DELETE).
-- **Batasan**: Hanya untuk ekosistem DEKEKU, file maksimal 1MB, JSON only di `public/data/`.
+Dokumen ini menyediakan konteks ringkas dan pedoman review independen untuk Claude Code Reviewer.
 
-## B. System Architecture
-- **Runtime**: Cloudflare Workers.
-- **Storage**: GitHub Private Repository.
-- **Request Flow**: Klien -> Cloudflare Worker -> GitHub API (via `GitHubClient`) -> Response.
-- **Responsibility**:
-    - `src/core`: Routing, Error handling, GitHub Client abstraction.
-    - `src/middleware`: Auth, CORS.
-    - `src/modules`: Feature logic (Health, GitHub, Auth).
+## 1. Ringkasan Proyek & Acuan Dokumen
+DEKEKU API Gateway adalah layanan API berbasis Cloudflare Workers yang memusatkan logika akses data (READ) dan pengelolaan file (WRITE/CREATE/UPDATE/DELETE) ke repositori GitHub privat.
 
-## C. Repository Structure
-- `src/core`: Core application logic (`router.js`, `github.js`, `errors.js`).
-- `src/middleware`: Request/Response interceptors (`auth.js`, `cors.js`).
-- `src/modules`: Feature-specific logic (`health`, `github`, `auth`).
-- `src/utils`: Helpers (`response.js`, `jwt.js`, `hash.js`).
-- `test`: Test suite.
-- `project`: Project management docs (MASTER.md, ROADMAP.md, etc.).
+Untuk memahami arsitektur, kebijakan, dan status proyek terkini secara mendalam, selalu gunakan dokumen referensi berikut sebagai acuan utama:
+- **Prinsip & Otoritas**: [project/MASTER.md](MASTER.md)
+- **Status Progres & Hasil Tes**: [project/PROGRESS.md](PROGRESS.md)
+- **Keputusan Arsitektur**: [project/DECISIONS.md](DECISIONS.md)
+- **Spesifikasi Arsitektur Teknis**: [docs/architecture.md](../docs/architecture.md)
 
-## D. Technology Stack
-- **Language**: JavaScript (ES modules).
-- **Runtime**: Cloudflare Workers.
-- **Tooling**: Wrangler.
-- **Authentication**: JWT (HS256).
-- **Password**: PBKDF2-SHA256 (Web Crypto).
-- **GitHub Interop**: GitHub Contents API.
+## 2. Struktur Repository Utama
+- `src/core/`: Routing (`router.js`), GitHub API Client (`github.js`), Error definitions (`errors.js`).
+- `src/middleware/`: CORS handler (`cors.js`), JWT Auth middleware (`auth.js`).
+- `src/modules/`:
+  - `health/`: Health check handler (`index.js`).
+  - `auth/`: Admin login & JWT issuance (`login.js`).
+  - `github/`: File & repository read handlers (`files.js`, `repositories.js`), Write router (`write-router.js`), Write engine logic (`write.js`).
+- `src/utils/`: Response formatter (`response.js`), JWT utils (`jwt.js`), Password hashing (`hash.js`), GitHub content processing (`github-content.js`).
+- `test/`: Automated test suites (`auth.test.js`, `github-core.test.js`, `github-write.test.js`, `write-foundation.test.js`, `write-router.test.js`).
 
-## E. API Documentation
-### Public (No Auth)
-- `GET /api/v1/health`
-- `GET /api/v1/github/repository`
-- `GET /api/v1/github/branch`
-- `GET /api/v1/github/file?path=...` (public/ directory)
-- `POST /api/v1/admin/login` (Returns JWT)
-
-### Protected (Requires Admin JWT)
-- `POST /api/v1/admin/write/create`
-- `PUT /api/v1/admin/write/update` (requires SHA)
-- `DELETE /api/v1/admin/write/delete` (requires SHA)
-
-## F. Authentication & Security
-- **Admin Login**: PBKDF2 verification, constant-time comparison.
-- **JWT**: HS256, strictly validated (iat, exp, signature, issuer).
-- **Middleware**: `authMiddleware` validates JWT.
-- **Path Traversal**: Protected (path validation).
-- **File Constraints**: Max 1MB, JSON only, `public/data/` write limit.
-
-## G. GitHub Integration
-- **Client**: `src/core/github.js`.
-- **Operations**: READ, WRITE (PUT), DELETE.
-- **SHA**: Required for PUT/DELETE to ensure concurrency control.
-- **Timeout**: Managed by resilient client logic.
-
-## H. Write Engine
-- **Operations**: Create, Update, Delete.
-- **Validation**: JSON format, File Size, Path restriction.
-- **Concurrency**: Optimistic locking using SHA.
-- **Error Handling**: Custom error mapping.
-
-## I. Environment Architecture
-- **Development**: `dekeku-api-dev` (Worker).
-- **Production**: `github` (Worker, `api.dekeku.my.id`).
-
-## J. Current Implementation Status
-
-| Feature | Status | Evidence | Remaining Issues |
-| :--- | :--- | :--- | :--- |
-| Core Router | COMPLETED | Test Suite | None |
-| GitHub Client (Read) | COMPLETED | Test Suite | Legacy tests fail |
-| Write Engine (Stages 1-3) | COMPLETED | Test Suite | None |
-| JWT Authentication | COMPLETED | Test Suite | Rate limiting, Revocation |
-| PBKDF2 Password Hashing| COMPLETED | Test Suite | None |
-
-## K. Architecture Decisions
-- **D-001**: Public GET access.
-- **D-002**: GitHub Private repo.
-- **D-003**: GitHub Secrets (Workers Secrets).
-- **D-005**: JWT for write access.
-- **D-009**: Production protection (No unauthorized changes).
-
-## L. Known Issues & Technical Risks
-- Rate limiting (Missing).
-- Token revocation (Missing).
-- Legacy GitHub Core tests (9/18 failure due to new error mapping).
-
-## M. Next Development Steps
-- Phase 2.3: Public Submission & Guestbook.
-
-## CLAUDE INDEPENDENT REVIEW GUIDELINES
-1. Act as an independent senior software engineer and security reviewer.
-2. Review the context and *actual* source code, not just this document.
-3. Critically analyze logic, security vulnerabilities, and design.
-4. Do *not* assume tests passed = 100% secure.
-5. Do *not* modify source code, configs, or deploy.
-6. Provide findings based on evidence with the following format:
-   - Review Summary
-   - Findings (ID, Severity, File:Line, Finding, Impact)
-   - Security Review
-   - Logic & Architecture Review
-   - Test Coverage Review
-   - Recommended Fixes
-   - Final Verdict (APPROVED, APPROVED WITH CONDITIONS, CHANGES REQUIRED, BLOCKED)
+## 3. CLAUDE INDEPENDENT REVIEW GUIDELINES
+1. **Bertindak sebagai Independent Senior Software Engineer & Security Reviewer**:
+   Lakukan penilaian kritis dan independen tanpa berasumsi bahwa implementasi atau dokumen saat ini 100% sempurna atau aman.
+2. **Periksa Source Code Aktual**:
+   Selalu baca dan bandingkan klaim dokumentasi dengan implementasi aktual di direktori `src/` dan `test/`.
+3. **Identifikasi Bug & Kelemahan**:
+   Cari potensi kesalahan logika (*logic errors*), celah keamanan (*security vulnerabilities*), kelemahan arsitektur, dan ketidaksesuaian validasi.
+4. **Analisis Test Coverage & Gap**:
+   Periksa apakah suite pengujian benar-benar menguji skenario batas (*edge cases*), dan identifikasi skenario yang belum teruji (*missing test coverage*). Jangan menganggap hasil test PASS sebagai jaminan keamanan mutlak.
+5. **Patuhi Batasan Lingkungan Operasional**:
+   - Dilarang mengubah source code, konfigurasi (`wrangler.jsonc`), atau secrets.
+   - Dilarang melakukan deployment atau merge ke branch `main`.
+   - Dilarang mengarang hasil pengujian tanpa bukti.
+6. **Format Laporan Review**:
+   Gunakan format standar berikut saat memberikan temuan review:
+   - **Review Summary**: Ringkasan umum hasil review.
+   - **Findings Table**: `ID | Severity | File:Line | Finding | Impact` (Severity: CRITICAL / HIGH / MEDIUM / LOW / INFO).
+   - **Security Review**: Analisis risiko keamanan dan potensi eksploitasi.
+   - **Logic & Architecture Review**: Analisis kesalahan logika dan desain.
+   - **Test Coverage Review**: Analisis kecukupan pengujian.
+   - **Recommended Fixes**: Rekomendasi perbaikan yang spesifik dan konkret.
+   - **Final Verdict**: APPROVED / APPROVED WITH CONDITIONS / CHANGES REQUIRED / BLOCKED.
