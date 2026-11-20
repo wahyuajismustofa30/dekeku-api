@@ -1,7 +1,7 @@
 DEKEKU GATEWAY — PROJECT CHECKPOINT
 
 Tanggal checkpoint: 2026-11-20
-Status: CLOUDFLARE PREVIEWS CONFIGURATION ADDED — BRANCH DEV ACTIVE
+Status: USAGE DOCUMENTATION CREATED & VERIFIED — BRANCH DEV ACTIVE
 
 *Acuan Utama*: Sumber status fitur adalah [PROGRESS.md](PROGRESS.md).
 
@@ -16,13 +16,15 @@ Status: CLOUDFLARE PREVIEWS CONFIGURATION ADDED — BRANCH DEV ACTIVE
 - Phase 2.1 Admin Login & JWT: COMPLETED & VERIFIED.
 - Phase 2.2 Write Engine & Security Fixes: COMPLETED & VERIFIED.
 - Phase 2.3 Public Submission & Guestbook: COMPLETED & VERIFIED.
-- Cloudflare Previews Config: Added `previews` block to `wrangler.jsonc` with development-safe non-secret variables (`GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, `ALLOWED_ORIGINS`).
+- Cloudflare Previews Config: Added `previews` block to `wrangler.jsonc`.
+- Documentation: Created comprehensive usage guide (`docs/USAGE.md`).
 
 ## 3. Status Keamanan & Hasil Audit (2026-11-20)
-- Cloudflare preview build configuration error resolved by supplying the required `previews` block in `wrangler.jsonc`.
-- No secrets (`GITHUB_TOKEN`, `JWT_SECRET`, `ADMIN_PASSWORD_HASH`) are included in preview config.
+- Cloudflare preview build configuration error resolved.
+- Usage documentation added in `docs/USAGE.md`.
+- No secrets exposed.
 
 ## 4. Langkah Berikutnya
 1. Review PR #7 on GitHub.
-2. Verify Cloudflare Workers Build success after preview configuration update.
+2. Verify Cloudflare Workers Build success.
 3. Proceed with static frontend integration.
