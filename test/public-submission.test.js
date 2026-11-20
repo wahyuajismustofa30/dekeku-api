@@ -1,97 +1,123 @@
-import { test, describe } from "node:test";
-import assert from "node:assert";
+import { test, describe, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import worker from "../src/index.js";
 
-describe("Public Submission Module (Guestbook - Phase 2.3)", () => {
+const originalFetch = globalThis.fetch;
+afterEach(() => { globalThis.fetch = originalFetch; });
+
+describe("Public Submission Module (Guestbook)", () => {
   const env = {
-    GITHUB_TOKEN: "ghp_testtoken123",
-    GITHUB_OWNER: "testowner",
-    GITHUB_REPO: "testrepo",
-    GITHUB_BRANCH: "main",
-    ALLOWED_ORIGINS: "https://example.com"
+    GITHUB_TOKEN: "mock-token", GITHUB_OWNER: "testowner",
+    GITHUB_REPO: "dekeku-db", GITHUB_BRANCH: "main",
+    ALLOWED_ORIGINS: "https://example.com,*.dekeku.my.id"
   };
+  const request = (body, origin = "https://example.com") => new Request(
+    "https://api.example.test/api/v1/public/submit",
+    { method: "POST", headers: {
+      "Content-Type": "application/json", ...(origin ? { Origin: origin } : {})
+    }, body: JSON.stringify(body) }
+  );
+  const githubResponse = (status, body) => new Response(JSON.stringify(body), {
+    status, headers: { "Content-Type": "application/json" }
+  });
 
-  test("POST /api/v1/public/submit with valid payload succeeds", async () => {
-    // Mock global fetch for GitHub API
-    const originalFetch = global.fetch;
-    global.fetch = async (url, options) => {
-      assert.strictEqual(options.method, "PUT");
-      assert.ok(url.includes("/contents/public/data/guestbook/sub_"));
-      const body = JSON.parse(options.body);
-      assert.strictEqual(body.branch, "main");
-      assert.ok(body.message.includes("Public guestbook submission"));
-
-      return new Response(JSON.stringify({
-        content: {
-          name: "sub_123.json",
-          path: "public/data/guestbook/sub_123.json",
-          sha: "abc123sha"
-        }
-      }), {
-        status: 201,
-        headers: { "Content-Type": "application/json" }
-      });
+  test("creates one hostname-scoped array file on first submission", async () => {
+    let calls = 0;
+    globalThis.fetch = async (url, options) => {
+      calls += 1;
+      if (options.method === "GET") return githubResponse(404, { message: "Not Found" });
+      assert.match(String(url), /contents\/public\/data\/example\.com\/bukutamu\.json/);
+      const payload = JSON.parse(options.body);
+      assert.equal(payload.branch, "main");
+      assert.equal(payload.sha, undefined);
+      const entries = JSON.parse(atob(payload.content));
+      assert.equal(entries.length, 1);
+      assert.equal(entries[0].name, "John Doe");
+      return githubResponse(201, { content: { sha: "a".repeat(40) } });
     };
+    const response = await worker.fetch(request({
+      name: "John Doe", message: "Hello DEKEKU", email: "john@example.com"
+    }), env);
+    const data = await response.json();
+    assert.equal(response.status, 201);
+    assert.equal(data.success, true);
+    assert.equal(data.path, "public/data/example.com/bukutamu.json");
+    assert.equal(data.count, 1);
+    assert.equal(calls, 2);
+  });
 
-    try {
-      const req = new Request("http://api/api/v1/public/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Origin": "https://example.com"
-        },
-        body: JSON.stringify({
-          name: "John Doe",
-          message: "Hello DEKEKU Gateway!",
-          email: "john@example.com"
-        })
+  test("appends existing entries using current blob SHA", async () => {
+    let putBody;
+    globalThis.fetch = async (url, options) => {
+      if (options.method === "GET") return githubResponse(200, {
+        content: btoa(JSON.stringify([{ name: "Existing", message: "Old" }])),
+        sha: "b".repeat(40)
       });
-
-      const res = await worker.fetch(req, env);
-      const data = await res.json();
-
-      assert.strictEqual(res.status, 201);
-      assert.strictEqual(data.success, true);
-      assert.strictEqual(data.message, "Submission successful");
-      assert.ok(data.file.startsWith("sub_"));
-      assert.strictEqual(data.sha, "abc123sha");
-    } finally {
-      global.fetch = originalFetch;
-    }
+      putBody = JSON.parse(options.body);
+      return githubResponse(200, { content: { sha: "c".repeat(40) } });
+    };
+    const response = await worker.fetch(request(
+      { name: "New", message: "New message" }, "https://sub.dekeku.my.id"
+    ), env);
+    const data = await response.json();
+    const entries = JSON.parse(atob(putBody.content));
+    assert.equal(response.status, 201);
+    assert.equal(data.path, "public/data/sub.dekeku.my.id/bukutamu.json");
+    assert.equal(data.count, 2);
+    assert.equal(putBody.sha, "b".repeat(40));
+    assert.equal(entries[0].name, "Existing");
+    assert.equal(entries[1].name, "New");
   });
 
-  test("POST /api/v1/public/submit rejects missing name or message", async () => {
-    const req = new Request("http://api/api/v1/public/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "John" }) // missing message
-    });
-
-    const res = await worker.fetch(req, env);
-    const data = await res.json();
-
-    assert.strictEqual(res.status, 422);
-    assert.strictEqual(data.success, false);
-    assert.ok(data.error.includes("message"));
+  test("re-reads latest data after SHA conflict", async () => {
+    let reads = 0, writes = 0;
+    globalThis.fetch = async (url, options) => {
+      if (options.method === "GET") {
+        reads += 1;
+        const entries = reads === 1 ? [] : [{ name: "Concurrent", message: "Saved" }];
+        return githubResponse(200, {
+          content: btoa(JSON.stringify(entries)),
+          sha: (reads === 1 ? "d" : "e").repeat(40)
+        });
+      }
+      writes += 1;
+      if (writes === 1) return githubResponse(409, { message: "Conflict" });
+      const payload = JSON.parse(options.body);
+      assert.equal(payload.sha, "e".repeat(40));
+      assert.equal(JSON.parse(atob(payload.content)).length, 2);
+      return githubResponse(200, { content: { sha: "f".repeat(40) } });
+    };
+    const response = await worker.fetch(request({ name: "Retry", message: "Safe retry" }), env);
+    assert.equal(response.status, 201);
+    assert.equal(reads, 2);
+    assert.equal(writes, 2);
   });
 
-  test("POST /api/v1/public/submit rejects invalid content-type", async () => {
-    const req = new Request("http://api/api/v1/public/submit", {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: "test"
-    });
-
-    const res = await worker.fetch(req, env);
-    assert.strictEqual(res.status, 415);
+  test("rejects missing or unapproved Origin before GitHub access", async () => {
+    let called = false;
+    globalThis.fetch = async () => { called = true; throw new Error("unexpected GitHub request"); };
+    const missing = await worker.fetch(request({ name: "A", message: "B" }, null), env);
+    const denied = await worker.fetch(request({ name: "A", message: "B" }, "https://evil.example"), env);
+    assert.equal(missing.status, 403);
+    assert.equal(denied.status, 403);
+    assert.equal(called, false);
   });
 
-  test("GET /api/v1/public/submit returns 405 Method Not Allowed", async () => {
-    const req = new Request("http://api/api/v1/public/submit", {
-      method: "GET"
+  test("rejects invalid payload and content type", async () => {
+    const invalid = await worker.fetch(request({ name: "John" }), env);
+    assert.equal(invalid.status, 422);
+    const badType = new Request("https://api.example.test/api/v1/public/submit", {
+      method: "POST", headers: {
+        "Content-Type": "text/plain", Origin: "https://example.com"
+      }, body: "test"
     });
+    assert.equal((await worker.fetch(badType, env)).status, 415);
+  });
 
-    const res = await worker.fetch(req, env);
-    assert.strictEqual(res.status, 405);
+  test("GET returns 405 Method Not Allowed", async () => {
+    const response = await worker.fetch(new Request(
+      "https://api.example.test/api/v1/public/submit"
+    ), env);
+    assert.equal(response.status, 405);
   });
 });
