@@ -26,11 +26,17 @@ DEKEKU API Gateway adalah Cloudflare Worker modular yang berinteraksi dengan rep
 - npm
 
 ### Menjalankan Tes Lokal
-Gateway menyediakan test suite lengkap menggunakan Node.js test runner:
+Jalankan pemeriksaan syntax dan suite lokal yang terisolasi:
 ```bash
 npm run check
-node --test test/*.test.js
+npm test
 ```
+
+Tes remote Development harus dijalankan secara terpisah dan eksplisit:
+```bash
+npm run test:remote
+```
+**Peringatan:** `test:remote` mengakses Worker Development aktif. Salah satu skenarionya mengirim Guestbook yang menulis data ke repository GitHub. Jangan jalankan sebagai bagian dari tes default atau tanpa persetujuan.
 
 ### Tester Dashboard
 Dashboard tersedia pada route `/` dan `/tester`.
