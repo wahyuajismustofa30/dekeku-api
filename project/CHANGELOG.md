@@ -1,6 +1,27 @@
 # CHANGELOG — DEKEKU API Gateway
 
-## [Unreleased] - 2026-11-19
+## [Unreleased] - 2026-11-20
+### Added
+- Kebijakan Alur Kerja Git & GitHub (`AGENTS.md` & `project/MASTER.md`):
+  - Penetapan branch `dev` sebagai branch pengembangan utama tempat seluruh commit Codex dilakukan.
+  - Alur review kode berbasis Pull Request (PR) dari `dev` ke `main`.
+  - Prosedur penanganan sinkronisasi branch `dev` terhadap `origin/main` (merge tanpa rebase/force-push).
+- Pembaruan Dokumentasi Arsitektur & Context:
+  - Dokumentasi lengkap modul write engine, sistem otentikasi JWT/PBKDF2, dan alur request pada `docs/architecture.md`.
+  - Pembaruan `README.md` mencakup struktur repository lengkap, daftar endpoint terperinci, dan petunjuk pengujian.
+  - Penyederhanaan `project/CLAUDE_PROJECT_CONTEXT.md` sebagai pointer dokumen referensi utama dan panduan review independen.
+  - Pencatatan keputusan arsitektur D-011 (Git Workflow), D-012 (Proposed CORS Policy), dan D-013 (Proposed Login Abuse Protection) di `project/DECISIONS.md`.
+
+### Documented Issues (Awaiting Fix)
+- Menganalisis dan mendokumentasikan temuan review keamanan kode (F-01 s/d F-04) di `PROGRESS.md` dan `architecture.md`:
+  - F-01: Regex karakter kontrol double-escape di `validateWritablePath`.
+  - F-02: `btoa(String.fromCharCode(...bytes))` RangeError pada file > 100KB.
+  - F-03: `parseAndValidateBody` belum menolak `content` yang tidak ada (`undefined`).
+  - F-04: CORS middleware belum mendukung allowlist origin (`ALLOWED_ORIGINS`) dan header CORS pada catch block error.
+
+## [2026-11-19] - Phase 2.2 Write Engine & Auth Base
+*(Catatan Koreksi 2026-11-20: Jumlah tes lulus aktual per 2026-11-20 adalah 103/112 pass, di mana 9 tes legacy di github-core.test.js gagal akibat perubahan desain error mapping gateway).*
+
 ### Added
 - Phase 2.2 Stage 1: Write Engine Validation Foundation
   - Streaming HTTP request body with size limiting (1.1 MB)
@@ -19,7 +40,6 @@
   - No auto-retry on conflict
   - Error mapping per design: 401/403(perm)→502, 403/422(rate)→429, 409→409, 429→429, 5xx→502, timeout→504, network→502
   - Retry-After header forwarded when available
-  - UTF-8 multibyte Base64 encoding support
   - Secret leakage prevention in errors
   - Comprehensive mock test suite (34 tests)
 - Phase 2.2 Stage 3: Router Integration
