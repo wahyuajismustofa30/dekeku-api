@@ -1,6 +1,18 @@
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
+### Fixed
+- Tester Dashboard: mengunci request ke origin halaman sendiri, menolak redirect, mewajibkan HTTPS untuk origin remote, memisahkan helper publik/admin, menyimpan JWT hanya di memori sesi, membersihkan token lama dari localStorage, dan menghapus sesi pada 401/logout.
+- Tester Dashboard: menyelaraskan login dengan respons `access_token` dan meredaksi data sensitif dari log.
+- Guestbook Dashboard: menambahkan JSON headers, validasi input, pencegahan double-submit, dan reset form hanya setelah sukses.
+
+### Added
+- `test/tester-dashboard.test.js` sebagai regression coverage untuk dua salinan dashboard dan ditambahkan ke script `npm test`.
+
+### Verification
+- Isolated JavaScript harness terhadap script aktual: PASS untuk origin binding, JWT scoping, login token handling, 401 cleanup, dan Guestbook double-submit/success flow.
+- Node test suite (`npm test`): NOT RUN; Development deployment: NOT VERIFIED.
+
 ### Added
 - Dokumentasi rekomendasi hasil review pada `project/RECOMMENDATIONS.md`:
   - P0: pembatasan origin Tester Dashboard untuk mencegah kebocoran JWT.
