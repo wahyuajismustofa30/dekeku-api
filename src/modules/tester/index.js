@@ -35,10 +35,10 @@ export const getTesterPage = (request, env) => {
         
         <div class="card" style="margin-bottom: 20px;">
             <label>API Gateway URL</label>
-            <input type="text" id="baseUrl" value="https://dekeku-api-dev.wahyuajismustofa30.workers.dev" placeholder="https://...">
+            <div class="token-area" id="apiOriginDisplay">Loading API origin...</div>
             <div id="tokenDisplay" style="margin-top: 10px; display: none;">
                 <label>Active JWT Token:</label>
-                <div class="token-area" id="activeTokenText">None</div>
+                <div class="token-area" id="activeTokenText">No active admin session.</div>
                 <button class="secondary" onclick="clearToken()">Logout / Clear Token</button>
             </div>
         </div>
@@ -71,7 +71,7 @@ export const getTesterPage = (request, env) => {
                     <label>Message</label>
                     <textarea id="gbMessage">Halo dari Dashboard Tester!</textarea>
                 </div>
-                <button onclick="testGuestbook()">Submit Guestbook</button>
+                <button id="guestbookSubmit" onclick="testGuestbook()">Submit Guestbook</button>
             </div>
 
             <!-- 3. ADMIN LOGIN -->
@@ -123,52 +123,113 @@ export const getTesterPage = (request, env) => {
     </div>
 
     <script>
-        let jwtToken = localStorage.getItem('dekeku_jwt') || '';
-        updateTokenUI();
+
+        const API_ORIGIN = window.location.origin;
+        let jwtToken = '';
+        let guestbookSubmitting = false;
+
+        function getApiUrl(path) {
+            const currentOrigin = new URL(API_ORIGIN);
+            const localHosts = ['localhost', '127.0.0.1', '[::1]'];
+            if (currentOrigin.protocol !== 'https:' &&
+                !(currentOrigin.protocol === 'http:' && localHosts.includes(currentOrigin.hostname))) {
+                throw new Error('Dashboard API harus menggunakan HTTPS.');
+            }
+            if (typeof path !== 'string' || !path.startsWith('/api/v1/')) {
+                throw new Error('Path API tidak valid.');
+            }
+            const url = new URL(path, API_ORIGIN);
+            if (url.origin !== currentOrigin.origin || url.username || url.password) {
+                throw new Error('Tujuan API tidak diizinkan.');
+            }
+            return url.toString();
+        }
 
         function updateTokenUI() {
             const display = document.getElementById('tokenDisplay');
             const text = document.getElementById('activeTokenText');
             if (jwtToken) {
                 display.style.display = 'block';
-                text.innerText = jwtToken;
+                text.innerText = 'Authenticated admin session active. Token is kept in memory only.';
             } else {
                 display.style.display = 'none';
+                text.innerText = '';
             }
         }
 
         function clearToken() {
             jwtToken = '';
-            localStorage.removeItem('dekeku_jwt');
             updateTokenUI();
-            log('Token cleared.');
+            log('Admin session cleared.');
+        }
+
+        function redactSecrets(value) {
+            if (Array.isArray(value)) return value.map(redactSecrets);
+            if (value && typeof value === 'object') {
+                const safe = {};
+                for (const [key, item] of Object.entries(value)) {
+                    safe[key] = /token|authorization|password|secret/i.test(key)
+                        ? '[REDACTED]'
+                        : redactSecrets(item);
+                }
+                return safe;
+            }
+            return value;
         }
 
         function log(msg, status = 'Waiting...') {
             document.getElementById('responseStatus').innerText = 'Status: ' + status;
-            document.getElementById('responseBody').innerText = typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg;
+            const safeMessage = redactSecrets(msg);
+            document.getElementById('responseBody').innerText =
+                typeof safeMessage === 'object' ? JSON.stringify(safeMessage, null, 2) : String(safeMessage);
         }
 
         async function apiRequest(path, options = {}) {
-            const baseUrl = document.getElementById('baseUrl').value.replace(/\\/$/, '');
-            const url = baseUrl + path;
-            
-            log('Requesting: ' + url + '...', 'In Progress');
-
-            const headers = { ...options.headers };
-            if (jwtToken) {
-                headers['Authorization'] = \`Bearer \${jwtToken}\`;
+            let url;
+            try {
+                url = getApiUrl(path);
+            } catch (err) {
+                log(err.message, 'REQUEST BLOCKED');
+                return { status: 0, data: null };
             }
+
+            log('Requesting: ' + new URL(url).pathname + '...', 'In Progress');
+            const headers = new Headers(options.headers || {});
+            headers.set('Accept', 'application/json');
 
             try {
-                const response = await fetch(url, { ...options, headers });
-                const data = await response.json();
-                log(data, response.status + ' ' + response.statusText);
+                const response = await fetch(url, {
+                    ...options,
+                    headers,
+                    redirect: 'error'
+                });
+                const responseText = await response.text();
+                let data = null;
+                if (responseText) {
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch {
+                        data = { message: 'Server returned a non-JSON response.' };
+                    }
+                }
+
+                if (response.status === 401) clearToken();
+                log(data || {}, response.status + ' ' + response.statusText);
                 return { status: response.status, data };
-            } catch (err) {
-                log(err.toString(), 'ERROR');
-                return { status: 0, err };
+            } catch {
+                log('Network request failed. Check the Development API and try again.', 'NETWORK ERROR');
+                return { status: 0, data: null };
             }
+        }
+
+        async function adminRequest(path, options = {}) {
+            if (!jwtToken) {
+                log('Silakan login admin terlebih dahulu.', 'AUTH REQUIRED');
+                return { status: 401, data: null };
+            }
+            const headers = new Headers(options.headers || {});
+            headers.set('Authorization', 'Bearer ' + jwtToken);
+            return apiRequest(path, { ...options, headers });
         }
 
         function testApi(path) {
@@ -181,26 +242,62 @@ export const getTesterPage = (request, env) => {
         }
 
         async function testLogin() {
-            const username = document.getElementById('loginUser').value;
-            const password = document.getElementById('loginPass').value;
+            const username = document.getElementById('loginUser').value.trim();
+            const passwordInput = document.getElementById('loginPass');
+            const password = passwordInput.value;
+            if (!username || !password) {
+                log('Username dan password wajib diisi.', 'VALIDATION ERROR');
+                return;
+            }
+
             const res = await apiRequest('/api/v1/admin/login', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
-            if (res.status === 200 && res.data.token) {
-                jwtToken = res.data.token;
-                localStorage.setItem('dekeku_jwt', jwtToken);
+            passwordInput.value = '';
+
+            if (res.status === 200 && res.data && typeof res.data.access_token === 'string' &&
+                res.data.access_token.trim()) {
+                jwtToken = res.data.access_token;
                 updateTokenUI();
+                log({ success: true, message: 'Admin session established. Token is not displayed or persisted.' },
+                    'LOGIN SUCCESS');
+            } else if (res.status === 200) {
+                clearToken();
+                log('Login response did not contain a valid access_token.', 'INVALID RESPONSE');
             }
         }
 
-        function testGuestbook() {
-            const name = document.getElementById('gbName').value;
-            const message = document.getElementById('gbMessage').value;
-            apiRequest('/api/v1/public/submit', {
-                method: 'POST',
-                body: JSON.stringify({ name, message })
-            });
+        async function testGuestbook() {
+            if (guestbookSubmitting) return;
+            const nameInput = document.getElementById('gbName');
+            const messageInput = document.getElementById('gbMessage');
+            const submitButton = document.getElementById('guestbookSubmit');
+            const name = nameInput.value.trim();
+            const message = messageInput.value.trim();
+
+            if (!name || !message) {
+                log('Nama dan pesan wajib diisi.', 'VALIDATION ERROR');
+                return;
+            }
+
+            guestbookSubmitting = true;
+            submitButton.disabled = true;
+            try {
+                const res = await apiRequest('/api/v1/public/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, message })
+                });
+                if (res.status === 201 && res.data && res.data.success === true) {
+                    nameInput.value = '';
+                    messageInput.value = '';
+                }
+            } finally {
+                guestbookSubmitting = false;
+                submitButton.disabled = false;
+            }
         }
 
         function testWrite() {
@@ -216,18 +313,25 @@ export const getTesterPage = (request, env) => {
 
             const body = { path };
             if (method !== 'DELETE') {
-                try { body.content = JSON.parse(contentRaw); } 
-                catch(e) { log('Invalid JSON content: ' + e.message, 'UI ERROR'); return; }
+                try {
+                    body.content = JSON.parse(contentRaw);
+                } catch {
+                    log('Invalid JSON content.', 'UI ERROR');
+                    return;
+                }
             }
-            if (method !== 'POST') {
-                body.sha = sha;
-            }
+            if (method !== 'POST') body.sha = sha;
 
-            apiRequest(endpoint, {
-                method: method,
+            adminRequest(endpoint, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
         }
+
+        document.getElementById('apiOriginDisplay').innerText = API_ORIGIN;
+        updateTokenUI();
+
     </script>
 </body>
 </html>`;
