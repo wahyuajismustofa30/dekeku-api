@@ -1,6 +1,11 @@
-import test from "node:test";
+import test, { afterEach } from "node:test";
 import assert from "node:assert";
 import worker from "../src/index.js";
+
+const originalGlobalFetch = globalThis.fetch;
+afterEach(() => {
+  globalThis.fetch = originalGlobalFetch;
+});
 
 const BASE_URL = "https://dekeku-api-dev.wahyuajismustofa30.workers.dev";
 
