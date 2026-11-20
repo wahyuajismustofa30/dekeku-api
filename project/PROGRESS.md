@@ -50,8 +50,8 @@ Tanggal Pembaruan: 2026-11-21
 4. **F-04 (CORS Allowlist & Error Headers)**: Handled di `src/middleware/cors.js` dan `src/index.js`. Wildcard subdomains ditambahkan.
 5. **Legacy Core Tests**: 18 tes di `test/github-core.test.js` diperbarui dan lulus 100%.
 
-## Hasil Pengujian Aktual (Per 2026-11-21)
-Pengujian dijalankan secara otomatis menggunakan Node.js test runner pada seluruh suite:
+## Riwayat Hasil Pengujian Terdokumentasi (2026-11-21 — belum dijalankan ulang pada commit remediation)
+Angka berikut merupakan hasil historis yang tercatat sebelum remediation R-001 s/d R-005. Hasil ini bukan bukti bahwa suite pada commit saat ini telah dijalankan:
 - **Total Pengujian**: 140 tes (140 PASS, 0 FAIL, 0 SKIP).
 - **Auth Module (`test/auth.test.js`)**: 26/26 PASS.
 - **Write Foundation (`test/write-foundation.test.js`)**: 21/21 PASS.
