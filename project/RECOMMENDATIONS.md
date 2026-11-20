@@ -69,6 +69,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 - Catat metadata minimum untuk investigasi (waktu, hasil, request ID, dan identitas jaringan yang telah diminimalkan sesuai kebutuhan).
 - Jangan mencatat password, JWT, Authorization header, hash, atau secret.
 - Tentukan retensi dan akses log sebelum implementasi.
+- **Status (2026-11-21)**: NOT IMPLEMENTED — perlu keputusan pemilik proyek mengenai retensi, siapa yang boleh mengakses log, dan metadata jaringan yang boleh dicatat. Tidak ada login event atau data pribadi baru yang ditambahkan ke log.
 
 ## Prioritas P2 — Pemeliharaan dan Evolusi Infrastruktur
 
@@ -77,6 +78,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 - Gunakan status `VERIFIED`, `NOT VERIFIED`, `FAILED`, `NEEDS INVESTIGATION`, dan `NOT RUN` secara konsisten.
 - Jangan mengklaim 140/140 PASS tanpa command, environment, commit, exit code, dan output yang dapat diperiksa.
 - Perbaiki panduan `docs/USAGE.md` agar tidak mendorong eksekusi tes remote secara tidak sengaja.
+- **Status (2026-11-21)**: PARTIALLY IMPLEMENTED — README/USAGE kini memakai script lokal eksplisit, remote test dipisahkan, dan angka historis diberi label belum diverifikasi ulang. Final status menunggu output `npm test` dari working tree aktual.
 
 ### R-009. Tinjau rotasi secret dan kekuatan password admin
 - Pertahankan password admin dengan entropi tinggi dan penyimpanan hash PBKDF2 sesuai kebijakan implementasi.
