@@ -41,3 +41,11 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - `npm run check`: PASS; `npm test`: 149 PASS, 0 FAIL, 0 SKIP berdasarkan laporan pengguna (21-11-2026, branch `dev`, commit `a6a089d`). Output terminal mentah tidak disertakan dalam catatan ini.
 - Remote test NOT RUN; deployment/runtime Development NOT VERIFIED.
 - Tidak ada secret, konfigurasi Worker, deployment, atau runtime Production yang diubah.
+## 6. Caller Repository Metadata — New Work (2026-11-21)
+- Branch: `dev`.
+- Implemented `GET /api/v1/github/repository` lookup from validated `Origin` → fixed `/config.json` → `repository.username` + `repository.repo` → GitHub repository metadata.
+- Origin uses the shared CORS HTTPS allowlist; caller owner must match `GITHUB_OWNER`; private repositories are rejected; config response is capped at 32 KiB, timeout 8 seconds, redirects disabled.
+- Regression suite added: `test/repository-metadata.test.js`; added to `npm test`.
+- Design notes: `docs/caller-repository-metadata.md`.
+- Test execution, local syntax validation, and Development runtime/deployment: NOT RUN / NOT VERIFIED in this environment.
+- No secrets, Wrangler bindings, Cloudflare settings, Worker deployment, or Production resources changed.
