@@ -26,6 +26,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - **P1 R-005:** IMPLEMENTED — `npm test` lokal eksplisit; remote test hanya melalui `npm run test:remote`; global fetch cleanup memakai `afterEach`/`finally`. `npm run check` dan suite lokal PASS berdasarkan laporan pengguna.
 - **P1 R-006:** WAF rate limiting disetujui pada D-013, tetapi konfigurasi aktual NOT VERIFIED.
 - **P1 R-007:** Rancang failed-login audit logging tanpa secret.
+- **R-008:** COMPLETED — dokumentasi status, hasil tes, changelog, dan checkpoint telah disinkronkan; lihat commit dokumentasi dan PR #16.
 - Rincian lengkap dan acceptance criteria: [RECOMMENDATIONS.md](RECOMMENDATIONS.md).
 
 ## 4. Langkah Berikutnya
