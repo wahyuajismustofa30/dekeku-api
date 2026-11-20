@@ -79,3 +79,39 @@ Jika tidak memiliki akses atau kredensial yang diperlukan untuk melakukan push a
 1. Berhenti dan jangan mencari jalan lain atau mengakali pembatasan tersebut.
 2. Biarkan commit tetap tersimpan di branch lokal `dev`.
 3. Laporkan kendala tersebut secara jelas kepada pengguna.
+
+
+## EVIDENCE-BASED AUDIT & VERIFICATION POLICY (PRINSIP: NO EVIDENCE, NO CLAIM)
+
+Setiap klaim teknis, hasil audit, hasil pengujian, dan kesimpulan wajib memiliki bukti aktual.
+
+### A. Larangan Utama
+Codex dilarang keras:
+- Mengarang hasil pemeriksaan, output terminal, nomor baris kode, atau jumlah PASS/FAIL/SKIP.
+- Menganggap test, CI, PR, atau deployment berhasil tanpa menjalankan dan memeriksa bukti aktual.
+- Menganggap secret tersedia berdasarkan dokumentasi semata.
+- Jika bukti tidak tersedia atau tidak dapat diverifikasi, wajib menuliskan `NOT VERIFIED`.
+
+### B. Status Verifikasi
+Gunakan status secara konsisten:
+- `VERIFIED` — didukung bukti aktual yang cukup.
+- `NOT VERIFIED` — belum dapat dibuktikan.
+- `FAILED` — pemeriksaan telah dijalankan dan gagal.
+- `NEEDS INVESTIGATION` — ditemukan indikasi masalah yang membutuhkan pemeriksaan lanjutan.
+- `NOT RUN` — pemeriksaan tidak dijalankan.
+
+### C. Persyaratan Bukti Pengujian
+Setiap pengujian yang dijalankan wajib mencatat format berikut:
+- **Test ID / Nama Tes**: 
+- **Commit / Branch**: 
+- **Environment**: 
+- **Command**: 
+- **Exit Code**: 
+- **PASS / FAIL / SKIP**: 
+- **Output Evidence**: 
+- **Result**: 
+
+### D. Keamanan Pengujian & Redaksi
+- Utamakan pengujian lokal, mock, fixture, atau environment terisolasi.
+- Jangan melakukan pengujian destruktif atau operasi tulis/hapus pada runtime aktif tanpa persetujuan eksplisit.
+- Redaksi informasi sensitif (token, password, JWT, hash, secret) sebelum menyertakan output.

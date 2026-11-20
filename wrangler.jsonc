@@ -5,5 +5,11 @@
   "compatibility_date": "2026-11-18",
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "GITHUB_OWNER": "wahyuajismustofa30",
+    "GITHUB_REPO": "dekeku-db",
+    "GITHUB_BRANCH": "main",
+    "ALLOWED_ORIGINS": "https://dekeku.my.id,*.dekeku.my.id,https://artoprintingpbg.com,*.artoprintingpbg.com"
   }
 }
