@@ -32,6 +32,13 @@ npm run check
 node --test test/*.test.js
 ```
 
+### Tester Dashboard
+Dashboard tersedia pada route `/` dan `/tester`.
+- Tujuan API mengikuti origin halaman yang sedang dibuka; dashboard tidak menerima URL API bebas.
+- Origin remote wajib HTTPS. HTTP hanya diizinkan untuk host loopback saat pengembangan lokal.
+- JWT admin hanya disimpan di memori halaman, tidak ditampilkan, dan tidak dipersistenkan. Memuat ulang halaman, logout, atau respons HTTP 401 menghapus sesi.
+- Request publik tidak membawa Authorization; hanya request administratif yang menggunakan helper terpisah.
+
 ### Pengembangan Lokal (Wrangler Dev)
 Catatan lingkungan Termux/PRoot mungkin memerlukan penanganan khusus TCMalloc; dianjurkan menjalankan pengujian berbasis Node.js test runner atau menggunakan remote/simulation testing.
 ```bash
