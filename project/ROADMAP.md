@@ -169,3 +169,12 @@
 - Successful Admin password reset increments the version in the same SHA-guarded private account write as the password hash.
 - Focused regression tests added and registered. Limited V8 parser check PASS 13/13 after stripping module declarations; native node --check and focused test remain NOT RUN. Development runtime NOT VERIFIED.
 - No deployment or Production changes.
+
+
+## Latest R-013 Verification Status (2026-11-21)
+- Source implementation and focused regression test are present on `dev`.
+- Owner-reported Termux verification: `node --check` PASS for all RBAC source/test files; `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
+- `npm test`: NOT RUN by explicit instruction.
+- Development runtime/deployment remains NOT VERIFIED; do not infer runtime behavior from local tests.
+- WAF remains DEFERRED; Guestbook CDN/cache behavior remains NOT VERIFIED; Production untouched.
+- The test results are owner-reported and were not independently re-executed in this session.
