@@ -74,7 +74,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Private account and repository mappings live in private `dekeku-db`; password hashes use PBKDF2-SHA256; Admin alone creates/manages accounts and mappings.
 - User CRUD is restricted to `assets/data/` in repositories mapped to that user. Guestbook writes target mapped website repository `assets/data/bukutamu.json`; static public reads bypass Worker.
 - Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
-- Latest implementation status: RBAC-01, RBAC-02, and RBAC-03 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-04. See sections 10–11 and `project/RBAC_PLAN.md`.
+- Latest implementation status: RBAC-01 through RBAC-04 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-05. See sections 10–11 and `project/RBAC_PLAN.md`.
 - `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
 
 
@@ -116,3 +116,16 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - No account or mapping records were created in dekeku-db. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
 - Limitations: two private JSON documents are not transactionally updated; repository existence is not checked at mapping registration; listing has no pagination.
 - Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
+
+
+## 13. RBAC-04 — User Login & JWT (2026-11-21)
+- Branch: dev; added src/modules/auth/user-login.js and mounted POST /api/v1/user/login in src/core/router.js.
+- Reads User account records only from fixed private private/auth/users.json; username comparison is case-insensitive; disabled accounts are rejected.
+- Password verification uses PBKDF2-SHA256. Unknown usernames trigger a dummy PBKDF2 verification; invalid credentials share the same 401 response.
+- JWT claims: iss=dekeku-api, aud=dekeku-user, role=user, sub=<account ID>, iat, exp=iat+1800. Response returns Bearer access token and non-sensitive user identity.
+- JSON request body is streamed with 16 KiB cap, requires application/json, validates UTF-8/object shape, and rejects unknown fields.
+- Added test/rbac-user-login.test.js to local npm test.
+- npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No account/private data created or changed; no secrets, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
+- Security follow-up: verify WAF/IP rate limiting for User login before production; application-level throttling and audit log remain separate tasks.
+- Next: RBAC-05 User data CRUD confined to assets/data/. RBAC-01–04 runtime verification remains pending.
