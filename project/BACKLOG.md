@@ -67,3 +67,13 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Run RBAC-01 tests and syntax/static checks when test execution is authorized/resumed.
 - [ ] Verify private storage access against Development configuration without writing real account data.
 - **Stage status**: IMPLEMENTED — NOT VERIFIED. Next stage: RBAC-02.
+
+
+## RBAC-02 Progress (2026-11-21)
+- [x] Separate Admin JWT audience/role validation and preserve legacy Admin middleware export.
+- [x] Add User JWT audience/role validation and active-account status check against private storage.
+- [x] Add repository ownership middleware based on private mapping ID; never trust client owner/repo/branch.
+- [x] Add focused RBAC auth isolation tests and register in local test script.
+- [ ] Run RBAC tests and syntax/static checks when authorized/resumed.
+- [ ] Verify middleware against Development runtime after User login/routes exist.
+- **Stage status**: IMPLEMENTED — NOT VERIFIED. Next: RBAC-03 / RBAC-04. RBAC-01 verification remains pending.
