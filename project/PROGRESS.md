@@ -232,10 +232,10 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 
 ## Current Verification Queue — Authoritative (2026-11-21)
 1. Documentation reconciliation: COMPLETE — D-023 and R-013 status synchronized across decision, progress, backlog, roadmap, RBAC plan, recommendations, changelog, and checkpoint documents.
-2. Syntax/static checks for every RBAC source and test file: NOT RUN — no repository execution environment is available in this session. `npm run check` alone is insufficient because it checks only `src/index.js`.
+2. Limited V8 parser check: PASS 13/13 RBAC source/test files after removing ES-module import/export declarations for parsing; package.json JSON parse and test registration: PASS. Native `node --check` is NOT RUN because the repository execution environment is unavailable; `npm run check` alone is insufficient because it checks only `src/index.js`.
 3. Development WAF for User Login and Guestbook: DEFERRED by owner; no configuration changes.
 4. `assets` retrieval must use a timestamp cache-busting query parameter (for example `?t=<timestamp>`); whether the CDN honors it in its cache key is NOT VERIFIED.
-5. R-013 source implementation and focused regression test: ADDED on dev; syntax/static validation and test execution NOT RUN.
+5. R-013 source implementation and focused regression test: ADDED on dev; limited V8 parser check PASS 13/13; focused test NOT RUN.
 6. `npm test`: NOT RUN by explicit instruction.
 7. Development runtime: NOT VERIFIED. Production untouched.
 
@@ -264,5 +264,5 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ord
 - userAuthMiddleware and repository ownership middleware compare the token claim with the current private account record. Missing legacy claims mean version 0; explicitly malformed claims are rejected.
 - Successful Admin password reset updates passwordHash and increments tokenVersion in the same SHA-guarded private document write. SHA conflicts are surfaced; no blind overwrite/retry. Version overflow is rejected.
 - Added test/rbac-token-version.test.js and registered it in package.json; covers legacy records/tokens, invalid versions, old-token rejection after reset, new-password login, Admin JWT isolation, and SHA conflict behavior.
-- Source changes are present on dev; syntax/static checks NOT RUN; focused test NOT RUN; npm test NOT RUN. Development runtime NOT VERIFIED and no deployment performed.
+- Source changes are present on dev; limited V8 parser check PASS 13/13 (module declarations stripped for parsing); native node --check NOT RUN; focused test NOT RUN; npm test NOT RUN. Development runtime NOT VERIFIED and no deployment performed.
 - Next: obtain repository execution environment, run node --check over every RBAC source/test file and run only node --test test/rbac-token-version.test.js (do not run npm test).
