@@ -16,7 +16,7 @@ DEKEKU API Gateway berfungsi sebagai perantara aman (*reverse proxy* & data gate
    - `/api/v1/health` (Public GET) -> Handler Health (`src/modules/health/index.js`).
    - `/api/v1/github/*` (Public GET) -> GitHub Router (`src/modules/github/files.js`, `repositories.js`).
    - `/api/v1/admin/login` (Public POST) -> Admin Login Handler (`src/modules/auth/login.js`).
-   - `/api/v1/admin/write/*` (Protected WRITE) -> `authMiddleware` (`src/middleware/auth.js`) -> GitHub Write Router (`src/modules/github/write-router.js`).
+   - `/api/v1/admin/write/*` (Protected admin operations) -> `authMiddleware` (`src/middleware/auth.js`) -> GitHub Write Router (`src/modules/github/write-router.js`); includes `GET /api/v1/admin/write/sha` for current Blob SHA retrieval.
 4. **GitHub Client Core** (`src/core/github.js`): Berinteraksi dengan GitHub Contents API menggunakan `env.GITHUB_TOKEN`.
 5. **Response Formatter** (`src/utils/response.js`): Mengembalikan respons terstruktur dalam format JSON.
 
@@ -51,7 +51,8 @@ DEKEKU API Gateway berfungsi sebagai perantara aman (*reverse proxy* & data gate
   - Maksimal ukuran payload request body: 1.1 MB (1.153.434 byte).
   - Maksimal ukuran file JSON tertulis: 1 MB (1.048.576 byte).
 - **Concurrency Control**:
-  - Operasi UPDATE (PUT) dan DELETE memerlukan SHA commit terakhir dari GitHub untuk *optimistic locking*.
+  - Operasi UPDATE (PUT) dan DELETE tetap mewajibkan SHA commit terakhir dari GitHub untuk *optimistic locking*.
+  - Tester mengambil SHA terbaru melalui endpoint admin `GET /api/v1/admin/write/sha?path=...` sebelum UPDATE/DELETE. Worker tetap memvalidasi SHA dan GitHub tetap menolak versi yang sudah berubah (409).
 - **Keterbatasan Keamanan Saat Ini (Known Issues / Gaps)**:
   - *Rate Limiting*: Belum tersedia di tingkat aplikasi (disarankan menggunakan Cloudflare WAF).
   - *Token Revocation*: Belum ada mekanisme pencabutan/blacklist token JWT aktif.

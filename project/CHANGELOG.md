@@ -1,6 +1,14 @@
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
+### Added — Automatic Write Engine SHA Retrieval
+- Added authenticated `GET /api/v1/admin/write/sha?path=...` to retrieve the current GitHub Blob SHA without returning file contents.
+- Updated the demo HTML Tester to fetch SHA before UPDATE/DELETE and refresh/clear the displayed SHA after write operations.
+- Added regression coverage for auth, successful SHA lookup, and invalid write paths.
+### Verification
+- Automated tests, syntax checks, and Development runtime: NOT RUN / NOT VERIFIED.
+- No Worker deployment, Production request, secret/configuration change, or Termux synchronization.
+
 ### Added — Caller Repository Metadata
 - `GET /api/v1/github/repository` now reads the calling site's `Origin`, fetches that origin's fixed `/config.json`, and uses `repository.username` / `repository.repo` to resolve GitHub metadata.
 - Shared `getAllowedOrigin()` helper ensures the origin is accepted by the same HTTPS `ALLOWED_ORIGINS` policy as CORS.

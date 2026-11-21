@@ -58,3 +58,11 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Updates use current Git blob SHA. On 409, the Worker re-reads the latest file and retries with fresh SHA, at most three attempts.
 - Request max: 15 KiB; stored JSON max: 1 MiB. Full file returns 413. Existing legacy files are untouched.
 - Automated tests, syntax checks, and runtime verification: NOT RUN / NOT VERIFIED in this environment. No deployment, secrets, Worker config, Production, or data repository files were changed.
+
+
+## 8. Write Engine Automatic SHA Retrieval — Implemented on dev (2026-11-21)
+- Added authenticated `GET /api/v1/admin/write/sha?path=...`; only the current Blob SHA and requested path are returned.
+- UPDATE/DELETE in `wahyuajismustofa30/demo:index.html` fetch the SHA immediately before writing/deleting. CREATE/UPDATE refresh the displayed SHA; DELETE clears it.
+- SHA validation and GitHub optimistic concurrency remain mandatory; a concurrent file change can still produce 409.
+- Regression tests added, but automated tests and syntax checks are NOT RUN. Development deployment/runtime is NOT VERIFIED.
+- No deployment, Production request, secret/configuration change, or Termux synchronization was performed.
