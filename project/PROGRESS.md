@@ -113,3 +113,13 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Added `test/rbac-storage.test.js` to the local test script. Per explicit instruction, `npm test` was NOT RUN; syntax/static check NOT RUN; Development runtime NOT VERIFIED.
 - No account records or mapping files were created in `dekeku-db`; no account-management endpoints exist yet. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
 - **Next**: RBAC-02 role/audience/ownership middleware after RBAC-01 verification. Cross-document writes are not transactional; SHA conflicts must be surfaced and handled explicitly.
+
+
+## RBAC-02 — Role and Ownership Middleware (2026-11-21)
+- **IMPLEMENTED — NOT VERIFIED** on branch `dev`.
+- `src/middleware/auth.js` now provides Admin-only and User-only JWT middleware. The legacy `authMiddleware` export remains an alias to Admin middleware, preserving current Admin routes.
+- User auth enforces `iss=dekeku-api`, `aud=dekeku-user`, `role=user` and checks that the subject maps to an active User account in private storage.
+- Repository ownership middleware requires an opaque mapping ID and verifies that the active mapping belongs to the authenticated User; repository owner/name/branch/Origin are sourced from private storage only.
+- Added `test/rbac-auth.test.js` and registered it in `npm test`.
+- Tests: **NOT RUN**; syntax/static checks: **NOT RUN**; Development runtime: **NOT VERIFIED**. No User endpoints/login or data CRUD are exposed yet.
+- Next: RBAC-03 Admin account/repository management, then RBAC-04 User login. RBAC-01 runtime verification remains pending.
