@@ -1,9 +1,11 @@
 DEKEKU GATEWAY — PROJECT CHECKPOINT
 
 Tanggal checkpoint: 2026-11-21
-Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
+Status: R-013 source + focused verification recorded; integrated RBAC/Development runtime NOT VERIFIED; next technical workstream awaits owner selection
 
 *Acuan Utama*: Sumber status fitur adalah [PROGRESS.md](PROGRESS.md). Daftar rekomendasi dan kriteria penerimaan ada di [RECOMMENDATIONS.md](RECOMMENDATIONS.md).
+
+> **Konteks historis:** bagian checkpoint lama di bawah mempertahankan catatan saat tahap tersebut dikerjakan. Instruksi "Next" dan status pada snapshot lama telah disupersede oleh bagian **Latest Documentation Reconciliation Checkpoint** di bagian paling akhir dan `EXECUTION_POLICY.md`; jangan gunakan catatan historis sebagai antrean aktif.
 
 ## 1. Identitas Proyek & Batas Operasional
 - Project: DEKEKU API Gateway
@@ -271,3 +273,12 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - CICD-001..CICD-010 are recorded in BACKLOG; execution order is in EXECUTION_POLICY.
 - No workflow implementation, source code, Wrangler configuration, Cloudflare settings, secrets, deployment, or Production resources were changed.
 - CI/CD implementation and Development deployment: NOT STARTED / NOT VERIFIED.
+
+
+## Latest Documentation Reconciliation Checkpoint (2026-11-21)
+- Owner selected option C: reconcile historical/current documentation before selecting the next technical workstream.
+- `DECISIONS.md` D-023 now states the current status accurately: implementation is present on `dev`; owner-reported Termux syntax check and focused test PASS; Development runtime NOT VERIFIED.
+- `PROGRESS.md` is the single current status source. `EXECUTION_POLICY.md` is the single ordered work queue. Historical `Next` notes in this checkpoint and stage records are superseded.
+- `BACKLOG.md` priority snapshots are explicitly non-authoritative; CICD-001..010 remain planned, not active. Archived/deferred follow-ups must not resume automatically.
+- **Next:** await the owner's separate selection between (A) RBAC Development runtime verification, requiring explicit deployment approval, or (B) Development CI/CD, beginning with a read-only audit. No technical workstream has been selected.
+- `npm test`: NOT RUN. No source code, test files, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed during this documentation reconciliation.
