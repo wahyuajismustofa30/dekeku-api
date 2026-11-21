@@ -185,3 +185,14 @@
 ### Verification
 - `npm test`: NOT RUN per user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No User endpoints/login, account records, mappings, secrets, Wrangler configuration, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-03 Admin Account & Repository Management (2026-11-21)
+### Added
+- src/modules/rbac/admin.js: Admin account create/list/detail/status update/reset-password and repository mapping create/list/soft-disable handlers.
+- Admin management routes in src/core/router.js, protected by the existing Admin JWT middleware.
+- PBKDF2-SHA256 password hashing, server-generated IDs, fixed User role, strict request field allowlists, 16 KiB streamed JSON limit, schema validation, and SHA-protected private storage writes.
+- test/rbac-admin.test.js registered in the local test script.
+### Verification
+- npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No real account/mapping records, secrets, Wrangler configuration, Cloudflare settings, deployment, or Production resources changed.
