@@ -292,7 +292,7 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 ## Documentation Reconciliation & Owner Workstream Selection (2026-11-21)
 - Owner selected option C: reconcile documentation first; do not start RBAC runtime work or CI/CD during this pass.
 - Current documentation status: reconciled to the owner-reported R-013 Termux verification, explicit `npm test` prohibition, archived/deferred follow-ups, and approved Development-only CI/CD target policy.
-- **Next technical workstream: NOT SELECTED.** Ask the owner to choose separately between RBAC Development runtime verification (deployment requires explicit approval) and Development CI/CD (starting with a read-only audit).
+- **Historical status — SUPERSEDED by owner instruction:** at the time of the earlier documentation reconciliation, the next technical workstream had not been selected. The owner subsequently selected Development CI/CD; CICD-001 and CICD-002 are complete and CICD-003 is active.
 - No source code, tests, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed by this documentation task.
 
 
