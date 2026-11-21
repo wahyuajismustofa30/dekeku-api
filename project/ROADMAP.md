@@ -178,3 +178,12 @@
 - Development runtime/deployment remains NOT VERIFIED; do not infer runtime behavior from local tests.
 - WAF remains DEFERRED; Guestbook CDN/cache behavior remains NOT VERIFIED; Production untouched.
 - The test results are owner-reported and were not independently re-executed in this session.
+
+
+## Development CI/CD Track — Approved, Not Started (2026-11-21)
+
+- Branch workflow: develop on `dev`; submit stable changes through PR to `main`.
+- PR validation is required; PR events must not deploy.
+- Updates to `main` are intended to trigger deployment to Development Worker `dekeku-api-dev` only.
+- Track tasks CICD-001..CICD-010 in [BACKLOG.md](BACKLOG.md).
+- This track is PLANNED / NOT STARTED. Production deployment is not authorized.
