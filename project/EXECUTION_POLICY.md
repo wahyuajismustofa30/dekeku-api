@@ -62,7 +62,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - `npm test`: NOT RUN by explicit instruction.
 - Development runtime/deployment: NOT VERIFIED.
 - Deferred/archived follow-up items are stored in `project/TASK_ARCHIVE.md` and are intentionally omitted from the active queue.
-- No technical workstream is currently selected; wait for the owner's explicit choice between RBAC Development runtime verification and Development CI/CD.
+- Historical baseline before the owner's latest instruction (SUPERSEDED): no technical workstream was selected. Current selection is Development CI/CD; CICD-003 is next.
 - Production Worker/domain/secrets/configuration/data: untouched.
 
 ## R-013 Implementation Evidence (2026-11-21)
