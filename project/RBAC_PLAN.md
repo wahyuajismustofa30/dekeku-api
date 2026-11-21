@@ -91,7 +91,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | IMPLEMENTED — NOT VERIFIED |
 | RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | IMPLEMENTED — NOT VERIFIED |
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | IMPLEMENTED — NOT VERIFIED |
-| RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | BLOCKED BY RBAC-01/02/04 |
+| RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | NEXT — IMPLEMENTATION PENDING |
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | BLOCKED BY RBAC-01/02 |
 | RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | BLOCKED BY RBAC-01 |
 | RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | BLOCKED BY RBAC-04 |
@@ -115,7 +115,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 ## 5. Status Verifikasi dan Batas Operasional
 
 - RBAC design: APPROVED oleh pemilik proyek.
-- RBAC-01 source foundation: IMPLEMENTED pada branch `dev` (private storage schema, exact path allowlist, GitHub Contents API read/create/update dengan SHA concurrency). Belum ada endpoint publik/admin untuk memanipulasi akun atau mapping.
+- RBAC-01 sampai RBAC-04 memiliki implementasi source pada branch `dev`; seluruh tahap masih NOT VERIFIED. Admin management dan User login routes telah ditambahkan. Tidak ada akun/mapping nyata dibuat.
 - `npm test`: NOT RUN atas instruksi pemilik proyek untuk melewati proses tersebut. Test `test/rbac-storage.test.js` sudah ditambahkan ke suite lokal.
 - Syntax/static checks: NOT RUN.
 - Development runtime/deployment: NOT VERIFIED.
@@ -154,7 +154,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Added `test/rbac-auth.test.js` for Admin/User audience isolation and ownership middleware input gates; registered in `npm test`.
 - `npm test` and syntax/static checks: **NOT RUN** by instruction. Development runtime: **NOT VERIFIED**.
 - User login, user routes, data CRUD, and path scoping are not implemented in this stage. Middleware must be mounted behind `userAuthMiddleware` before ownership checks are used.
-- Next: RBAC-03 Admin account/repository management and RBAC-04 User login; retain the current no-test/no-deploy boundary.
+- Next: RBAC-05 User data CRUD under assets/data/. RBAC-01–04 runtime verification remains pending.
 
 
 ## 9. RBAC-03 Implementation Record (2026-11-21)
