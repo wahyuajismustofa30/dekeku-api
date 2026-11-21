@@ -141,3 +141,13 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - No real account, mapping, or target repository data was created/modified. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
 - Known limitations: no pagination/bulk listing, no application-level write throttling, SHA conflicts are returned without automatic retry.
 - Next: RBAC-06 private/public data boundary review. RBAC-01–05 runtime verification remains pending.
+
+
+## 15. RBAC-06 — Private/Public Data Boundary Review (2026-11-21)
+- Branch: `dev`.
+- Source review verified that public file reads pass through `GitHubClient.getFile()` and `validatePublicPath()` before any GitHub upstream request. The reader requires the `public/` root and rejects private storage paths, `assets/data/`, traversal, hidden segments, sensitive names, and unsupported extensions.
+- The private storage helper remains restricted to the two exact private JSON paths. User data routes remain separate behind User JWT + mapping ownership; Admin management routes remain behind Admin JWT; Guest submit remains a separate Origin-validated public route.
+- Added `test/rbac-boundary.test.js` and registered it in `package.json`.
+- Source review: VERIFIED. Automated tests: NOT RUN per instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No live GitHub data was read or changed; no accounts/mappings were created; no secrets/configuration/deployment/Production resources touched.
+- **Current next stage: RBAC-07 Guestbook per mapped website repository.** RBAC-01–06 remain runtime NOT VERIFIED.
