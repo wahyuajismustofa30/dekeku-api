@@ -193,3 +193,11 @@
 - Updates to `main` are intended to trigger deployment to Development Worker `dekeku-api-dev` only.
 - Track tasks CICD-001..CICD-010 in [BACKLOG.md](BACKLOG.md).
 - This track is PLANNED / NOT STARTED. Production deployment is not authorized.
+
+
+## Development CI/CD Track — Current Status (2026-11-21)
+- Owner selected the Development CI/CD workstream after documentation reconciliation.
+- CICD-001 read-only audit: COMPLETE. No workflow files exist at audited dev HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`; Wrangler names `dekeku-api-dev` but has no named environment; package scripts define no deployment command.
+- CICD-002 branch-policy reconciliation: COMPLETE. Work on `dev`, PR to `main`, no direct commits/pushes to `main`. Branch protection is currently reported inactive by GitHub branch metadata and remains a separate operational gap.
+- Next: CICD-003 define PR validation contract. Workflow implementation and deployment remain pending.
+- GitHub Actions secrets/environments/settings are NOT VERIFIED. Production remains out of scope.
