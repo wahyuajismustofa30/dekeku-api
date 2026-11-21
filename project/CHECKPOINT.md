@@ -201,9 +201,9 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - **Automated tests**: `npm test` NOT RUN by explicit instruction.
 - **Development WAF**: NOT VERIFIED; connected browser dashboard access unavailable. No Cloudflare setting was read or changed.
 - **Guestbook CDN/cache**: NOT VERIFIED; no safe isolated Development fixture or live CDN evidence available. No Guestbook data was written.
-- **R-013**: recommend immediate User JWT revocation after password reset using per-user token/session version checked by User auth middleware. Owner decision OPEN; no schema/code changes made.
+- **R-013**: historical checkpoint before owner decision; now APPROVED as D-023. Implementation remains NOT STARTED; see the latest R-013 owner decision checkpoint below.
 - **Runtime/Production**: Development runtime NOT VERIFIED. Production Worker/domain/secrets/configuration untouched.
-- **Next**: finish documentation reconciliation, obtain repository execution environment for RBAC syntax/static checks (without `npm test`), then obtain read-only Development WAF and CDN evidence.
+- **Next**: perform RBAC syntax/static checks without `npm test`, then implement R-013 on dev with focused regression coverage. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
 
 
 ## Documentation Synchronization Completion Note (2026-11-21)
@@ -212,7 +212,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Current status authority: PROGRESS.md. Current ordered queue: EXECUTION_POLICY.md. RBAC_PLAN.md and BACKLOG.md are supporting detail.
 - Scope was documentation only. No application source, test code, deployment, Cloudflare configuration, secret, credential, account, mapping, or website data was changed.
 - Syntax/static validation: NOT RUN. `npm test`: NOT RUN. Development WAF: NOT VERIFIED. Guestbook CDN/cache: NOT VERIFIED. Development runtime: NOT VERIFIED.
-- R-013: immediate User JWT revocation recommended; owner decision OPEN; no code/schema change.
+- R-013: historical status before owner approval; superseded by D-023 (APPROVED), with implementation pending.
 
 
 ## Owner Decision Checkpoint — WAF Deferral & Fresh Assets (2026-11-21)
