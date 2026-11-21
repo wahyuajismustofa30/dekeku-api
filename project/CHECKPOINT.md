@@ -76,3 +76,18 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
 - Current implementation status: RBAC-01 through RBAC-09 NOT STARTED. Next: RBAC-01 private account storage and repository mapping.
 - `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
+
+
+
+## 10. RBAC-01 — Private Storage Foundation (2026-11-21)
+- Branch: `dev`; implementation added to source.
+- Added `src/modules/rbac/storage.js` with strict allowlist for `private/auth/users.json` and `private/repositories/mappings.json`.
+- User schema: unique ID/username, PBKDF2 hash format/range, fixed user role, active/disabled state, timestamps, unknown-field rejection.
+- Mapping schema: user reference, owner/repo/branch validation, canonical HTTPS Origin, active/disabled state, unique active repository and Origin.
+- Read helper checks repository access when a target document is missing, then returns an empty versioned document; validates GitHub file metadata, 1 MiB cap, UTF-8, JSON and schema.
+- Write helper permits create only with `expectedSha=null`; updates require a valid current SHA and rely on GitHub 409 for concurrent modification.
+- Added `test/rbac-storage.test.js` to local test command.
+- **Tests**: `npm test` NOT RUN per user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED.
+- **Not performed**: no account or mapping data created, no API endpoints, no secret/config/Cloudflare/Production/deployment changes.
+- **Known limitation**: updates to the two JSON documents are not transactional. RBAC management logic must coordinate updates and recover safely from SHA conflicts.
+- Next: RBAC-01 verification, then RBAC-02 role/audience/ownership middleware.
