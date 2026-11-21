@@ -100,6 +100,7 @@ export const userLogin = async (request, env) => {
       aud: "dekeku-user",
       sub: account.id,
       role: "user",
+      tokenVersion: account.tokenVersion ?? 0,
       iat: now,
       exp: now + 1800
     }, env.JWT_SECRET);
