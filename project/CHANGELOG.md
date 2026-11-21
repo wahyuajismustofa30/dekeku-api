@@ -285,7 +285,7 @@
 - RBAC syntax/static checks: NOT RUN (no repository execution environment available).
 - `npm test`: NOT RUN by explicit instruction.
 - Development WAF and Guestbook CDN/cache: NOT VERIFIED (dashboard/runtime evidence unavailable).
-- R-013: immediate User JWT revocation recommended; owner decision OPEN; no code/schema changes.
+- R-013: historical proposal status before D-023 owner approval; superseded by the approved decision and implementation records below.
 - No Production, Cloudflare configuration, secrets, credentials, accounts, mappings, or website data changed.
 
 
