@@ -4,6 +4,40 @@ import { GitHubClient } from "../../core/github.js";
 import { parseAndValidateBody, validateWritablePath, createFile, updateFile, deleteFile } from "./write.js";
 
 /**
+ * GET current GitHub Blob SHA for an existing writable JSON file.
+ * GET /api/v1/admin/write/sha?path=public/data/file.json
+ */
+export const handleGetSha = async (request, env) => {
+  const path = new URL(request.url).searchParams.get("path");
+  if (!path || typeof path !== "string") {
+    throw new HttpError("Path parameter is required", 400);
+  }
+
+  const pathValidation = validateWritablePath(path);
+  if (!pathValidation.valid) {
+    throw new HttpError(pathValidation.error, pathValidation.status);
+  }
+
+  const client = new GitHubClient(env);
+  const file = await client.getFile(path);
+  if (file.type !== "file") {
+    throw new HttpError("Path is not a file", 400);
+  }
+
+  const sha = file.sha;
+  if (typeof sha !== "string" || !/^[0-9a-fA-F]{40}$/.test(sha)) {
+    throw new HttpError("Unable to retrieve a valid file SHA", 502);
+  }
+
+  return success({
+    path,
+    sha,
+    message: "File SHA retrieved successfully",
+    _metadata: { github_ratelimit: client.rateLimit }
+  });
+};
+
+/**
  * CREATE file endpoint
  * POST /api/v1/admin/write/create
  * Body: { path: "public/data/file.json", content: { key: "value" }, message: "commit message" }
