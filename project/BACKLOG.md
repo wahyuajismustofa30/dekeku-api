@@ -15,6 +15,7 @@
 
 ## Medium Priority (Features & Refinements)
 - [x] Phase 2.3: Guestbook Module (`POST /api/v1/public/submit`) - COMPLETED & VERIFIED (PR #7 MERGED).
+- [x] Automatic SHA retrieval for Write Engine Tester (authenticated lookup endpoint + tester integration; regression tests added, verification pending).
 - [ ] Integrasi Frontend Statis dengan endpoint publik.
 - [ ] JWT Revocation.
 - [ ] Reduksi Metadata Public Endpoints.
