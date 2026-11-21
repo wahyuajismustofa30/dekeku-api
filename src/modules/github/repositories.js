@@ -19,7 +19,7 @@ const fetchCallerRepositoryConfig = async (origin) => {
     const response = await fetch(configUrl, {
       method: "GET",
       headers: { Accept: "application/json" },
-      redirect: "error",
+      redirect: "manual",
       credentials: "omit",
       cache: "no-store",
       signal: controller.signal
@@ -34,6 +34,9 @@ const fetchCallerRepositoryConfig = async (origin) => {
       durationMs: Date.now() - startedAt
     });
 
+    if (response.status >= 300 && response.status < 400) {
+      throw new HttpError("Caller repository config redirects are not allowed", 502);
+    }
     if (response.status === 404) {
       throw new HttpError("Caller repository config not found", 404);
     }
