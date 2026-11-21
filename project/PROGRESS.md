@@ -237,20 +237,16 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 3. R-013 focused regression test: PASS — `node --test test/rbac-token-version.test.js`, 6 PASS, 0 FAIL, based on the owner's Termux test report.
 4. `npm test`: NOT RUN, as explicitly instructed.
 5. Development runtime/deployment: NOT VERIFIED; no Worker deployment was performed. Therefore the deployed Worker may still accept pre-reset User JWTs until their remaining expiry (up to 30 minutes).
-6. Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior: NOT VERIFIED; next active verification task.
-7. Development WAF for User Login and Guestbook: DEFERRED by owner. Do not configure or verify until explicitly requested.
-8. Production Worker/domain/secrets/configuration/data: untouched.
+6. Non-active follow-up tasks have been moved to `project/TASK_ARCHIVE.md`; archive details are intentionally not repeated in this progress summary.
+7. Production Worker/domain/secrets/configuration/data: untouched.
 
 **Evidence qualification:** the syntax and focused-test results above are recorded from the owner's report that testing was completed in Termux. They were not independently re-executed in this ChatGPT session. No `npm test` was run.
 
 See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandatory constraints.
 
-## Owner Decision — WAF and Fresh Assets Retrieval (2026-11-21)
-- Development WAF configuration and verification are deferred. Do not spend effort on WAF until the owner asks to resume it.
-- `assets` retrieval is intended to obtain current/actual data, not stale cached responses.
-- Client requests must append a changing timestamp query parameter, e.g. `?t=<timestamp>` (or equivalent current-time value), to make each request URL unique.
-- This only bypasses cache when the CDN/cache key includes the query string; if query strings are ignored/normalized, configure bypass or an appropriate cache key before claiming freshness.
-- CDN behavior remains NOT VERIFIED; no CDN/WAF settings or production resources were changed.
+## Owner Decision — Follow-up Task Archiving (2026-11-21)
+- Owner requested that selected follow-up tasks be stored in `project/TASK_ARCHIVE.md` and not displayed in ordinary progress reports unless the archive is explicitly requested.
+- Archived items are not active work and must not be resumed automatically.
 
 
 ## Owner Decision — R-013 Immediate User JWT Revocation (2026-11-21)
