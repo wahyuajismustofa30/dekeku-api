@@ -219,3 +219,16 @@
 ### Verification
 - npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No real account, mapping, target repository data, secrets, configuration, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-06 Private/Public Data Boundary Review (2026-11-21)
+### Added
+- Added `test/rbac-boundary.test.js` covering fixed private storage allowlist, public reader denial of `private/` and `assets/data/` paths before upstream access, traversal/hidden paths, and Admin/User/Guest route separation.
+- Registered the new boundary regression suite in `package.json`.
+### Reviewed
+- Confirmed the public reader delegates to `GitHubClient.getFile()`, which applies `validatePublicPath()` before calling the GitHub Contents API.
+- Confirmed private storage uses an exact two-path allowlist and User data operations use separate authenticated ownership-scoped routes.
+### Verification
+- Source review: VERIFIED.
+- Automated test execution: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No live data, credentials, Wrangler/Cloudflare settings, deployment, or Production resources changed.
