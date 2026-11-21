@@ -189,3 +189,18 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Risks: no application-level User login or Guestbook rate limiter; WAF Development evidence pending; Guestbook Origin spoofable by non-browser clients; CDN cache/invalidation unverified; password reset does not revoke existing JWTs immediately (remaining TTL up to 30 minutes); sessionStorage remains XSS-readable.
 - No secrets, account/mapping/website data, configuration, deployment, or Production resources changed.
 - Next: permitted syntax/static checks only; do not run `npm test`. Development WAF/CDN evidence requires separate verification.
+
+
+---
+
+## Latest Execution Checkpoint — Documentation & Verification Follow-up (2026-11-21)
+- **Repository baseline inspected**: `wahyuajismustofa30/dekeku-api`, branch `dev`, HEAD before documentation updates: `6f0360e5166595945320a467a1fa2c91722b7401`.
+- **Documentation**: created [EXECUTION_POLICY.md](EXECUTION_POLICY.md) and updated AGENTS.md to require reading it. PROGRESS.md and BACKLOG.md were partially synchronized. ROADMAP.md, RBAC_PLAN.md, RECOMMENDATIONS.md, CHANGELOG.md, and this checkpoint still require reconciliation; this checkpoint records that work as partial, not complete.
+- **RBAC source inventory**: `src/middleware/auth.js`, `src/modules/auth/user-login.js`, `src/modules/public/submit.js`, `src/modules/rbac/admin.js`, `src/modules/rbac/storage.js`, `src/modules/rbac/user-data.js`; tests: `test/rbac-admin.test.js`, `test/rbac-auth.test.js`, `test/rbac-boundary.test.js`, `test/rbac-security-review.test.js`, `test/rbac-storage.test.js`, `test/rbac-user-data.test.js`, `test/rbac-user-login.test.js`.
+- **Syntax/static validation**: NOT RUN; no repository execution environment was available. Package `check` only checks `src/index.js`.
+- **Automated tests**: `npm test` NOT RUN by explicit instruction.
+- **Development WAF**: NOT VERIFIED; connected browser dashboard access unavailable. No Cloudflare setting was read or changed.
+- **Guestbook CDN/cache**: NOT VERIFIED; no safe isolated Development fixture or live CDN evidence available. No Guestbook data was written.
+- **R-013**: recommend immediate User JWT revocation after password reset using per-user token/session version checked by User auth middleware. Owner decision OPEN; no schema/code changes made.
+- **Runtime/Production**: Development runtime NOT VERIFIED. Production Worker/domain/secrets/configuration untouched.
+- **Next**: finish documentation reconciliation, obtain repository execution environment for RBAC syntax/static checks (without `npm test`), then obtain read-only Development WAF and CDN evidence.
