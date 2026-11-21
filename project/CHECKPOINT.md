@@ -239,6 +239,6 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Successful Admin password reset increments tokenVersion in the same SHA-guarded account document write as the new password hash. SHA conflict is surfaced without overwrite/retry. Admin JWTs are unaffected.
 - Changed source: src/modules/rbac/storage.js, src/modules/rbac/admin.js, src/modules/auth/user-login.js, src/middleware/auth.js.
 - Added test/rbac-token-version.test.js and registered it in package.json.
-- Syntax/static checks: NOT RUN (no repository execution environment available). Focused test: NOT RUN. npm test: NOT RUN. Development runtime: NOT VERIFIED; no deployment performed.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN (repository execution environment unavailable). Focused test: NOT RUN. npm test: NOT RUN. Development runtime: NOT VERIFIED; no deployment performed.
 - WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED. Production untouched.
 - Next: obtain repository execution environment; run node --check on all RBAC source/test files and only node --test test/rbac-token-version.test.js. Do not run npm test.
