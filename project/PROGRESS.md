@@ -91,3 +91,14 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Request limit remains 15 KiB; serialized Guestbook file limit is 1 MiB. Full files are rejected without truncation. Legacy public/data/guestbook files are not migrated or deleted.
 - Added regression tests for first write, append, SHA conflict retry, Origin rejection, payload validation, and method handling.
 - Verification: NOT RUN in this environment. Development deployment/runtime: NOT VERIFIED. No Worker config, secrets, deployment, Production resource, or data repository contents were changed.
+
+
+## RBAC Program — Approved, Implementation Pending (2026-11-21)
+- Architecture and scope approved by project owner; detailed tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
+- Roles: Admin (all API-managed data), User (owned repositories only, under `assets/data/`), Guest (public Guestbook submission only).
+- User JWT policy: `aud=dekeku-user`, role `user`, 30-minute expiry; Admin retains separate `dekeku-admin` audience.
+- Private account/mapping storage target: `dekeku-db`; PBKDF2-SHA256 password hashes; Admin-controlled accounts and repository mapping.
+- Guestbook target: mapped website repository `assets/data/bukutamu.json`; public read through static repository/CDN URL.
+- Legacy files under `public/data/{hostname}/bukutamu.json` must not be migrated or deleted automatically.
+- **Current active stage**: RBAC-01 — NOT STARTED. RBAC-02 through RBAC-09 are pending dependencies.
+- **Verification for this checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No RBAC source implementation has been applied yet.
