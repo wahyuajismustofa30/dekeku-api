@@ -74,7 +74,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Private account and repository mappings live in private `dekeku-db`; password hashes use PBKDF2-SHA256; Admin alone creates/manages accounts and mappings.
 - User CRUD is restricted to `assets/data/` in repositories mapped to that user. Guestbook writes target mapped website repository `assets/data/bukutamu.json`; static public reads bypass Worker.
 - Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
-- Latest implementation status: RBAC-01 through RBAC-04 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-05. See sections 10–11 and `project/RBAC_PLAN.md`.
+- Latest implementation status: RBAC-01 through RBAC-04 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-05. See sections 10–13 and `project/RBAC_PLAN.md`.
 - `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
 
 
@@ -90,7 +90,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - **Tests**: `npm test` NOT RUN per user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED.
 - **Not performed**: no account or mapping data created, no API endpoints, no secret/config/Cloudflare/Production/deployment changes.
 - **Known limitation**: updates to the two JSON documents are not transactional. RBAC management logic must coordinate updates and recover safely from SHA conflicts.
-- Next: RBAC-01 verification, then RBAC-02 role/audience/ownership middleware.
+- Historical next step at the time of this checkpoint: RBAC-01 verification, then RBAC-02. Both implementation records are below.
 
 
 ## 11. RBAC-02 — Role and Ownership Middleware (2026-11-21)
@@ -101,7 +101,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - `npm test` and syntax/static checks: NOT RUN by instruction; Development runtime: NOT VERIFIED.
 - No User login or API endpoints are mounted; no private account/mapping records, secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
 - Known boundary: ownership middleware must be invoked only after `userAuthMiddleware`; this ordering will be enforced when User routes are introduced.
-- Next: RBAC-03 Admin management and RBAC-04 User login. RBAC-01 verification is still pending.
+- Historical next step at the time of this checkpoint: RBAC-03 Admin management and RBAC-04 User login. Current next stage: RBAC-05.
 
 
 ## 12. RBAC-03 — Admin Account & Repository Management (2026-11-21)
@@ -115,7 +115,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - npm test and syntax/static checks: NOT RUN per user instruction; Development runtime: NOT VERIFIED.
 - No account or mapping records were created in dekeku-db. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
 - Limitations: two private JSON documents are not transactionally updated; repository existence is not checked at mapping registration; listing has no pagination.
-- Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
+- Historical next step at the time of this checkpoint: RBAC-04 User login. Current next stage: RBAC-05; RBAC-01–04 runtime verification remains pending.
 
 
 ## 13. RBAC-04 — User Login & JWT (2026-11-21)
