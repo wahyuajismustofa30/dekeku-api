@@ -100,7 +100,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Private account/mapping storage target: `dekeku-db`; PBKDF2-SHA256 password hashes; Admin-controlled accounts and repository mapping.
 - Guestbook target: mapped website repository `assets/data/bukutamu.json`; public read through static repository/CDN URL.
 - Legacy files under `public/data/{hostname}/bukutamu.json` must not be migrated or deleted automatically.
-- **Latest status**: RBAC-01 through RBAC-05 source foundations IMPLEMENTED — NOT VERIFIED. RBAC-06 onward remains pending.
+- **Latest status**: RBAC-01 through RBAC-08 source foundations IMPLEMENTED — NOT VERIFIED. RBAC-09 security regression coverage added; execution remains NOT RUN.
 - **Verification for the initial RBAC checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. Subsequent RBAC implementation records follow.
 
 
@@ -197,7 +197,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Source review: VERIFIED. Test execution: **NOT RUN** per instruction. Syntax/static checks: **NOT RUN**. Development runtime: **NOT VERIFIED**.
 - **Security follow-ups**: Origin is not authentication and can be spoofed by non-browser clients. No application-level Guestbook rate limiter is implemented; Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` must be verified/configured in Development before public exposure. Do not modify Production.
 - No real mapping/account, target website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource changed.
-- Next: RBAC-08 Browser User session integration. RBAC-01–07 remain runtime NOT VERIFIED.
+- Next: close RBAC-09 verification gaps: permitted syntax/static checks, Development WAF evidence, and CDN cache integration review. RBAC-01–08 remain runtime NOT VERIFIED.
 
 
 ## RBAC-08 — Browser User Session Integration (2026-11-21)
@@ -212,3 +212,15 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Security note: sessionStorage is JavaScript-readable and remains exposed to XSS; maintain strict output escaping/CSP and avoid third-party scripts. Token lifetime remains server-enforced at 30 minutes.
 - No secrets, account records, mappings, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
 - **Next: RBAC-09 security and regression review.** RBAC-01–08 implementation exists but remains runtime NOT VERIFIED.
+
+
+## RBAC-09 — Security & Regression Review (2026-11-21)
+- **Status: TESTS ADDED — NOT VERIFIED.**
+- Source review covered router, Admin/User middleware, private storage, Admin management, User data CRUD, User login/JWT, Guestbook submission, GitHub client, CORS, public file allowlist, and Tester session handling.
+- Added `test/rbac-security-review.test.js` with five integration regression scenarios: cross-User mapping denial before target access; server-authoritative repository coordinates; rejection of client-supplied owner/repo/branch; disabled-account rejection before mapping access; expired JWT rejection before private storage access.
+- Registered the new test file in `package.json`.
+- `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
+- Review confirms separate Admin/User audience and role checks, active-account recheck, mapping ownership check, fixed `assets/data/` prefix, fixed private storage allowlist, public reader separation, bounded JSON validation, and CORS support for Authorization.
+- Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting must be evidenced in Development. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. Password reset does not revoke already-issued User JWTs immediately; remaining lifetime is capped at 30 minutes. Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
+- No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
+- **Next:** perform permitted syntax/static checks without running `npm test`; obtain Development WAF evidence and verify CDN integration separately.
