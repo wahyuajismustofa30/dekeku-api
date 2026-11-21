@@ -3,9 +3,12 @@
 Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
-- **Fase Aktif**: Phase 2.3 (Public Submission & Guestbook) — COMPLETED & VERIFIED.
-- **Status Keseluruhan**: Public Submission, CORS, Write Engine, dan remediation R-001 s/d R-005 tercatat selesai pada sisi implementasi. `npm run check` PASS dan `npm test` 149 PASS, 0 FAIL, 0 SKIP berdasarkan laporan pengguna tanggal 2026-11-21 untuk branch `dev` pada commit `a6a089d`. Hasil ini belum diverifikasi ulang secara independen dalam sesi dokumentasi ini; remote test dan runtime/deployment tetap belum diverifikasi.
-- **Acuan Utama**: Dokumen ini adalah satu-satunya sumber status terpusat (*single source of truth*) untuk seluruh progres fitur proyek.
+- **Fase Aktif**: RBAC Security & Development Verification Follow-up.
+- **Status Keseluruhan**: RBAC-01 s/d RBAC-08 IMPLEMENTED — NOT VERIFIED; RBAC-09 TESTS ADDED — NOT VERIFIED. Syntax/static lengkap, Development runtime, WAF Development, dan CDN Guestbook pada HEAD baseline NOT VERIFIED.
+- **Baseline sebelum dokumentasi**: branch `dev`, commit `6f0360e5166595945320a467a1fa2c91722b7401`.
+- **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
+- **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
+- **Larangan tes**: `npm test` NOT RUN sesuai instruksi pemilik proyek. Jangan menjalankannya.
 
 ## Daftar Fitur & Status
 
@@ -224,3 +227,16 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting must be evidenced in Development. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. Password reset does not revoke already-issued User JWTs immediately; remaining lifetime is capped at 30 minutes. Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
 - No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
 - **Next:** perform permitted syntax/static checks without running `npm test`; obtain Development WAF evidence and verify CDN integration separately.
+
+
+## Current Verification Queue — Authoritative (2026-11-21)
+1. Documentation reconciliation: PARTIAL — execution policy saved; remaining documents still require synchronization.
+2. Syntax/static checks for every RBAC source and test file: NOT RUN. `npm run check` alone is insufficient because it checks only `src/index.js`.
+3. Development WAF for `POST /api/v1/user/login`: NOT VERIFIED.
+4. Development WAF for `POST /api/v1/public/submit`: NOT VERIFIED.
+5. Guestbook static CDN/cache freshness and post-write behavior: NOT VERIFIED.
+6. R-013: recommend immediate User JWT revocation after password reset; owner decision OPEN; no implementation authorized.
+7. `npm test`: NOT RUN by explicit instruction.
+8. Development runtime: NOT VERIFIED. Production untouched.
+
+See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ordered work queue.
