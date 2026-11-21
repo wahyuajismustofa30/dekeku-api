@@ -8,7 +8,7 @@
 - [x] **P0 — R-001:** Pembatasan origin Tester Dashboard untuk mencegah pengiriman JWT ke origin eksternal — IMPLEMENTED.
 - [x] **P1 — R-004:** Hardening validasi wildcard CORS — IMPLEMENTED.
 - [x] **P1 — R-005:** Pemisahan test lokal dan remote Development — IMPLEMENTED.
-- [ ] **P1 — R-006:** Verifikasi Cloudflare WAF rate limiting untuk `POST /api/v1/admin/login` dan `POST /api/v1/user/login` (NOT VERIFIED sampai ada bukti runtime).
+- [DEFERRED] **P1 — R-006:** Verifikasi Cloudflare WAF rate limiting ditunda atas keputusan pemilik proyek. Jangan konfigurasi atau verifikasi sebelum diminta.
 - [ ] Failed-login Audit Logging (R-007), tanpa merekam secret atau data sensitif.
 - [x] **P1 — R-002:** Dashboard Tester mengikuti kontrak respons login `access_token` — IMPLEMENTED.
 - [x] **P1 — R-003:** Header JSON dan penanganan submit Guestbook Dashboard — IMPLEMENTED.
@@ -166,8 +166,8 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] Add disabled-account and expired-token regression scenarios.
 - [x] Register `test/rbac-security-review.test.js` in package.json.
 - [ ] Run syntax/static checks; do not run `npm test` per explicit instruction.
-- [ ] Verify Cloudflare WAF/IP rate limiting for User login and Guestbook POST in Development.
-- [ ] Verify public Guestbook CDN cache/invalidation behavior.
+- [DEFERRED] WAF Development verification for User Login and Guestbook POST; owner requested to skip for now.
+- [ ] Verify `assets` retrieval freshness with timestamp cache-busting query parameter; confirm CDN cache key honors query string or bypasses cache.
 - [ ] Decide whether password reset must revoke existing User JWTs immediately; current design allows remaining lifetime up to 30 minutes.
 - Status: TESTS ADDED — NOT VERIFIED.
 
@@ -177,7 +177,13 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [x] Execution policy recorded in project documentation.
 - [ ] Reconcile remaining status documents to PROGRESS and EXECUTION_POLICY.
 - [ ] Syntax/static validation for every RBAC source and test file; do not run `npm test`.
-- [ ] Verify Development WAF for `POST /api/v1/user/login` and `POST /api/v1/public/submit` (Guestbook).
-- [ ] Verify Guestbook static CDN URL, payload, cache headers/freshness, and post-write behavior.
+- [DEFERRED] Development WAF setup/verification (do not resume until owner requests).
+- [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
 - [ ] Resolve R-013 decision on immediate JWT revocation after password reset; no code/schema changes before approval.
-- `npm test`: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
+- `npm test`: NOT RUN. Development runtime: NOT VERIFIED. WAF: DEFERRED. CDN cache-busting behavior: NOT VERIFIED.
+
+
+## Owner Decision — WAF / Assets Cache Strategy (2026-11-21)
+- WAF setup/verification is deferred; do not configure it now.
+- `assets` reads must return current data. Use a timestamp query parameter on every request to avoid reusing a cached URL.
+- Confirm query-string cache-key handling; timestamp parameters alone are insufficient if the CDN ignores query strings.
