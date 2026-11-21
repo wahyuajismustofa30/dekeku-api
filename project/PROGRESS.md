@@ -206,7 +206,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Added User login form calling `POST /api/v1/user/login`; reads the documented `access_token` response field and clears the password field after submission.
 - User JWT is stored only in `sessionStorage` under `dekeku_user_access_token`, restored when the same browser tab/session reloads, and never displayed or logged. If sessionStorage is unavailable, login is not treated as established.
 - Added a separate `userRequest()` helper that attaches only the User Bearer token. Public requests explicitly remove Authorization; Admin requests continue using the separate in-memory Admin token.
-- Added User logout and User repository listing action. A 401 from an authenticated User request clears only the User session; Admin 401 clears only the Admin in-memory session.
+- Added User logout and User repository listing action. A 401 from an authenticated User request, or a 403 carrying the exact `User account is unavailable` error, clears only the User session; Admin 401 clears only the Admin in-memory session.
 - Updated `test/tester-dashboard.test.js` assertions for both dashboard copies, role-specific Authorization isolation, sessionStorage lifecycle, and logout/401 cleanup. Test execution **NOT RUN** per explicit instruction.
 - Source inspection: VERIFIED. Syntax checks and tests: **NOT RUN**. Development browser/runtime: **NOT VERIFIED**.
 - Security note: sessionStorage is JavaScript-readable and remains exposed to XSS; maintain strict output escaping/CSP and avoid third-party scripts. Token lifetime remains server-enforced at 30 minutes.
