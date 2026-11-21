@@ -135,7 +135,7 @@ Authorization: Bearer <JWT_TOKEN>
      ```
    - **Deskripsi**: Membuat file baru di dalam `public/data/` (tanpa memerlukan SHA, aman terhadap race condition).
 
-3. **Update File (Write Engine)**
+4. **Update File (Write Engine)**
    - **Method**: `PUT`
    - **Path**: `/api/v1/admin/write/update`
    - **Header**: `Authorization: Bearer <TOKEN>`
