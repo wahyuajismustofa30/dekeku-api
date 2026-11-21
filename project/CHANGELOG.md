@@ -208,3 +208,14 @@
 ### Verification
 - npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No real account/private data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-05 User Data CRUD (2026-11-21)
+### Added
+- User repository listing and repository-scoped GET/POST/PUT/DELETE data endpoints.
+- Strict ownership resolution using the authenticated User subject and private repository mappings.
+- Fixed assets/data/ path prefix, JSON-only file validation, 1 MiB file limit, streamed request cap, strict UTF-8, and SHA-based update/delete concurrency.
+- test/rbac-user-data.test.js registered in local npm test.
+### Verification
+- npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No real account, mapping, target repository data, secrets, configuration, deployment, or Production resources changed.
