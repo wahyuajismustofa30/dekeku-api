@@ -8,7 +8,7 @@
 - [x] **P0 — R-001:** Pembatasan origin Tester Dashboard untuk mencegah pengiriman JWT ke origin eksternal — IMPLEMENTED.
 - [x] **P1 — R-004:** Hardening validasi wildcard CORS — IMPLEMENTED.
 - [x] **P1 — R-005:** Pemisahan test lokal dan remote Development — IMPLEMENTED.
-- [ ] **P1 — R-006:** Verifikasi konfigurasi Cloudflare WAF rate limiting untuk `POST /api/v1/admin/login` (NOT VERIFIED sampai ada bukti runtime).
+- [ ] **P1 — R-006:** Verifikasi Cloudflare WAF rate limiting untuk `POST /api/v1/admin/login` dan `POST /api/v1/user/login` (NOT VERIFIED sampai ada bukti runtime).
 - [ ] Failed-login Audit Logging (R-007), tanpa merekam secret atau data sensitif.
 - [x] **P1 — R-002:** Dashboard Tester mengikuti kontrak respons login `access_token` — IMPLEMENTED.
 - [x] **P1 — R-003:** Header JSON dan penanganan submit Guestbook Dashboard — IMPLEMENTED.
@@ -46,16 +46,16 @@
 
 ## RBAC Program — Approved Tasks (2026-11-21)
 See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, acceptance criteria, and full task breakdown.
-- [ ] **RBAC-01** — Private account storage and repository mapping in `dekeku-db`.
-- [ ] **RBAC-02** — Role, audience, and ownership middleware (Admin/User isolation).
+- [x] **RBAC-01** — Private account storage and repository mapping in `dekeku-db`.
+- [x] **RBAC-02** — Role, audience, and ownership middleware (Admin/User isolation).
 - [x] **RBAC-03** — Admin account and repository management endpoints (IMPLEMENTED — NOT VERIFIED).
 - [x] **RBAC-04** — User login and 30-minute User JWT (IMPLEMENTED — NOT VERIFIED).
 - [x] **RBAC-05** — User CRUD restricted to owned repositories under `assets/data/` (IMPLEMENTED — NOT VERIFIED).
 - [x] **RBAC-06** — Enforce private/public data boundary and close unintended public reads (IMPLEMENTED — NOT VERIFIED; regression suite added, not run).
-- [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
+- [x] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [x] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup (IMPLEMENTED — NOT VERIFIED).
-- [ ] **RBAC-09** — Security, regression, and isolation review (test cases added; NOT VERIFIED).
-- **Latest status**: RBAC-01 through RBAC-08 are IMPLEMENTED — NOT VERIFIED. RBAC-09 Security & Regression Review is the next implementation stage. Design approval is not implementation evidence.
+- [x] **RBAC-09** — Security, regression, and isolation test cases added (TESTS ADDED — NOT VERIFIED); verification tasks remain open.
+- **Latest status**: RBAC-01 through RBAC-08 are IMPLEMENTED — NOT VERIFIED. RBAC-09 regression tests are already added; the current stage is syntax/static and Development verification, not feature implementation. Design approval is not implementation evidence.
 - **Verification at initial checkpoint**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED. See subsequent stage records.
 
 
@@ -170,3 +170,14 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Verify public Guestbook CDN cache/invalidation behavior.
 - [ ] Decide whether password reset must revoke existing User JWTs immediately; current design allows remaining lifetime up to 30 minutes.
 - Status: TESTS ADDED — NOT VERIFIED.
+
+
+## Authoritative Current Queue (2026-11-21)
+The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PROGRESS.md is the single source of current status.
+- [x] Execution policy recorded in project documentation.
+- [ ] Reconcile remaining status documents to PROGRESS and EXECUTION_POLICY.
+- [ ] Syntax/static validation for every RBAC source and test file; do not run `npm test`.
+- [ ] Verify Development WAF for `POST /api/v1/user/login` and `POST /api/v1/public/submit` (Guestbook).
+- [ ] Verify Guestbook static CDN URL, payload, cache headers/freshness, and post-write behavior.
+- [ ] Resolve R-013 decision on immediate JWT revocation after password reset; no code/schema changes before approval.
+- `npm test`: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
