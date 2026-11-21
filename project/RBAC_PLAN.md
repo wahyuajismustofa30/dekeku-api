@@ -87,8 +87,8 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 
 | ID | Tahap | Ruang lingkup utama | Status |
 |---|---|---|---|
-| RBAC-01 | Private account storage & repository mapping | Schema akun, mapping, internal private repository access, validasi dan penyimpanan aman | NOT STARTED |
-| RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | BLOCKED BY RBAC-01 |
+| RBAC-01 | Private account storage & repository mapping | Schema akun, mapping, internal private repository access, validasi dan penyimpanan aman | IMPLEMENTED — NOT VERIFIED |
+| RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | NEXT — RBAC-01 verification pending |
 | RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | BLOCKED BY RBAC-01/02 |
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | BLOCKED BY RBAC-01/02 |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | BLOCKED BY RBAC-01/02/04 |
@@ -115,8 +115,8 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 ## 5. Status Verifikasi dan Batas Operasional
 
 - RBAC design: APPROVED oleh pemilik proyek.
-- Source implementation: NOT STARTED pada checkpoint ini.
-- `npm test`: NOT RUN atas instruksi pemilik proyek untuk melewati proses tersebut.
+- RBAC-01 source foundation: IMPLEMENTED pada branch `dev` (private storage schema, exact path allowlist, GitHub Contents API read/create/update dengan SHA concurrency). Belum ada endpoint publik/admin untuk memanipulasi akun atau mapping.
+- `npm test`: NOT RUN atas instruksi pemilik proyek untuk melewati proses tersebut. Test `test/rbac-storage.test.js` sudah ditambahkan ke suite lokal.
 - Syntax/static checks: NOT RUN.
 - Development runtime/deployment: NOT VERIFIED.
 - Production: tidak disentuh.
@@ -130,4 +130,17 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 4. Pertahankan kompatibilitas Admin yang ada sampai penggantiannya diuji dan disetujui.
 5. Jangan mengubah `main`, Worker Production, secrets, atau melakukan deployment.
 6. Jangan migrasikan atau menghapus Guestbook lama tanpa keputusan eksplisit.
-7. Langkah implementasi berikutnya: RBAC-01, dimulai dengan pemeriksaan kemampuan GitHubClient dan desain kontrak file privat sebelum menambah endpoint.
+7. Langkah berikutnya: verifikasi RBAC-01 dan lanjutkan RBAC-02 (role/audience middleware). Jangan menambahkan endpoint account management sebelum isolasi role ditetapkan.
+
+
+## 7. RBAC-01 Implementation Record (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Added `src/modules/rbac/storage.js`.
+- Private document paths are exact allowlist entries only: `private/auth/users.json` and `private/repositories/mappings.json`; public path validation remains separate and unchanged.
+- User schema validates unique IDs/usernames, PBKDF2 hash format and iteration bounds, fixed `role=user`, active/disabled status, timestamps, and rejects unknown fields.
+- Repository mapping schema validates user IDs, owner/repository/branch, canonical HTTPS Origin, status, timestamps, one active mapping per repository, and one active repository per Origin.
+- Storage reads use the private GitHub Contents API path directly, enforce 1 MiB and UTF-8/JSON/schema checks, distinguish a missing file from an inaccessible repository by confirming repository access, and return the current blob SHA.
+- Storage writes use a fixed path, enforce schema and size, use create-only when `expectedSha=null`, and require a valid current SHA for updates. GitHub 409 conflict is propagated; there is no blind overwrite or automatic retry.
+- Added `test/rbac-storage.test.js` and included it in the local `npm test` command. Tests were **NOT RUN** by user instruction. Syntax/static check: **NOT RUN**. Runtime: **NOT VERIFIED**.
+- No endpoint, account record, repository mapping, private database file, secret, Wrangler configuration, Worker setting, deployment, or Production resource was changed.
+- Remaining limitation: no transactional update across users and repository-mapping documents. Callers must preserve referential integrity and re-read latest SHA before a write; concurrency conflicts must be handled explicitly.
