@@ -12,6 +12,8 @@ const fetchCallerRepositoryConfig = async (origin) => {
   const configUrl = new URL("/config.json", origin);
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), CONFIG_TIMEOUT_MS);
+  const startedAt = Date.now();
+  let stage = "fetch";
 
   try {
     const response = await fetch(configUrl, {
@@ -21,6 +23,15 @@ const fetchCallerRepositoryConfig = async (origin) => {
       credentials: "omit",
       cache: "no-store",
       signal: controller.signal
+    });
+
+    stage = "response";
+    console.info("[CALLER_CONFIG] response", {
+      status: response.status,
+      ok: response.ok,
+      contentType: response.headers.get("content-type"),
+      contentLength: response.headers.get("content-length"),
+      durationMs: Date.now() - startedAt
     });
 
     if (response.status === 404) {
@@ -35,6 +46,7 @@ const fetchCallerRepositoryConfig = async (origin) => {
       throw new HttpError("Caller repository config is too large", 413);
     }
 
+    stage = "read-body";
     const reader = response.body?.getReader();
     if (!reader) {
       throw new HttpError("Caller repository config is empty", 422);
@@ -71,6 +83,14 @@ const fetchCallerRepositoryConfig = async (origin) => {
     return config?.repository;
   } catch (err) {
     if (err instanceof HttpError) throw err;
+
+    console.error("[CALLER_CONFIG] request failed", {
+      stage,
+      errorName: err?.name || "UnknownError",
+      errorMessage: err?.message || "Unknown error",
+      durationMs: Date.now() - startedAt
+    });
+
     if (err?.name === "AbortError") {
       throw new HttpError("Caller repository config request timed out", 504);
     }
