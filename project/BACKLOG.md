@@ -213,3 +213,13 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [x] Focused regression tests added and registered in package.json.
 - [ ] Native node --check and focused test execution; limited V8 parser check PASS 13/13 after stripping module declarations. npm test remains NOT RUN.
 - Status: IMPLEMENTATION ADDED — NOT VERIFIED; Development runtime/deployment not performed; Production untouched.
+
+
+## R-013 Verification Update (2026-11-21) — Current
+- [x] Owner reports native `node --check` PASS for all RBAC source/test files in Termux.
+- [x] Owner reports focused `node --test test/rbac-token-version.test.js`: 6 PASS, 0 FAIL.
+- [x] `npm test` remains NOT RUN, per explicit instruction.
+- [ ] Development runtime/deployment verification remains pending and requires explicit approval.
+- [ ] Guestbook CDN/cache freshness verification remains pending.
+- [DEFERRED] Development WAF verification remains deferred by owner.
+- Evidence qualification: test results are recorded from the owner's report; they were not independently re-executed in this session.
