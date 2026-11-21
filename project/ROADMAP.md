@@ -115,3 +115,14 @@
 - Admin, User, and Guest route separation reviewed; regression coverage added in `test/rbac-boundary.test.js` and registered in `package.json`.
 - Source review VERIFIED. Tests and syntax/static checks NOT RUN per instruction; Development runtime NOT VERIFIED.
 - Next: RBAC-07 Guestbook per mapped website repository.
+
+
+## RBAC-07 — Guestbook per Mapped Website Repository (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Guestbook submission now resolves the exact active Origin mapping from private `dekeku-db` storage. Repository owner/name/branch are server-derived; client cannot choose the destination.
+- Worker verifies the mapped repository exists and is public, then appends to the fixed `assets/data/bukutamu.json` path. Legacy `public/data/{hostname}/bukutamu.json` files remain untouched.
+- Preserves array JSON, strict UTF-8 and payload validation, 15 KiB request limit, 1 MiB file limit, SHA optimistic concurrency, and up to three conflict attempts.
+- Regression cases added to existing `test/public-submission.test.js`; suite already registered in `package.json`.
+- Source review VERIFIED. Tests/syntax checks NOT RUN per instruction; Development runtime NOT VERIFIED.
+- Abuse protection remains follow-up: Origin is spoofable; verify/configure Development WAF/IP rate limiting for `POST /api/v1/public/submit`. No Production configuration changed.
+- Next: RBAC-08 Browser User session integration.
