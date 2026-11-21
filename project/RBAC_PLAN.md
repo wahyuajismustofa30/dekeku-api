@@ -1,7 +1,7 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01–07 IMPLEMENTED — NOT VERIFIED
+Status: RBAC-01–08 IMPLEMENTED — NOT VERIFIED; RBAC-09 TESTS ADDED — NOT VERIFIED
 Target branch: `dev`
 
 Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
@@ -255,3 +255,13 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. Password reset does not revoke existing JWTs immediately; a previously issued token may remain usable for up to its remaining 30-minute lifetime while account status remains active. Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
 - No account/mapping/website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource was changed.
 - **Next**: perform syntax/static checks without running `npm test`; Development WAF and CDN checks require separate evidence.
+
+
+## 16. Current Verification Status (2026-11-21)
+- Authoritative current status: [PROGRESS.md](PROGRESS.md). Ordered work queue and constraints: [EXECUTION_POLICY.md](EXECUTION_POLICY.md).
+- RBAC-01–08: implementation present on `dev`; NOT VERIFIED as a complete system. Historical source-review notes do not substitute for syntax/test/runtime evidence.
+- RBAC-09: TESTS ADDED — NOT VERIFIED.
+- Syntax/static checks for every RBAC source/test file: NOT RUN. `npm test`: NOT RUN by explicit instruction.
+- Development WAF for User Login and Guestbook: NOT VERIFIED. Guestbook CDN/cache behavior: NOT VERIFIED.
+- R-013 recommendation: immediate User JWT revocation after password reset; owner decision OPEN. No code/schema change authorized by this evaluation.
+- Earlier stage-specific "Next" notes are historical and superseded by this section and EXECUTION_POLICY.
