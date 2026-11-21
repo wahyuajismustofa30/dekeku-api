@@ -270,7 +270,7 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 
 - Repository branch used for this documentation update: `dev`.
 - Owner-approved workflow: `dev` development → stable PR to `main` → PR validation → update to `main` triggers Development-only deployment to `dekeku-api-dev`.
-- CICD-001..CICD-010 are recorded in BACKLOG; execution order is in EXECUTION_POLICY.
+- Historical baseline before the owner selected the CI/CD workstream: CICD-001..CICD-010 were planned and no workstream had been selected. This status is superseded by the latest checkpoint below.
 - No workflow implementation, source code, Wrangler configuration, Cloudflare settings, secrets, deployment, or Production resources were changed.
 - CI/CD implementation and Development deployment: NOT STARTED / NOT VERIFIED.
 
@@ -279,8 +279,8 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 - Owner selected option C: reconcile historical/current documentation before selecting the next technical workstream.
 - `DECISIONS.md` D-023 now states the current status accurately: implementation is present on `dev`; owner-reported Termux syntax check and focused test PASS; Development runtime NOT VERIFIED.
 - `PROGRESS.md` is the single current status source. `EXECUTION_POLICY.md` is the single ordered work queue. Historical `Next` notes in this checkpoint and stage records are superseded.
-- `BACKLOG.md` priority snapshots are explicitly non-authoritative; CICD-001..010 remain planned, not active. Archived/deferred follow-ups must not resume automatically.
-- **Next:** await the owner's separate selection between (A) RBAC Development runtime verification, requiring explicit deployment approval, or (B) Development CI/CD, beginning with a read-only audit. No technical workstream has been selected.
+- `BACKLOG.md` priority snapshots are explicitly non-authoritative. Current CICD task status is recorded in the latest checkpoint below. Archived/deferred follow-ups must not resume automatically.
+- **Historical next step — SUPERSEDED by owner instruction:** await selection between RBAC runtime and CI/CD. The owner subsequently selected CI/CD; see the latest CICD-001/002 checkpoint below. Current next task is CICD-003.
 - `npm test`: NOT RUN. No source code, test files, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed during this documentation reconciliation.
 
 
