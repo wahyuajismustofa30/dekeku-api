@@ -6,8 +6,7 @@ import {
   readPrivateDocument,
   writePrivateDocument,
   validateUsersDocument,
-  validateRepositoryMappingsDocument,
-  normalizeRegisteredOrigin
+  validateRepositoryMappingsDocument
 } from "../rbac/storage.js";
 
 const USERNAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{2,31}$/;
@@ -106,7 +105,7 @@ const getStorage = async env => {
 
 export const handleAdminUsers = async (request, env, pathname) => {
   try {
-    const { github, users } = await getStorage(env);
+    const { github, users, repositories } = await getStorage(env);
     const method = request.method;
 
     if (pathname === "/api/v1/admin/users" && method === "POST") {
@@ -146,7 +145,6 @@ export const handleAdminUsers = async (request, env, pathname) => {
     if (!user) throw new HttpError("User not found", 404);
 
     if (pathname === "/api/v1/admin/users/" + userId && method === "GET") {
-      const { repositories } = await getStorage(env);
       return success({
         user: userPublic(user),
         repositories: repositories.document.repositories
