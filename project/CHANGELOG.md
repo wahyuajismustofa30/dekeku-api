@@ -175,3 +175,13 @@
 - `npm test`: NOT RUN by explicit user instruction.
 - Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No account data, mapping data, secrets, Worker configuration, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-02 Role & Ownership Middleware (2026-11-21)
+### Added
+- Admin/User JWT middleware separation with strict audience and role validation; retained legacy Admin middleware export.
+- User account status revalidation from private storage and ownership enforcement through opaque repository mapping IDs.
+- `test/rbac-auth.test.js` registered in the local test script.
+### Verification
+- `npm test`: NOT RUN per user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No User endpoints/login, account records, mappings, secrets, Wrangler configuration, deployment, or Production resources changed.
