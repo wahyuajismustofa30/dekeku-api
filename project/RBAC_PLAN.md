@@ -1,7 +1,7 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01–06 IMPLEMENTED — NOT VERIFIED
+Status: RBAC-01–07 IMPLEMENTED — NOT VERIFIED
 Target branch: `dev`
 
 Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
@@ -93,7 +93,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | IMPLEMENTED — NOT VERIFIED |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | IMPLEMENTED — NOT VERIFIED |
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | IMPLEMENTED — NOT VERIFIED |
-| RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | PENDING AFTER RBAC-06 |
+| RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | IMPLEMENTED — NOT VERIFIED |
 | RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | PENDING AFTER RBAC-05 |
 | RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
 
@@ -203,7 +203,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Added test/rbac-user-data.test.js for path boundary and route authorization and registered it in local npm test.
 - Verification: npm test NOT RUN per explicit instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No User account, mapping, or website repository data was created or modified.
 - Risks/limitations: repository listing and per-file operations have no pagination/bulk listing; no application-level write rate limiting; GitHub SHA conflicts surface to caller. WAF and runtime checks remain pending.
-- Next: RBAC-07 Guestbook per mapped website repository. RBAC-01 through RBAC-06 remain NOT VERIFIED at runtime.
+- Next: RBAC-08 Browser User session integration. RBAC-01 through RBAC-07 remain NOT VERIFIED at runtime.
 
 
 ## 12. RBAC-06 — Private/Public Data Boundary Review (2026-11-21)
@@ -215,3 +215,17 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Source review: VERIFIED. Automated test execution: NOT RUN per instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No real account/mapping/data, secrets, Cloudflare settings, Wrangler configuration, deployment, or Production resources changed.
 - Next: RBAC-07 Guestbook per mapped website repository.
+
+
+## 13. RBAC-07 — Guestbook per Mapped Website Repository (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Updated `src/modules/public/submit.js`. The Guest POST route first validates Origin against the shared HTTPS allowlist, then loads private user and repository mapping documents from the central `dekeku-db` repository.
+- Only an active mapping with an exact canonical Origin match is accepted. Owner, repository, branch, and destination path are never accepted from the request; all destination coordinates are sourced from the private mapping.
+- The target repository is checked through GitHub and must be public, because Guestbook reads are intended to use static repository/CDN URLs. A missing/inaccessible repository or private repository is rejected before any Guestbook file write.
+- The only write target is the fixed `assets/data/bukutamu.json` path in the mapped website repository. Legacy files at `public/data/{hostname}/bukutamu.json` remain untouched.
+- Request JSON is streamed and capped at 15 KiB, decoded as strict UTF-8, and rejects unsupported fields. Stored Guestbook JSON must be an array; file size is capped at 1 MiB. Existing entries are appended using current SHA; 409 conflicts trigger a fresh read/retry for at most three write attempts.
+- Updated `test/public-submission.test.js` for mapped target create/append, SHA conflict retry, unregistered Origin, private/missing target repository, unsupported fields, payload/content-type, and method handling. It is already included in `package.json`.
+- Source review: VERIFIED. Test execution: NOT RUN per user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- **Limitations / required follow-up**: Origin is spoofable by non-browser clients and is not authentication. No application-level rate limiter is implemented. Verify/configure Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` in Development before public exposure. Existing CDN cache/invalidation is outside the Worker write path and must be checked at the website integration layer.
+- No real account/mapping or website data was changed; no secrets, Wrangler/Cloudflare configuration, deployment, or Production resources touched.
+- Next: RBAC-08 Browser User session integration.
