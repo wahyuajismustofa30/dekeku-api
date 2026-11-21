@@ -252,17 +252,17 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Five scenarios cover cross-User mapping rejection before target repository access, server-authoritative repository coordinates, rejection of client-supplied owner/repo/branch, disabled-account rejection before mapping access, and expired JWT rejection before private storage access.
 - Source review confirms separate Admin/User audience+role checks, User active-account checks, mapping ownership verification, fixed `assets/data/` path prefix, exact private storage allowlist, public reader path boundary, bounded JSON payloads, and CORS allowance for Authorization.
 - **Test execution**: `npm test` NOT RUN by explicit instruction. Syntax/static checks NOT RUN. Development runtime NOT VERIFIED.
-- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. R-013 decision is APPROVED and source implementation is now present on dev: per-user tokenVersion is included in new User JWTs, checked on each authenticated User request, and incremented on Admin password reset. Syntax/test/runtime verification remains pending; deployed Worker may still accept old JWTs until expiry. Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
+- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting remains DEFERRED by owner. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. R-013 decision is APPROVED and source implementation is now present on dev: per-user tokenVersion is included in new User JWTs, checked on each authenticated User request, and incremented on Admin password reset. Syntax/test/runtime verification remains pending; deployed Worker may still accept old JWTs until expiry. Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
 - No account/mapping/website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource was changed.
-- **Next**: perform syntax/static checks without running `npm test`; Development WAF and CDN checks require separate evidence.
+- **Next**: run native node --check and the focused R-013 test when a repository execution environment is available; do not run npm test. WAF remains DEFERRED and CDN checks require separate evidence.
 
 
 ## 16. Current Verification Status (2026-11-21)
 - Authoritative current status: [PROGRESS.md](PROGRESS.md). Ordered work queue and constraints: [EXECUTION_POLICY.md](EXECUTION_POLICY.md).
 - RBAC-01–08: implementation present on `dev`; NOT VERIFIED as a complete system. Historical source-review notes do not substitute for syntax/test/runtime evidence.
 - RBAC-09: TESTS ADDED — NOT VERIFIED.
-- Syntax/static checks for every RBAC source/test file: NOT RUN. `npm test`: NOT RUN by explicit instruction.
-- Development WAF for User Login and Guestbook: NOT VERIFIED. Guestbook CDN/cache behavior: NOT VERIFIED.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN. `npm test`: NOT RUN by explicit instruction.
+- Development WAF for User Login and Guestbook: DEFERRED by owner. Guestbook CDN/cache behavior: NOT VERIFIED.
 - R-013: owner decision APPROVED (D-023); source implementation and focused regression test ADDED on dev; syntax/static and test execution NOT RUN. Admin JWTs unaffected.
 - Earlier stage-specific "Next" notes are historical and superseded by this section and EXECUTION_POLICY.
 
@@ -271,7 +271,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Decision: APPROVED. A successful Admin password reset immediately invalidates every previously issued User JWT for that account.
 - Implementation direction: backward-compatible per-user token/session version in private account storage; claim embedded in newly issued User JWTs; middleware compares claim against the authoritative current record on every authenticated User request; successful password reset increments the version using SHA-safe concurrency handling.
 - Admin JWTs are out of scope and remain unaffected.
-- Status: implementation NOT STARTED; current runtime behavior remains unchanged until code is implemented and verified.
+- Status at the time of this decision checkpoint: implementation NOT STARTED; superseded by the implementation record in section 18.
 - See D-023 in DECISIONS.md, PROGRESS.md, and the ordered work queue in EXECUTION_POLICY.md.
 
 
