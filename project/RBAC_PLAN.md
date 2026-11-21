@@ -1,7 +1,7 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01/02 IMPLEMENTED — NOT VERIFIED
+Status: RBAC-01–04 IMPLEMENTED — NOT VERIFIED
 Target branch: `dev`
 
 Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
@@ -90,7 +90,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-01 | Private account storage & repository mapping | Schema akun, mapping, internal private repository access, validasi dan penyimpanan aman | IMPLEMENTED — NOT VERIFIED |
 | RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | IMPLEMENTED — NOT VERIFIED |
 | RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | IMPLEMENTED — NOT VERIFIED |
-| RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | BLOCKED BY RBAC-01/02 |
+| RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | IMPLEMENTED — NOT VERIFIED |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | BLOCKED BY RBAC-01/02/04 |
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | BLOCKED BY RBAC-01/02 |
 | RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | BLOCKED BY RBAC-01 |
@@ -130,7 +130,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 4. Pertahankan kompatibilitas Admin yang ada sampai penggantiannya diuji dan disetujui.
 5. Jangan mengubah `main`, Worker Production, secrets, atau melakukan deployment.
 6. Jangan migrasikan atau menghapus Guestbook lama tanpa keputusan eksplisit.
-7. RBAC-01/02/03 telah memiliki fondasi source pada branch dev, tetapi belum diverifikasi. Tahap berikutnya RBAC-04 User login; verifikasi runtime tetap terpisah.
+7. RBAC-01 sampai RBAC-04 telah memiliki implementasi source pada branch dev, tetapi belum diverifikasi. Tahap berikutnya RBAC-05 User data CRUD; verifikasi runtime tetap terpisah.
 
 
 ## 7. RBAC-01 Implementation Record (2026-11-21)
@@ -172,4 +172,17 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Added test/rbac-admin.test.js for route authentication isolation and registered it in npm test.
 - Verification: npm test NOT RUN per instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No account/mapping data was created.
 - Limitations: cross-document operations remain non-transactional; repository existence/ownership on GitHub is not remotely verified at registration time; Admin must supply correct owner/repo/branch. No pagination yet for account/mapping lists.
-- Next: RBAC-04 User login and 30-minute User JWT. RBAC-01/02/03 runtime verification remains pending.
+- Next: RBAC-05 User data CRUD. RBAC-01–04 runtime verification remains pending.
+
+
+## 10. RBAC-04 Implementation Record (2026-11-21)
+- Status: IMPLEMENTED — NOT VERIFIED.
+- Added src/modules/auth/user-login.js and public POST /api/v1/user/login route in src/core/router.js.
+- Login reads the fixed private private/auth/users.json document through the GitHub Contents API. Username matching is case-insensitive; only active accounts may authenticate.
+- Password verification uses the existing PBKDF2-SHA256 verifier. Unknown usernames still execute PBKDF2 verification against a fixed dummy hash to reduce username-enumeration timing differences. Authentication failures share the same 401 response.
+- Successful login issues HS256 JWT with iss=dekeku-api, aud=dekeku-user, sub=<immutable user ID>, role=user, iat, and exp=iat+1800. Response includes access_token, token_type=Bearer, expires_in=1800, and non-sensitive user identity only.
+- Request parsing requires application/json, streams at most 16 KiB, enforces fatal UTF-8 and JSON object shape, and rejects unknown fields. Password input is limited to 128 characters.
+- Added test/rbac-user-login.test.js for method, content-type, malformed JSON, and unsupported-field contracts; registered in local npm test.
+- Verification: npm test NOT RUN per explicit instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No actual account was created and no private data was written.
+- Security limitation: login endpoint still needs verified Cloudflare WAF/IP rate limiting before production exposure; no new application-level login throttling or audit log is included in this stage.
+- Next: RBAC-05 User data CRUD restricted to assets/data/, using existing User authentication and repository ownership middleware. RBAC-01 through RBAC-04 remain NOT VERIFIED at runtime.
