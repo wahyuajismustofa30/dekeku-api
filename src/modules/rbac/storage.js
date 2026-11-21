@@ -111,7 +111,7 @@ export const validateRepositoryMappingsDocument = (document, usersDocument = nul
       typeof mapping.branch !== "string" ||
       mapping.branch.length < 1 ||
       mapping.branch.length > 255 ||
-      mapping.branch.includes("\\\\") ||
+      mapping.branch.includes("\\") ||
       /[\x00-\x20\x7f~^:?*\[\]]/.test(mapping.branch) ||
       mapping.branch.includes("..") ||
       mapping.branch.includes("//") ||
@@ -204,10 +204,10 @@ export const readPrivateDocument = async (githubClient, key, usersDocument = nul
   return { document, sha: file.sha, exists: true, path: config.path };
 };
 
-export const writePrivateDocument = async (githubClient, key, document, expectedSha) => {
+export const writePrivateDocument = async (githubClient, key, document, expectedSha, usersDocument = null) => {
   const config = getDocumentConfig(key);
   if (!validatePrivateStoragePath(config.path)) throw new HttpError("Private storage path is not allowed", 500);
-  config.validate(document);
+  config.validate(document, usersDocument);
 
   if (expectedSha !== null && (typeof expectedSha !== "string" || !SHA_PATTERN.test(expectedSha))) {
     throw new HttpError("A valid current SHA is required to update private storage", 400);
