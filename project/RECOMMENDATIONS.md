@@ -122,3 +122,12 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - **Risiko**: A token copied before password reset can continue accessing the account's registered repositories for its remaining lifetime, provided the account remains active.
 - **Rekomendasi**: Decide whether this residual 30-minute window is acceptable. If immediate revocation is required, approve a server-side token/session version or password-change timestamp claim checked on each request. Do not add account fields or alter JWT claims/storage schema without an explicit architecture decision.
 - **Status**: OPEN — decision required; no code/schema change made.
+
+
+## R-013 — Immediate User JWT Revocation After Password Reset (Evaluation 2026-11-21)
+- **Current behavior**: password reset updates the password hash but does not invalidate already-issued User JWTs. A token can remain usable for its remaining lifetime (up to 30 minutes) while the account stays active.
+- **Risk**: after suspected credential compromise, an attacker holding an existing JWT may retain access until token expiry.
+- **Recommendation**: adopt immediate revocation for User JWTs after password reset. A practical design is a per-user `tokenVersion`/session version stored in the private user record, included in newly issued JWTs, incremented on successful password reset, and compared on every authenticated User request. User middleware already rechecks account status against private storage, so that authoritative read can also validate the version.
+- **Trade-offs**: requires a backward-compatible schema default/migration, JWT claim validation, and SHA-safe reset writes. It does not revoke Admin JWTs unless separately designed.
+- **Decision status**: PROPOSED — owner decision OPEN. This evaluation does not authorize code/schema changes.
+- **Acceptance criteria if adopted**: old User JWT rejected immediately after reset; new password can log in; concurrent writes are handled safely; existing user records remain compatible; Admin tokens are unaffected.
