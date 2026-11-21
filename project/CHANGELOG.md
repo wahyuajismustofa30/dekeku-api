@@ -304,6 +304,19 @@
 - Approved implementation direction: backward-compatible per-user token/session version stored in private account data, embedded in newly issued User JWTs, checked against the authoritative record on every authenticated User request, and incremented during successful password reset with SHA-safe concurrency handling.
 - Admin JWTs are unaffected; User must log in again with the new password.
 ### Status / Scope
-- Decision: APPROVED. Implementation: NOT STARTED; current runtime behavior is unchanged and old tokens may remain valid until their remaining expiry (up to 30 minutes).
+- Decision: APPROVED. Source implementation and focused regression tests were subsequently added on dev; syntax/test verification and Development deployment remain pending. The currently deployed Worker may still allow old tokens until their remaining expiry (up to 30 minutes).
 - Documentation-only update. No source/schema, account data, secrets, configuration, deployment, or Production resources changed.
 - npm test: NOT RUN per explicit instruction.
+
+
+## [Unreleased] — R-013 User JWT Revocation Implementation (2026-11-21)
+### Changed
+- Added backward-compatible tokenVersion validation for private User records; legacy records and legacy User JWTs without a version resolve to version 0.
+- New User accounts start at version 0, and User login includes the current version in newly issued dekeku-user JWTs.
+- User auth and repository ownership middleware compare the JWT version with the authoritative private account record; malformed explicit claims and stale versions are rejected.
+- Successful Admin password reset increments tokenVersion in the same SHA-guarded write as the password hash. SHA conflicts are surfaced without blind overwrite/retry; overflow is rejected.
+- Added and registered test/rbac-token-version.test.js covering legacy compatibility, stale-token rejection, new-password login, Admin JWT isolation, invalid versions, and SHA conflicts.
+### Verification / Scope
+- Syntax/static checks: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by explicit instruction.
+- Development runtime: NOT VERIFIED; no deployment performed. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
+- No account data, secrets, Cloudflare configuration, or Production resources changed.
