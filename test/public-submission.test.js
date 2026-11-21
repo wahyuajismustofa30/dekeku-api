@@ -83,7 +83,7 @@ describe("Public Submission Module (RBAC Guestbook)", () => {
       const privateResponse = privateDatabaseFetch(url, options);
       if (privateResponse) return privateResponse;
       if (isTargetRepo(url) && options.method === "GET" && !String(url).includes("/contents/")) {
-        return githubResponse(200, { full_name: "site-owner/site-repo" });
+        return githubResponse(200, { full_name: "site-owner/site-repo", private: false });
       }
       if (isTargetFile(url) && options.method === "GET") {
         return githubResponse(404, { message: "Not Found" });
@@ -119,7 +119,7 @@ describe("Public Submission Module (RBAC Guestbook)", () => {
       const privateResponse = privateDatabaseFetch(url, options);
       if (privateResponse) return privateResponse;
       if (isTargetRepo(url) && options.method === "GET" && !String(url).includes("/contents/")) {
-        return githubResponse(200, { full_name: "site-owner/site-repo" });
+        return githubResponse(200, { full_name: "site-owner/site-repo", private: false });
       }
       if (isTargetFile(url) && options.method === "GET") {
         return githubResponse(200, fileResponse(
@@ -153,7 +153,7 @@ describe("Public Submission Module (RBAC Guestbook)", () => {
       const privateResponse = privateDatabaseFetch(url, options);
       if (privateResponse) return privateResponse;
       if (isTargetRepo(url) && options.method === "GET" && !String(url).includes("/contents/")) {
-        return githubResponse(200, { full_name: "site-owner/site-repo" });
+        return githubResponse(200, { full_name: "site-owner/site-repo", private: false });
       }
       if (isTargetFile(url) && options.method === "GET") {
         reads += 1;
@@ -222,6 +222,23 @@ describe("Public Submission Module (RBAC Guestbook)", () => {
       body: "test"
     });
     assert.equal((await worker.fetch(badType, env)).status, 415);
+  });
+
+
+  test("rejects a private mapped repository because Guestbook reads are static/public", async () => {
+    let fileCalls = 0;
+    globalThis.fetch = async (url, options) => {
+      const privateResponse = privateDatabaseFetch(url, options);
+      if (privateResponse) return privateResponse;
+      if (isTargetRepo(url) && options.method === "GET" && !String(url).includes("/contents/")) {
+        return githubResponse(200, { full_name: "site-owner/site-repo", private: true });
+      }
+      if (isTargetFile(url)) fileCalls += 1;
+      throw new Error("Unexpected GitHub request");
+    };
+    const response = await worker.fetch(request({ name: "A", message: "B" }), env);
+    assert.equal(response.status, 403);
+    assert.equal(fileCalls, 0);
   });
 
   test("does not create a file when the mapped repository is missing or inaccessible", async () => {
