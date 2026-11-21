@@ -66,7 +66,7 @@ describe("Tester Dashboard security and request contract", () => {
       assert.match(script, /function clearUserSession\\(/);
       assert.match(script, /Token is kept in memory only/);
       assert.doesNotMatch(script, /localStorage\\.(getItem|setItem)/);
-      assert.doesNotMatch(script, /innerText = .*userAccessToken/);
+      assert.doesNotMatch(script, /innerText = .*access_token/);
     }
   });
 
