@@ -52,7 +52,7 @@
 
 
 ## RBAC Program — Approved Architecture (2026-11-21)
-- **Status (latest)**: RBAC-01 through RBAC-05 source foundations implemented on `dev`, not verified. See implementation records below.
+- **Status (latest)**: RBAC-01 through RBAC-08 source foundations implemented on `dev`, not verified. RBAC-09 Security & Regression Review is next. See `project/RBAC_PLAN.md` and current stage records.
 - Detail and task tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
 - Roles: Admin (all API-managed data), User (only owned registered repositories under `assets/data/`), Guest (public Guestbook submission only).
 - User JWT: audience `dekeku-user`, role `user`, lifetime 30 minutes; Admin retains `dekeku-admin` audience.
