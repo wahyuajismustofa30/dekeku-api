@@ -93,8 +93,8 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | IMPLEMENTED — NOT VERIFIED |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | IMPLEMENTED — NOT VERIFIED |
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | NEXT — IMPLEMENTATION PENDING |
-| RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | BLOCKED BY RBAC-01 |
-| RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | BLOCKED BY RBAC-04 |
+| RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | PENDING AFTER RBAC-06 |
+| RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | PENDING AFTER RBAC-05 |
 | RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
 
 ## 4. Acceptance Criteria Minimum
