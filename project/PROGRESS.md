@@ -264,4 +264,4 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Successful Admin password reset updates passwordHash and increments tokenVersion in the same SHA-guarded private document write. SHA conflicts are surfaced; no blind overwrite/retry. Version overflow is rejected.
 - Added test/rbac-token-version.test.js and registered it in package.json; covers legacy records/tokens, invalid versions, old-token rejection after reset, new-password login, Admin JWT isolation, and SHA conflict behavior.
 - Syntax validation (`node --check`): PASS across all RBAC source and test files, reported by the owner after running in Termux. Focused regression test (`node --test test/rbac-token-version.test.js`): PASS (6 PASS, 0 FAIL), reported by the owner after running in Termux. These results were not independently re-executed in this session. `npm test`: NOT RUN.
-- Next: Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
+- Follow-up items are archived in `project/TASK_ARCHIVE.md` at the owner's request; do not display their details in ordinary progress reports.
