@@ -64,7 +64,7 @@ describe("Caller repository metadata", () => {
     assert.equal(body.success, true);
     assert.equal(body.name, "wahyuajismustofa30/demo");
     assert.equal(calls.length, 2);
-    assert.equal(calls[0].options.redirect, "error");
+    assert.equal(calls[0].options.redirect, "manual");
     assert.equal(calls[0].options.credentials, "omit");
   });
 
