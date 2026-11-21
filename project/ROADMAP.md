@@ -106,3 +106,12 @@
 - Added test/rbac-user-data.test.js and registered it in npm test.
 - Status: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by user instruction; Development runtime NOT VERIFIED. No real account/mapping/data, secrets, config, deployment, or Production resources changed.
 - Next: RBAC-06 private/public data boundary review. RBAC-01–05 runtime verification remains pending.
+
+
+## RBAC-06 — Private/Public Data Boundary Review (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Public file reads are constrained by `GitHubClient.getFile()` and `validatePublicPath()` before upstream access; only the `public/` tree with approved file extensions is eligible.
+- Fixed private storage paths and User `assets/data/` paths are outside the public read allowlist.
+- Admin, User, and Guest route separation reviewed; regression coverage added in `test/rbac-boundary.test.js` and registered in `package.json`.
+- Source review VERIFIED. Tests and syntax/static checks NOT RUN per instruction; Development runtime NOT VERIFIED.
+- Next: RBAC-07 Guestbook per mapped website repository.
