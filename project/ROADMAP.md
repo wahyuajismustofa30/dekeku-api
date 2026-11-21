@@ -52,14 +52,14 @@
 
 
 ## RBAC Program — Approved Architecture (2026-11-21)
-- **Status (latest)**: RBAC-01 through RBAC-04 source foundations implemented on `dev`, not verified. See implementation records below.
+- **Status (latest)**: RBAC-01 through RBAC-05 source foundations implemented on `dev`, not verified. See implementation records below.
 - Detail and task tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
 - Roles: Admin (all API-managed data), User (only owned registered repositories under `assets/data/`), Guest (public Guestbook submission only).
 - User JWT: audience `dekeku-user`, role `user`, lifetime 30 minutes; Admin retains `dekeku-admin` audience.
 - Account and repository mapping storage: private `dekeku-db` repository; PBKDF2-SHA256 password hashes; server-authoritative mapping; multiple repositories per User.
 - Guestbook target: each mapped website repository at `assets/data/bukutamu.json`; public reads use static repository/CDN URLs.
 - Existing `public/data/{hostname}/bukutamu.json` files must not be deleted or migrated automatically.
-- RBAC-01 through RBAC-04 are implemented but not verified. Next: RBAC-05 User data CRUD. `npm test`: NOT RUN by user instruction; syntax checks and runtime verification: NOT RUN / NOT VERIFIED.
+- RBAC-01 through RBAC-05 are implemented but not verified. Next: RBAC-06 private/public data boundary review. `npm test`: NOT RUN by user instruction; syntax checks and runtime verification: NOT RUN / NOT VERIFIED.
 
 
 
@@ -97,3 +97,12 @@
 - Added test/rbac-user-login.test.js to local test script.
 - Status: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by instruction; Development runtime NOT VERIFIED. No real account/data, secrets, configuration, deployment, or Production resources changed.
 - Next: RBAC-05 User data CRUD under assets/data/. RBAC-01–04 runtime verification remains pending.
+
+
+## RBAC-05 — User Data CRUD (2026-11-21)
+- Added User repository listing and scoped data endpoints: GET /api/v1/user/repositories; GET/POST/PUT/DELETE /api/v1/user/data.
+- Requires User JWT and active account; each data request resolves the mapping ID against private storage and checks ownership against JWT subject.
+- Repository coordinates are server-derived. Relative paths are fixed under assets/data/; JSON only, 1 MiB file limit, bounded request body, strict UTF-8, and SHA concurrency for update/delete.
+- Added test/rbac-user-data.test.js and registered it in npm test.
+- Status: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by user instruction; Development runtime NOT VERIFIED. No real account/mapping/data, secrets, config, deployment, or Production resources changed.
+- Next: RBAC-06 private/public data boundary review. RBAC-01–05 runtime verification remains pending.
