@@ -212,7 +212,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Current status authority: PROGRESS.md. Current ordered queue: EXECUTION_POLICY.md. RBAC_PLAN.md and BACKLOG.md are supporting detail.
 - Scope was documentation only. No application source, test code, deployment, Cloudflare configuration, secret, credential, account, mapping, or website data was changed.
 - Syntax/static validation: NOT RUN. `npm test`: NOT RUN. Development WAF: NOT VERIFIED. Guestbook CDN/cache: NOT VERIFIED. Development runtime: NOT VERIFIED.
-- R-013: historical status before owner approval; superseded by D-023 (APPROVED), with implementation pending.
+- R-013: historical status before owner approval; superseded by D-023 (APPROVED) and the source implementation checkpoint below.
 
 
 ## Owner Decision Checkpoint — WAF Deferral & Fresh Assets (2026-11-21)
@@ -228,6 +228,17 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - **Decision: APPROVED (D-023)**. A successful Admin password reset must immediately invalidate all previously issued User JWTs for that account.
 - Implementation direction: backward-compatible per-user token/session version in the private User record; include it in newly issued User JWTs; compare it with the authoritative record on every authenticated User request; increment it during password reset with SHA-safe concurrency handling.
 - Admin JWTs are unaffected. User must log in again using the new password.
-- Implementation status: NOT STARTED. Until implemented and verified, current behavior remains: previously issued User JWTs may remain valid for their remaining lifetime (up to 30 minutes).
-- Next: perform comprehensive RBAC syntax/static checks without npm test, then implement R-013 on dev with focused regression coverage. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
+- Implementation status at this historical checkpoint: NOT STARTED; superseded by the later source implementation checkpoint below.
 - This documentation update does not change source code, account records, secrets, Cloudflare settings, deployment, or Production resources.
+
+
+## R-013 Source Implementation Checkpoint (2026-11-21)
+- Branch: dev. Source implementation and focused regression test are present.
+- Backward-compatible User tokenVersion defaults to 0 for legacy records/tokens; new User JWTs carry the version.
+- User authentication and repository ownership middleware compare JWT version with current private account version.
+- Successful Admin password reset increments tokenVersion in the same SHA-guarded account document write as the new password hash. SHA conflict is surfaced without overwrite/retry. Admin JWTs are unaffected.
+- Changed source: src/modules/rbac/storage.js, src/modules/rbac/admin.js, src/modules/auth/user-login.js, src/middleware/auth.js.
+- Added test/rbac-token-version.test.js and registered it in package.json.
+- Syntax/static checks: NOT RUN (no repository execution environment available). Focused test: NOT RUN. npm test: NOT RUN. Development runtime: NOT VERIFIED; no deployment performed.
+- WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED. Production untouched.
+- Next: obtain repository execution environment; run node --check on all RBAC source/test files and only node --test test/rbac-token-version.test.js. Do not run npm test.
