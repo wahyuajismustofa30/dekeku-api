@@ -287,3 +287,12 @@
 - Development WAF and Guestbook CDN/cache: NOT VERIFIED (dashboard/runtime evidence unavailable).
 - R-013: immediate User JWT revocation recommended; owner decision OPEN; no code/schema changes.
 - No Production, Cloudflare configuration, secrets, credentials, accounts, mappings, or website data changed.
+
+
+## [Unreleased] — Owner Decision: WAF Deferred, Assets Cache-Busting (2026-11-21)
+### Decisions
+- Deferred Development WAF setup/verification; do not configure WAF until the owner resumes the task.
+- Require a changing timestamp query parameter on `assets` retrieval URLs to avoid reusing cached URLs and prioritize current data.
+- CDN freshness still requires confirming that the query string participates in the cache key, or bypassing cache when it does not.
+### Scope
+- Documentation only. No WAF/CDN settings, application code, website data, deployment, or Production resources changed.
