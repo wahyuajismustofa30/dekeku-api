@@ -88,7 +88,24 @@ export const getTesterPage = (request, env) => {
                 <button onclick="testLogin()">Login & Save Token</button>
             </div>
 
-            <!-- 4. WRITE ENGINE (ADMIN) -->
+            <!-- 4. USER LOGIN -->
+            <div class="card">
+                <h2>4. User Login</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="userLoginUser" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="userLoginPass" autocomplete="current-password">
+                </div>
+                <button onclick="testUserLogin()">Login User</button>
+                <button class="secondary" onclick="loadUserRepositories()">Load My Repositories</button>
+                <button class="secondary" onclick="clearUserSession()">Logout User</button>
+                <div class="token-area" id="userSessionStatus" aria-live="polite">No active User session.</div>
+            </div>
+
+            <!-- 5. WRITE ENGINE (ADMIN) -->
             <div class="card">
                 <h2>4. Write Engine (Admin)</h2>
                 <div class="form-group">
@@ -127,7 +144,34 @@ export const getTesterPage = (request, env) => {
         const API_ORIGIN = window.location.origin;
         try { window.localStorage.removeItem('dekeku_jwt'); } catch {}
         let jwtToken = '';
+        let userAccessToken = '';
+        const USER_SESSION_KEY = 'dekeku_user_access_token';
         let guestbookSubmitting = false;
+
+        function loadUserToken() {
+            try {
+                const token = window.sessionStorage.getItem(USER_SESSION_KEY);
+                return typeof token === 'string' ? token : '';
+            } catch {
+                return '';
+            }
+        }
+
+        function updateUserSessionUI() {
+            const status = document.getElementById('userSessionStatus');
+            if (status) {
+                status.innerText = userAccessToken
+                    ? 'User session active. Token is stored in this browser tab session only.'
+                    : 'No active User session.';
+            }
+        }
+
+        function clearUserSession(silent = false) {
+            userAccessToken = '';
+            try { window.sessionStorage.removeItem(USER_SESSION_KEY); } catch {}
+            updateUserSessionUI();
+            if (!silent) log('User session cleared.', 'LOGOUT');
+        }
 
         function getApiUrl(path) {
             const currentOrigin = new URL(API_ORIGIN);
@@ -158,10 +202,10 @@ export const getTesterPage = (request, env) => {
             }
         }
 
-        function clearToken() {
+        function clearToken(silent = false) {
             jwtToken = '';
             updateTokenUI();
-            log('Admin session cleared.');
+            if (!silent) log('Admin session cleared.', 'LOGOUT');
         }
 
         function redactSecrets(value) {
@@ -185,7 +229,7 @@ export const getTesterPage = (request, env) => {
                 typeof safeMessage === 'object' ? JSON.stringify(safeMessage, null, 2) : String(safeMessage);
         }
 
-        async function performRequest(path, options = {}) {
+        async function performRequest(path, options = {}, session = 'public') {
             let url;
             try {
                 url = getApiUrl(path);
@@ -214,7 +258,13 @@ export const getTesterPage = (request, env) => {
                     }
                 }
 
-                if (response.status === 401) clearToken();
+                if (response.status === 401) {
+                    if (session === 'admin') clearToken(true);
+                    if (session === 'user') clearUserSession(true);
+                } else if (session === 'user' && response.status === 403 &&
+                    data && data.error === 'User account is unavailable') {
+                    clearUserSession(true);
+                }
                 log(data || {}, response.status + ' ' + response.statusText);
                 return { status: response.status, data };
             } catch {
@@ -226,7 +276,7 @@ export const getTesterPage = (request, env) => {
         async function apiRequest(path, options = {}) {
             const headers = new Headers(options.headers || {});
             headers.delete('Authorization');
-            return performRequest(path, { ...options, headers });
+            return performRequest(path, { ...options, headers }, 'public');
         }
 
         async function adminRequest(path, options = {}) {
@@ -236,7 +286,17 @@ export const getTesterPage = (request, env) => {
             }
             const headers = new Headers(options.headers || {});
             headers.set('Authorization', 'Bearer ' + jwtToken);
-            return performRequest(path, { ...options, headers });
+            return performRequest(path, { ...options, headers }, 'admin');
+        }
+
+        async function userRequest(path, options = {}) {
+            if (!userAccessToken) {
+                log('Silakan login User terlebih dahulu.', 'AUTH REQUIRED');
+                return { status: 401, data: null };
+            }
+            const headers = new Headers(options.headers || {});
+            headers.set('Authorization', 'Bearer ' + userAccessToken);
+            return performRequest(path, { ...options, headers }, 'user');
         }
 
         function testApi(path) {
@@ -274,6 +334,48 @@ export const getTesterPage = (request, env) => {
                 clearToken();
                 log('Login response did not contain a valid access_token.', 'INVALID RESPONSE');
             }
+        }
+
+        async function testUserLogin() {
+            const username = document.getElementById('userLoginUser').value.trim();
+            const passwordInput = document.getElementById('userLoginPass');
+            const password = passwordInput.value;
+            if (!username || !password) {
+                log('Username dan password User wajib diisi.', 'VALIDATION ERROR');
+                return;
+            }
+
+            const res = await apiRequest('/api/v1/user/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            passwordInput.value = '';
+
+            if (res.status === 200 && res.data && typeof res.data.access_token === 'string' &&
+                res.data.access_token.trim()) {
+                try {
+                    window.sessionStorage.setItem(USER_SESSION_KEY, res.data.access_token);
+                    userAccessToken = res.data.access_token;
+                    updateUserSessionUI();
+                    log({
+                        success: true,
+                        message: 'User session established. Token is stored in sessionStorage and is not displayed.',
+                        user: res.data.user || null
+                    }, 'USER LOGIN SUCCESS');
+                } catch {
+                    clearUserSession(true);
+                    log('Browser sessionStorage is unavailable. User session was not saved.', 'STORAGE ERROR');
+                }
+            } else if (res.status === 200) {
+                clearUserSession(true);
+                log('User login response did not contain a valid access_token.', 'INVALID RESPONSE');
+            }
+        }
+
+        async function loadUserRepositories() {
+            const res = await userRequest('/api/v1/user/repositories');
+            if (res.status === 200) log(res.data || {}, 'USER REPOSITORIES');
         }
 
         async function testGuestbook() {
@@ -337,7 +439,9 @@ export const getTesterPage = (request, env) => {
         }
 
         document.getElementById('apiOriginDisplay').innerText = API_ORIGIN;
+        userAccessToken = loadUserToken();
         updateTokenUI();
+        updateUserSessionUI();
 
     </script>
 </body>

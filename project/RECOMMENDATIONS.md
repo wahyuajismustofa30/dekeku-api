@@ -61,7 +61,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 
 ### R-006. Verifikasi penerapan Cloudflare WAF Rate Limiting
 - **Dasar keputusan**: D-013 menyetujui rate limiting berbasis IP melalui Cloudflare WAF untuk mitigasi brute-force login.
-- **Rekomendasi**: Verifikasi konfigurasi aktual untuk `POST /api/v1/admin/login`, scope hostname/environment, threshold, window, action, dan response. Mulai dari Development; jangan mengubah Production tanpa persetujuan eksplisit.
+- **Rekomendasi**: Verifikasi konfigurasi aktual untuk `POST /api/v1/admin/login` dan `POST /api/v1/user/login`, scope hostname/environment, threshold, window, action, dan response. Guestbook abuse protection untuk `POST /api/v1/public/submit` dicatat terpisah pada R-012. Mulai dari Development; jangan mengubah Production tanpa persetujuan eksplisit.
 - **Tes penerimaan**: request normal, percobaan gagal berulang dari IP yang sama, IP berbeda, masa cooldown, dan bukti rule aktif.
 - **Status**: NOT VERIFIED — keputusan telah disetujui, tetapi konfigurasi runtime belum dibuktikan dalam review ini.
 
@@ -108,3 +108,26 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - Semua implementasi dilakukan pada branch `dev` dan mengikuti alur PR yang tercatat pada D-011.
 - Worker Production `github` dan domain `api.dekeku.my.id` tidak boleh diubah tanpa persetujuan eksplisit.
 - Setiap rekomendasi harus ditutup dengan bukti implementasi dan pengujian; jika belum ada bukti, status tetap NOT VERIFIED atau NOT RUN.
+
+
+## R-012. Guestbook submission abuse protection
+- **Temuan**: Origin allowlisting and repository mapping prevent arbitrary destination selection, but Origin is not authentication and can be forged by non-browser clients. The Worker currently has no application-level per-IP/per-Origin Guestbook rate limiter.
+- **Rekomendasi**: Configure and verify Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` in Development. Select threshold/window based on expected legitimate traffic and monitor false positives. Do not change Production without explicit approval.
+- **Tes penerimaan**: valid submission below threshold, repeated submissions from one IP, independent IP behavior, cooldown/reset, and evidence of the active Development rule.
+- **Status**: OPEN — configuration/runtime NOT VERIFIED. This is a required abuse-protection follow-up before public exposure.
+
+
+## R-013. Immediate User JWT revocation after password reset
+- **Temuan**: sebelum keputusan D-023, Admin password reset tidak membatalkan JWT User yang telah diterbitkan; token dapat tetap berlaku hingga sisa masa berlaku maksimal 30 menit.
+- **Risiko**: token yang disalin sebelum reset dapat tetap mengakses repository milik User selama sisa masa berlaku.
+- **Keputusan pemilik**: APPROVED (D-023, 2026-11-21). Semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Implementasi menggunakan token/session version server-side; rincian dan acceptance criteria ada pada bagian keputusan R-013 di bawah.
+- **Status**: keputusan APPROVED; source implementation using per-user tokenVersion and focused regression tests have been added on dev. Limited V8 parser check PASS 13/13 after stripping module declarations; native node --check, test execution, and Development runtime verification remain pending. The currently deployed Worker has not been updated.
+
+
+## R-013 — Immediate User JWT Revocation After Password Reset (Decision 2026-11-21)
+- **Owner decision: APPROVED**. Every User JWT issued before a successful Admin password reset must become invalid immediately; the User must log in again using the new password.
+- **Implementation direction**: add a backward-compatible per-user token/session version in the private User record; include the current version in newly issued User JWTs; compare the claim with the authoritative private record on every authenticated User request; increment the version during successful password reset using SHA-safe concurrency handling.
+- **Scope**: User JWTs only. Admin JWTs are not revoked by this decision.
+- **Acceptance criteria**: old User JWT rejected immediately after reset; new password can log in and receive a valid token; existing records remain compatible; concurrent SHA conflicts are handled safely; Admin JWTs remain unaffected.
+- **Status**: DECISION APPROVED (D-023); source implementation ADDED on dev, NOT VERIFIED. Until Development deployment and runtime verification, the currently deployed Worker may still allow old tokens for their remaining lifetime (up to 30 minutes).
+- This decision authorizes the R-013 implementation on dev; it does not authorize deployment or any Production changes.

@@ -6,8 +6,21 @@ Before starting any task in this repository, you MUST read the following project
 3. `project/PROGRESS.md` - Feature status.
 4. `project/DECISIONS.md` - Architectural decisions.
 5. `project/CHECKPOINT.md` - Last state and next steps.
+6. `project/EXECUTION_POLICY.md` - Mandatory execution sequence, evidence requirements, and ordered current work queue.
 
 Adhere to the authority and security principles defined in `project/MASTER.md`.
+
+## PROJECT AUTHORITY — MANDATORY
+1. **Wahyu (Project Owner): highest authority.** All final project decisions, scope, priorities, approvals, and instructions belong to Wahyu. No project document, code, prior decision, or assistant recommendation can override Wahyu's latest explicit instruction.
+2. **ChatGPT: lead development assistant, second in command.** ChatGPT supports Wahyu through analysis, technical planning, project direction, task instructions, coordination, and review of Codex work. ChatGPT may delegate technical work to Codex within Wahyu's authority, but has no independent authority to change owner decisions.
+3. **Codex in Termux: subordinate execution assistant, third in command.** Codex helps ChatGPT in the Termux repository environment with inspection, editing, testing, and reporting as delegated. It must follow Wahyu's latest instructions and applicable ChatGPT task direction. It must not independently change project goals, architecture, scope, or operational approvals.
+
+### Conflict handling
+- If any document, earlier decision, implementation, or assistant direction conflicts with Wahyu's latest explicit instruction, stop the affected action and report the exact conflict.
+- Explain the practical impact and offer clear options or request the specific approval needed. Do not silently choose a path where the conflict affects scope, security, data, credentials, deployment, or Production.
+- If Wahyu's instruction is clear and safe, update conflicting documentation so it no longer misleads future work. Preserve historical records as historical; do not rewrite history.
+- Technical evidence establishes what the repository/runtime actually does, but does not override the owner's decision authority.
+- A newer explicit instruction from Wahyu overrides an older ChatGPT delegation. If Codex finds an instruction unsafe, contradictory, or technically impossible, it must stop and report rather than improvise.
 
 ## GIT & GITHUB WORKFLOW POLICY
 

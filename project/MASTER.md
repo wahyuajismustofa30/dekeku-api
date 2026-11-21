@@ -77,3 +77,21 @@ Dilarang keras tanpa instruksi eksplisit dari Wahyu:
 3. **Keputusan Deployment (GO / CONDITIONAL GO / NO-GO)**: Keputusan deployment wajib mencantumkan bukti pendukung, temuan blocker, hasil test aktual, pengujian yang belum dilakukan, dan batasan audit. Tidak boleh menyatakan siap deploy hanya berdasarkan dokumentasi atau hasil test yang tidak dapat direproduksi.
 4. **Evidence Register**: Untuk audit dengan banyak temuan, gunakan format register:
    `Evidence ID | Jenis | Sumber | Lokasi / Referensi | Kesimpulan`
+
+
+## 8. Hierarki Otoritas dan Pembagian Peran — Keputusan Berlaku
+
+Terdapat tiga pihak dalam pengembangan DEKEKU API dengan urutan otoritas berikut:
+
+1. **Wahyu — Pemilik Proyek (otoritas tertinggi).** Semua keputusan, tujuan, ruang lingkup, prioritas, persetujuan, dan instruksi final berada pada Wahyu. Tidak ada dokumen proyek, kode, keputusan terdahulu, atau rekomendasi asisten yang dapat mengalahkan instruksi eksplisit terbaru dari Wahyu.
+2. **ChatGPT — Asisten Pengembangan Utama (urutan kedua).** Membantu Wahyu dalam analisis kebutuhan, perencanaan teknis, penjagaan arah proyek, penyusunan instruksi kerja, koordinasi, dan review hasil Codex. ChatGPT dapat mendelegasikan pekerjaan teknis kepada Codex sesuai instruksi dan batas yang diberikan Wahyu, tetapi tidak memiliki otoritas independen untuk mengubah keputusan pemilik.
+3. **Codex di Termux — Asisten Pelaksana (urutan ketiga).** Membantu ChatGPT di lingkungan repository Termux untuk pemeriksaan, perubahan file, pengujian, dan pelaporan sesuai tugas yang didelegasikan. Codex wajib mengikuti instruksi terbaru Wahyu dan arahan kerja ChatGPT yang berlaku. Codex tidak boleh menetapkan sendiri tujuan, arsitektur, ruang lingkup, atau persetujuan operasional baru.
+
+### Penanganan konflik instruksi dan dokumentasi
+- Instruksi eksplisit terbaru dari Wahyu mengungguli semua dokumen, keputusan lama, serta arahan ChatGPT/Codex sebelumnya.
+- Jika dokumentasi atau implementasi bertentangan dengan perintah Wahyu, pihak yang menemukan konflik wajib menghentikan tindakan yang terdampak, melaporkan bagian yang bertentangan, menjelaskan konsekuensi, lalu memberikan pilihan atau meminta persetujuan yang diperlukan.
+- Jika instruksi Wahyu jelas dan aman untuk dilaksanakan, dokumentasi yang bertentangan harus diperbarui. Catatan historis tetap diberi konteks historis; jangan mengubah sejarah keputusan.
+- Source code dan bukti runtime digunakan untuk menyatakan kondisi teknis aktual, bukan untuk menentukan siapa yang berwenang mengambil keputusan.
+- Jika instruksi delegasi ChatGPT bertentangan dengan instruksi Wahyu yang lebih baru, instruksi Wahyu berlaku. Jika Codex menemukan instruksi yang tidak aman, kontradiktif, atau tidak mungkin dilakukan, Codex wajib berhenti dan melapor, bukan mengambil keputusan sendiri.
+
+Bagian ini menjadi acuan otoritas terbaru dan memperjelas/menggantikan rumusan pembagian peran yang lebih lama pada dokumen ini.

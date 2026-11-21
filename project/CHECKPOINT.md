@@ -66,3 +66,199 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - SHA validation and GitHub optimistic concurrency remain mandatory; a concurrent file change can still produce 409.
 - Regression tests added, but automated tests and syntax checks are NOT RUN. Development deployment/runtime is NOT VERIFIED.
 - No deployment, Production request, secret/configuration change, or Termux synchronization was performed.
+
+
+## 9. RBAC Program — Approved Next Work (2026-11-21)
+- RBAC architecture approved; full stage/task tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
+- Roles: Admin, User, Guest with distinct scopes. User JWT uses `aud=dekeku-user`, `role=user`, 30-minute lifetime; existing Admin audience remains distinct.
+- Private account and repository mappings live in private `dekeku-db`; password hashes use PBKDF2-SHA256; Admin alone creates/manages accounts and mappings.
+- User CRUD is restricted to `assets/data/` in repositories mapped to that user. Guestbook writes target mapped website repository `assets/data/bukutamu.json`; static public reads bypass Worker.
+- Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
+- Latest implementation status: RBAC-01 through RBAC-08 foundations IMPLEMENTED — NOT VERIFIED. RBAC-09 security regression tests added but NOT VERIFIED. Next: permitted syntax/static checks (do not run `npm test`), then Development WAF/CDN evidence. See sections 10–18 and `project/RBAC_PLAN.md`.
+- `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
+
+
+
+## 10. RBAC-01 — Private Storage Foundation (2026-11-21)
+- Branch: `dev`; implementation added to source.
+- Added `src/modules/rbac/storage.js` with strict allowlist for `private/auth/users.json` and `private/repositories/mappings.json`.
+- User schema: unique ID/username, PBKDF2 hash format/range, fixed user role, active/disabled state, timestamps, unknown-field rejection.
+- Mapping schema: user reference, owner/repo/branch validation, canonical HTTPS Origin, active/disabled state, unique active repository and Origin.
+- Read helper checks repository access when a target document is missing, then returns an empty versioned document; validates GitHub file metadata, 1 MiB cap, UTF-8, JSON and schema.
+- Write helper permits create only with `expectedSha=null`; updates require a valid current SHA and rely on GitHub 409 for concurrent modification.
+- Added `test/rbac-storage.test.js` to local test command.
+- **Tests**: `npm test` NOT RUN per user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED.
+- **Not performed**: no account or mapping data created, no API endpoints, no secret/config/Cloudflare/Production/deployment changes.
+- **Known limitation**: updates to the two JSON documents are not transactional. RBAC management logic must coordinate updates and recover safely from SHA conflicts.
+- Historical next step at the time of this checkpoint: RBAC-01 verification, then RBAC-02. Both implementation records are below.
+
+
+## 11. RBAC-02 — Role and Ownership Middleware (2026-11-21)
+- Branch: `dev`; implementation added in `src/middleware/auth.js`.
+- Exports `adminAuthMiddleware`, compatibility alias `authMiddleware`, `userAuthMiddleware`, and `repositoryOwnershipMiddleware`.
+- Admin tokens require `aud=dekeku-admin` and `role=admin`; User tokens require `aud=dekeku-user` and `role=user`. User status is checked against private account storage. Ownership checks resolve only active mappings belonging to the authenticated user.
+- Added `test/rbac-auth.test.js` to `npm test`.
+- `npm test` and syntax/static checks: NOT RUN by instruction; Development runtime: NOT VERIFIED.
+- No User login or API endpoints are mounted; no private account/mapping records, secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
+- Known boundary: ownership middleware must be invoked only after `userAuthMiddleware`; this ordering will be enforced when User routes are introduced.
+- Historical next step at the time of this checkpoint: RBAC-03 Admin management and RBAC-04 User login. Current next stage: RBAC-05.
+
+
+## 12. RBAC-03 — Admin Account & Repository Management (2026-11-21)
+- Branch: dev; source added in src/modules/rbac/admin.js and routes in src/core/router.js.
+- Admin routes: POST/GET /api/v1/admin/users, GET/PATCH /api/v1/admin/users/:id, POST /api/v1/admin/users/:id/reset-password, POST/GET /api/v1/admin/users/:id/repositories, PATCH/DELETE /api/v1/admin/repositories/:id.
+- All routes are behind existing Admin JWT middleware. DELETE mapping is soft-disable; it does not delete a record.
+- Passwords are PBKDF2-SHA256 hashes, role fixed to User, IDs generated server-side, and password hashes are excluded from responses.
+- Mapping writes validate user reference, repository fields, branch, canonical HTTPS Origin, and active uniqueness; client cannot select mapping/user IDs or status.
+- JSON bodies are streamed with a 16 KiB cap and exact accepted-field checks. Writes use current GitHub blob SHA.
+- Added test/rbac-admin.test.js to npm test.
+- npm test and syntax/static checks: NOT RUN per user instruction; Development runtime: NOT VERIFIED.
+- No account or mapping records were created in dekeku-db. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
+- Limitations: two private JSON documents are not transactionally updated; repository existence is not checked at mapping registration; listing has no pagination.
+- Historical next step at the time of this checkpoint: RBAC-04 User login. Current next stage: RBAC-05; RBAC-01–04 runtime verification remains pending.
+
+
+## 13. RBAC-04 — User Login & JWT (2026-11-21)
+- Branch: dev; added src/modules/auth/user-login.js and mounted POST /api/v1/user/login in src/core/router.js.
+- Reads User account records only from fixed private private/auth/users.json; username comparison is case-insensitive; disabled accounts are rejected.
+- Password verification uses PBKDF2-SHA256. Unknown usernames trigger a dummy PBKDF2 verification; invalid credentials share the same 401 response.
+- JWT claims: iss=dekeku-api, aud=dekeku-user, role=user, sub=<account ID>, iat, exp=iat+1800. Response returns Bearer access token and non-sensitive user identity.
+- JSON request body is streamed with 16 KiB cap, requires application/json, validates UTF-8/object shape, and rejects unknown fields.
+- Added test/rbac-user-login.test.js to local npm test.
+- npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No account/private data created or changed; no secrets, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
+- Security follow-up: verify WAF/IP rate limiting for User login before production; application-level throttling and audit log remain separate tasks.
+- Next: RBAC-05 User data CRUD confined to assets/data/. RBAC-01–04 runtime verification remains pending.
+
+
+## 14. RBAC-05 — User Data CRUD (2026-11-21)
+- Branch: dev. Added src/modules/rbac/user-data.js; updated src/core/router.js; added test/rbac-user-data.test.js and registered it in package.json.
+- Routes: GET /api/v1/user/repositories and GET/POST/PUT/DELETE /api/v1/user/data.
+- User JWT and active account required. Data routes require mapping ID owned by JWT subject; owner/repo/branch are resolved only from private mappings.
+- User path is relative and server-prefixed assets/data/. Rejects encoded paths, traversal, backslash, absolute/hidden paths, control characters, repeated separators, and non-JSON extensions.
+- GET returns parsed JSON and SHA; POST creates; PUT/DELETE require 40-character SHA. JSON root object/array; max file size 1 MiB; streamed body cap 1,153,434 bytes; strict UTF-8.
+- npm test: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No real account, mapping, or target repository data was created/modified. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
+- Known limitations: no pagination/bulk listing, no application-level write throttling, SHA conflicts are returned without automatic retry.
+- Next: RBAC-06 private/public data boundary review. RBAC-01–05 runtime verification remains pending.
+
+
+## 15. RBAC-06 — Private/Public Data Boundary Review (2026-11-21)
+- Branch: `dev`.
+- Source review verified that public file reads pass through `GitHubClient.getFile()` and `validatePublicPath()` before any GitHub upstream request. The reader requires the `public/` root and rejects private storage paths, `assets/data/`, traversal, hidden segments, sensitive names, and unsupported extensions.
+- The private storage helper remains restricted to the two exact private JSON paths. User data routes remain separate behind User JWT + mapping ownership; Admin management routes remain behind Admin JWT; Guest submit remains a separate Origin-validated public route.
+- Added `test/rbac-boundary.test.js` and registered it in `package.json`.
+- Source review: VERIFIED. Automated tests: NOT RUN per instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No live GitHub data was read or changed; no accounts/mappings were created; no secrets/configuration/deployment/Production resources touched.
+- **Current next stage: RBAC-07 Guestbook per mapped website repository.** RBAC-01–06 remain runtime NOT VERIFIED.
+
+
+## 16. RBAC-07 — Guestbook per Mapped Website Repository (2026-11-21)
+- Branch: `dev`.
+- Replaced legacy Guestbook destination resolution in `src/modules/public/submit.js`: request Origin must pass HTTPS `ALLOWED_ORIGINS`, then match one active mapping in private `dekeku-db` storage.
+- Target owner/repository/branch are server-derived from mapping. Worker verifies the target repository exists and is public, then writes only to `assets/data/bukutamu.json`.
+- Request does not accept a repository ID, owner, repository, branch, or path. Unsupported body fields are rejected.
+- Request body uses streamed 15 KiB cap and strict UTF-8; stored array JSON is limited to 1 MiB. SHA concurrency is preserved with at most three read/write attempts on 409.
+- Updated `test/public-submission.test.js`; it is already registered in `package.json`.
+- Legacy `public/data/{hostname}/bukutamu.json` files were not accessed, deleted, copied, or migrated.
+- Source review: VERIFIED. Tests: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- Risk/follow-up: Origin can be spoofed by non-browser clients. No app-level Guestbook rate limiter exists; verify/configure Cloudflare WAF/IP rate limiting for the Guestbook POST route in Development before public exposure. CDN cache behavior needs website-level verification.
+- No real mapping/account/data, secrets, Wrangler/Cloudflare settings, deployment, or Production resources changed.
+- **Current next stage: RBAC-09 Security & Regression Review follow-up.** RBAC-01–08 remain runtime NOT VERIFIED.
+
+
+## 17. RBAC-08 — Browser User Session Integration (2026-11-21)
+- Branch: `dev`.
+- Updated `src/modules/tester/index.js` and `public/tester.html` with User login form, User session status, logout, and authenticated User repository listing.
+- User login calls `POST /api/v1/user/login`, consumes `access_token`, and stores it only in `sessionStorage` key `dekeku_user_access_token`. Password input is cleared after login; JWT is never displayed or logged.
+- Added `userRequest()` with User Bearer token. Public helper removes Authorization; Admin helper retains its distinct in-memory Admin JWT.
+- User request 401, or 403 with the exact `User account is unavailable` error, clears User token and UI state; Admin request 401 clears only Admin state. Logout removes the sessionStorage key.
+- Updated `test/tester-dashboard.test.js` to cover both page copies and separate auth helpers/session lifecycle.
+- Source review: VERIFIED. Syntax checks/tests: NOT RUN per instruction. Development browser/runtime: NOT VERIFIED.
+- XSS limitation: sessionStorage is readable by same-origin JavaScript; keep strict output handling and avoid third-party scripts.
+- No accounts/mappings/secrets/configuration/deployment/Production resources changed.
+- **Current next stage: RBAC-09 Security & Regression Review.** RBAC-01–08 remain runtime NOT VERIFIED.
+
+
+## 18. RBAC-09 — Security & Regression Review (2026-11-21)
+- Branch: `dev`.
+- Added `test/rbac-security-review.test.js`; registered in `package.json`.
+- Regression cases: cross-User mapping/IDOR denial before target access; repository owner/repo/branch resolved only from server mapping; client owner/repo/branch injection rejected; disabled account rejected before mapping read; expired User JWT rejected before private storage access.
+- Reviewed RBAC router/middleware/storage/Admin/User/Guestbook/JWT/CORS/GitHub/public path and Tester session source.
+- `npm test`: NOT RUN per explicit instruction. Syntax checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
+- Risks: no application-level User login or Guestbook rate limiter; WAF Development evidence pending; Guestbook Origin spoofable by non-browser clients; CDN cache/invalidation unverified; password reset does not revoke existing JWTs immediately (remaining TTL up to 30 minutes); sessionStorage remains XSS-readable.
+- No secrets, account/mapping/website data, configuration, deployment, or Production resources changed.
+- Next: permitted syntax/static checks only; do not run `npm test`. Development WAF/CDN evidence requires separate verification.
+
+
+---
+
+## Latest Execution Checkpoint — Documentation & Verification Follow-up (2026-11-21)
+- **Repository baseline inspected**: `wahyuajismustofa30/dekeku-api`, branch `dev`, HEAD before documentation updates: `6f0360e5166595945320a467a1fa2c91722b7401`.
+- **Documentation**: created [EXECUTION_POLICY.md](EXECUTION_POLICY.md) and updated AGENTS.md to require reading it. PROGRESS.md, BACKLOG.md, ROADMAP.md, RBAC_PLAN.md, RECOMMENDATIONS.md, CHANGELOG.md, AGENTS.md, and EXECUTION_POLICY.md were updated in a documentation-only sequence. The current queue is recorded in EXECUTION_POLICY.md.
+- **RBAC source inventory**: `src/middleware/auth.js`, `src/modules/auth/user-login.js`, `src/modules/public/submit.js`, `src/modules/rbac/admin.js`, `src/modules/rbac/storage.js`, `src/modules/rbac/user-data.js`; tests: `test/rbac-admin.test.js`, `test/rbac-auth.test.js`, `test/rbac-boundary.test.js`, `test/rbac-security-review.test.js`, `test/rbac-storage.test.js`, `test/rbac-user-data.test.js`, `test/rbac-user-login.test.js`.
+- **Syntax/static validation**: NOT RUN; no repository execution environment was available. Package `check` only checks `src/index.js`.
+- **Automated tests**: `npm test` NOT RUN by explicit instruction.
+- **Development WAF**: NOT VERIFIED; connected browser dashboard access unavailable. No Cloudflare setting was read or changed.
+- **Guestbook CDN/cache**: NOT VERIFIED; no safe isolated Development fixture or live CDN evidence available. No Guestbook data was written.
+- **R-013**: historical checkpoint before owner decision; now APPROVED as D-023. Implementation remains NOT STARTED; see the latest R-013 owner decision checkpoint below.
+- **Runtime/Production**: Development runtime NOT VERIFIED. Production Worker/domain/secrets/configuration untouched.
+- **Next**: perform RBAC syntax/static checks without `npm test`, then implement R-013 on dev with focused regression coverage. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
+
+
+## Documentation Synchronization Completion Note (2026-11-21)
+- Current branch HEAD after documentation-only updates: `455effb343fb582b0a0a5915ec68ed46d68205a6`.
+- Updated docs: `AGENTS.md`, `project/EXECUTION_POLICY.md`, `project/PROGRESS.md`, `project/BACKLOG.md`, `project/ROADMAP.md`, `project/RBAC_PLAN.md`, `project/RECOMMENDATIONS.md`, `project/CHANGELOG.md`, and `project/CHECKPOINT.md`.
+- Current status authority: PROGRESS.md. Current ordered queue: EXECUTION_POLICY.md. RBAC_PLAN.md and BACKLOG.md are supporting detail.
+- Scope was documentation only. No application source, test code, deployment, Cloudflare configuration, secret, credential, account, mapping, or website data was changed.
+- Syntax/static validation: NOT RUN. `npm test`: NOT RUN. Development WAF: NOT VERIFIED. Guestbook CDN/cache: NOT VERIFIED. Development runtime: NOT VERIFIED.
+- R-013: historical status before owner approval; superseded by D-023 (APPROVED) and the source implementation checkpoint below.
+
+
+## Owner Decision Checkpoint — WAF Deferral & Fresh Assets (2026-11-21)
+- Development WAF setup/verification: DEFERRED by owner. No WAF rules/settings should be configured or tested until explicitly resumed.
+- `assets` retrieval goal: fetch actual/current data and avoid stale cache.
+- Required request behavior: append a changing timestamp query parameter (e.g. `?t=<timestamp>`) to the assets URL for each fetch.
+- Important caveat: timestamp cache-busting only works if the CDN/cache key includes the query string. If query parameters are ignored, cache must be bypassed or configured to include the parameter.
+- CDN/query cache behavior: NOT VERIFIED. No Cloudflare settings, website data, or Production resources changed.
+- `npm test`: NOT RUN. Production untouched.
+
+
+## Owner Decision Checkpoint — R-013 Immediate User JWT Revocation (2026-11-21)
+- **Decision: APPROVED (D-023)**. A successful Admin password reset must immediately invalidate all previously issued User JWTs for that account.
+- Implementation direction: backward-compatible per-user token/session version in the private User record; include it in newly issued User JWTs; compare it with the authoritative record on every authenticated User request; increment it during password reset with SHA-safe concurrency handling.
+- Admin JWTs are unaffected. User must log in again using the new password.
+- Implementation status at this historical checkpoint: NOT STARTED; superseded by the later source implementation checkpoint below.
+- This documentation update does not change source code, account records, secrets, Cloudflare settings, deployment, or Production resources.
+
+
+## R-013 Source Implementation Checkpoint (2026-11-21)
+- Branch: dev. Source implementation and focused regression test are present.
+- Backward-compatible User tokenVersion defaults to 0 for legacy records/tokens; new User JWTs carry the version.
+- User authentication and repository ownership middleware compare JWT version with current private account version.
+- Successful Admin password reset increments tokenVersion in the same SHA-guarded account document write as the new password hash. SHA conflict is surfaced without overwrite/retry. Admin JWTs are unaffected.
+- Changed source: src/modules/rbac/storage.js, src/modules/rbac/admin.js, src/modules/auth/user-login.js, src/middleware/auth.js.
+- Added test/rbac-token-version.test.js and registered it in package.json.
+- Syntax validation (`node --check`): VERIFIED (exit code 0 for all RBAC source and test files). Focused test (`node --test test/rbac-token-version.test.js`): VERIFIED (6 PASS, 0 FAIL). npm test: NOT RUN per user instruction.
+- Follow-up items were subsequently moved to `project/TASK_ARCHIVE.md` at the owner's request. Production untouched.
+
+
+## Termux Verification Checkpoint (2026-11-21)
+- Owner reports that testing was completed in Termux against the current R-013 implementation on `dev`.
+- `node --check`: PASS for all RBAC source and test files.
+- `node --test test/rbac-token-version.test.js`: PASS, 6 PASS, 0 FAIL.
+- `npm test`: NOT RUN, per explicit instruction.
+- Evidence qualification: these results are recorded from the owner's report; they were not independently re-executed in this ChatGPT session.
+- R-013 source and regression test remain present on `dev`; Admin JWT behavior is unchanged by design.
+- Development deployment/runtime: NOT VERIFIED. WAF: DEFERRED. Guestbook CDN/cache behavior: NOT VERIFIED.
+- Production Worker/domain/secrets/configuration/data remain untouched.
+- The owner later requested that deferred follow-up items be archived and not displayed unless the archive is explicitly requested. See `project/TASK_ARCHIVE.md`; do not surface its contents in ordinary reports.
+
+
+## Governance Checkpoint — Authority Hierarchy (2026-11-21)
+- Wahyu adalah pemilik proyek dan pemegang keputusan final.
+- ChatGPT adalah asisten pengembangan utama (urutan kedua), bertugas menganalisis, merencanakan, mengoordinasikan/delegasi, dan mereview pekerjaan Codex.
+- Codex di Termux adalah asisten pelaksana (urutan ketiga), bekerja sesuai delegasi ChatGPT dan instruksi Wahyu.
+- Instruksi eksplisit terbaru Wahyu mengungguli dokumen, keputusan lama, kode, dan arahan asisten. Konflik wajib dihentikan pada tindakan terdampak, dilaporkan beserta dampaknya, lalu diberikan opsi atau permintaan persetujuan yang relevan.
+- Dokumentasi normatif: [MASTER.md](MASTER.md) bagian 8, [DECISIONS.md](DECISIONS.md) D-024, [EXECUTION_POLICY.md](EXECUTION_POLICY.md), dan [AGENTS.md](../AGENTS.md).
+- Perubahan ini hanya memperbarui dokumentasi; source code, test, deployment, Cloudflare, secrets, akun, mapping, data, dan Production tidak diubah.
