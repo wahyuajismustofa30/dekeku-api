@@ -174,3 +174,13 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Added test/rbac-user-data.test.js to local test script.
 - npm test: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No real account, mapping, or target repository data changed; no secrets/config/deployment/Production resources touched.
 - Next: RBAC-06 private/public data boundary review, including public reader isolation from private and assets/data paths. RBAC-01–05 runtime verification remains pending.
+
+
+## RBAC-06 — Private/Public Data Boundary Review (2026-11-21)
+- **Source review: VERIFIED** on branch `dev`.
+- Public file route `GET /api/v1/github/file` delegates to `GitHubClient.getFile()`, which decodes and validates the path with `validatePublicPath()` before making any GitHub API request. The policy requires the first path segment to be exactly `public`, rejects hidden segments, traversal, malformed/empty segments, sensitive names, and non-allowlisted extensions.
+- Confirmed `private/auth/users.json`, `private/repositories/mappings.json`, and `assets/data/*.json` are outside the public allowlist. User CRUD is routed separately behind User JWT and ownership mapping; Admin account/mapping routes remain behind Admin JWT; Guest submission remains a separate public POST route requiring an allowlisted Origin.
+- Added `test/rbac-boundary.test.js` covering fixed private-storage paths, denial of private/assets paths before upstream access, traversal/hidden-path rejection, and Admin/User/Guest route separation. Registered it in `package.json`.
+- **Verification**: source review VERIFIED; regression test source added but **NOT RUN**; syntax/static checks **NOT RUN**; Development runtime **NOT VERIFIED**.
+- No runtime GitHub reads/writes, real account/mapping/data changes, secrets, Wrangler/Cloudflare settings, deployment, or Production resources changed.
+- **Stage status: IMPLEMENTED — NOT VERIFIED.** RBAC-01–06 foundations implemented; runtime verification remains pending. Next: RBAC-07 Guestbook per mapped website repository.
