@@ -302,3 +302,14 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 - `npm test` remains NOT RUN; remote tests excluded because they may write active Guestbook data.
 - README currently still documents `npm test`; documentation mismatch recorded for follow-up.
 - Next: CICD-004 implement workflow only after owner approval of workflow implementation. No workflow exists from this task; no tests or deployments were run.
+
+
+## Latest Checkpoint — CICD-004 Workflow Implemented (2026-11-21)
+- Branch: `dev`; workflow file: `.github/workflows/pr-validation.yml`.
+- Trigger restricted to PRs targeting `main`, with a job guard requiring head `dev`. PR events do not deploy.
+- Required steps: `npm ci`; `node --check` all JS files under `src/` and `test/`; assert `wrangler.jsonc` targets `dekeku-api-dev`; run Wrangler `deploy --dry-run`; execute only explicitly mapped focused test suites for changed files. `npm audit --audit-level=high` is warning-only.
+- Actions pinned to immutable commit SHAs; workflow/job permissions `contents: read`; checkout credentials not persisted; concurrency grouped by PR.
+- No secrets, Cloudflare settings, Worker deployment, Production resource, branch protection, or PR creation changed.
+- `npm test`: NOT RUN. Remote tests excluded and not run.
+- Workflow file was re-read from GitHub, but YAML/workflow execution and actual CI result are NOT VERIFIED. A PR `dev` → `main` is needed to trigger validation.
+- Next: CICD-006 Development-only credential isolation review, then CICD-007 deployment safety controls. Do not implement CICD-005 deployment workflow until both are addressed.
