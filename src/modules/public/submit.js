@@ -12,7 +12,7 @@ const SHA_PATTERN = /^[a-f0-9]{40}$/i;
 
 const readJsonBody = async request => {
   const contentType = request.headers.get("Content-Type") || "";
-  if (!/^application\\/json(?:\\s*;|\\s*$)/i.test(contentType)) {
+  if (!/^application\/json(?:\s*;|\s*$)/i.test(contentType)) {
     throw new HttpError("Content-Type must be application/json", 415);
   }
 
@@ -83,7 +83,6 @@ const resolveRepository = async (request, env) => {
 
   // Repository coordinates come only from the validated private mapping.
   return {
-    mappingId: mapping.id,
     github: new GitHubClient({
       ...env,
       GITHUB_OWNER: mapping.owner,
@@ -106,7 +105,7 @@ const decodeGuestbookFile = file => {
 
   let bytes;
   try {
-    const binary = atob(file.content.replace(/\\s/g, ""));
+    const binary = atob(file.content.replace(/\s/g, ""));
     bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
   } catch {
     throw new HttpError("Guestbook storage is not valid Base64", 502);
