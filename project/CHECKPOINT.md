@@ -74,7 +74,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Private account and repository mappings live in private `dekeku-db`; password hashes use PBKDF2-SHA256; Admin alone creates/manages accounts and mappings.
 - User CRUD is restricted to `assets/data/` in repositories mapped to that user. Guestbook writes target mapped website repository `assets/data/bukutamu.json`; static public reads bypass Worker.
 - Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
-- Latest implementation status: RBAC-01 and RBAC-02 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-03 / RBAC-04. See sections 10–11 and `project/RBAC_PLAN.md`.
+- Latest implementation status: RBAC-01, RBAC-02, and RBAC-03 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-04. See sections 10–11 and `project/RBAC_PLAN.md`.
 - `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
 
 
@@ -102,3 +102,17 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - No User login or API endpoints are mounted; no private account/mapping records, secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
 - Known boundary: ownership middleware must be invoked only after `userAuthMiddleware`; this ordering will be enforced when User routes are introduced.
 - Next: RBAC-03 Admin management and RBAC-04 User login. RBAC-01 verification is still pending.
+
+
+## 12. RBAC-03 — Admin Account & Repository Management (2026-11-21)
+- Branch: dev; source added in src/modules/rbac/admin.js and routes in src/core/router.js.
+- Admin routes: POST/GET /api/v1/admin/users, GET/PATCH /api/v1/admin/users/:id, POST /api/v1/admin/users/:id/reset-password, POST/GET /api/v1/admin/users/:id/repositories, PATCH/DELETE /api/v1/admin/repositories/:id.
+- All routes are behind existing Admin JWT middleware. DELETE mapping is soft-disable; it does not delete a record.
+- Passwords are PBKDF2-SHA256 hashes, role fixed to User, IDs generated server-side, and password hashes are excluded from responses.
+- Mapping writes validate user reference, repository fields, branch, canonical HTTPS Origin, and active uniqueness; client cannot select mapping/user IDs or status.
+- JSON bodies are streamed with a 16 KiB cap and exact accepted-field checks. Writes use current GitHub blob SHA.
+- Added test/rbac-admin.test.js to npm test.
+- npm test and syntax/static checks: NOT RUN per user instruction; Development runtime: NOT VERIFIED.
+- No account or mapping records were created in dekeku-db. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
+- Limitations: two private JSON documents are not transactionally updated; repository existence is not checked at mapping registration; listing has no pagination.
+- Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
