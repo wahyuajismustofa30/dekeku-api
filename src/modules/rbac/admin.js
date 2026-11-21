@@ -127,6 +127,7 @@ export const handleAdminUsers = async (request, env, pathname) => {
         passwordHash: await hashPassword(body.password),
         role: "user",
         status: "active",
+        tokenVersion: 0,
         createdAt: now,
         updatedAt: now
       };
@@ -173,7 +174,16 @@ export const handleAdminUsers = async (request, env, pathname) => {
       if (typeof body.password !== "string" || body.password.length < PASSWORD_MIN || body.password.length > PASSWORD_MAX) {
         throw new HttpError("Password must be 12–128 characters", 422);
       }
-      const updated = { ...user, passwordHash: await hashPassword(body.password), updatedAt: timestamp() };
+      const currentTokenVersion = user.tokenVersion ?? 0;
+      if (currentTokenVersion >= Number.MAX_SAFE_INTEGER) {
+        throw new HttpError("User token version cannot be incremented", 409);
+      }
+      const updated = {
+        ...user,
+        passwordHash: await hashPassword(body.password),
+        tokenVersion: currentTokenVersion + 1,
+        updatedAt: timestamp()
+      };
       const next = {
         ...users.document,
         users: users.document.users.map(item => item.id === userId ? updated : item)
