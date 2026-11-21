@@ -320,3 +320,10 @@
 - Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by explicit instruction.
 - Development runtime: NOT VERIFIED; no deployment performed. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
 - No account data, secrets, Cloudflare configuration, or Production resources changed.
+
+
+### Changed — Project Governance (2026-11-21)
+- Established the three-level authority model: Wahyu (Project Owner) > ChatGPT (Lead Development Assistant) > Codex in Termux (Execution Assistant).
+- Added mandatory conflict handling: stop affected work, report discrepancies with impact, and offer options or request approval when documentation or prior instructions conflict with the owner's latest explicit instruction.
+- Updated AGENTS.md, MASTER.md, DECISIONS.md (D-024), EXECUTION_POLICY.md, PROGRESS.md, and CHECKPOINT.md.
+- Documentation-only change; no source code, tests, deployment, Cloudflare configuration, secrets, account records, mappings, website data, or Production resources changed.
