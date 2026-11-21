@@ -60,3 +60,13 @@
 - Guestbook target: each mapped website repository at `assets/data/bukutamu.json`; public reads use static repository/CDN URLs.
 - Existing `public/data/{hostname}/bukutamu.json` files must not be deleted or migrated automatically.
 - Next stage: RBAC-01 private account storage and repository mapping. `npm test`: NOT RUN by user instruction; syntax checks and runtime verification: NOT RUN / NOT VERIFIED.
+
+
+
+## RBAC-01 — Private Account Storage Foundation (2026-11-21)
+- **Implementation**: ADDED on branch `dev`; see [RBAC_PLAN.md](RBAC_PLAN.md).
+- Fixed private paths: `private/auth/users.json` and `private/repositories/mappings.json`.
+- Added strict user/mapping schema validation and internal GitHub Contents API read/create/update with file-size limit and mandatory SHA for updates.
+- Added `test/rbac-storage.test.js` to local test script.
+- **Status**: IMPLEMENTED — NOT VERIFIED. `npm test` NOT RUN by user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED.
+- Next: RBAC-02 role/audience/ownership middleware. No endpoints or data records have been added; no Production/deployment/configuration/secret changes.
