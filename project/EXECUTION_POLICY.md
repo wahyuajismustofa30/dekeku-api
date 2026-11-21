@@ -31,7 +31,7 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 ## Ordered current work queue
 1. [x] Record this mandatory execution policy.
 2. [x] Reconcile PROGRESS, BACKLOG, ROADMAP, RBAC_PLAN, RECOMMENDATIONS, CHANGELOG, and CHECKPOINT to the approved R-013 decision and current queue.
-3. [ ] Syntax/static-check every RBAC source and test file; repository execution environment is currently unavailable. Do not run `npm test`.
+3. [ ] Run native node --check for every RBAC source/test file. Limited V8 parser check already PASS 13/13 after stripping ES-module import/export declarations; package.json JSON parse and test registration PASS. Repository execution environment unavailable; do not run npm test.
 4. [DEFERRED] Verify/configure Development WAF for User Login and Guestbook POST only when owner resumes this task.
 5. [ ] Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
 6. [x] Add R-013 source implementation: backward-compatible per-user tokenVersion, User JWT claim, per-request version check, and increment during successful password reset.
@@ -54,6 +54,7 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 ## R-013 Implementation Evidence (2026-11-21)
 - Source implementation is present on dev: src/modules/rbac/storage.js, src/modules/rbac/admin.js, src/modules/auth/user-login.js, and src/middleware/auth.js.
 - Focused regression suite added: test/rbac-token-version.test.js; registered in package.json.
-- Syntax/static validation: NOT RUN because the connected GitHub file interface does not provide a repository execution environment in this session.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing. package.json JSON parse and focused test registration: PASS.
+- Native node --check: NOT RUN because the connected GitHub file interface does not provide a repository execution environment in this session.
 - Focused test: NOT RUN. npm test: NOT RUN by explicit instruction.
 - No Development deployment, Cloudflare configuration, account data, secrets, or Production resources changed.
