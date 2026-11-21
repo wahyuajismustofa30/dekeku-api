@@ -20,7 +20,7 @@ concurrency:
 jobs:
   validate:
     name: PR Validation (Development → Main)
-    if: github.event.pull_request.head.ref == 'dev' && github.event.pull_request.base.ref == 'main'
+    if: github.event.pull_request.head.ref == 'dev' && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
