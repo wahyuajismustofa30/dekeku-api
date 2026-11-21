@@ -240,8 +240,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Changed source: src/modules/rbac/storage.js, src/modules/rbac/admin.js, src/modules/auth/user-login.js, src/middleware/auth.js.
 - Added test/rbac-token-version.test.js and registered it in package.json.
 - Syntax validation (`node --check`): VERIFIED (exit code 0 for all RBAC source and test files). Focused test (`node --test test/rbac-token-version.test.js`): VERIFIED (6 PASS, 0 FAIL). npm test: NOT RUN per user instruction.
-- WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED. Production untouched.
-- Next: Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
+- Follow-up items were subsequently moved to `project/TASK_ARCHIVE.md` at the owner's request. Production untouched.
 
 
 ## Termux Verification Checkpoint (2026-11-21)
@@ -253,4 +252,4 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - R-013 source and regression test remain present on `dev`; Admin JWT behavior is unchanged by design.
 - Development deployment/runtime: NOT VERIFIED. WAF: DEFERRED. Guestbook CDN/cache behavior: NOT VERIFIED.
 - Production Worker/domain/secrets/configuration/data remain untouched.
-- Next active item: verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior using an isolated safe Development target. Do not deploy or perform real writes without explicit approval.
+- The owner later requested that deferred follow-up items be archived and not displayed unless the archive is explicitly requested. See `project/TASK_ARCHIVE.md`; do not surface its contents in ordinary reports.
