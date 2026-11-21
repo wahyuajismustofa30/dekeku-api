@@ -225,7 +225,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Registered the new test file in `package.json`.
 - `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
 - Review confirms separate Admin/User audience and role checks, active-account recheck, mapping ownership check, fixed `assets/data/` prefix, fixed private storage allowlist, public reader separation, bounded JSON validation, and CORS support for Authorization.
-- Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting must be evidenced in Development. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. Password reset does not revoke already-issued User JWTs immediately; remaining lifetime is capped at 30 minutes. Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
+- Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting must be evidenced in Development. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. R-013 is APPROVED but implementation is pending; until implemented, previously issued User JWTs can remain usable for up to their remaining 30-minute lifetime. Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
 - No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
 - **Next:** perform permitted syntax/static checks without running `npm test`; obtain Development WAF evidence and verify CDN integration separately.
 
@@ -235,7 +235,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 2. Syntax/static checks for every RBAC source and test file: NOT RUN. `npm run check` alone is insufficient because it checks only `src/index.js`.
 3. Development WAF for User Login and Guestbook: DEFERRED by owner; no configuration changes.
 4. `assets` retrieval must use a timestamp cache-busting query parameter (for example `?t=<timestamp>`); whether the CDN honors it in its cache key is NOT VERIFIED.
-5. R-013: recommend immediate User JWT revocation after password reset; owner decision OPEN; no implementation authorized.
+5. R-013: owner decision APPROVED (D-023); implement per-user token/session version and immediate rejection of pre-reset User JWTs.
 6. `npm test`: NOT RUN by explicit instruction.
 7. Development runtime: NOT VERIFIED. Production untouched.
 
@@ -248,3 +248,11 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ord
 - Client requests must append a changing timestamp query parameter, e.g. `?t=<timestamp>` (or equivalent current-time value), to make each request URL unique.
 - This only bypasses cache when the CDN/cache key includes the query string; if query strings are ignored/normalized, configure bypass or an appropriate cache key before claiming freshness.
 - CDN behavior remains NOT VERIFIED; no CDN/WAF settings or production resources were changed.
+
+
+## Owner Decision — R-013 Immediate User JWT Revocation (2026-11-21)
+- **Decision: APPROVED**. After Admin successfully resets a User password, every previously issued JWT for that User must be rejected immediately; the User must authenticate again using the new password.
+- Approved implementation direction: add a per-user token/session version to the private User record; include the current version in newly issued User JWTs; compare the JWT claim against the authoritative private record on every authenticated User request; increment the version during successful password reset using SHA-safe concurrency handling.
+- Scope: User JWTs only. Admin JWT behavior is unchanged.
+- Implementation status: NOT STARTED. Until implemented and verified, the current residual-token window (up to 30 minutes) remains.
+- No source/schema, account data, secrets, Worker configuration, deployment, or Production resources changed by recording this decision.
