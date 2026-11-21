@@ -1,12 +1,12 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-21
+Tanggal Pembaruan: 2026-11-21 (CICD-001/002)
 
 ## Ringkasan Proyek
-- **Fase Aktif**: Dokumentasi telah direkonsiliasi; pemilihan prioritas teknis berikutnya menunggu keputusan pemilik.
+- **Fase Aktif**: Development CI/CD — CICD-003 (definisi kontrak validasi PR). CICD-001 audit read-only dan CICD-002 rekonsiliasi kebijakan branch selesai.
 - **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
-- **Prioritas teknis berikutnya**: BELUM DIPILIH. Pemilik akan menentukan secara terpisah apakah melanjutkan verifikasi runtime RBAC di Development (memerlukan persetujuan deployment eksplisit) atau track CI/CD Development.
-- **Baseline sebelum dokumentasi**: branch `dev`, commit `6f0360e5166595945320a467a1fa2c91722b7401`.
+- **Prioritas teknis aktif**: CICD-003 — definisikan kontrak validasi PR. Tidak membuat workflow atau melakukan deployment pada tahap ini.
+- **Baseline audit CI/CD**: branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
 - **Larangan tes**: `npm test` NOT RUN sesuai instruksi pemilik proyek. Jangan menjalankannya.
@@ -294,3 +294,13 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Current documentation status: reconciled to the owner-reported R-013 Termux verification, explicit `npm test` prohibition, archived/deferred follow-ups, and approved Development-only CI/CD target policy.
 - **Next technical workstream: NOT SELECTED.** Ask the owner to choose separately between RBAC Development runtime verification (deployment requires explicit approval) and Development CI/CD (starting with a read-only audit).
 - No source code, tests, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed by this documentation task.
+
+
+## Development CI/CD — Current Workstream (2026-11-21)
+- **Owner instruction:** after selecting option C for documentation reconciliation, the owner explicitly instructed to continue with the CI/CD workstream.
+- **CICD-001 — COMPLETE (read-only):** audited repository tree, Wrangler target, package scripts, .gitignore, README, and GitHub branch metadata at dev HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
+- Findings: no .github/workflows exists at the audited commit; Worker name is `dekeku-api-dev`; Wrangler has no named environment; package scripts have no deploy command; build/check are syntax checks only. GitHub Actions secrets/environments/settings are NOT VERIFIED.
+- **CICD-002 — COMPLETE:** current instructions consistently require development on `dev`, PR `dev` → `main`, and prohibit direct commit/push to `main`. No policy conflict found in AGENTS.md, MASTER.md, README.md, and D-025.
+- **Branch protection finding:** GitHub branch metadata reports `protected=false` for both `dev` and `main`; full branch protection detail is NOT VERIFIED due API permission restriction. No settings were changed.
+- **NEXT ACTIVE:** CICD-003 — define PR validation contract only. Do not create/run workflows or deploy until required design and approval gates are satisfied.
+- **Constraints:** `npm test` remains NOT RUN. Production Worker `github`, `api.dekeku.my.id`, Production credentials/config/data untouched. No Wrangler, Cloudflare, secrets, source code, or workflow changes.
