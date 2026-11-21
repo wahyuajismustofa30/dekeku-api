@@ -161,3 +161,11 @@
 - Owner approved immediate invalidation of all User JWTs issued before a successful password reset.
 - Implementation direction: per-user token/session version stored in private account record, embedded in newly issued User JWTs, validated on each authenticated User request, and incremented during password reset.
 - Implementation is not yet started; no runtime behavior has changed. See EXECUTION_POLICY.md for the ordered next steps.
+
+
+## R-013 Implementation Update (2026-11-21)
+- Implemented optional per-user tokenVersion with backward-compatible default 0; new accounts initialize at 0.
+- User login signs the current version into User JWTs; User middleware validates it against private storage on each authenticated request.
+- Successful Admin password reset increments the version in the same SHA-guarded private account write as the password hash.
+- Focused regression tests added and registered. Syntax/static checks and test execution remain NOT RUN; Development runtime NOT VERIFIED.
+- No deployment or Production changes.
