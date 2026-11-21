@@ -232,3 +232,18 @@
 - Source review: VERIFIED.
 - Automated test execution: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No live data, credentials, Wrangler/Cloudflare settings, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-07 Guestbook per Mapped Website Repository (2026-11-21)
+### Changed
+- Guestbook submission now resolves the active Origin mapping from private `dekeku-db` storage and derives repository coordinates exclusively from that mapping.
+- Target repository must exist and be public; Guestbook writes are fixed to `assets/data/bukutamu.json`.
+- Added strict streamed request parsing, exact accepted body fields, and retained the 15 KiB request cap, 1 MiB stored-file cap, SHA optimistic concurrency, and three-attempt conflict handling.
+- Legacy `public/data/{hostname}/bukutamu.json` files remain untouched; no migration or deletion was performed.
+### Tests
+- Expanded `test/public-submission.test.js` for mapped repository create/append, conflict retry, unregistered Origin, private/missing repository, unsupported fields, and input/method validation. Existing `package.json` script already includes the test file.
+### Verification
+- Source review: VERIFIED.
+- `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- Origin spoofing remains possible for non-browser clients; WAF/IP rate limiting for Guestbook POST is a required Development follow-up. CDN cache behavior is not verified.
+- No live account/mapping/website data, secrets, configuration, deployment, or Production resources changed.
