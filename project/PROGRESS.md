@@ -102,3 +102,14 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Legacy files under `public/data/{hostname}/bukutamu.json` must not be migrated or deleted automatically.
 - **Current active stage**: RBAC-01 — NOT STARTED. RBAC-02 through RBAC-09 are pending dependencies.
 - **Verification for this checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No RBAC source implementation has been applied yet.
+
+
+
+## RBAC-01 — Private Account Storage Foundation (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Added `src/modules/rbac/storage.js` with fixed private document paths `private/auth/users.json` and `private/repositories/mappings.json`; no arbitrary private path is accepted.
+- Added strict schema validation for user records (unique ID/username, PBKDF2-SHA256 hash, role fixed to `user`, status, timestamps) and repository mappings (user reference, owner/repo/branch, canonical HTTPS Origin, status, unique active repository and Origin).
+- Private GitHub Contents API reads enforce file size, UTF-8, JSON and schema validation; missing files are distinguished from inaccessible repositories. Writes use fixed paths, create-only without SHA, or update with mandatory current SHA.
+- Added `test/rbac-storage.test.js` to the local test script. Per explicit instruction, `npm test` was NOT RUN; syntax/static check NOT RUN; Development runtime NOT VERIFIED.
+- No account records or mapping files were created in `dekeku-db`; no account-management endpoints exist yet. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
+- **Next**: RBAC-02 role/audience/ownership middleware after RBAC-01 verification. Cross-document writes are not transactional; SHA conflicts must be surfaced and handled explicitly.
