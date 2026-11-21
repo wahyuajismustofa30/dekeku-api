@@ -153,5 +153,11 @@
 - Syntax/static checks for all RBAC files: NOT RUN. `npm test`: NOT RUN by owner instruction.
 - Development WAF (User Login and Guestbook): NOT VERIFIED.
 - Guestbook static CDN/cache behavior: NOT VERIFIED.
-- R-013: immediate User JWT revocation recommended; owner decision OPEN.
+- R-013: immediate User JWT revocation APPROVED (D-023); implementation pending on dev.
 - Historical "Next" notes in earlier stage entries do not override the current work queue.
+
+
+## R-013 Decision Update (2026-11-21)
+- Owner approved immediate invalidation of all User JWTs issued before a successful password reset.
+- Implementation direction: per-user token/session version stored in private account record, embedded in newly issued User JWTs, validated on each authenticated User request, and incremented during password reset.
+- Implementation is not yet started; no runtime behavior has changed. See EXECUTION_POLICY.md for the ordered next steps.
