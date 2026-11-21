@@ -4,7 +4,7 @@ Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
 - **Fase Aktif**: RBAC Security & Development Verification Follow-up.
-- **Status Keseluruhan**: RBAC-01 s/d RBAC-08 IMPLEMENTED — NOT VERIFIED; RBAC-09 TESTS ADDED — NOT VERIFIED. Syntax/static lengkap, Development runtime, WAF Development, dan CDN Guestbook pada HEAD baseline NOT VERIFIED.
+- **Status Keseluruhan**: RBAC-01 s/d RBAC-08 IMPLEMENTED — NOT VERIFIED; RBAC-09 TESTS ADDED — NOT VERIFIED. Syntax/static lengkap dan Development runtime pada HEAD baseline NOT VERIFIED; WAF Development DEFERRED oleh pemilik proyek; perilaku cache-busting `assets` belum diverifikasi.
 - **Baseline sebelum dokumentasi**: branch `dev`, commit `6f0360e5166595945320a467a1fa2c91722b7401`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
@@ -75,9 +75,10 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 ## Next Steps
 - [x] Dashboard Tester HTML served at / and /tester (VERIFIED).
 - [x] R-001 s/d R-005 — remediation kode dan isolasi test; hasil suite lokal terbaru dilaporkan PASS.
-- [ ] R-006 — verifikasi konfigurasi WAF pada Development.
+- [DEFERRED] R-006 — konfigurasi/verifikasi WAF Development ditunda atas keputusan pemilik proyek; jangan dikerjakan sampai diminta.
 - [ ] R-007 — tetapkan kebijakan retensi, akses, dan metadata audit log sebelum implementasi.
 - [ ] R-009 s/d R-011 — evaluasi pemeliharaan/infrastruktur.
+- Pengambilan `assets` wajib mengutamakan data aktual; tambahkan parameter waktu pada URL request (contoh `?t=<timestamp>`) untuk cache-busting. Pastikan CDN memasukkan query parameter ke cache key atau cache dibypass; perilaku aktual masih NOT VERIFIED.
 - Integrasi frontend statis dengan endpoint publik `POST /api/v1/public/submit` tetap menjadi pekerjaan fitur berikutnya.
 ## Caller Repository Metadata (2026-11-21)
 - **IMPLEMENTED ON BRANCH `dev`**: `GET /api/v1/github/repository` now resolves the caller repository from the validated request `Origin` and its fixed `/config.json` path.
@@ -232,11 +233,18 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 ## Current Verification Queue — Authoritative (2026-11-21)
 1. Documentation reconciliation: PARTIAL — execution policy saved; remaining documents still require synchronization.
 2. Syntax/static checks for every RBAC source and test file: NOT RUN. `npm run check` alone is insufficient because it checks only `src/index.js`.
-3. Development WAF for `POST /api/v1/user/login`: NOT VERIFIED.
-4. Development WAF for `POST /api/v1/public/submit`: NOT VERIFIED.
-5. Guestbook static CDN/cache freshness and post-write behavior: NOT VERIFIED.
-6. R-013: recommend immediate User JWT revocation after password reset; owner decision OPEN; no implementation authorized.
-7. `npm test`: NOT RUN by explicit instruction.
-8. Development runtime: NOT VERIFIED. Production untouched.
+3. Development WAF for User Login and Guestbook: DEFERRED by owner; no configuration changes.
+4. `assets` retrieval must use a timestamp cache-busting query parameter (for example `?t=<timestamp>`); whether the CDN honors it in its cache key is NOT VERIFIED.
+5. R-013: recommend immediate User JWT revocation after password reset; owner decision OPEN; no implementation authorized.
+6. `npm test`: NOT RUN by explicit instruction.
+7. Development runtime: NOT VERIFIED. Production untouched.
 
 See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ordered work queue.
+
+
+## Owner Decision — WAF and Fresh Assets Retrieval (2026-11-21)
+- Development WAF configuration and verification are deferred. Do not spend effort on WAF until the owner asks to resume it.
+- `assets` retrieval is intended to obtain current/actual data, not stale cached responses.
+- Client requests must append a changing timestamp query parameter, e.g. `?t=<timestamp>` (or equivalent current-time value), to make each request URL unique.
+- This only bypasses cache when the CDN/cache key includes the query string; if query strings are ignored/normalized, configure bypass or an appropriate cache key before claiming freshness.
+- CDN behavior remains NOT VERIFIED; no CDN/WAF settings or production resources were changed.
