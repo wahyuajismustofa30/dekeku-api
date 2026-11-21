@@ -52,14 +52,14 @@
 
 
 ## RBAC Program — Approved Architecture (2026-11-21)
-- **Status (latest)**: RBAC-01 and RBAC-02 source foundations implemented on `dev`, not verified. See implementation records below.
+- **Status (latest)**: RBAC-01 through RBAC-04 source foundations implemented on `dev`, not verified. See implementation records below.
 - Detail and task tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
 - Roles: Admin (all API-managed data), User (only owned registered repositories under `assets/data/`), Guest (public Guestbook submission only).
 - User JWT: audience `dekeku-user`, role `user`, lifetime 30 minutes; Admin retains `dekeku-admin` audience.
 - Account and repository mapping storage: private `dekeku-db` repository; PBKDF2-SHA256 password hashes; server-authoritative mapping; multiple repositories per User.
 - Guestbook target: each mapped website repository at `assets/data/bukutamu.json`; public reads use static repository/CDN URLs.
 - Existing `public/data/{hostname}/bukutamu.json` files must not be deleted or migrated automatically.
-- RBAC-01 storage and RBAC-02 middleware foundations are implemented but not verified. Next: RBAC-03 / RBAC-04. `npm test`: NOT RUN by user instruction; syntax checks and runtime verification: NOT RUN / NOT VERIFIED.
+- RBAC-01 through RBAC-04 are implemented but not verified. Next: RBAC-05 User data CRUD. `npm test`: NOT RUN by user instruction; syntax checks and runtime verification: NOT RUN / NOT VERIFIED.
 
 
 
@@ -69,7 +69,7 @@
 - Added strict user/mapping schema validation and internal GitHub Contents API read/create/update with file-size limit and mandatory SHA for updates.
 - Added `test/rbac-storage.test.js` to local test script.
 - **Status**: IMPLEMENTED — NOT VERIFIED. `npm test` NOT RUN by user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED.
-- Next: RBAC-02 role/audience/ownership middleware. No endpoints or data records have been added; no Production/deployment/configuration/secret changes.
+- Next at the time: RBAC-02 role/audience/ownership middleware. Historical note; implementation is recorded in section below.
 
 
 ## RBAC-02 — Role and Ownership Middleware (2026-11-21)
@@ -77,7 +77,7 @@
 - User middleware rechecks active account status from private account storage. Repository ownership middleware resolves an opaque mapping ID against private mappings and attaches only server-sourced repository coordinates.
 - Added `test/rbac-auth.test.js` to the local test command.
 - **Status**: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by user instruction; Development runtime NOT VERIFIED. No endpoints, account records, mappings, secrets, config, deployment, or Production resources changed.
-- Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
+- Next at the time: RBAC-04 User login. Historical note; implementation is recorded in section below.
 
 
 ## RBAC-03 — Admin Account & Repository Management (2026-11-21)
