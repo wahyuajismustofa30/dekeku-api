@@ -213,3 +213,12 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Scope was documentation only. No application source, test code, deployment, Cloudflare configuration, secret, credential, account, mapping, or website data was changed.
 - Syntax/static validation: NOT RUN. `npm test`: NOT RUN. Development WAF: NOT VERIFIED. Guestbook CDN/cache: NOT VERIFIED. Development runtime: NOT VERIFIED.
 - R-013: immediate User JWT revocation recommended; owner decision OPEN; no code/schema change.
+
+
+## Owner Decision Checkpoint — WAF Deferral & Fresh Assets (2026-11-21)
+- Development WAF setup/verification: DEFERRED by owner. No WAF rules/settings should be configured or tested until explicitly resumed.
+- `assets` retrieval goal: fetch actual/current data and avoid stale cache.
+- Required request behavior: append a changing timestamp query parameter (e.g. `?t=<timestamp>`) to the assets URL for each fetch.
+- Important caveat: timestamp cache-busting only works if the CDN/cache key includes the query string. If query parameters are ignored, cache must be bypassed or configured to include the parameter.
+- CDN/query cache behavior: NOT VERIFIED. No Cloudflare settings, website data, or Production resources changed.
+- `npm test`: NOT RUN. Production untouched.
