@@ -201,3 +201,9 @@
 - CICD-002 branch-policy reconciliation: COMPLETE. Work on `dev`, PR to `main`, no direct commits/pushes to `main`. Branch protection is currently reported inactive by GitHub branch metadata and remains a separate operational gap.
 - Next: CICD-003 define PR validation contract. Workflow implementation and deployment remain pending.
 - GitHub Actions secrets/environments/settings are NOT VERIFIED. Production remains out of scope.
+
+
+## CICD-003 — PR Validation Contract (2026-11-21)
+- Status: COMPLETE — DEFINED. See `CICD_VALIDATION_CONTRACT.md` for required checks, warning checks, failure behavior, and safety boundaries.
+- Next: CICD-004 implements PR validation only; no deployment on PR events.
+- `npm test` remains NOT RUN; remote tests are excluded from PR CI.
