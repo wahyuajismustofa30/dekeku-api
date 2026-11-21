@@ -171,7 +171,7 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
     test("Reject empty message after whitespace trimming", async () => {
       const req = new Request("http://api/api/v1/public/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Origin: "https://dekeku.my.id" },
         body: JSON.stringify({ name: "   ", message: "\t\n   " })
       });
       const res = await worker.fetch(req, env);
@@ -182,7 +182,7 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
       const largeMessage = "A".repeat(20000);
       const req = new Request("http://api/api/v1/public/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Origin: "https://dekeku.my.id" },
         body: JSON.stringify({ name: "Tester", message: largeMessage })
       });
       const res = await worker.fetch(req, env);

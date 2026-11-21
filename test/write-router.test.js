@@ -13,7 +13,8 @@ const createEnv = (accessToken) => ({
   GITHUB_TOKEN: "mock-github-token",
   GITHUB_OWNER: "mock-owner",
   GITHUB_REPO: "mock-repo",
-  GITHUB_BRANCH: "main"
+  GITHUB_BRANCH: "main",
+  ALLOWED_ORIGINS: "https://dekeku.my.id"
 });
 
 // Mock fetch globally
@@ -35,6 +36,9 @@ function mockResponse(status, body, headers = {}) {
 
 function setupMockFetch() {
   const mockFetch = mock.fn(async (url, options) => {
+    if (String(url).endsWith("/config.json")) {
+      return new Response(JSON.stringify({ repository: { username: "mock-owner", repo: "mock-repo" } }), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
     const method = options?.method || "GET";
     const path = url.split("repos/mock-owner/mock-repo/")[1] || "";
 
@@ -68,7 +72,7 @@ function setupMockFetch() {
       return mockResponse(200, { name: "main", commit: { sha: "abc" }, protected: true });
     }
     if (method === "GET" && path === "") {
-      return mockResponse(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", html_url: "https://github.com/mock-owner/mock-repo", default_branch: "main", visibility: "private" });
+      return mockResponse(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", html_url: "https://github.com/mock-owner/mock-repo", default_branch: "main", visibility: "public" });
     }
 
     // Default: token validation etc
@@ -566,7 +570,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
 
-      const res = await worker.fetch(new Request("http://api/api/v1/github/repository"), env);
+      const res = await worker.fetch(new Request("http://api/api/v1/github/repository", { headers: { Origin: "https://dekeku.my.id" } }), env);
       assert.strictEqual(res.status, 200);
 
       restoreFetch();
