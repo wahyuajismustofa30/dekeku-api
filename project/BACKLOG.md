@@ -168,7 +168,11 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Run syntax/static checks; do not run `npm test` per explicit instruction.
 - [DEFERRED] WAF Development verification for User Login and Guestbook POST; owner requested to skip for now.
 - [ ] Verify `assets` retrieval freshness with timestamp cache-busting query parameter; confirm CDN cache key honors query string or bypasses cache.
-- [ ] Decide whether password reset must revoke existing User JWTs immediately; current design allows remaining lifetime up to 30 minutes.
+- [x] Owner decision R-013: immediate revocation of all pre-reset User JWTs APPROVED (D-023, 2026-11-21).
+- [ ] Implement per-user token/session version in private User record with backward-compatible default for existing records.
+- [ ] Include token/session version in newly issued User JWTs and validate it against the authoritative private User record on every authenticated User request.
+- [ ] Increment token/session version during successful Admin password reset with SHA-safe concurrency handling; ensure old User JWTs fail immediately and new-password login succeeds.
+- [ ] Add focused regression tests for pre-reset token rejection, post-reset login/token acceptance, existing-record compatibility, concurrent SHA conflict handling, and Admin JWT non-impact. Do not run npm test.
 - Status: TESTS ADDED — NOT VERIFIED.
 
 
@@ -179,7 +183,8 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [ ] Syntax/static validation for every RBAC source and test file; do not run `npm test`.
 - [DEFERRED] Development WAF setup/verification (do not resume until owner requests).
 - [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
-- [ ] Resolve R-013 decision on immediate JWT revocation after password reset; no code/schema changes before approval.
+- [x] R-013 decision resolved: immediate User JWT revocation after password reset APPROVED (D-023).
+- [ ] Implement and verify R-013 token/session version mechanism; no implementation has been made yet.
 - `npm test`: NOT RUN. Development runtime: NOT VERIFIED. WAF: DEFERRED. CDN cache-busting behavior: NOT VERIFIED.
 
 
@@ -187,3 +192,13 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - WAF setup/verification is deferred; do not configure it now.
 - `assets` reads must return current data. Use a timestamp query parameter on every request to avoid reusing a cached URL.
 - Confirm query-string cache-key handling; timestamp parameters alone are insufficient if the CDN ignores query strings.
+
+
+## R-013 — Immediate User JWT Revocation (Decision Approved 2026-11-21)
+- [x] Owner approved immediate invalidation of every User JWT issued before a successful password reset.
+- [ ] Add a backward-compatible per-user token/session version field to private account storage.
+- [ ] Include version in new User JWTs and compare with the authoritative account record on every authenticated User request.
+- [ ] Increment version as part of successful password reset using SHA-safe write/concurrency handling.
+- [ ] Add focused regression coverage: old token rejected immediately, new login works, legacy records remain compatible, conflict handling is safe, Admin JWTs unaffected.
+- **Status**: DECISION APPROVED; IMPLEMENTATION NOT STARTED; current runtime still permits old tokens until their remaining expiry (up to 30 minutes).
+- **Constraints**: work on dev only; npm test remains NOT RUN; no Production changes or deployment without explicit approval.
