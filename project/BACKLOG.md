@@ -179,7 +179,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 ## Authoritative Current Queue (2026-11-21)
 The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PROGRESS.md is the single source of current status.
 - [x] Execution policy recorded in project documentation.
-- [ ] Reconcile remaining status documents to PROGRESS and EXECUTION_POLICY.
+- [x] Reconcile remaining status documents to PROGRESS and EXECUTION_POLICY, including approved R-013 decision D-023.
 - [ ] Syntax/static validation for every RBAC source and test file; do not run `npm test`.
 - [DEFERRED] Development WAF setup/verification (do not resume until owner requests).
 - [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
