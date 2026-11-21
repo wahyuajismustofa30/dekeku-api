@@ -165,3 +165,16 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Risk/follow-up: Origin can be spoofed by non-browser clients. No app-level Guestbook rate limiter exists; verify/configure Cloudflare WAF/IP rate limiting for the Guestbook POST route in Development before public exposure. CDN cache behavior needs website-level verification.
 - No real mapping/account/data, secrets, Wrangler/Cloudflare settings, deployment, or Production resources changed.
 - **Current next stage: RBAC-08 Browser User session integration.** RBAC-01–07 remain runtime NOT VERIFIED.
+
+
+## 17. RBAC-08 — Browser User Session Integration (2026-11-21)
+- Branch: `dev`.
+- Updated `src/modules/tester/index.js` and `public/tester.html` with User login form, User session status, logout, and authenticated User repository listing.
+- User login calls `POST /api/v1/user/login`, consumes `access_token`, and stores it only in `sessionStorage` key `dekeku_user_access_token`. Password input is cleared after login; JWT is never displayed or logged.
+- Added `userRequest()` with User Bearer token. Public helper removes Authorization; Admin helper retains its distinct in-memory Admin JWT.
+- User request 401 clears User token and UI state; Admin request 401 clears only Admin state. Logout removes the sessionStorage key.
+- Updated `test/tester-dashboard.test.js` to cover both page copies and separate auth helpers/session lifecycle.
+- Source review: VERIFIED. Syntax checks/tests: NOT RUN per instruction. Development browser/runtime: NOT VERIFIED.
+- XSS limitation: sessionStorage is readable by same-origin JavaScript; keep strict output handling and avoid third-party scripts.
+- No accounts/mappings/secrets/configuration/deployment/Production resources changed.
+- **Current next stage: RBAC-09 Security & Regression Review.** RBAC-01–08 remain runtime NOT VERIFIED.
