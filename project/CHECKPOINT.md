@@ -74,7 +74,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Private account and repository mappings live in private `dekeku-db`; password hashes use PBKDF2-SHA256; Admin alone creates/manages accounts and mappings.
 - User CRUD is restricted to `assets/data/` in repositories mapped to that user. Guestbook writes target mapped website repository `assets/data/bukutamu.json`; static public reads bypass Worker.
 - Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
-- Latest implementation status: RBAC-01 through RBAC-08 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-09 Security & Regression Review. See sections 10–17 and `project/RBAC_PLAN.md`.
+- Latest implementation status: RBAC-01 through RBAC-08 foundations IMPLEMENTED — NOT VERIFIED. RBAC-09 security regression tests added but NOT VERIFIED. Next: permitted syntax/static checks (do not run `npm test`), then Development WAF/CDN evidence. See sections 10–18 and `project/RBAC_PLAN.md`.
 - `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
 
 
@@ -164,7 +164,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Source review: VERIFIED. Tests: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - Risk/follow-up: Origin can be spoofed by non-browser clients. No app-level Guestbook rate limiter exists; verify/configure Cloudflare WAF/IP rate limiting for the Guestbook POST route in Development before public exposure. CDN cache behavior needs website-level verification.
 - No real mapping/account/data, secrets, Wrangler/Cloudflare settings, deployment, or Production resources changed.
-- **Current next stage: RBAC-08 Browser User session integration.** RBAC-01–07 remain runtime NOT VERIFIED.
+- **Current next stage: RBAC-09 Security & Regression Review follow-up.** RBAC-01–08 remain runtime NOT VERIFIED.
 
 
 ## 17. RBAC-08 — Browser User Session Integration (2026-11-21)
@@ -178,3 +178,14 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - XSS limitation: sessionStorage is readable by same-origin JavaScript; keep strict output handling and avoid third-party scripts.
 - No accounts/mappings/secrets/configuration/deployment/Production resources changed.
 - **Current next stage: RBAC-09 Security & Regression Review.** RBAC-01–08 remain runtime NOT VERIFIED.
+
+
+## 18. RBAC-09 — Security & Regression Review (2026-11-21)
+- Branch: `dev`.
+- Added `test/rbac-security-review.test.js`; registered in `package.json`.
+- Regression cases: cross-User mapping/IDOR denial before target access; repository owner/repo/branch resolved only from server mapping; client owner/repo/branch injection rejected; disabled account rejected before mapping read; expired User JWT rejected before private storage access.
+- Reviewed RBAC router/middleware/storage/Admin/User/Guestbook/JWT/CORS/GitHub/public path and Tester session source.
+- `npm test`: NOT RUN per explicit instruction. Syntax checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
+- Risks: no application-level User login or Guestbook rate limiter; WAF Development evidence pending; Guestbook Origin spoofable by non-browser clients; CDN cache/invalidation unverified; password reset does not revoke existing JWTs immediately (remaining TTL up to 30 minutes); sessionStorage remains XSS-readable.
+- No secrets, account/mapping/website data, configuration, deployment, or Production resources changed.
+- Next: permitted syntax/static checks only; do not run `npm test`. Development WAF/CDN evidence requires separate verification.
