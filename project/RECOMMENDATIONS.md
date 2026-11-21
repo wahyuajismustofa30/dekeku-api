@@ -121,7 +121,7 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - **Temuan**: sebelum keputusan D-023, Admin password reset tidak membatalkan JWT User yang telah diterbitkan; token dapat tetap berlaku hingga sisa masa berlaku maksimal 30 menit.
 - **Risiko**: token yang disalin sebelum reset dapat tetap mengakses repository milik User selama sisa masa berlaku.
 - **Keputusan pemilik**: APPROVED (D-023, 2026-11-21). Semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Implementasi menggunakan token/session version server-side; rincian dan acceptance criteria ada pada bagian keputusan R-013 di bawah.
-- **Status**: keputusan APPROVED; source implementation and focused regression tests have been added on dev. Syntax/static checks, test execution, and Development runtime verification remain pending. The currently deployed Worker has not been updated.
+- **Status**: keputusan APPROVED; source implementation and focused regression tests have been added on dev. Limited V8 parser check PASS 13/13 after stripping module declarations; native node --check, test execution, and Development runtime verification remain pending. The currently deployed Worker has not been updated.
 
 
 ## R-013 — Immediate User JWT Revocation After Password Reset (Decision 2026-11-21)
