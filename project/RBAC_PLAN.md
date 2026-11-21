@@ -1,0 +1,133 @@
+# RBAC Implementation Plan — DEKEKU API
+
+Tanggal pencatatan: 2026-11-21
+Status: ARCHITECTURE APPROVED — IMPLEMENTATION NOT STARTED
+Target branch: `dev`
+
+Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
+
+## 1. Keputusan Arsitektur yang Disetujui
+
+### 1.1 Role dan kewenangan
+- **Admin**: mengelola akun dan mapping repository; memiliki akses ke seluruh direktori data yang dikelola API. Tidak berarti akses bebas ke secret atau file internal.
+- **User**: hanya mengakses repository yang terdaftar untuk akunnya, dibatasi ke direktori `assets/data/` pada setiap repository tersebut.
+- **Guest**: tidak login dan tidak memiliki JWT; hanya boleh mengirim Guestbook melalui endpoint publik.
+- Pembacaan Guestbook yang sudah dipublikasikan dilakukan langsung melalui URL statis repository/CDN, bukan melalui Worker.
+
+### 1.2 JWT dan sesi
+- Masa berlaku JWT User: 30 menit.
+- Admin tetap memakai audience `dekeku-admin` dan role `admin`.
+- User memakai audience `dekeku-user` dan role `user`.
+- Token browser disimpan di `sessionStorage` dengan key `dekeku_user_access_token`; tidak menggunakan `localStorage`.
+- Token dikirim sebagai Bearer token dan dibersihkan saat logout atau sesi tidak valid.
+- Risiko XSS pada penyimpanan token yang dapat dibaca JavaScript tetap harus diperhitungkan.
+
+### 1.3 Penyimpanan akun dan mapping
+- Repository penyimpanan privat: `dekeku-db`.
+- Struktur awal:
+  ```
+  private/
+    auth/users.json
+    repositories/mappings.json
+    system/
+  ```
+- Akun hanya dibuat oleh Admin; tidak ada registrasi publik.
+- Password disimpan sebagai hash PBKDF2-SHA256, bukan plaintext.
+- Data akun minimal: ID, username, passwordHash, role=user, status active/disabled, createdAt, updatedAt.
+- Mapping server-authoritative: user tidak boleh menentukan role, owner, repository, branch, atau Origin melalui request.
+- Sejak awal, satu user dapat memiliki beberapa repository.
+- Registrasi repository dilakukan manual oleh Admin: owner, nama repository, dan branch.
+- Satu repository hanya boleh dimiliki satu akun aktif kecuali kebijakan sharing disetujui kemudian.
+- Satu Origin aktif hanya boleh dipetakan ke satu repository untuk menghindari tujuan Guestbook ambigu.
+- GitHub token hanya berada di sisi server.
+- Penyimpanan privat harus menggunakan metode internal read/write dengan allowlist path privat yang ketat; jangan melewati atau melonggarkan validasi path publik.
+
+### 1.4 Data publik dan Guestbook
+- Data website berada di repository website milik User:
+  ```
+  assets/data/bukutamu.json
+  assets/data/statistik.json
+  ```
+- Browser membaca JSON publik langsung dari static repository/CDN URL.
+- Worker memvalidasi operasi tulis melalui GitHub API.
+- Alur Guestbook: Guest POST `/api/v1/public/submit`; Worker memvalidasi Origin, payload, ukuran, rate limit, dan mitigasi abuse; Worker mencari mapping Origin pada `dekeku-db`; Worker menulis ke `assets/data/bukutamu.json` di repository website terdaftar.
+- Origin bukan autentikasi karena klien non-browser dapat memalsukannya. Mapping server-side dan perlindungan lain tetap wajib.
+- Semua submission dari Origin yang sama masuk ke file Guestbook yang sama.
+- Pertimbangkan batas ukuran file, SHA concurrency, retry conflict, cache CDN/invalidation, dan GitHub API rate limit.
+- Data lama di `dekeku-db/public/data/{hostname}/bukutamu.json` tidak boleh dihapus atau dimigrasikan otomatis. Strategi migrasi menunggu keputusan terpisah.
+
+## 2. Endpoint Target
+
+### Admin
+- `POST /api/v1/admin/login` (existing)
+- `POST /api/v1/admin/users`
+- `GET /api/v1/admin/users`
+- `GET /api/v1/admin/users/:id`
+- `PATCH /api/v1/admin/users/:id`
+- `POST /api/v1/admin/users/:id/reset-password`
+- `POST /api/v1/admin/users/:id/repositories`
+- `GET /api/v1/admin/users/:id/repositories`
+- `PATCH /api/v1/admin/repositories/:id`
+- `DELETE /api/v1/admin/repositories/:id` — soft-disable mapping, bukan penghapusan permanen.
+
+### User
+- `POST /api/v1/user/login`
+- `GET /api/v1/user/repositories`
+- `GET /api/v1/user/data`
+- `POST /api/v1/user/data`
+- `PUT /api/v1/user/data`
+- `DELETE /api/v1/user/data`
+- User mengirim repository ID terdaftar; server memverifikasi ownership dan menetapkan prefix `assets/data/`. Jangan menerima owner/repo/path arbitrer dari klien.
+
+### Guest
+- `POST /api/v1/public/submit` saja.
+- Pembacaan Guestbook dilakukan melalui static URL, bukan endpoint Worker.
+
+## 3. Tahapan dan Daftar Tugas
+
+| ID | Tahap | Ruang lingkup utama | Status |
+|---|---|---|---|
+| RBAC-01 | Private account storage & repository mapping | Schema akun, mapping, internal private repository access, validasi dan penyimpanan aman | NOT STARTED |
+| RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | BLOCKED BY RBAC-01 |
+| RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | BLOCKED BY RBAC-01/02 |
+| RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | BLOCKED BY RBAC-01/02 |
+| RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | BLOCKED BY RBAC-01/02/04 |
+| RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | BLOCKED BY RBAC-01/02 |
+| RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | BLOCKED BY RBAC-01 |
+| RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | BLOCKED BY RBAC-04 |
+| RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
+
+## 4. Acceptance Criteria Minimum
+
+- User tidak dapat membaca atau mengubah repository milik user lain, termasuk dengan mengganti repository ID.
+- User tidak dapat keluar dari prefix `assets/data/`, termasuk melalui encoding, traversal, slash/backslash, atau path normalization.
+- Klien tidak dapat memilih role, GitHub owner/repository/branch, atau mapping Origin.
+- JWT Admin dan User tidak saling dapat digunakan; audience dan role harus cocok.
+- JWT User ditolak setelah 30 menit sesuai kebijakan expiry.
+- Akun disabled langsung ditolak untuk login/akses sesuai mekanisme status check yang ditetapkan.
+- Tidak ada password plaintext, GitHub token, JWT secret, atau credential dalam repository publik, response, maupun log.
+- Public file reader tidak dapat membaca `private/` atau file internal.
+- Guestbook hanya menulis ke repository yang dipetakan server untuk Origin tersebut; Origin bukan bukti identitas.
+- Konflik SHA, file limit, GitHub API error, dan CDN cache behavior ditangani serta didokumentasikan.
+- File Guestbook lama tetap utuh sampai strategi migrasi disetujui.
+- Production Worker, Production secrets, dan deployment tidak disentuh tanpa persetujuan eksplisit.
+
+## 5. Status Verifikasi dan Batas Operasional
+
+- RBAC design: APPROVED oleh pemilik proyek.
+- Source implementation: NOT STARTED pada checkpoint ini.
+- `npm test`: NOT RUN atas instruksi pemilik proyek untuk melewati proses tersebut.
+- Syntax/static checks: NOT RUN.
+- Development runtime/deployment: NOT VERIFIED.
+- Production: tidak disentuh.
+- Tidak ada secret, credential, `wrangler.jsonc`, atau konfigurasi Cloudflare yang diubah.
+
+## 6. Aturan Melanjutkan Pekerjaan
+
+1. Kerjakan satu tahap RBAC pada satu waktu dan perbarui status tabel ini.
+2. Jangan mengklaim tahap selesai hanya karena dokumentasi atau desain tersedia.
+3. Catat file yang berubah, risiko, pengujian yang tidak dijalankan, dan batasan verifikasi.
+4. Pertahankan kompatibilitas Admin yang ada sampai penggantiannya diuji dan disetujui.
+5. Jangan mengubah `main`, Worker Production, secrets, atau melakukan deployment.
+6. Jangan migrasikan atau menghapus Guestbook lama tanpa keputusan eksplisit.
+7. Langkah implementasi berikutnya: RBAC-01, dimulai dengan pemeriksaan kemampuan GitHubClient dan desain kontrak file privat sebelum menambah endpoint.
