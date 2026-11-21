@@ -126,3 +126,13 @@
 - Source review VERIFIED. Tests/syntax checks NOT RUN per instruction; Development runtime NOT VERIFIED.
 - Abuse protection remains follow-up: Origin is spoofable; verify/configure Development WAF/IP rate limiting for `POST /api/v1/public/submit`. No Production configuration changed.
 - Next: RBAC-08 Browser User session integration.
+
+
+## RBAC-08 — Browser User Session Integration (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Both generated Tester route and static Tester copy now include User login, User Bearer requests, repository listing, and logout.
+- User JWT is stored only in `sessionStorage` under `dekeku_user_access_token`; restored for the same tab session and removed on logout or User-request 401.
+- Public API helper strips Authorization; Admin token remains in-memory and separate from User token.
+- Regression assertions updated in `test/tester-dashboard.test.js`. Tests/syntax checks NOT RUN per instruction; Development browser/runtime NOT VERIFIED.
+- XSS exposure remains because sessionStorage is readable by same-origin JavaScript.
+- Next: RBAC-09 Security & Regression Review.
