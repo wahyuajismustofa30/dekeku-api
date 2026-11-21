@@ -1,7 +1,7 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01–04 IMPLEMENTED — NOT VERIFIED
+Status: RBAC-01–05 IMPLEMENTED — NOT VERIFIED
 Target branch: `dev`
 
 Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
@@ -91,8 +91,8 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | IMPLEMENTED — NOT VERIFIED |
 | RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | IMPLEMENTED — NOT VERIFIED |
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | IMPLEMENTED — NOT VERIFIED |
-| RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | NEXT — IMPLEMENTATION PENDING |
-| RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | BLOCKED BY RBAC-01/02 |
+| RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | IMPLEMENTED — NOT VERIFIED |
+| RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | NEXT — IMPLEMENTATION PENDING |
 | RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | BLOCKED BY RBAC-01 |
 | RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | BLOCKED BY RBAC-04 |
 | RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
@@ -186,3 +186,21 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Verification: npm test NOT RUN per explicit instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No actual account was created and no private data was written.
 - Security limitation: login endpoint still needs verified Cloudflare WAF/IP rate limiting before production exposure; no new application-level login throttling or audit log is included in this stage.
 - Next: RBAC-05 User data CRUD restricted to assets/data/, using existing User authentication and repository ownership middleware. RBAC-01 through RBAC-04 remain NOT VERIFIED at runtime.
+
+
+## 11. RBAC-05 Implementation Record (2026-11-21)
+- Status: IMPLEMENTED — NOT VERIFIED.
+- Added src/modules/rbac/user-data.js and mounted User routes in src/core/router.js:
+  - GET /api/v1/user/repositories
+  - GET /api/v1/user/data
+  - POST /api/v1/user/data
+  - PUT /api/v1/user/data
+  - DELETE /api/v1/user/data
+- All routes require User JWT (aud=dekeku-user, role=user) and active account status. Data operations additionally resolve repositoryId through private mappings and enforce mapping.userId equals JWT subject; owner/repo/branch are server-sourced only.
+- User file paths are relative and server-prefixed with assets/data/. Percent encoding, backslash, traversal, hidden segments, absolute paths, control characters, repeated separators, and non-JSON extensions are rejected.
+- GET returns parsed JSON plus current blob SHA. POST creates without SHA; PUT and DELETE require a valid 40-character SHA and rely on GitHub optimistic concurrency. No automatic retry or blind overwrite.
+- JSON roots must be object/array; file content is limited to 1 MiB; request bodies are streamed and capped at 1,153,434 bytes. UTF-8 is decoded strictly.
+- Added test/rbac-user-data.test.js for path boundary and route authorization and registered it in local npm test.
+- Verification: npm test NOT RUN per explicit instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No User account, mapping, or website repository data was created or modified.
+- Risks/limitations: repository listing and per-file operations have no pagination/bulk listing; no application-level write rate limiting; GitHub SHA conflicts surface to caller. WAF and runtime checks remain pending.
+- Next: RBAC-06 private/public data boundary review. RBAC-01 through RBAC-05 remain NOT VERIFIED at runtime.
