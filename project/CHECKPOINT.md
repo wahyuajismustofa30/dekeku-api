@@ -151,3 +151,17 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Source review: VERIFIED. Automated tests: NOT RUN per instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No live GitHub data was read or changed; no accounts/mappings were created; no secrets/configuration/deployment/Production resources touched.
 - **Current next stage: RBAC-07 Guestbook per mapped website repository.** RBAC-01–06 remain runtime NOT VERIFIED.
+
+
+## 16. RBAC-07 — Guestbook per Mapped Website Repository (2026-11-21)
+- Branch: `dev`.
+- Replaced legacy Guestbook destination resolution in `src/modules/public/submit.js`: request Origin must pass HTTPS `ALLOWED_ORIGINS`, then match one active mapping in private `dekeku-db` storage.
+- Target owner/repository/branch are server-derived from mapping. Worker verifies the target repository exists and is public, then writes only to `assets/data/bukutamu.json`.
+- Request does not accept a repository ID, owner, repository, branch, or path. Unsupported body fields are rejected.
+- Request body uses streamed 15 KiB cap and strict UTF-8; stored array JSON is limited to 1 MiB. SHA concurrency is preserved with at most three read/write attempts on 409.
+- Updated `test/public-submission.test.js`; it is already registered in `package.json`.
+- Legacy `public/data/{hostname}/bukutamu.json` files were not accessed, deleted, copied, or migrated.
+- Source review: VERIFIED. Tests: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- Risk/follow-up: Origin can be spoofed by non-browser clients. No app-level Guestbook rate limiter exists; verify/configure Cloudflare WAF/IP rate limiting for the Guestbook POST route in Development before public exposure. CDN cache behavior needs website-level verification.
+- No real mapping/account/data, secrets, Wrangler/Cloudflare settings, deployment, or Production resources changed.
+- **Current next stage: RBAC-08 Browser User session integration.** RBAC-01–07 remain runtime NOT VERIFIED.
