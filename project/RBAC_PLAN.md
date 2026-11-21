@@ -252,7 +252,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Five scenarios cover cross-User mapping rejection before target repository access, server-authoritative repository coordinates, rejection of client-supplied owner/repo/branch, disabled-account rejection before mapping access, and expired JWT rejection before private storage access.
 - Source review confirms separate Admin/User audience+role checks, User active-account checks, mapping ownership verification, fixed `assets/data/` path prefix, exact private storage allowlist, public reader path boundary, bounded JSON payloads, and CORS allowance for Authorization.
 - **Test execution**: `npm test` NOT RUN by explicit instruction. Syntax/static checks NOT RUN. Development runtime NOT VERIFIED.
-- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. Password reset does not revoke existing JWTs immediately; a previously issued token may remain usable for up to its remaining 30-minute lifetime while account status remains active. Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
+- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. R-013 decision is APPROVED: password reset must immediately revoke prior User JWTs. Implementation is pending; until then, an old token may remain usable for its remaining lifetime (up to 30 minutes). Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
 - No account/mapping/website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource was changed.
 - **Next**: perform syntax/static checks without running `npm test`; Development WAF and CDN checks require separate evidence.
 
@@ -263,5 +263,13 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - RBAC-09: TESTS ADDED — NOT VERIFIED.
 - Syntax/static checks for every RBAC source/test file: NOT RUN. `npm test`: NOT RUN by explicit instruction.
 - Development WAF for User Login and Guestbook: NOT VERIFIED. Guestbook CDN/cache behavior: NOT VERIFIED.
-- R-013 recommendation: immediate User JWT revocation after password reset; owner decision OPEN. No code/schema change authorized by this evaluation.
+- R-013: owner decision APPROVED (D-023); implementation NOT STARTED. Use per-user token/session version checked on every authenticated User request; increment on reset; Admin JWTs unaffected.
 - Earlier stage-specific "Next" notes are historical and superseded by this section and EXECUTION_POLICY.
+
+
+## 17. R-013 Owner Decision — Immediate User JWT Revocation (2026-11-21)
+- Decision: APPROVED. A successful Admin password reset immediately invalidates every previously issued User JWT for that account.
+- Implementation direction: backward-compatible per-user token/session version in private account storage; claim embedded in newly issued User JWTs; middleware compares claim against the authoritative current record on every authenticated User request; successful password reset increments the version using SHA-safe concurrency handling.
+- Admin JWTs are out of scope and remain unaffected.
+- Status: implementation NOT STARTED; current runtime behavior remains unchanged until code is implemented and verified.
+- See D-023 in DECISIONS.md, PROGRESS.md, and the ordered work queue in EXECUTION_POLICY.md.
