@@ -49,3 +49,14 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - Owner reports Termux verification PASS: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL).
 - The results are owner-reported and were not independently re-executed in this session.
 - Development deployment/runtime remains NOT VERIFIED; the currently deployed Worker has not received this source change. Production remains untouched.
+
+
+## D-024 — Hierarki Otoritas dan Pembagian Peran (2026-11-21)
+- **Status**: DISETUJUI PEMILIK PROYEK.
+- **Wahyu** adalah pemilik proyek dan pemegang seluruh keputusan final; instruksi eksplisit terbarunya menjadi acuan tertinggi.
+- **ChatGPT** adalah asisten pengembangan utama pada urutan kedua: membantu analisis, perencanaan, koordinasi, penyusunan instruksi, dan review; dapat mendelegasikan pekerjaan kepada Codex dalam batas persetujuan Wahyu.
+- **Codex di Termux** adalah asisten pelaksana pada urutan ketiga: membantu ChatGPT mengerjakan pemeriksaan, perubahan repository, pengujian, dan pelaporan sesuai delegasi; tidak boleh mengubah tujuan, arsitektur, ruang lingkup, atau batas operasional secara mandiri.
+- Jika dokumen, keputusan terdahulu, implementasi, atau arahan asisten bertentangan dengan instruksi eksplisit terbaru Wahyu, tindakan yang terdampak dihentikan dan konflik dilaporkan. Berikan pilihan atau minta persetujuan spesifik sesuai dampaknya.
+- Jika perintah Wahyu jelas dan aman, dokumentasi yang bertentangan diperbarui; catatan historis tidak boleh dipalsukan.
+- Bukti kode/runtime menentukan fakta teknis aktual, tetapi tidak mengalahkan otoritas keputusan Wahyu.
+- Rujukan pelaksanaan: `AGENTS.md` dan bagian 8 `project/MASTER.md`.
