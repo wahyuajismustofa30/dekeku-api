@@ -150,10 +150,10 @@
 ## Current RBAC Verification Follow-up (2026-11-21)
 - RBAC-01–08: implementation present on `dev`; NOT VERIFIED.
 - RBAC-09: regression tests added; NOT VERIFIED.
-- Syntax/static checks for all RBAC files: NOT RUN. `npm test`: NOT RUN by owner instruction.
-- Development WAF (User Login and Guestbook): NOT VERIFIED.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing. Native node --check: NOT RUN. Focused R-013 test: NOT RUN. `npm test`: NOT RUN by owner instruction.
+- Development WAF (User Login and Guestbook): DEFERRED by owner.
 - Guestbook static CDN/cache behavior: NOT VERIFIED.
-- R-013: immediate User JWT revocation APPROVED (D-023); implementation pending on dev.
+- R-013: immediate User JWT revocation APPROVED (D-023); source implementation and focused regression test added on dev; verification pending.
 - Historical "Next" notes in earlier stage entries do not override the current work queue.
 
 
@@ -167,5 +167,5 @@
 - Implemented optional per-user tokenVersion with backward-compatible default 0; new accounts initialize at 0.
 - User login signs the current version into User JWTs; User middleware validates it against private storage on each authenticated request.
 - Successful Admin password reset increments the version in the same SHA-guarded private account write as the password hash.
-- Focused regression tests added and registered. Syntax/static checks and test execution remain NOT RUN; Development runtime NOT VERIFIED.
+- Focused regression tests added and registered. Limited V8 parser check PASS 13/13 after stripping module declarations; native node --check and focused test remain NOT RUN. Development runtime NOT VERIFIED.
 - No deployment or Production changes.
