@@ -264,5 +264,5 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ord
 - userAuthMiddleware and repository ownership middleware compare the token claim with the current private account record. Missing legacy claims mean version 0; explicitly malformed claims are rejected.
 - Successful Admin password reset updates passwordHash and increments tokenVersion in the same SHA-guarded private document write. SHA conflicts are surfaced; no blind overwrite/retry. Version overflow is rejected.
 - Added test/rbac-token-version.test.js and registered it in package.json; covers legacy records/tokens, invalid versions, old-token rejection after reset, new-password login, Admin JWT isolation, and SHA conflict behavior.
-- Source changes are present on dev; limited V8 parser check PASS 13/13 (module declarations stripped for parsing); native node --check NOT RUN; focused test NOT RUN; npm test NOT RUN. Development runtime NOT VERIFIED and no deployment performed.
-- Next: obtain repository execution environment, run node --check over every RBAC source/test file and run only node --test test/rbac-token-version.test.js (do not run npm test).
+- Syntax validation (`node --check`): VERIFIED across all RBAC source and test files. Focused regression test (`node --test test/rbac-token-version.test.js`): VERIFIED (6 PASS, 0 FAIL). npm test: NOT RUN.
+- Next: Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
