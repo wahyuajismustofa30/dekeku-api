@@ -94,7 +94,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | IMPLEMENTED — NOT VERIFIED |
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | IMPLEMENTED — NOT VERIFIED |
 | RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | IMPLEMENTED — NOT VERIFIED |
-| RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | PENDING AFTER RBAC-05 |
+| RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | IMPLEMENTED — NOT VERIFIED |
 | RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
 
 ## 4. Acceptance Criteria Minimum
@@ -130,7 +130,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 4. Pertahankan kompatibilitas Admin yang ada sampai penggantiannya diuji dan disetujui.
 5. Jangan mengubah `main`, Worker Production, secrets, atau melakukan deployment.
 6. Jangan migrasikan atau menghapus Guestbook lama tanpa keputusan eksplisit.
-7. RBAC-01 sampai RBAC-04 telah memiliki implementasi source pada branch dev, tetapi belum diverifikasi. Tahap berikutnya RBAC-05 User data CRUD; verifikasi runtime tetap terpisah.
+7. RBAC-01 sampai RBAC-08 telah memiliki implementasi source pada branch dev, tetapi belum diverifikasi. Tahap berikutnya RBAC-09 Security & Regression Review; verifikasi runtime tetap terpisah.
 
 
 ## 7. RBAC-01 Implementation Record (2026-11-21)
@@ -229,3 +229,17 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - **Limitations / required follow-up**: Origin is spoofable by non-browser clients and is not authentication. No application-level rate limiter is implemented. Verify/configure Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` in Development before public exposure. Existing CDN cache/invalidation is outside the Worker write path and must be checked at the website integration layer.
 - No real account/mapping or website data was changed; no secrets, Wrangler/Cloudflare configuration, deployment, or Production resources touched.
 - Next: RBAC-08 Browser User session integration.
+
+
+## 14. RBAC-08 — Browser User Session Integration (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Updated generated Tester page `src/modules/tester/index.js` and static copy `public/tester.html`.
+- Added User login UI calling `POST /api/v1/user/login`. It consumes `access_token`, clears the password input, and never renders or logs the JWT.
+- User token is persisted only in `sessionStorage` under `dekeku_user_access_token`; the same tab session can restore it after page reload. If sessionStorage cannot be written, the UI does not establish a session.
+- Added separate `userRequest()` helper that attaches User Bearer token. Public `apiRequest()` strips Authorization, while Admin requests retain the existing in-memory Admin token. Role tokens are never shared between helpers.
+- Added User logout and repository-list request. User 401 clears only User session; Admin 401 clears only Admin in-memory token.
+- Updated `test/tester-dashboard.test.js` to assert script parsing, same-origin request policy, public/Admin/User Authorization separation, sessionStorage key/read/write/remove, and User session cleanup.
+- Source review: VERIFIED. Automated tests and syntax checks: NOT RUN per explicit instruction. Development browser/runtime: NOT VERIFIED.
+- Security limitation: sessionStorage remains accessible to same-origin JavaScript and does not mitigate XSS. Avoid third-party scripts and preserve output escaping/CSP. JWT remains valid for up to 30 minutes as enforced by API.
+- No secrets, account/mapping records, Wrangler/Cloudflare settings, deployment, or Production resources changed.
+- Next: RBAC-09 Security & Regression Review.
