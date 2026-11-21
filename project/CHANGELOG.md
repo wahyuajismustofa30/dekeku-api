@@ -340,3 +340,17 @@
 - Documentation-only update on branch `dev`.
 - CI/CD workflows: NOT IMPLEMENTED / NOT VERIFIED.
 - No source code, Wrangler configuration, GitHub Actions workflow, Cloudflare settings, secrets, deployment, or Production resources changed.
+
+
+## [2026-11-21] — Documentation Conflict Reconciliation (Owner Poll: C)
+### Changed
+- Reconciled D-023 wording with the later R-013 implementation record and owner-reported Termux verification (`node --check` PASS; focused test 6 PASS, 0 FAIL).
+- Clarified that integrated RBAC and Development runtime verification remain NOT VERIFIED; `npm test` remains NOT RUN.
+- Marked stale phase/stage `Next` statements and old backlog priority lists as historical/superseded, preserving them as history rather than deleting the record.
+- Updated WAF and Guestbook CDN/cache follow-up references to respect owner deferral/archive status.
+- Clarified that CICD-001..CICD-010 remain planned, not active, and that no next technical workstream has been selected.
+- Updated PROGRESS, EXECUTION_POLICY, BACKLOG, CHECKPOINT, ROADMAP, DECISIONS, RBAC_PLAN, and RECOMMENDATIONS for consistent authority and status.
+### Verification / Scope
+- Documentation-only updates on branch `dev`.
+- `npm test`: NOT RUN. No source code, test files, Wrangler configuration, GitHub Actions workflows, Cloudflare settings, secrets, credentials, accounts, mappings, website data, deployment, or Production resources changed.
+- Next technical workstream: awaiting a separate owner decision.
