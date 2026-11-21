@@ -3,6 +3,7 @@ import { HttpError } from "../../core/errors.js";
 import { userAuthMiddleware, repositoryOwnershipMiddleware } from "../../middleware/auth.js";
 import { error, success } from "../../utils/response.js";
 import { uint8ArrayToBase64 } from "../../utils/base64.js";
+import { readPrivateDocument } from "./storage.js";
 
 const MAX_FILE_SIZE = 1024 * 1024;
 const MAX_BODY_SIZE = 1153434;
@@ -147,9 +148,8 @@ const requireRepoId = value => {
 export const handleUserRepositories = async (request, env) => {
   try {
     const github = new GitHubClient(env);
-    const { document: mappings } = await import("../rbac/storage.js").then(module =>
-      module.readPrivateDocument(github, "repositories")
-    );
+    const { document: users } = await readPrivateDocument(github, "users");
+    const { document: mappings } = await readPrivateDocument(github, "repositories", users);
     const repositories = mappings.repositories
       .filter(mapping => mapping.userId === request.user.sub && mapping.status === "active")
       .map(({ id, owner, repo, branch, origin }) => ({ id, owner, repo, branch, origin }));
@@ -204,6 +204,9 @@ export const handleUserData = async (request, env) => {
 
       if (method === "POST") {
         const { serialized, size } = validateContent(body.content);
+        if (body.message !== undefined && (typeof body.message !== "string" || body.message.length > 256)) {
+          throw new HttpError("Commit message must be a string up to 256 characters", 422);
+        }
         const result = await github.request("/contents/" + encodedPath, {
           method: "PUT",
           body: JSON.stringify({
