@@ -55,7 +55,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [ ] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup.
 - [ ] **RBAC-09** — Security, regression, and isolation review.
-- **Current next task**: RBAC-01. All stages remain NOT STARTED; design approval is not implementation evidence.
+- **Latest status**: RBAC-01 and RBAC-02 foundations are IMPLEMENTED — NOT VERIFIED; RBAC-03 is the next implementation stage. Design approval is not implementation evidence.
 - **Verification**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED.
 
 
@@ -66,7 +66,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] Add focused storage/schema test file and register it in local test script.
 - [ ] Run RBAC-01 tests and syntax/static checks when test execution is authorized/resumed.
 - [ ] Verify private storage access against Development configuration without writing real account data.
-- **Stage status**: IMPLEMENTED — NOT VERIFIED. Next stage: RBAC-02.
+- **Stage status**: IMPLEMENTED — NOT VERIFIED. RBAC-02 is recorded below.
 
 
 ## RBAC-02 Progress (2026-11-21)
