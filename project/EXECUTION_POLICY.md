@@ -3,7 +3,7 @@
 Updated: 2026-11-21
 Target branch: `dev`
 Repository: `wahyuajismustofa30/dekeku-api`
-Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
+Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0018308882be2333b698f7a`
 
 ## Authority Hierarchy
 1. **Wahyu — Project Owner (highest authority):** latest explicit instruction, approval, and decision prevails over every project document, historical decision, implementation choice, and assistant instruction.
@@ -27,6 +27,7 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 1. Keep `project/PROGRESS.md` as the single source of truth for current status.
 2. Keep one ordered active work queue; do not copy archived task details into ordinary progress reports.
 3. R-013 syntax validation and focused regression testing are reported PASS by the owner from Termux: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test`.
+6. The owner selected documentation reconciliation first (option C). After reconciliation, do not infer a technical priority: ask the owner to choose the next workstream separately.
 4. Do not resume archived tasks automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly asks for the task archive or reactivates an archived item.
 5. Update the latest checkpoint only with evidence actually obtained.
 
@@ -40,13 +41,14 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 
 ## Ordered current work queue
 
-1. [x] Reconcile project documentation to the approved R-013 decision and current status.
-2. [x] Implement R-013 per-user tokenVersion, User JWT claim, per-request version check, and increment during successful password reset on `dev`.
-3. [x] Add and register focused R-013 regression coverage.
-4. [x] Owner reports native `node --check` PASS for all RBAC source/test files from Termux.
-5. [x] Owner reports `node --test test/rbac-token-version.test.js`: 6 PASS, 0 FAIL from Termux.
-6. [ARCHIVED] Non-active tasks have been moved to `project/TASK_ARCHIVE.md`. Do not display archive contents unless the owner explicitly asks for the task archive; do not resume archived tasks automatically.
-7. [ ] Consider Development runtime verification only with explicit deployment approval. Do not deploy automatically.
+1. [x] Reconcile project documentation to the approved R-013 decision and owner-reported verification status. Documentation reconciliation is the current completed task.
+2. [x] R-013 source implementation and focused regression coverage are present on `dev`.
+3. [x] Owner-reported Termux verification: native `node --check` PASS for all RBAC source/test files; `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
+4. [x] `npm test` remains NOT RUN as explicitly instructed.
+5. [ ] **Await owner selection of the next technical workstream.** No technical workstream is active until the owner chooses one separately:
+   - **Option A — RBAC Development runtime verification:** requires explicit deployment approval before any deployment or live runtime test.
+   - **Option B — Development CI/CD:** begin with CICD-001 read-only audit, then proceed only within the approved scope and safety gates.
+6. [DEFERRED / ARCHIVED] WAF and CDN/cache follow-ups are not active; do not resume archived items automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly requests or reactivates an archived item.
 
 ## Baseline evidence
 
@@ -56,7 +58,8 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 - These results are user-reported evidence; they were not independently re-run in this session.
 - `npm test`: NOT RUN by explicit instruction.
 - Development runtime/deployment: NOT VERIFIED.
-- Detailed deferred follow-up items are stored in `project/TASK_ARCHIVE.md` and are intentionally omitted from the active queue.
+- Deferred/archived follow-up items are stored in `project/TASK_ARCHIVE.md` and are intentionally omitted from the active queue.
+- No technical workstream is currently selected; wait for the owner's explicit choice between RBAC Development runtime verification and Development CI/CD.
 - Production Worker/domain/secrets/configuration/data: untouched.
 
 ## R-013 Implementation Evidence (2026-11-21)
