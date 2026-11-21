@@ -100,7 +100,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Private account/mapping storage target: `dekeku-db`; PBKDF2-SHA256 password hashes; Admin-controlled accounts and repository mapping.
 - Guestbook target: mapped website repository `assets/data/bukutamu.json`; public read through static repository/CDN URL.
 - Legacy files under `public/data/{hostname}/bukutamu.json` must not be migrated or deleted automatically.
-- **Latest status**: RBAC-01 storage and RBAC-02 middleware foundations IMPLEMENTED — NOT VERIFIED. RBAC-04 onward remains pending.
+- **Latest status**: RBAC-01 storage and RBAC-02 middleware foundations IMPLEMENTED — NOT VERIFIED. RBAC-05 onward remains pending.
 - **Verification for this checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No RBAC source implementation has been applied yet.
 
 
@@ -137,3 +137,28 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - No actual User accounts or repository mappings were written to dekeku-db. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
 - Known limitations: users and mappings are separate non-transactional JSON documents; repository existence on GitHub is not checked at mapping registration; list endpoints do not paginate.
 - Next: RBAC-04 User login and 30-minute JWT. RBAC-01/02/03 verification remains pending.
+
+
+## RBAC Program — Current Implementation Status (2026-11-21)
+| Stage | Scope | Implementation status | Verification |
+|---|---|---|---|
+| RBAC-01 | Private account storage and mappings | IMPLEMENTED | NOT VERIFIED |
+| RBAC-02 | Admin/User auth and ownership middleware | IMPLEMENTED | NOT VERIFIED |
+| RBAC-03 | Admin account/repository management | IMPLEMENTED | NOT VERIFIED |
+| RBAC-04 | User login and 30-minute JWT | IMPLEMENTED | NOT VERIFIED |
+| RBAC-05 | User CRUD under assets/data/ | PENDING | NOT RUN |
+| RBAC-06 | Private/public data boundary | PENDING | NOT RUN |
+| RBAC-07 | Guestbook per website repository | PENDING | NOT RUN |
+| RBAC-08 | Browser User sessionStorage | PENDING | NOT RUN |
+| RBAC-09 | Security/regression review | PENDING | NOT RUN |
+
+### RBAC-04 Implementation Detail
+- Added src/modules/auth/user-login.js and POST /api/v1/user/login.
+- Reads only private account storage, verifies PBKDF2-SHA256, rejects disabled accounts, and returns generic 401 for invalid credentials.
+- Successful JWT claims: issuer dekeku-api, audience dekeku-user, role user, subject = immutable user ID, lifetime = 1800 seconds.
+- Added bounded JSON parser (16 KiB), strict content type/UTF-8/object validation, and rejects unsupported request fields.
+- Added test/rbac-user-login.test.js to local test script.
+- Tests: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No actual account or private data was created/changed. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
+- Before production exposure, verify Cloudflare WAF rate limiting for /api/v1/user/login; application-level throttling/audit logging are not part of this stage.
+- Next: RBAC-05 User CRUD with strict assets/data/ path confinement.
