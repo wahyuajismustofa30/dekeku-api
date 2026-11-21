@@ -292,3 +292,13 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 - CICD-002 branch policy review complete: development on `dev`; PR to `main`; no direct commits/pushes to `main`. Existing instructions in AGENTS, MASTER, README, D-025 agree.
 - Next: CICD-003 define PR validation contract. No workflow creation or execution authorized by this checkpoint.
 - `npm test`: NOT RUN. No source, Wrangler, Cloudflare, GitHub Actions, secrets, deployment, or Production resources changed.
+
+
+## Latest Checkpoint — CICD-003 Complete (2026-11-21)
+- Active branch: `dev`. CICD-003 PR validation contract is defined in `project/CICD_VALIDATION_CONTRACT.md`.
+- Required PR checks: clean dependency install (`npm ci`); syntax check of relevant JS under `src/` and `test/`; Wrangler `deploy --dry-run`; deterministic focused regression tests mapped to changed source files.
+- Initial warning checks: `npm audit --audit-level=high`; code changes lacking a mapped focused test.
+- PR validation has no deploy step and no Cloudflare/GitHub API secrets. PR events must never deploy.
+- `npm test` remains NOT RUN; remote tests excluded because they may write active Guestbook data.
+- README currently still documents `npm test`; documentation mismatch recorded for follow-up.
+- Next: CICD-004 implement workflow only after owner approval of workflow implementation. No workflow exists from this task; no tests or deployments were run.
