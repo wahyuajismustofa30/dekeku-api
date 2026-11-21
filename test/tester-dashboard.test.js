@@ -50,6 +50,8 @@ describe("Tester Dashboard security and request contract", () => {
       assert.match(userHelper[0], /Bearer ' \\+ userAccessToken/);
       assert.match(script, /if \\(session === 'admin'\\) clearToken\\(true\\)/);
       assert.match(script, /if \\(session === 'user'\\) clearUserSession\\(true\\)/);
+      assert.match(script, /session === 'user' && response\\.status === 403/);
+      assert.match(script, /data\\.error === 'User account is unavailable'/);
     }
   });
 
