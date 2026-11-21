@@ -48,14 +48,14 @@
 See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, acceptance criteria, and full task breakdown.
 - [ ] **RBAC-01** — Private account storage and repository mapping in `dekeku-db`.
 - [ ] **RBAC-02** — Role, audience, and ownership middleware (Admin/User isolation).
-- [ ] **RBAC-03** — Admin account and repository management endpoints.
+- [x] **RBAC-03** — Admin account and repository management endpoints (IMPLEMENTED — NOT VERIFIED).
 - [ ] **RBAC-04** — User login and 30-minute User JWT.
 - [ ] **RBAC-05** — User CRUD restricted to owned repositories under `assets/data/`.
 - [ ] **RBAC-06** — Enforce private/public data boundary and close unintended public reads.
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [ ] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup.
 - [ ] **RBAC-09** — Security, regression, and isolation review.
-- **Latest status**: RBAC-01 and RBAC-02 foundations are IMPLEMENTED — NOT VERIFIED; RBAC-03 is the next implementation stage. Design approval is not implementation evidence.
+- **Latest status**: RBAC-01 and RBAC-02 foundations are IMPLEMENTED — NOT VERIFIED; RBAC-04 is the next implementation stage. Design approval is not implementation evidence.
 - **Verification**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED.
 
 
@@ -76,4 +76,16 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] Add focused RBAC auth isolation tests and register in local test script.
 - [ ] Run RBAC tests and syntax/static checks when authorized/resumed.
 - [ ] Verify middleware against Development runtime after User login/routes exist.
-- **Stage status**: IMPLEMENTED — NOT VERIFIED. Next: RBAC-03 / RBAC-04. RBAC-01 verification remains pending.
+- **Stage status**: IMPLEMENTED — NOT VERIFIED. Next: RBAC-04. RBAC-01/02/03 runtime verification remains pending.
+
+
+## RBAC-03 Progress (2026-11-21)
+- [x] Add Admin create/list/detail User account endpoints.
+- [x] Add User status enable/disable and password reset endpoints.
+- [x] Add repository mapping create/list and soft-disable/update endpoints.
+- [x] Protect all management routes with existing Admin JWT middleware.
+- [x] Add bounded JSON parsing, exact field allowlists, PBKDF2 hashing, schema validation, and SHA concurrency.
+- [x] Add focused Admin route authentication tests and register in local test script.
+- [ ] Run RBAC tests and syntax/static checks when authorized/resumed.
+- [ ] Verify Dev runtime with non-production test fixtures; do not create real records without explicit instruction.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
