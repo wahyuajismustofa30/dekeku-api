@@ -17,6 +17,7 @@ DEKEKU API Gateway adalah layanan backend for website/app untuk:
 - ✅ Admin write access: POST/PUT/DELETE data via JWT auth.
 - ✅ GitHub integration: Operasi performed through GitHub Contents API.
 - ✅ Optimistic concurrency: SHA-based conflict control on write operations.
+- ✅ Automatic SHA lookup: authenticated endpoint supplies the current GitHub Blob SHA before UPDATE/DELETE.
 - ✅ Auto-error mapping: Network timeouts → 504, 4xx → 4xx, 5xx → 502, rate limit → 429.
 
 ## Struktur Repository
@@ -91,9 +92,10 @@ dekeku-api/
 
 | Method | Path | Description |
 |--------|------|-------------|
+| GET | `/api/v1/admin/write/sha?path=...` | Retrieve current Blob SHA for an existing JSON file (admin JWT required) |
 | POST | `/api/v1/admin/write/create` | Create new JSON file in `public/data/` |
-| PUT | `/api/v1/admin/write/update` | Update existing JSON file (requires SHA) |
-| DELETE | `/api/v1/admin/write/delete` | Delete JSON file (requires SHA) |
+| PUT | `/api/v1/admin/write/update` | Update existing JSON file (tester retrieves SHA automatically; API still requires SHA) |
+| DELETE | `/api/v1/admin/write/delete` | Delete JSON file (tester retrieves SHA automatically; API still requires SHA) |
 
 ### Authentication
 
