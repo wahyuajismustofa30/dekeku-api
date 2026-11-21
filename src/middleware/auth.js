@@ -47,7 +47,7 @@ export const userAuthMiddleware = async (request, env, next) => {
       return error("User account is unavailable", 403);
     }
     const currentTokenVersion = account.tokenVersion ?? 0;
-    const presentedTokenVersion = req.user.tokenVersion ?? 0;
+    const presentedTokenVersion = req.user.tokenVersion === undefined ? 0 : req.user.tokenVersion;
     if (
       !Number.isSafeInteger(presentedTokenVersion) ||
       presentedTokenVersion < 0 ||
@@ -81,7 +81,7 @@ export const repositoryOwnershipMiddleware = async (request, env, next, reposito
   const account = users.users.find(user => user.id === request.user.sub);
   if (!account || account.status !== "active") return error("User account is unavailable", 403);
   const currentTokenVersion = account.tokenVersion ?? 0;
-  const presentedTokenVersion = request.user.tokenVersion ?? 0;
+  const presentedTokenVersion = request.user.tokenVersion === undefined ? 0 : request.user.tokenVersion;
   if (
     !Number.isSafeInteger(presentedTokenVersion) ||
     presentedTokenVersion < 0 ||
