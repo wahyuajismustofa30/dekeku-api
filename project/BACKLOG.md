@@ -53,7 +53,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] **RBAC-05** — User CRUD restricted to owned repositories under `assets/data/` (IMPLEMENTED — NOT VERIFIED).
 - [x] **RBAC-06** — Enforce private/public data boundary and close unintended public reads (IMPLEMENTED — NOT VERIFIED; regression suite added, not run).
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
-- [ ] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup.
+- [x] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup (IMPLEMENTED — NOT VERIFIED).
 - [ ] **RBAC-09** — Security, regression, and isolation review.
 - **Latest status**: RBAC-01 through RBAC-05 are IMPLEMENTED — NOT VERIFIED. RBAC-06 is the next implementation stage. Design approval is not implementation evidence.
 - **Verification at initial checkpoint**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED. See subsequent stage records.
@@ -143,3 +143,16 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Verify Development runtime with an isolated mapped public repository; do not write to real website data without approval.
 - [ ] Verify/configure Cloudflare WAF rate limiting for `POST /api/v1/public/submit` in Development. Origin is spoofable and is not authentication.
 - Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-08 Browser User session integration.
+
+
+## RBAC-08 Progress (2026-11-21)
+- [x] Add User login UI calling `POST /api/v1/user/login`.
+- [x] Persist User JWT only in `sessionStorage` under `dekeku_user_access_token`; restore on same-tab reload.
+- [x] Add isolated User Bearer helper; public requests strip Authorization and Admin continues to use its separate in-memory token.
+- [x] Add User logout and clear User token on 401 from User-authenticated requests.
+- [x] Add User repository listing action as an authenticated session use.
+- [x] Update generated Worker Tester and static `public/tester.html` copies.
+- [x] Update `test/tester-dashboard.test.js` for User session storage and role-specific Authorization behavior.
+- [ ] Run syntax/static checks and dashboard tests; `npm test` remains NOT RUN per explicit instruction.
+- [ ] Verify session persistence/logout/401 behavior in Development browser without Production changes.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-09 security and regression review.
