@@ -3,8 +3,9 @@
 Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
-- **Fase Aktif**: RBAC Security & Development Verification Follow-up.
-- **Status Keseluruhan**: Implementasi RBAC-01 s/d RBAC-08 tersedia di `dev`, tetapi verifikasi sistem lengkap dan Development runtime masih NOT VERIFIED. R-013 source + focused regression test: syntax check dan focused test PASS berdasarkan laporan pengujian pengguna di Termux. WAF Development DEFERRED; perilaku CDN/cache `assets` NOT VERIFIED.
+- **Fase Aktif**: Dokumentasi telah direkonsiliasi; pemilihan prioritas teknis berikutnya menunggu keputusan pemilik.
+- **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
+- **Prioritas teknis berikutnya**: BELUM DIPILIH. Pemilik akan menentukan secara terpisah apakah melanjutkan verifikasi runtime RBAC di Development (memerlukan persetujuan deployment eksplisit) atau track CI/CD Development.
 - **Baseline sebelum dokumentasi**: branch `dev`, commit `6f0360e5166595945320a467a1fa2c91722b7401`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
@@ -72,14 +73,8 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - **Public Submission (`test/public-submission.test.js`)**: 4/4 PASS.
 - **Public Policy & Resilience (`test/github-core.test.js`)**: 18/18 PASS.
 
-## Next Steps
-- [x] Dashboard Tester HTML served at / and /tester (VERIFIED).
-- [x] R-001 s/d R-005 — remediation kode dan isolasi test; hasil suite lokal terbaru dilaporkan PASS.
-- [DEFERRED] R-006 — konfigurasi/verifikasi WAF Development ditunda atas keputusan pemilik proyek; jangan dikerjakan sampai diminta.
-- [ ] R-007 — tetapkan kebijakan retensi, akses, dan metadata audit log sebelum implementasi.
-- [ ] R-009 s/d R-011 — evaluasi pemeliharaan/infrastruktur.
-- Pengambilan `assets` wajib mengutamakan data aktual; tambahkan parameter waktu pada URL request (contoh `?t=<timestamp>`) untuk cache-busting. Pastikan CDN memasukkan query parameter ke cache key atau cache dibypass; perilaku aktual masih NOT VERIFIED.
-- Integrasi frontend statis dengan endpoint publik `POST /api/v1/public/submit` tetap menjadi pekerjaan fitur berikutnya.
+## Historical Next Steps — SUPERSEDED
+Daftar berikut adalah snapshot rekomendasi dari tahap sebelumnya, bukan antrean aktif. Status, penundaan, dan pengarsipan terbaru mengikuti `PROGRESS.md`, `BACKLOG.md`, `TASK_ARCHIVE.md`, serta urutan tunggal di `EXECUTION_POLICY.md`. Jangan memulai item hanya karena masih tercantum pada snapshot historis.
 ## Caller Repository Metadata (2026-11-21)
 - **IMPLEMENTED ON BRANCH `dev`**: `GET /api/v1/github/repository` now resolves the caller repository from the validated request `Origin` and its fixed `/config.json` path.
 - Reuses the existing HTTPS `ALLOWED_ORIGINS` policy; rejects missing/unapproved origins, redirects, oversized config (>32 KiB), invalid UTF-8/JSON, malformed repository identity, and owner values that differ from `GITHUB_OWNER`.
@@ -227,7 +222,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Review confirms separate Admin/User audience and role checks, active-account recheck, mapping ownership check, fixed `assets/data/` prefix, fixed private storage allowlist, public reader separation, bounded JSON validation, and CORS support for Authorization.
 - Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting remains DEFERRED. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. R-013 source implementation and focused regression tests are present on dev but NOT VERIFIED; the deployed Worker has not been updated, so old JWTs may remain usable until their remaining expiry (up to 30 minutes). Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
 - No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
-- **Next:** perform permitted syntax/static checks without running `npm test`; implement approved R-013 token/session version mechanism with focused regression coverage. WAF remains DEFERRED; CDN freshness verification remains pending.
+- **Historical next step — SUPERSEDED:** this section predates the R-013 implementation and owner-reported Termux verification recorded below. Do not use this instruction as the current queue; see `EXECUTION_POLICY.md`.
 
 
 ## Current Verification Queue — Authoritative (2026-11-21)
@@ -292,3 +287,10 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - **Implementation:** NOT STARTED. No workflow files or GitHub Actions settings were changed in this documentation update.
 - **Active task tracking:** CICD-001..CICD-010 added to `BACKLOG.md`; execution order is recorded in `EXECUTION_POLICY.md`.
 - **Production:** untouched and excluded.
+
+
+## Documentation Reconciliation & Owner Workstream Selection (2026-11-21)
+- Owner selected option C: reconcile documentation first; do not start RBAC runtime work or CI/CD during this pass.
+- Current documentation status: reconciled to the owner-reported R-013 Termux verification, explicit `npm test` prohibition, archived/deferred follow-ups, and approved Development-only CI/CD target policy.
+- **Next technical workstream: NOT SELECTED.** Ask the owner to choose separately between RBAC Development runtime verification (deployment requires explicit approval) and Development CI/CD (starting with a read-only audit).
+- No source code, tests, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed by this documentation task.
