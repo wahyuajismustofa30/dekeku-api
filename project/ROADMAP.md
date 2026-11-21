@@ -70,3 +70,11 @@
 - Added `test/rbac-storage.test.js` to local test script.
 - **Status**: IMPLEMENTED — NOT VERIFIED. `npm test` NOT RUN by user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED.
 - Next: RBAC-02 role/audience/ownership middleware. No endpoints or data records have been added; no Production/deployment/configuration/secret changes.
+
+
+## RBAC-02 — Role and Ownership Middleware (2026-11-21)
+- Added separate Admin and User JWT middleware with strict issuer/audience/role checks; retained `authMiddleware` as a compatibility alias for Admin routes.
+- User middleware rechecks active account status from private account storage. Repository ownership middleware resolves an opaque mapping ID against private mappings and attaches only server-sourced repository coordinates.
+- Added `test/rbac-auth.test.js` to the local test command.
+- **Status**: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by user instruction; Development runtime NOT VERIFIED. No endpoints, account records, mappings, secrets, config, deployment, or Production resources changed.
+- Next: RBAC-03 Admin management and RBAC-04 User login. RBAC-01 verification remains pending.
