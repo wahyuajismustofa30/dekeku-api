@@ -172,7 +172,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Updated `src/modules/tester/index.js` and `public/tester.html` with User login form, User session status, logout, and authenticated User repository listing.
 - User login calls `POST /api/v1/user/login`, consumes `access_token`, and stores it only in `sessionStorage` key `dekeku_user_access_token`. Password input is cleared after login; JWT is never displayed or logged.
 - Added `userRequest()` with User Bearer token. Public helper removes Authorization; Admin helper retains its distinct in-memory Admin JWT.
-- User request 401 clears User token and UI state; Admin request 401 clears only Admin state. Logout removes the sessionStorage key.
+- User request 401, or 403 with the exact `User account is unavailable` error, clears User token and UI state; Admin request 401 clears only Admin state. Logout removes the sessionStorage key.
 - Updated `test/tester-dashboard.test.js` to cover both page copies and separate auth helpers/session lifecycle.
 - Source review: VERIFIED. Syntax checks/tests: NOT RUN per instruction. Development browser/runtime: NOT VERIFIED.
 - XSS limitation: sessionStorage is readable by same-origin JavaScript; keep strict output handling and avoid third-party scripts.
