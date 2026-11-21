@@ -327,3 +327,16 @@
 - Added mandatory conflict handling: stop affected work, report discrepancies with impact, and offer options or request approval when documentation or prior instructions conflict with the owner's latest explicit instruction.
 - Updated AGENTS.md, MASTER.md, DECISIONS.md (D-024), EXECUTION_POLICY.md, PROGRESS.md, and CHECKPOINT.md.
 - Documentation-only change; no source code, tests, deployment, Cloudflare configuration, secrets, account records, mappings, website data, or Production resources changed.
+
+
+## [Unreleased] — Development CI/CD Policy & Task Queue (2026-11-21)
+
+### Added
+- Recorded owner-approved branch/PR flow: develop on `dev`, submit stable changes to `main` through PR.
+- Recorded intended CI/CD behavior: validate PRs without deployment; updates to `main` deploy only to Development Worker `dekeku-api-dev`.
+- Added D-025 and CICD-001..CICD-010 tasks covering target audit, validation, Development credential isolation, deployment safeguards, verification, and documentation.
+
+### Verification / Scope
+- Documentation-only update on branch `dev`.
+- CI/CD workflows: NOT IMPLEMENTED / NOT VERIFIED.
+- No source code, Wrangler configuration, GitHub Actions workflow, Cloudflare settings, secrets, deployment, or Production resources changed.
