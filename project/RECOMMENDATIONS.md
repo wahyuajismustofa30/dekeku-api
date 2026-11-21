@@ -124,10 +124,10 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - **Status**: OPEN — decision required; no code/schema change made.
 
 
-## R-013 — Immediate User JWT Revocation After Password Reset (Evaluation 2026-11-21)
-- **Current behavior**: password reset updates the password hash but does not invalidate already-issued User JWTs. A token can remain usable for its remaining lifetime (up to 30 minutes) while the account stays active.
-- **Risk**: after suspected credential compromise, an attacker holding an existing JWT may retain access until token expiry.
-- **Recommendation**: adopt immediate revocation for User JWTs after password reset. A practical design is a per-user `tokenVersion`/session version stored in the private user record, included in newly issued JWTs, incremented on successful password reset, and compared on every authenticated User request. User middleware already rechecks account status against private storage, so that authoritative read can also validate the version.
-- **Trade-offs**: requires a backward-compatible schema default/migration, JWT claim validation, and SHA-safe reset writes. It does not revoke Admin JWTs unless separately designed.
-- **Decision status**: PROPOSED — owner decision OPEN. This evaluation does not authorize code/schema changes.
-- **Acceptance criteria if adopted**: old User JWT rejected immediately after reset; new password can log in; concurrent writes are handled safely; existing user records remain compatible; Admin tokens are unaffected.
+## R-013 — Immediate User JWT Revocation After Password Reset (Decision 2026-11-21)
+- **Owner decision: APPROVED**. Every User JWT issued before a successful Admin password reset must become invalid immediately; the User must log in again using the new password.
+- **Implementation direction**: add a backward-compatible per-user token/session version in the private User record; include the current version in newly issued User JWTs; compare the claim with the authoritative private record on every authenticated User request; increment the version during successful password reset using SHA-safe concurrency handling.
+- **Scope**: User JWTs only. Admin JWTs are not revoked by this decision.
+- **Acceptance criteria**: old User JWT rejected immediately after reset; new password can log in and receive a valid token; existing records remain compatible; concurrent SHA conflicts are handled safely; Admin JWTs remain unaffected.
+- **Status**: DECISION APPROVED (D-023); implementation NOT STARTED. Until implementation is verified, old tokens may remain usable for their remaining lifetime (up to 30 minutes).
+- This decision authorizes the R-013 implementation on dev; it does not authorize deployment or any Production changes.
