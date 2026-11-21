@@ -35,10 +35,8 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 3. [x] Add and register focused R-013 regression coverage.
 4. [x] Owner reports native `node --check` PASS for all RBAC source/test files from Termux.
 5. [x] Owner reports `node --test test/rbac-token-version.test.js`: 6 PASS, 0 FAIL from Termux.
-6. [ ] Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior using a safe, isolated Development target; do not perform a real write without an approved fixture.
-7. [DEFERRED] Development WAF for User Login and Guestbook; resume only when the owner explicitly asks.
-8. [ ] Reconcile any remaining historical status notes in supporting docs as needed.
-9. [ ] Consider Development runtime verification only with explicit deployment approval. Do not deploy automatically.
+6. [ARCHIVED] Non-active tasks have been moved to `project/TASK_ARCHIVE.md`. Do not display archive contents unless the owner explicitly asks for the task archive; do not resume archived tasks automatically.
+7. [ ] Consider Development runtime verification only with explicit deployment approval. Do not deploy automatically.
 
 ## Baseline evidence
 
@@ -48,8 +46,7 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 - These results are user-reported evidence; they were not independently re-run in this session.
 - `npm test`: NOT RUN by explicit instruction.
 - Development runtime/deployment: NOT VERIFIED.
-- Development WAF: DEFERRED by owner.
-- `assets` CDN/cache-key behavior: NOT VERIFIED; timestamp query parameter remains the intended cache-busting strategy.
+- Detailed deferred follow-up items are stored in `project/TASK_ARCHIVE.md` and are intentionally omitted from the active queue.
 - Production Worker/domain/secrets/configuration/data: untouched.
 
 ## R-013 Implementation Evidence (2026-11-21)
