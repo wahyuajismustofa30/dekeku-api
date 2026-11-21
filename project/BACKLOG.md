@@ -185,7 +185,7 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); `P
 - [x] Owner-reported Termux verification: native `node --check` PASS for all RBAC source/test files; focused `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
 - [x] `npm test` remains NOT RUN as explicitly instructed.
 - [DEFERRED / ARCHIVED] WAF and CDN/cache follow-ups are not active; do not resume archived work without explicit owner direction.
-- [ ] **Await owner selection of the next technical workstream.** No technical work is authorized by this queue until selected separately: (A) RBAC Development runtime verification, which requires explicit deployment approval; or (B) Development CI/CD, beginning with CICD-001 read-only audit.
+- [x] Owner selected Development CI/CD after documentation reconciliation; CICD-001 and CICD-002 are complete. See the current queue in `EXECUTION_POLICY.md`.
 - Development runtime/deployment: NOT VERIFIED. Production untouched.
 
 
@@ -229,8 +229,8 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); `P
 
 **Target workflow:** local/repository development on `dev` → Pull Request to `main` after stable → PR validation → merge/update `main` → automatic deployment to Development Worker `dekeku-api-dev` only.
 
-- [ ] **CICD-001 — Audit deployment target and Wrangler configuration (CRITICAL).** Read-only audit of `wrangler.jsonc`, Worker name/environment, deployment command, and current GitHub Actions state. Confirm the exact Development target; do not modify Cloudflare or Production.
-- [ ] **CICD-002 — Reconcile branch policy (HIGH).** Ensure all current instructions consistently state that development occurs on `dev`, PR target is `main`, and direct commits/pushes to `main` are prohibited.
+- [x] **CICD-001 — Audit deployment target and Wrangler configuration (CRITICAL).** READ-ONLY audit complete at dev HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`: no workflow files; Worker `dekeku-api-dev`; no named Wrangler environment or deploy script; Actions secrets/settings NOT VERIFIED; branch metadata says dev/main `protected=false`. Read-only audit of `wrangler.jsonc`, Worker name/environment, deployment command, and current GitHub Actions state. Confirm the exact Development target; do not modify Cloudflare or Production.
+- [x] **CICD-002 — Reconcile branch policy (HIGH).** Reviewed AGENTS.md, MASTER.md, README.md, D-025, and GitHub branch metadata. Policy consistent: work on `dev`, PR to `main`, no direct commits/pushes to `main`. Branch protection is not active per branch metadata; no settings changed. Ensure all current instructions consistently state that development occurs on `dev`, PR target is `main`, and direct commits/pushes to `main` are prohibited.
 - [ ] **CICD-003 — Define PR validation contract (HIGH).** Specify required checks: dependency installation, syntax/static checks, Wrangler configuration validation, focused relevant tests, and basic security checks. Critical failures block; non-critical/unstable checks may warn initially. Full test suite is not mandatory in the first iteration.
 - [ ] **CICD-004 — Add PR validation workflow (HIGH).** Run the agreed checks for PRs from `dev` to `main`; do not deploy from PR events.
 - [ ] **CICD-005 — Add main-to-Development deployment workflow (CRITICAL).** On updates to `main`, deploy only to `dekeku-api-dev` using an explicit Development target. Do not deploy Production.
@@ -242,4 +242,4 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); `P
 
 **Execution order:** CICD-001 → CICD-002 → CICD-003 → CICD-004/CICD-006/CICD-007 → CICD-005 → CICD-008 → CICD-009 → CICD-010.
 
-**Current status:** all CICD-001..010 are PLANNED / NOT STARTED and are not the selected active workstream. The owner must select the CI/CD track before work begins. This task list does not authorize Production changes or deployment before the Development-only workflow is implemented and verified.
+**Current status:** CICD-001 and CICD-002 COMPLETE (read-only audit/documentation review). CICD-003 is the next active task. CICD-004..010 remain PLANNED / NOT STARTED. This task list does not authorize Production changes or deployment before the Development-only workflow is implemented and verified.
