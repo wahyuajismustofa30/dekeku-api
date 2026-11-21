@@ -111,7 +111,7 @@ export const validateRepositoryMappingsDocument = (document, usersDocument = nul
       typeof mapping.branch !== "string" ||
       mapping.branch.length < 1 ||
       mapping.branch.length > 255 ||
-      /[\x00-\x20\x7f~^:?*[]/.test(mapping.branch) ||
+      /[\\x00-\\x20\\x7f~^:?*\\[\\]]/.test(mapping.branch) ||
       mapping.branch.includes("..") ||
       mapping.branch.includes("//") ||
       mapping.branch.endsWith("/") ||
