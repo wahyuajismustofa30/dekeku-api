@@ -118,9 +118,10 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 
 
 ## R-013. Immediate User JWT revocation after password reset
-- **Temuan**: Admin password reset updates `passwordHash`, but User JWTs already issued remain valid until their `exp` (maximum lifetime 30 minutes). The User middleware rechecks account status, not a credential/session version.
-- **Risiko**: A token copied before password reset can continue accessing the account's registered repositories for its remaining lifetime, provided the account remains active.
-- **Rekomendasi**: Decide whether this residual 30-minute window is acceptable. If immediate revocation is required, approve a server-side token/session version or password-change timestamp claim checked on each request. Do not add account fields or alter JWT claims/storage schema without an explicit architecture decision.
+- **Temuan**: sebelum keputusan D-023, Admin password reset tidak membatalkan JWT User yang telah diterbitkan; token dapat tetap berlaku hingga sisa masa berlaku maksimal 30 menit.
+- **Risiko**: token yang disalin sebelum reset dapat tetap mengakses repository milik User selama sisa masa berlaku.
+- **Keputusan pemilik**: APPROVED (D-023, 2026-11-21). Semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Implementasi menggunakan token/session version server-side; rincian dan acceptance criteria ada pada bagian keputusan R-013 di bawah.
+- **Status**: keputusan APPROVED; implementasi NOT STARTED. Tidak ada perubahan kode/schema pada saat keputusan dicatat.
 - **Status**: OPEN — decision required; no code/schema change made.
 
 
