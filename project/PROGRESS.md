@@ -100,8 +100,8 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Private account/mapping storage target: `dekeku-db`; PBKDF2-SHA256 password hashes; Admin-controlled accounts and repository mapping.
 - Guestbook target: mapped website repository `assets/data/bukutamu.json`; public read through static repository/CDN URL.
 - Legacy files under `public/data/{hostname}/bukutamu.json` must not be migrated or deleted automatically.
-- **Latest status**: RBAC-01 through RBAC-04 source foundations IMPLEMENTED — NOT VERIFIED. RBAC-05 onward remains pending.
-- **Verification for this checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No RBAC source implementation has been applied yet.
+- **Latest status**: RBAC-01 through RBAC-05 source foundations IMPLEMENTED — NOT VERIFIED. RBAC-06 onward remains pending.
+- **Verification for the initial RBAC checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. Subsequent RBAC implementation records follow.
 
 
 
@@ -146,8 +146,8 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 | RBAC-02 | Admin/User auth and ownership middleware | IMPLEMENTED | NOT VERIFIED |
 | RBAC-03 | Admin account/repository management | IMPLEMENTED | NOT VERIFIED |
 | RBAC-04 | User login and 30-minute JWT | IMPLEMENTED | NOT VERIFIED |
-| RBAC-05 | User CRUD under assets/data/ | PENDING | NOT RUN |
-| RBAC-06 | Private/public data boundary | PENDING | NOT RUN |
+| RBAC-05 | User CRUD under assets/data/ | IMPLEMENTED | NOT VERIFIED |
+| RBAC-06 | Private/public data boundary | NEXT | NOT RUN |
 | RBAC-07 | Guestbook per website repository | PENDING | NOT RUN |
 | RBAC-08 | Browser User sessionStorage | PENDING | NOT RUN |
 | RBAC-09 | Security/regression review | PENDING | NOT RUN |
@@ -161,4 +161,16 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Tests: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No actual account or private data was created/changed. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
 - Before production exposure, verify Cloudflare WAF rate limiting for /api/v1/user/login; application-level throttling/audit logging are not part of this stage.
-- Next: RBAC-05 User CRUD with strict assets/data/ path confinement.
+- Next: RBAC-06 private/public data boundary review.
+
+
+## RBAC-05 — User Data CRUD (2026-11-21)
+- Status: IMPLEMENTED — NOT VERIFIED.
+- Added src/modules/rbac/user-data.js and mounted GET /api/v1/user/repositories plus GET/POST/PUT/DELETE /api/v1/user/data.
+- User routes require User JWT and active account status. File operations require a registered repositoryId mapped to the authenticated subject; owner, repository, and branch come only from private mappings.
+- Client path is relative; server fixes the prefix to assets/data/. Traversal, encoding, backslash, absolute path, hidden segments, control characters, repeated separators, and non-JSON extensions are rejected.
+- GET reads and parses JSON and returns SHA. POST creates; PUT/DELETE require current 40-character SHA. GitHub handles concurrent modification conflicts; no blind overwrite or retry.
+- JSON root object/array only; maximum stored JSON file 1 MiB; streamed request body maximum 1,153,434 bytes; strict UTF-8.
+- Added test/rbac-user-data.test.js to local test script.
+- npm test: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No real account, mapping, or target repository data changed; no secrets/config/deployment/Production resources touched.
+- Next: RBAC-06 private/public data boundary review, including public reader isolation from private and assets/data paths. RBAC-01–05 runtime verification remains pending.
