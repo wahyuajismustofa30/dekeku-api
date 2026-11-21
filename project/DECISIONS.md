@@ -40,7 +40,7 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - D-021 remains in force: legacy D-015 files are preserved and are not migrated/deleted automatically.
 
 
-| **D-023** | Immediate User JWT Revocation | Respons setelah Admin melakukan reset password User. | SETUJU: semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Terapkan mekanisme token/session version server-side pada record User; versi dimasukkan ke JWT baru dan diverifikasi pada setiap request User terautentikasi. Reset password menaikkan versi secara aman menggunakan SHA concurrency. JWT Admin tidak terpengaruh. Keputusan desain disetujui 2026-11-21; implementasi dan verifikasi belum dilakukan. |
+| **D-023** | Immediate User JWT Revocation | Respons setelah Admin melakukan reset password User. | SETUJU: semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Terapkan mekanisme token/session version server-side pada record User; versi dimasukkan ke JWT baru dan diverifikasi pada setiap request User terautentikasi. Reset password menaikkan versi secara aman menggunakan SHA concurrency. JWT Admin tidak terpengaruh. Keputusan disetujui 2026-11-21; source implementation tersedia di dev; syntax check dan focused test PASS berdasarkan laporan pemilik dari Termux; Development runtime NOT VERIFIED. |
 
 
 ## D-023 Verification Status Update (2026-11-21)
