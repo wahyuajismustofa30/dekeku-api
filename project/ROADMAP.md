@@ -86,4 +86,14 @@
 - Private account and mapping records use the fixed dekeku-db paths, schema validation, PBKDF2-SHA256 password hashes, bounded JSON body parsing, and SHA-protected writes.
 - Added test/rbac-admin.test.js to the local test script.
 - Status: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by instruction; Development runtime NOT VERIFIED. No real account or mapping records were created; no Production/config/secrets/deployment changes.
-- Next: RBAC-04 User login and 30-minute User JWT. RBAC-01/02/03 runtime verification remains pending.
+- Next: RBAC-05 User data CRUD. RBAC-01–04 runtime verification remains pending.
+
+
+## RBAC-04 — User Login & JWT (2026-11-21)
+- Added POST /api/v1/user/login, reading User accounts from the fixed private account document.
+- Verifies PBKDF2-SHA256 hashes, rejects disabled accounts, uses uniform authentication failure responses, and performs dummy-hash verification for unknown usernames.
+- Issues User HS256 JWT with aud=dekeku-user, role=user, immutable account ID as sub, and a 30-minute lifetime.
+- Request parsing is bounded to 16 KiB with strict JSON/content-type checks and unknown-field rejection.
+- Added test/rbac-user-login.test.js to local test script.
+- Status: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by instruction; Development runtime NOT VERIFIED. No real account/data, secrets, configuration, deployment, or Production resources changed.
+- Next: RBAC-05 User data CRUD under assets/data/. RBAC-01–04 runtime verification remains pending.
