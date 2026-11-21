@@ -1,7 +1,7 @@
 # CICD-003 — PR Validation Contract
 
 Tanggal: 2026-11-21
-Status: DEFINED — menunggu implementasi workflow CICD-004.
+Status: IMPLEMENTED — workflow dibuat; menunggu validasi run PR aktual.
 Target PR: `dev` → `main`.
 Batas: validasi CI saja; tidak melakukan deployment.
 
@@ -50,4 +50,13 @@ Batas: validasi CI saja; tidak melakukan deployment.
 - [x] Aturan focused test ditentukan tanpa menjalankan `npm test` atau remote tests.
 - [x] Secrets dan akses Production dikecualikan.
 - [x] Hasil gagal/ambigu fail closed untuk pemeriksaan wajib.
-- [ ] Implementasi workflow dan bukti run: CICD-004/CICD-008, belum termasuk tugas ini.
+- [x] Implementasi workflow PR: `.github/workflows/pr-validation.yml` dibuat pada CICD-004.
+- [ ] Bukti run PR aktual: NOT VERIFIED; memerlukan PR `dev` → `main` dan hasil GitHub Actions.
+
+
+## CICD-004 Implementation Notes
+- Workflow runs only for pull requests targeting `main` and is gated to head branch `dev`.
+- Actions are pinned to immutable commit SHAs; permissions are read-only; checkout credentials are not persisted; concurrency is scoped per PR.
+- Focused test selection uses an explicit source-to-test mapping. Changed test files run directly; `test/live-remote.test.js` is never executed.
+- Dependency audit is warning-only. The workflow has no deployment step, Cloudflare credentials, or GitHub write permission.
+- Workflow syntax, job execution, and actual PR check result remain NOT VERIFIED until a real PR run is available.
