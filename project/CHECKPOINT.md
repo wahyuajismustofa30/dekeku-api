@@ -253,3 +253,12 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Development deployment/runtime: NOT VERIFIED. WAF: DEFERRED. Guestbook CDN/cache behavior: NOT VERIFIED.
 - Production Worker/domain/secrets/configuration/data remain untouched.
 - The owner later requested that deferred follow-up items be archived and not displayed unless the archive is explicitly requested. See `project/TASK_ARCHIVE.md`; do not surface its contents in ordinary reports.
+
+
+## Governance Checkpoint — Authority Hierarchy (2026-11-21)
+- Wahyu adalah pemilik proyek dan pemegang keputusan final.
+- ChatGPT adalah asisten pengembangan utama (urutan kedua), bertugas menganalisis, merencanakan, mengoordinasikan/delegasi, dan mereview pekerjaan Codex.
+- Codex di Termux adalah asisten pelaksana (urutan ketiga), bekerja sesuai delegasi ChatGPT dan instruksi Wahyu.
+- Instruksi eksplisit terbaru Wahyu mengungguli dokumen, keputusan lama, kode, dan arahan asisten. Konflik wajib dihentikan pada tindakan terdampak, dilaporkan beserta dampaknya, lalu diberikan opsi atau permintaan persetujuan yang relevan.
+- Dokumentasi normatif: [MASTER.md](MASTER.md) bagian 8, [DECISIONS.md](DECISIONS.md) D-024, [EXECUTION_POLICY.md](EXECUTION_POLICY.md), dan [AGENTS.md](../AGENTS.md).
+- Perubahan ini hanya memperbarui dokumentasi; source code, test, deployment, Cloudflare, secrets, akun, mapping, data, dan Production tidak diubah.
