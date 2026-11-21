@@ -365,3 +365,13 @@
 ### Verification / Scope
 - Documentation-only update on branch `dev`.
 - `npm test`: NOT RUN. No source code, Wrangler config, GitHub Actions workflow, Cloudflare settings, secrets, deployment, or Production resources changed.
+
+
+## [2026-11-21] — CICD-003 PR Validation Contract
+### Changed
+- Added `project/CICD_VALIDATION_CONTRACT.md` defining PR-only validation, required/blocking checks, initial warning checks, focused test mapping, and deployment/security boundaries.
+- Marked CICD-003 complete and CICD-004 as the next active task in progress, backlog, execution policy, roadmap, and checkpoint.
+- Recorded README's stale `npm test` guidance as a documentation mismatch; owner restriction remains authoritative.
+### Verification / Scope
+- Documentation-only changes on `dev`; no workflow, source code, package scripts, Wrangler configuration, GitHub settings/secrets, Cloudflare resource, or deployment changed.
+- No test commands were run. `npm test`: NOT RUN. Remote tests: NOT RUN.
