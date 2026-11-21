@@ -222,3 +222,12 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Important caveat: timestamp cache-busting only works if the CDN/cache key includes the query string. If query parameters are ignored, cache must be bypassed or configured to include the parameter.
 - CDN/query cache behavior: NOT VERIFIED. No Cloudflare settings, website data, or Production resources changed.
 - `npm test`: NOT RUN. Production untouched.
+
+
+## Owner Decision Checkpoint — R-013 Immediate User JWT Revocation (2026-11-21)
+- **Decision: APPROVED (D-023)**. A successful Admin password reset must immediately invalidate all previously issued User JWTs for that account.
+- Implementation direction: backward-compatible per-user token/session version in the private User record; include it in newly issued User JWTs; compare it with the authoritative record on every authenticated User request; increment it during password reset with SHA-safe concurrency handling.
+- Admin JWTs are unaffected. User must log in again using the new password.
+- Implementation status: NOT STARTED. Until implemented and verified, current behavior remains: previously issued User JWTs may remain valid for their remaining lifetime (up to 30 minutes).
+- Next: perform comprehensive RBAC syntax/static checks without npm test, then implement R-013 on dev with focused regression coverage. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
+- This documentation update does not change source code, account records, secrets, Cloudflare settings, deployment, or Production resources.
