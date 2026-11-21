@@ -98,6 +98,8 @@ jobs:
                   echo "::warning::Remote test changed but is intentionally never executed in PR CI."
                 elif [[ -f "$file" ]]; then
                   selected["$file"]=1
+                else
+                  echo "::warning::Changed test file was deleted or is unavailable: $file"
                 fi
                 ;;
               src/core/errors.js)
