@@ -54,7 +54,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] **RBAC-06** — Enforce private/public data boundary and close unintended public reads (IMPLEMENTED — NOT VERIFIED; regression suite added, not run).
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [x] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup (IMPLEMENTED — NOT VERIFIED).
-- [ ] **RBAC-09** — Security, regression, and isolation review.
+- [ ] **RBAC-09** — Security, regression, and isolation review (test cases added; NOT VERIFIED).
 - **Latest status**: RBAC-01 through RBAC-08 are IMPLEMENTED — NOT VERIFIED. RBAC-09 Security & Regression Review is the next implementation stage. Design approval is not implementation evidence.
 - **Verification at initial checkpoint**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED. See subsequent stage records.
 
@@ -142,7 +142,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Run Guestbook/RBAC regression tests and syntax/static checks; `npm test` remains NOT RUN per explicit instruction.
 - [ ] Verify Development runtime with an isolated mapped public repository; do not write to real website data without approval.
 - [ ] Verify/configure Cloudflare WAF rate limiting for `POST /api/v1/public/submit` in Development. Origin is spoofable and is not authentication.
-- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-08 Browser User session integration.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-09 Security & Regression Review.
 
 
 ## RBAC-08 Progress (2026-11-21)
@@ -156,3 +156,17 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Run syntax/static checks and dashboard tests; `npm test` remains NOT RUN per explicit instruction.
 - [ ] Verify session persistence/logout/401 behavior in Development browser without Production changes.
 - Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-09 security and regression review.
+
+
+## RBAC-09 Security Review (2026-11-21)
+- [x] Review router, JWT role/audience checks, account status, repository ownership, private/public storage boundaries, User path validation, Guestbook mapping, CORS, and browser token handling.
+- [x] Add cross-User mapping/IDOR regression scenario; assert no target repository request occurs.
+- [x] Add server-authoritative repository coordinates regression scenario.
+- [x] Add rejection of client-supplied owner/repo/branch fields.
+- [x] Add disabled-account and expired-token regression scenarios.
+- [x] Register `test/rbac-security-review.test.js` in package.json.
+- [ ] Run syntax/static checks; do not run `npm test` per explicit instruction.
+- [ ] Verify Cloudflare WAF/IP rate limiting for User login and Guestbook POST in Development.
+- [ ] Verify public Guestbook CDN cache/invalidation behavior.
+- [ ] Decide whether password reset must revoke existing User JWTs immediately; current design allows remaining lifetime up to 30 minutes.
+- Status: TESTS ADDED — NOT VERIFIED.
