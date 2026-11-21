@@ -7,7 +7,7 @@ export const githubRouter = async (request, env) => {
   const { pathname } = new URL(request.url);
   const method = request.method;
 
-  // Public GET endpoints
+  // GET endpoints: public routes plus admin routes protected by the outer auth middleware
   if (method === "GET") {
     if (pathname === "/api/v1/admin/write/sha") return handleGetSha(request, env);
     if (pathname === "/api/v1/github/repository") return getRepositoryMetadata(request, env);
