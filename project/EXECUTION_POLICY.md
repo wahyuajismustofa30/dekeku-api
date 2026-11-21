@@ -5,6 +5,17 @@ Target branch: `dev`
 Repository: `wahyuajismustofa30/dekeku-api`
 Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 
+## Authority Hierarchy
+1. **Wahyu — Project Owner (highest authority):** latest explicit instruction, approval, and decision prevails over every project document, historical decision, implementation choice, and assistant instruction.
+2. **ChatGPT — Lead Development Assistant (second):** analyzes, plans, coordinates, delegates technical work, and reviews Codex output under Wahyu's authority.
+3. **Codex in Termux — Execution Assistant (third):** performs repository/environment tasks delegated by ChatGPT and/or explicitly instructed by Wahyu; cannot independently change goals, architecture, scope, or operational approvals.
+
+### Conflict protocol
+- If a document, earlier decision, implementation, or assistant direction conflicts with Wahyu's latest explicit instruction, stop the affected action and report the exact conflict and impact.
+- Offer clear options or request the specific approval required. Do not silently decide conflicts involving scope, security, credentials, data, deployment, or Production.
+- If Wahyu's instruction is clear and safe, reconcile conflicting documentation while preserving historical context. Technical evidence describes actual behavior; it does not supersede owner authority.
+- Codex must stop and report if a delegated instruction is unsafe, contradictory, or technically impossible. A newer explicit instruction from Wahyu always overrides an older ChatGPT delegation.
+
 ## Authority
 - `project/PROGRESS.md` is the single source of truth for current project status.
 - This file defines the required execution sequence and hard constraints.
