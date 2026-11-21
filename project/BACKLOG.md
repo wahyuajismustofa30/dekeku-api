@@ -51,7 +51,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] **RBAC-03** — Admin account and repository management endpoints (IMPLEMENTED — NOT VERIFIED).
 - [x] **RBAC-04** — User login and 30-minute User JWT (IMPLEMENTED — NOT VERIFIED).
 - [x] **RBAC-05** — User CRUD restricted to owned repositories under `assets/data/` (IMPLEMENTED — NOT VERIFIED).
-- [ ] **RBAC-06** — Enforce private/public data boundary and close unintended public reads.
+- [x] **RBAC-06** — Enforce private/public data boundary and close unintended public reads (IMPLEMENTED — NOT VERIFIED; regression suite added, not run).
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [ ] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup.
 - [ ] **RBAC-09** — Security, regression, and isolation review.
@@ -117,3 +117,14 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Verify Development behavior with isolated fixtures and confirm ownership isolation against a second account.
 - [ ] Review public reader and private/assets data boundaries (RBAC-06).
 - Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-06. RBAC-01–05 runtime verification remains pending.
+
+
+## RBAC-06 Progress (2026-11-21)
+- [x] Review public file reader and confirm validation is enforced before GitHub upstream access.
+- [x] Confirm exact private storage allowlist remains separate from public reader.
+- [x] Confirm User `assets/data/` operations use separate User JWT + ownership routes and cannot be reached through public reader.
+- [x] Add `test/rbac-boundary.test.js` for private/assets path denial, traversal/hidden paths, and Admin/User/Guest route separation.
+- [x] Register the boundary regression suite in `package.json`.
+- [ ] Run the new suite and syntax/static checks; `npm test` remains NOT RUN per explicit instruction.
+- [ ] Verify Development runtime without modifying Production.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-07 Guestbook per mapped website repository.
