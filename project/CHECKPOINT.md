@@ -91,3 +91,14 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - **Not performed**: no account or mapping data created, no API endpoints, no secret/config/Cloudflare/Production/deployment changes.
 - **Known limitation**: updates to the two JSON documents are not transactional. RBAC management logic must coordinate updates and recover safely from SHA conflicts.
 - Next: RBAC-01 verification, then RBAC-02 role/audience/ownership middleware.
+
+
+## 11. RBAC-02 — Role and Ownership Middleware (2026-11-21)
+- Branch: `dev`; implementation added in `src/middleware/auth.js`.
+- Exports `adminAuthMiddleware`, compatibility alias `authMiddleware`, `userAuthMiddleware`, and `repositoryOwnershipMiddleware`.
+- Admin tokens require `aud=dekeku-admin` and `role=admin`; User tokens require `aud=dekeku-user` and `role=user`. User status is checked against private account storage. Ownership checks resolve only active mappings belonging to the authenticated user.
+- Added `test/rbac-auth.test.js` to `npm test`.
+- `npm test` and syntax/static checks: NOT RUN by instruction; Development runtime: NOT VERIFIED.
+- No User login or API endpoints are mounted; no private account/mapping records, secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
+- Known boundary: ownership middleware must be invoked only after `userAuthMiddleware`; this ordering will be enforced when User routes are introduced.
+- Next: RBAC-03 Admin management and RBAC-04 User login. RBAC-01 verification is still pending.
