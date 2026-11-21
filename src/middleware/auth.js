@@ -46,6 +46,15 @@ export const userAuthMiddleware = async (request, env, next) => {
     if (!account || account.status !== "active" || account.role !== "user") {
       return error("User account is unavailable", 403);
     }
+    const currentTokenVersion = account.tokenVersion ?? 0;
+    const presentedTokenVersion = req.user.tokenVersion ?? 0;
+    if (
+      !Number.isSafeInteger(presentedTokenVersion) ||
+      presentedTokenVersion < 0 ||
+      presentedTokenVersion !== currentTokenVersion
+    ) {
+      return error("Authentication failed", 401);
+    }
     req.user.accountId = account.id;
     req.user.username = account.username;
     return next(req, e);
@@ -71,6 +80,15 @@ export const repositoryOwnershipMiddleware = async (request, env, next, reposito
   const { document: users } = await readPrivateDocument(github, "users");
   const account = users.users.find(user => user.id === request.user.sub);
   if (!account || account.status !== "active") return error("User account is unavailable", 403);
+  const currentTokenVersion = account.tokenVersion ?? 0;
+  const presentedTokenVersion = request.user.tokenVersion ?? 0;
+  if (
+    !Number.isSafeInteger(presentedTokenVersion) ||
+    presentedTokenVersion < 0 ||
+    presentedTokenVersion !== currentTokenVersion
+  ) {
+    return error("Authentication failed", 401);
+  }
 
   const { document: mappings } = await readPrivateDocument(github, "repositories", users);
   const mapping = mappings.repositories.find(item =>
