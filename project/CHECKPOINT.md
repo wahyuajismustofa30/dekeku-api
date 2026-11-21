@@ -262,3 +262,12 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Instruksi eksplisit terbaru Wahyu mengungguli dokumen, keputusan lama, kode, dan arahan asisten. Konflik wajib dihentikan pada tindakan terdampak, dilaporkan beserta dampaknya, lalu diberikan opsi atau permintaan persetujuan yang relevan.
 - Dokumentasi normatif: [MASTER.md](MASTER.md) bagian 8, [DECISIONS.md](DECISIONS.md) D-024, [EXECUTION_POLICY.md](EXECUTION_POLICY.md), dan [AGENTS.md](../AGENTS.md).
 - Perubahan ini hanya memperbarui dokumentasi; source code, test, deployment, Cloudflare, secrets, akun, mapping, data, dan Production tidak diubah.
+
+
+## Checkpoint — Development CI/CD Policy Recorded (2026-11-21)
+
+- Repository branch used for this documentation update: `dev`.
+- Owner-approved workflow: `dev` development → stable PR to `main` → PR validation → update to `main` triggers Development-only deployment to `dekeku-api-dev`.
+- CICD-001..CICD-010 are recorded in BACKLOG; execution order is in EXECUTION_POLICY.
+- No workflow implementation, source code, Wrangler configuration, Cloudflare settings, secrets, deployment, or Production resources were changed.
+- CI/CD implementation and Development deployment: NOT STARTED / NOT VERIFIED.
