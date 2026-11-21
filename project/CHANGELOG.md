@@ -196,3 +196,15 @@
 ### Verification
 - npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No real account/mapping records, secrets, Wrangler configuration, Cloudflare settings, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-04 User Login & JWT (2026-11-21)
+### Added
+- src/modules/auth/user-login.js and public POST /api/v1/user/login.
+- Private account lookup, PBKDF2-SHA256 verification, disabled-account rejection, generic authentication failures, and dummy-hash verification for unknown usernames.
+- User JWT issuance with aud=dekeku-user, role=user, immutable account ID subject, and 30-minute expiry.
+- Bounded 16 KiB JSON parsing with content-type, UTF-8, object-shape, and field allowlist checks.
+- test/rbac-user-login.test.js registered in local test script.
+### Verification
+- npm test: NOT RUN per explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No real account/private data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
