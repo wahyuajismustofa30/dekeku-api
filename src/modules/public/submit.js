@@ -176,7 +176,10 @@ export const handlePublicSubmit = async (request, env) => {
   const { github } = await resolveRepository(request, env);
 
   // Do not mistake an inaccessible/missing mapped repository for an empty Guestbook.
-  await github.getRepository();
+  const targetRepository = await github.getRepository();
+  if (!targetRepository || targetRepository.private !== false) {
+    throw new HttpError("Mapped website repository must be public", 403);
+  }
 
   for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt += 1) {
     let entries = [];
