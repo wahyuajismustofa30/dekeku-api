@@ -1,11 +1,11 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-21 (CICD-001/002)
+Tanggal Pembaruan: 2026-11-21 (CICD-004)
 
 ## Ringkasan Proyek
-- **Fase Aktif**: Development CI/CD — CICD-004 (implementasi workflow validasi PR). CICD-001 audit, CICD-002 rekonsiliasi branch, dan CICD-003 definisi kontrak selesai.
+- **Fase Aktif**: Development CI/CD — CICD-004 implementasi workflow selesai; run CI aktual NOT VERIFIED. CICD-001 sampai CICD-003 selesai.
 - **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
-- **Prioritas teknis aktif**: CICD-004 — implementasi workflow validasi PR berdasarkan `CICD_VALIDATION_CONTRACT.md`. PR validation saja; tidak ada deployment.
+- **Prioritas teknis aktif**: CICD-006 — verifikasi/isolasi kredensial khusus Development untuk workflow deployment mendatang. CICD-005 deployment workflow belum boleh dimulai sebelum CICD-006/007 selesai.
 - **Baseline audit CI/CD**: branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
@@ -314,3 +314,13 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - PR workflow hanya memvalidasi; tidak deploy, tidak memerlukan secrets Cloudflare/GitHub API, dan tidak mengakses Production.
 - **NEXT ACTIVE: CICD-004** — implementasi workflow PR validation. Workflow belum dibuat dan belum diuji.
 - README masih memuat instruksi `npm test`; perlu diselaraskan pada pekerjaan dokumentasi terpisah tanpa mengubah larangan pemilik.
+
+
+## CICD-004 — PR Validation Workflow (2026-11-21)
+- **IMPLEMENTED on `dev`**: `.github/workflows/pr-validation.yml`.
+- Trigger: pull request targeting `main`, guarded to head branch `dev`; PR event has no deployment step.
+- Checks: `npm ci`; syntax validation for all `.js` files under `src/` and `test/`; explicit `dekeku-api-dev` Wrangler target guard and `wrangler deploy --dry-run`; deterministic focused test selection for mapped changed source/test files; `npm audit --audit-level=high` warning-only.
+- Security: immutable action commit pins, read-only `contents` permission, checkout credential persistence disabled, per-PR concurrency cancellation. No Cloudflare or GitHub API secrets.
+- `npm test`: NOT RUN. `npm run test:remote` and `test/live-remote.test.js`: NOT RUN and excluded from execution.
+- **CI workflow run / YAML runtime validation: NOT VERIFIED**; requires an actual PR `dev` → `main`. No PR was created and no branch protection settings were changed.
+- **NEXT ACTIVE: CICD-006** — verify and isolate Development-only credentials for the later main-to-Development deployment workflow. No secrets were read or changed.
