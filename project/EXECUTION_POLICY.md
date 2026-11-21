@@ -83,7 +83,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 ## CI/CD Execution Boundary
 
 - Branch kerja aktif tetap `dev`; PR target `main` hanya setelah perubahan stabil.
-- CICD tasks are planned follow-up work and do not replace the current ordered RBAC queue.
+- CICD tasks are planned but are not active until the owner selects the CI/CD workstream. The current queue contains no selected technical implementation track.
 - Do not create or run a deployment workflow until its Development target, credential isolation, and fail-closed safeguards have been reviewed.
 - Once implemented, only an update to `main` may trigger the Development deployment. PR events and pushes to `dev` must not deploy.
 - Production remains prohibited. `npm test` remains NOT RUN unless the owner explicitly changes that instruction.
