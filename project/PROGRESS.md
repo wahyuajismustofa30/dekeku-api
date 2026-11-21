@@ -225,7 +225,7 @@ Daftar berikut adalah snapshot rekomendasi dari tahap sebelumnya, bukan antrean 
 - **Historical next step — SUPERSEDED:** this section predates the R-013 implementation and owner-reported Termux verification recorded below. Do not use this instruction as the current queue; see `EXECUTION_POLICY.md`.
 
 
-## Current Verification Queue — Authoritative (2026-11-21)
+## Current Verification Status — Authoritative (2026-11-21)
 
 1. R-013 implementation: PRESENT on `dev`; per-user `tokenVersion` is backward-compatible, included in new User JWTs, checked on authenticated User requests, and incremented during successful Admin password reset with SHA-safe concurrency.
 2. R-013 syntax validation: PASS — `node --check` completed for all RBAC source and test files, based on the owner's Termux test report.
