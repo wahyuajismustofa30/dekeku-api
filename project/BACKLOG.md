@@ -88,4 +88,18 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [x] Add focused Admin route authentication tests and register in local test script.
 - [ ] Run RBAC tests and syntax/static checks when authorized/resumed.
 - [ ] Verify Dev runtime with non-production test fixtures; do not create real records without explicit instruction.
-- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-05 User data CRUD. RBAC-01–04 runtime verification remains pending.
+
+
+## RBAC-04 Progress (2026-11-21)
+- [x] Add public POST /api/v1/user/login route.
+- [x] Read accounts only from fixed private users.json storage.
+- [x] Verify PBKDF2-SHA256 password hashes and reject disabled accounts.
+- [x] Issue dekeku-user audience / user role JWT with 30-minute expiry.
+- [x] Use generic authentication failure and dummy PBKDF2 verification for unknown usernames.
+- [x] Add 16 KiB bounded JSON parser, content-type/UTF-8 validation, and exact request-field allowlist.
+- [x] Add and register test/rbac-user-login.test.js.
+- [ ] Run RBAC tests and syntax/static checks when authorized/resumed.
+- [ ] Verify Development login with a dedicated non-production fixture account.
+- [ ] Verify WAF/IP rate limiting before production exposure.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-05 User data CRUD under assets/data/. RBAC-01–04 runtime verification remains pending.
