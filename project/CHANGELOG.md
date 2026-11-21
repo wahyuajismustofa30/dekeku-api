@@ -375,3 +375,14 @@
 ### Verification / Scope
 - Documentation-only changes on `dev`; no workflow, source code, package scripts, Wrangler configuration, GitHub settings/secrets, Cloudflare resource, or deployment changed.
 - No test commands were run. `npm test`: NOT RUN. Remote tests: NOT RUN.
+
+
+## [2026-11-21] — CICD-004 PR Validation Workflow
+### Changed
+- Added `.github/workflows/pr-validation.yml`, scoped to PRs targeting `main` and guarded to head branch `dev`.
+- Added clean dependency install, syntax scan, Development Worker target assertion and Wrangler dry-run, explicit focused-test mapping, and warning-only npm audit.
+- Pinned checkout/setup-node actions to immutable commit SHAs, restricted permissions to read-only contents, disabled checkout credential persistence, and added per-PR concurrency cancellation.
+- Updated CICD status: implementation complete; actual PR workflow run remains NOT VERIFIED. CICD-006 is next active task.
+### Verification / Scope
+- Workflow file fetched back from GitHub and inspected. No GitHub Actions run has occurred; YAML runtime and CI results NOT VERIFIED.
+- `npm test` and remote tests NOT RUN. No PR created, branch protection changed, secrets read/changed, Cloudflare config changed, Worker deployed, or Production resource touched.
