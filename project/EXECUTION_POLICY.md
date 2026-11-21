@@ -15,8 +15,8 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 ## Mandatory execution instructions
 1. Synchronize all documentation so there is one authoritative current status and one ordered current work queue.
 2. Run syntax/static validation for every RBAC source and test file without running `npm test`. The current `npm run check` script only checks `src/index.js` and is not comprehensive.
-3. Verify Cloudflare WAF/IP rate-limiting behavior in Development for `POST /api/v1/user/login` and `POST /api/v1/public/submit` (Guestbook).
-4. Verify Guestbook static CDN integration and cache behavior after a successful submission, including cache freshness/invalidation and correct JSON payload. Do not perform a real write unless an isolated Development fixture and explicit safe test target are available.
+3. WAF Development setup/verification is DEFERRED by project owner. Do not configure or verify WAF until the owner explicitly resumes this task.
+4. Verify the `assets` data retrieval path returns current data. Requests must use a cache-busting timestamp query parameter (for example `?t=<timestamp>`); do not rely on CDN cache for freshness. Confirm the CDN/cache key honors the query parameter or explicitly bypasses cache. Do not perform a real write unless an isolated Development fixture and explicit safe test target are available.
 5. Evaluate immediate JWT revocation after password reset (R-013), document recommendation and decision status, and do not implement schema/code changes without an approved decision.
 6. Update the latest checkpoint only with evidence actually obtained.
 
@@ -43,7 +43,7 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 - `npm run check` only checks `src/index.js`; it is insufficient for all RBAC files.
 - `npm test`: NOT RUN by explicit instruction.
 - Syntax/static checks of all RBAC files: NOT RUN.
-- Development WAF: NOT VERIFIED.
-- Guestbook CDN/cache: NOT VERIFIED.
+- Development WAF: DEFERRED by owner; no settings changed.
+- `assets` cache-busting behavior: NOT VERIFIED; timestamp query parameter is the required request strategy. CDN query-string cache-key behavior still needs evidence.
 - Development runtime: NOT VERIFIED.
 - Browser dashboard access was unavailable in this execution context; no Cloudflare WAF or CDN setting was read or changed.
