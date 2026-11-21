@@ -88,7 +88,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | ID | Tahap | Ruang lingkup utama | Status |
 |---|---|---|---|
 | RBAC-01 | Private account storage & repository mapping | Schema akun, mapping, internal private repository access, validasi dan penyimpanan aman | IMPLEMENTED — NOT VERIFIED |
-| RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | NEXT — RBAC-01 verification pending |
+| RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | IMPLEMENTED — NOT VERIFIED |
 | RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | BLOCKED BY RBAC-01/02 |
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | BLOCKED BY RBAC-01/02 |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | BLOCKED BY RBAC-01/02/04 |
@@ -144,3 +144,14 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Added `test/rbac-storage.test.js` and included it in the local `npm test` command. Tests were **NOT RUN** by user instruction. Syntax/static check: **NOT RUN**. Runtime: **NOT VERIFIED**.
 - No endpoint, account record, repository mapping, private database file, secret, Wrangler configuration, Worker setting, deployment, or Production resource was changed.
 - Remaining limitation: no transactional update across users and repository-mapping documents. Callers must preserve referential integrity and re-read latest SHA before a write; concurrency conflicts must be handled explicitly.
+
+
+## 8. RBAC-02 Implementation Record (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED; no User endpoints are routed yet.
+- `src/middleware/auth.js` now exports `adminAuthMiddleware`, legacy alias `authMiddleware`, and `userAuthMiddleware`.
+- Admin validation requires issuer `dekeku-api`, audience `dekeku-admin`, and role `admin`. User validation requires audience `dekeku-user` and role `user`; User account ID/status is rechecked against private `users.json` on every authenticated request.
+- `repositoryOwnershipMiddleware` accepts only an opaque mapping ID, reloads and validates the private user/mapping documents, requires an active mapping owned by the authenticated account, and attaches server-sourced owner/repository/branch/Origin metadata. It does not accept client-selected repository coordinates or file paths.
+- Added `test/rbac-auth.test.js` for Admin/User audience isolation and ownership middleware input gates; registered in `npm test`.
+- `npm test` and syntax/static checks: **NOT RUN** by instruction. Development runtime: **NOT VERIFIED**.
+- User login, user routes, data CRUD, and path scoping are not implemented in this stage. Middleware must be mounted behind `userAuthMiddleware` before ownership checks are used.
+- Next: RBAC-03 Admin account/repository management and RBAC-04 User login; retain the current no-test/no-deploy boundary.
