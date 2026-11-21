@@ -109,3 +109,11 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - Required/blocking: `npm ci`; syntax checks for relevant JS under `src/` and `test/`; Wrangler `deploy --dry-run`; mapped focused regression tests for changed code.
 - Initial warnings: `npm audit --audit-level=high`; changed code without a deterministic test mapping.
 - `npm test` remains prohibited/NOT RUN; remote tests remain excluded. Do not add secrets or Production access to PR validation.
+
+
+## CICD-004 Result — PR Validation Workflow
+- `.github/workflows/pr-validation.yml` is implemented on `dev`; normative contract remains `project/CICD_VALIDATION_CONTRACT.md`.
+- Workflow is PR-only for `dev` → `main`; read-only permissions; immutable action pins; per-PR concurrency; no deployment step or secrets.
+- Checks: `npm ci`, syntax checks for JS under `src/` and `test/`, explicit Development Worker name guard plus Wrangler dry-run, focused mapped `node --test` suites, and warning-only `npm audit`.
+- `npm test` and remote tests remain prohibited. Workflow run and YAML execution are NOT VERIFIED until an actual PR triggers it.
+- Next active task: CICD-006 Development credential isolation review; do not create the deployment workflow before CICD-006/007 safeguards are established.
