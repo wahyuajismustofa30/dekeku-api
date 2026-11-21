@@ -386,3 +386,5 @@
 ### Verification / Scope
 - Workflow file fetched back from GitHub and inspected. No GitHub Actions run has occurred; YAML runtime and CI results NOT VERIFIED.
 - `npm test` and remote tests NOT RUN. No PR created, branch protection changed, secrets read/changed, Cloudflare config changed, Worker deployed, or Production resource touched.
+
+- Follow-up hardening: job guard also requires the PR head repository to equal the base repository, preventing same-named `dev` branches from forks from running this trusted-branch workflow.
