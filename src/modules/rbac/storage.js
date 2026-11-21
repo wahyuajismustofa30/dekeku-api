@@ -86,6 +86,7 @@ export const validateRepositoryMappingsDocument = (document, usersDocument = nul
   const ids = new Set();
   const activeRepositories = new Set();
   const activeOrigins = new Set();
+  if (usersDocument) validateUsersDocument(usersDocument);
   const knownUsers = usersDocument ? new Set(usersDocument.users.map(user => user.id)) : null;
 
   for (const mapping of document.repositories) {
