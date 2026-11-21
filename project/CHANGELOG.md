@@ -274,3 +274,16 @@
 - `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
 - Open risks: WAF rate limiting for User login and Guestbook; spoofable Origin; CDN cache/invalidation; reset-password does not immediately revoke existing JWT; sessionStorage remains XSS-readable.
 - No secrets/configuration/deployment/Production changes.
+
+
+## [Unreleased] — Execution Policy & Verification Follow-up (2026-11-21)
+### Documentation
+- Added `project/EXECUTION_POLICY.md` and linked it from `AGENTS.md` as a required pre-task document.
+- Updated PROGRESS, BACKLOG, ROADMAP, RBAC_PLAN, RECOMMENDATIONS, and CHECKPOINT to clarify current RBAC verification status and the ordered follow-up.
+- Historical test report for commit `a6a089d` remains historical; it is not evidence for current HEAD.
+### Verification
+- RBAC syntax/static checks: NOT RUN (no repository execution environment available).
+- `npm test`: NOT RUN by explicit instruction.
+- Development WAF and Guestbook CDN/cache: NOT VERIFIED (dashboard/runtime evidence unavailable).
+- R-013: immediate User JWT revocation recommended; owner decision OPEN; no code/schema changes.
+- No Production, Cloudflare configuration, secrets, credentials, accounts, mappings, or website data changed.
