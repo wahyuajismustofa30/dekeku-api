@@ -93,14 +93,14 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Verification: NOT RUN in this environment. Development deployment/runtime: NOT VERIFIED. No Worker config, secrets, deployment, Production resource, or data repository contents were changed.
 
 
-## RBAC Program — Approved, Implementation Pending (2026-11-21)
+## RBAC Program — Approved Architecture and Implementation (2026-11-21)
 - Architecture and scope approved by project owner; detailed tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
 - Roles: Admin (all API-managed data), User (owned repositories only, under `assets/data/`), Guest (public Guestbook submission only).
 - User JWT policy: `aud=dekeku-user`, role `user`, 30-minute expiry; Admin retains separate `dekeku-admin` audience.
 - Private account/mapping storage target: `dekeku-db`; PBKDF2-SHA256 password hashes; Admin-controlled accounts and repository mapping.
 - Guestbook target: mapped website repository `assets/data/bukutamu.json`; public read through static repository/CDN URL.
 - Legacy files under `public/data/{hostname}/bukutamu.json` must not be migrated or deleted automatically.
-- **Latest status**: RBAC-01 storage and RBAC-02 middleware foundations IMPLEMENTED — NOT VERIFIED. RBAC-05 onward remains pending.
+- **Latest status**: RBAC-01 through RBAC-04 source foundations IMPLEMENTED — NOT VERIFIED. RBAC-05 onward remains pending.
 - **Verification for this checkpoint**: `npm test` NOT RUN per explicit user instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No RBAC source implementation has been applied yet.
 
 
@@ -112,7 +112,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Private GitHub Contents API reads enforce file size, UTF-8, JSON and schema validation; missing files are distinguished from inaccessible repositories. Writes use fixed paths, create-only without SHA, or update with mandatory current SHA.
 - Added `test/rbac-storage.test.js` to the local test script. Per explicit instruction, `npm test` was NOT RUN; syntax/static check NOT RUN; Development runtime NOT VERIFIED.
 - No account records or mapping files were created in `dekeku-db`; no account-management endpoints exist yet. No secrets, Wrangler config, Cloudflare settings, deployment, or Production resources changed.
-- **Next**: RBAC-03 Admin management / RBAC-04 User login. RBAC-01 runtime verification remains pending; cross-document writes are not transactional.
+- **Next**: RBAC-05 User data CRUD. RBAC-01–04 runtime verification remains pending; cross-document writes are not transactional.
 
 
 ## RBAC-02 — Role and Ownership Middleware (2026-11-21)
@@ -122,7 +122,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Repository ownership middleware requires an opaque mapping ID and verifies that the active mapping belongs to the authenticated User; repository owner/name/branch/Origin are sourced from private storage only.
 - Added `test/rbac-auth.test.js` and registered it in `npm test`.
 - Tests: **NOT RUN**; syntax/static checks: **NOT RUN**; Development runtime: **NOT VERIFIED**. No User endpoints/login or data CRUD are exposed yet.
-- Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
+- Next: RBAC-05 User data CRUD. RBAC-01–03 runtime verification remains pending.
 
 
 ## RBAC-03 — Admin Account & Repository Management (2026-11-21)
@@ -136,7 +136,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - npm test: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - No actual User accounts or repository mappings were written to dekeku-db. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
 - Known limitations: users and mappings are separate non-transactional JSON documents; repository existence on GitHub is not checked at mapping registration; list endpoints do not paginate.
-- Next: RBAC-04 User login and 30-minute JWT. RBAC-01/02/03 verification remains pending.
+- Next: RBAC-05 User data CRUD. RBAC-01–03 verification remains pending.
 
 
 ## RBAC Program — Current Implementation Status (2026-11-21)
