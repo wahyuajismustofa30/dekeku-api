@@ -161,11 +161,11 @@ export class GitHubClient {
   }
 
   async getRepository() {
-    return this.request("");
+    return this.request("", { method: "GET" });
   }
 
   async getBranch(branchName = this.branch) {
-    return this.request(`/branches/${branchName}`);
+    return this.request(`/branches/${branchName}`, { method: "GET" });
   }
 
   async getFile(path) {
@@ -203,7 +203,7 @@ export class GitHubClient {
     }
 
     const encodedPath = segments.map(encodeURIComponent).join("/");
-    return this.request(`/contents/${encodedPath}?ref=${this.branch}`);
+    return this.request(`/contents/${encodedPath}?ref=${this.branch}`, { method: "GET" });
   }
 
   async createFile(path, content, message) {

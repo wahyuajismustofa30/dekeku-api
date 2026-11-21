@@ -116,7 +116,13 @@ Authorization: Bearer <JWT_TOKEN>
    - **Deskripsi**: Memverifikasi kredensial PBKDF2 dan menerbitkan JWT token (`role: admin`, masa berlaku terbatas).
    - **Respons**: `200 OK` dengan token JWT.
 
-2. **Create File (Write Engine)**
+2. **Retrieve Current File SHA (Write Engine)**
+   - **Method**: `GET`
+   - **Path**: `/api/v1/admin/write/sha?path=public/data/myfile.json`
+   - **Header**: `Authorization: Bearer <TOKEN>`
+   - **Deskripsi**: Mengambil SHA Blob GitHub terkini untuk file JSON yang sudah ada di `public/data/`. Respons hanya mengembalikan path dan SHA, bukan isi file. Endpoint ini dipakai Tester sebelum UPDATE/DELETE; klien tetap boleh mengirim SHA secara eksplisit.
+
+3. **Create File (Write Engine)**
    - **Method**: `POST`
    - **Path**: `/api/v1/admin/write/create`
    - **Header**: `Authorization: Bearer <TOKEN>`
@@ -129,7 +135,7 @@ Authorization: Bearer <JWT_TOKEN>
      ```
    - **Deskripsi**: Membuat file baru di dalam `public/data/` (tanpa memerlukan SHA, aman terhadap race condition).
 
-3. **Update File (Write Engine)**
+4. **Update File (Write Engine)**
    - **Method**: `PUT`
    - **Path**: `/api/v1/admin/write/update`
    - **Header**: `Authorization: Bearer <TOKEN>`
@@ -141,9 +147,9 @@ Authorization: Bearer <JWT_TOKEN>
        "sha": "<github_file_sha>"
      }
      ```
-   - **Deskripsi**: Memperbarui file yang ada dengan validasi SHA (Optimistic Concurrency Control mencegah *overwrite* konflik).
+   - **Deskripsi**: Memperbarui file yang ada dengan validasi SHA (Optimistic Concurrency Control mencegah *overwrite* konflik). Tester mengambil SHA terkini otomatis sebelum request; API tetap mewajibkan SHA.
 
-4. **Delete File (Write Engine)**
+5. **Delete File (Write Engine)**
    - **Method**: `DELETE`
    - **Path**: `/api/v1/admin/write/delete`
    - **Header**: `Authorization: Bearer <TOKEN>`
@@ -154,7 +160,7 @@ Authorization: Bearer <JWT_TOKEN>
        "sha": "<github_file_sha>"
      }
      ```
-   - **Deskripsi**: Menghapus file dari repository GitHub dengan validasi SHA.
+   - **Deskripsi**: Menghapus file dari repository GitHub dengan validasi SHA. Tester mengambil SHA terkini otomatis sebelum request; API tetap mewajibkan SHA.
 
 ---
 

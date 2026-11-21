@@ -13,7 +13,8 @@ const createEnv = (accessToken) => ({
   GITHUB_TOKEN: "mock-github-token",
   GITHUB_OWNER: "mock-owner",
   GITHUB_REPO: "mock-repo",
-  GITHUB_BRANCH: "main"
+  GITHUB_BRANCH: "main",
+  ALLOWED_ORIGINS: "https://dekeku.my.id"
 });
 
 // Mock fetch globally
@@ -35,6 +36,9 @@ function mockResponse(status, body, headers = {}) {
 
 function setupMockFetch() {
   const mockFetch = mock.fn(async (url, options) => {
+    if (String(url).endsWith("/config.json")) {
+      return new Response(JSON.stringify({ repository: { username: "mock-owner", repo: "mock-repo" } }), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
     const method = options?.method || "GET";
     const path = url.split("repos/mock-owner/mock-repo/")[1] || "";
 
@@ -56,7 +60,7 @@ function setupMockFetch() {
       return mockResponse(200, {
         type: "file",
         path: "public/config.json",
-        sha: "abc123",
+        sha: "a".repeat(40),
         size: 10,
         content: btoa('{"ok":true}'),
         encoding: "base64"
@@ -68,7 +72,7 @@ function setupMockFetch() {
       return mockResponse(200, { name: "main", commit: { sha: "abc" }, protected: true });
     }
     if (method === "GET" && path === "") {
-      return mockResponse(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", html_url: "https://github.com/mock-owner/mock-repo", default_branch: "main", visibility: "private" });
+      return mockResponse(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", html_url: "https://github.com/mock-owner/mock-repo", default_branch: "main", visibility: "public" });
     }
 
     // Default: token validation etc
@@ -101,6 +105,53 @@ describe("Write Engine - Router Integration Tests", () => {
   });
 
   after(restoreFetch);
+
+  describe("GET /api/v1/admin/write/sha", () => {
+    test("SHA lookup requires authentication", async () => {
+      const env = createEnv();
+      const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fdata%2Ftest.json");
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 401);
+    });
+
+    test("SHA lookup returns the current GitHub blob SHA", async () => {
+      const mockFetch = setupMockFetch();
+      const env = createEnv();
+      const token = await getAuthToken(env);
+      const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fdata%2Ftest.json", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const res = await worker.fetch(req, env);
+      const data = await res.json();
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(data.path, "public/data/test.json");
+      assert.strictEqual(data.sha, "a".repeat(40));
+      assert.strictEqual(data.message, "File SHA retrieved successfully");
+      assert.strictEqual(mockFetch.mock.calls.length, 1);
+      assert.strictEqual(mockFetch.mock.calls[0].arguments[1].method, "GET");
+      assert.ok(String(mockFetch.mock.calls[0].arguments[0]).includes("/contents/public/data/test.json?ref=main"));
+
+      restoreFetch();
+    });
+
+    test("SHA lookup rejects paths outside public/data/", async () => {
+      const mockFetch = setupMockFetch();
+      const env = createEnv();
+      const token = await getAuthToken(env);
+      const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fother.json", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 403);
+      assert.strictEqual(mockFetch.mock.calls.length, 0);
+
+      restoreFetch();
+    });
+  });
 
   describe("POST /api/v1/admin/write/create", () => {
     test("CREATE requires authentication", async () => {
@@ -566,7 +617,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const mockFetch = setupMockFetch();
       const env = createEnv();
 
-      const res = await worker.fetch(new Request("http://api/api/v1/github/repository"), env);
+      const res = await worker.fetch(new Request("http://api/api/v1/github/repository", { headers: { Origin: "https://dekeku.my.id" } }), env);
       assert.strictEqual(res.status, 200);
 
       restoreFetch();

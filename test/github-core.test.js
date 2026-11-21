@@ -12,11 +12,19 @@ const env = {
   GITHUB_TOKEN: "mock-token",
   GITHUB_OWNER: "mock-owner",
   GITHUB_REPO: "mock-repo",
-  GITHUB_BRANCH: "main"
+  GITHUB_BRANCH: "main",
+  ALLOWED_ORIGINS: "https://dekeku.my.id"
 };
 
 const mockFetch = (status, body, headers = {}) => {
-  return async () => {
+  if (typeof body === "object" && body !== null && !body.visibility) { body.visibility = "public"; }
+  return async (url) => {
+    if (String(url).endsWith("/config.json")) {
+      return new Response(JSON.stringify({ repository: { username: "mock-owner", repo: "mock-repo" } }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
     return new Response(JSON.stringify(body), {
       status,
       headers: new Headers({
@@ -91,7 +99,7 @@ describe("DEKEKU API Gateway - Public Access Policy", () => {
   test("Regression: Metadata endpoints remain accessible", async () => {
     global.fetch = mockFetch(200, { full_name: "repo", name: "main", commit: { sha: "abc" } });
 
-    const repoRes = await worker.fetch(new Request("http://api/api/v1/github/repository"), env);
+    const repoRes = await worker.fetch(new Request("http://api/api/v1/github/repository", { headers: { Origin: "https://dekeku.my.id" } }), env);
     assert.strictEqual(repoRes.status, 200);
 
     const branchRes = await worker.fetch(new Request("http://api/api/v1/github/branch"), env);

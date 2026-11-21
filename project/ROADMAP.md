@@ -17,6 +17,10 @@
 - **Dependensi**: Phase 2.1.
 - **Status**: COMPLETED & VERIFIED.
 
+### Write Engine Usability Follow-up (2026-11-21)
+- Automatic SHA lookup endpoint and Tester integration implemented on `dev`.
+- Regression tests added; syntax checks, automated test execution, and Development runtime verification remain NOT RUN / NOT VERIFIED.
+
 ## Phase 2.3: Public Submission & Guestbook
 - **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman tanpa auth admin.
 - **Ruang Lingkup**: Endpoint `POST /api/v1/public/submit`, validasi payload (name, message), penyimpanan concurrent-safe ke `public/data/guestbook/`, CORS wildcard (`*.artoprintingpbg.com`, `*.dekeku.my.id`).

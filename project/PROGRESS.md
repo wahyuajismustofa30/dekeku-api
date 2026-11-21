@@ -28,6 +28,14 @@ Tanggal Pembaruan: 2026-11-21
 | **Write** | GitHub Client PUT/DELETE | COMPLETED | Validasi SHA, error mapping, concurrency OK. Header `Retry-After` dikirim jika tersedia dari GitHub API. |
 | **Write** | Router Integration | COMPLETED | Endpoints CREATE/UPDATE/DELETE terpasang di bawah authMiddleware. |
 
+## Write Engine Automatic SHA Retrieval (2026-11-21)
+- **IMPLEMENTED on branch dev**: added authenticated `GET /api/v1/admin/write/sha?path=public/data/file.json`.
+- Endpoint validates writable path, reads the current GitHub Contents API file metadata through the server-side GitHub client, and returns only path + 40-character Blob SHA (not file contents).
+- Tester `wahyuajismustofa30/demo:index.html` now fetches the SHA immediately before UPDATE/DELETE; CREATE/UPDATE refresh the displayed SHA from the write response; DELETE clears it. SHA display is read-only.
+- Optimistic concurrency remains enforced: UPDATE/DELETE still require SHA, and GitHub can return 409 if the file changes after lookup.
+- Regression tests added for authentication, successful SHA lookup, and rejected paths in `test/write-router.test.js`.
+- Automated tests, syntax checks, and Development runtime verification for this feature: NOT RUN / NOT VERIFIED. No Worker deployment or Production request was made.
+
 ## Tester Dashboard Hardening (2026-11-21)
 - **R-001 — IMPLEMENTED**: API target dikunci ke same-origin, HTTPS diwajibkan untuk remote, redirect ditolak, helper publik/admin dipisah, JWT hanya di memori, legacy localStorage token dibersihkan saat load, dan 401/logout menghapus sesi.
 - **R-002 — IMPLEMENTED**: Login memakai `access_token`, validasi token non-empty, password field dibersihkan, dan token direduksi dari log.
