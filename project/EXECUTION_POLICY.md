@@ -14,10 +14,10 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 
 ## Mandatory execution instructions
 1. Synchronize all documentation so there is one authoritative current status and one ordered current work queue.
-2. Run syntax/static validation for every RBAC source and test file without running `npm test`. The current `npm run check` script only checks `src/index.js` and is not comprehensive.
+2. R-013 syntax validation and focused regression testing have been completed in Termux according to the owner's report: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test`.
 3. WAF Development setup/verification is DEFERRED by project owner. Do not configure or verify WAF until the owner explicitly resumes this task.
 4. Verify the `assets` data retrieval path returns current data. Requests must use a cache-busting timestamp query parameter (for example `?t=<timestamp>`); do not rely on CDN cache for freshness. Confirm the CDN/cache key honors the query parameter or explicitly bypasses cache. Do not perform a real write unless an isolated Development fixture and explicit safe test target are available.
-5. R-013 was approved by owner as D-023; source implementation and focused regression test have been added on dev. Complete syntax/static and focused test verification without affecting Admin JWTs.
+5. R-013 was approved by owner as D-023; source implementation is present on dev and the syntax/focused-test checks are reported PASS from Termux. Admin JWT behavior remains unchanged.
 6. Update the latest checkpoint only with evidence actually obtained.
 
 ## Non-negotiable constraints
@@ -29,32 +29,32 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 - Keep implementation, syntax/static validation, automated tests, Development runtime, WAF, and CDN verification as separate evidence categories.
 
 ## Ordered current work queue
-1. [x] Record this mandatory execution policy.
-2. [x] Reconcile PROGRESS, BACKLOG, ROADMAP, RBAC_PLAN, RECOMMENDATIONS, CHANGELOG, and CHECKPOINT to the approved R-013 decision and current queue.
-3. [ ] Run native node --check for every RBAC source/test file. Limited V8 parser check already PASS 13/13 after stripping ES-module import/export declarations; package.json JSON parse and test registration PASS. Repository execution environment unavailable; do not run npm test.
-4. [DEFERRED] Verify/configure Development WAF for User Login and Guestbook POST only when owner resumes this task.
-5. [ ] Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
-6. [x] Add R-013 source implementation: backward-compatible per-user tokenVersion, User JWT claim, per-request version check, and increment during successful password reset.
-7. [x] Add and register focused R-013 regression tests.
-8. [ ] Run node --check for all RBAC source/test files and node --test test/rbac-token-version.test.js only; do not run npm test.
-9. [ ] Update checkpoint only with actual verification evidence; do not deploy without explicit approval.
+
+1. [x] Reconcile project documentation to the approved R-013 decision and current status.
+2. [x] Implement R-013 per-user tokenVersion, User JWT claim, per-request version check, and increment during successful password reset on `dev`.
+3. [x] Add and register focused R-013 regression coverage.
+4. [x] Owner reports native `node --check` PASS for all RBAC source/test files from Termux.
+5. [x] Owner reports `node --test test/rbac-token-version.test.js`: 6 PASS, 0 FAIL from Termux.
+6. [ ] Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior using a safe, isolated Development target; do not perform a real write without an approved fixture.
+7. [DEFERRED] Development WAF for User Login and Guestbook; resume only when the owner explicitly asks.
+8. [ ] Reconcile any remaining historical status notes in supporting docs as needed.
+9. [ ] Consider Development runtime verification only with explicit deployment approval. Do not deploy automatically.
 
 ## Baseline evidence
-- Branch `dev`, HEAD `6f0360e5166595945320a467a1fa2c91722b7401` before this policy file.
-- RBAC source/test files are present in the Git tree.
-- `npm run check` only checks `src/index.js`; it is insufficient for all RBAC files.
-- `npm test`: NOT RUN by explicit instruction.
-- Syntax/static checks of all RBAC files: NOT RUN; no repository execution environment was available in the current session.
-- Development WAF: DEFERRED by owner; no settings changed.
-- `assets` cache-busting behavior: NOT VERIFIED; timestamp query parameter is the required request strategy. CDN query-string cache-key behavior still needs evidence.
-- Development runtime: NOT VERIFIED.
-- Browser dashboard access was unavailable in this execution context; no Cloudflare WAF or CDN setting was read or changed.
 
+- Target branch: `dev`; work is restricted to this branch.
+- R-013 implementation and focused regression test are present in the repository.
+- Owner-reported Termux verification: native `node --check` PASS for all RBAC source/test files; focused `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
+- These results are user-reported evidence; they were not independently re-run in this session.
+- `npm test`: NOT RUN by explicit instruction.
+- Development runtime/deployment: NOT VERIFIED.
+- Development WAF: DEFERRED by owner.
+- `assets` CDN/cache-key behavior: NOT VERIFIED; timestamp query parameter remains the intended cache-busting strategy.
+- Production Worker/domain/secrets/configuration/data: untouched.
 
 ## R-013 Implementation Evidence (2026-11-21)
 - Source implementation is present on dev: src/modules/rbac/storage.js, src/modules/rbac/admin.js, src/modules/auth/user-login.js, and src/middleware/auth.js.
 - Focused regression suite added: test/rbac-token-version.test.js; registered in package.json.
-- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing. package.json JSON parse and focused test registration: PASS.
-- Native node --check: NOT RUN because the connected GitHub file interface does not provide a repository execution environment in this session.
-- Focused test: NOT RUN. npm test: NOT RUN by explicit instruction.
+- Owner-reported Termux verification: native node --check PASS for all RBAC source/test files; focused test node --test test/rbac-token-version.test.js PASS (6 PASS, 0 FAIL).
+- These checks were not independently re-executed in this session. npm test: NOT RUN by explicit instruction.
 - No Development deployment, Cloudflare configuration, account data, secrets, or Production resources changed.
