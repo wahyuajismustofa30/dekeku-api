@@ -1,7 +1,7 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01–05 IMPLEMENTED — NOT VERIFIED
+Status: RBAC-01–06 IMPLEMENTED — NOT VERIFIED
 Target branch: `dev`
 
 Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
@@ -92,7 +92,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | IMPLEMENTED — NOT VERIFIED |
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | IMPLEMENTED — NOT VERIFIED |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | IMPLEMENTED — NOT VERIFIED |
-| RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | NEXT — IMPLEMENTATION PENDING |
+| RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | IMPLEMENTED — NOT VERIFIED |
 | RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | PENDING AFTER RBAC-06 |
 | RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | PENDING AFTER RBAC-05 |
 | RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
@@ -203,4 +203,15 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Added test/rbac-user-data.test.js for path boundary and route authorization and registered it in local npm test.
 - Verification: npm test NOT RUN per explicit instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No User account, mapping, or website repository data was created or modified.
 - Risks/limitations: repository listing and per-file operations have no pagination/bulk listing; no application-level write rate limiting; GitHub SHA conflicts surface to caller. WAF and runtime checks remain pending.
-- Next: RBAC-06 private/public data boundary review. RBAC-01 through RBAC-05 remain NOT VERIFIED at runtime.
+- Next: RBAC-07 Guestbook per mapped website repository. RBAC-01 through RBAC-06 remain NOT VERIFIED at runtime.
+
+
+## 12. RBAC-06 — Private/Public Data Boundary Review (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Source review confirms `GET /api/v1/github/file` uses `GitHubClient.getFile()`, which applies `validatePublicPath()` before any upstream request. The validator requires the first segment to be exactly `public`, rejects hidden path segments, traversal, empty segments, sensitive filenames, and non-allowlisted extensions.
+- The private account and repository mapping files are only accessible through the exact fixed allowlist in `src/modules/rbac/storage.js`; the public reader cannot address `private/` or User `assets/data/` paths.
+- Admin management routes remain behind Admin JWT middleware; User routes require User JWT and ownership checks; Guest submission remains separate and requires a valid allowlisted Origin.
+- Added `test/rbac-boundary.test.js` and registered it in the local npm script.
+- Source review: VERIFIED. Automated test execution: NOT RUN per instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No real account/mapping/data, secrets, Cloudflare settings, Wrangler configuration, deployment, or Production resources changed.
+- Next: RBAC-07 Guestbook per mapped website repository.
