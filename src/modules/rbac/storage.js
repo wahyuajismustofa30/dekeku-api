@@ -2,19 +2,6 @@ import { HttpError } from "../../core/errors.js";
 import { decodeBase64, MAX_FILE_SIZE } from "../../utils/github-content.js";
 import { uint8ArrayToBase64 } from "../../utils/base64.js";
 
-const PRIVATE_DOCUMENTS = Object.freeze({
-  users: {
-    path: "private/auth/users.json",
-    empty: () => ({ version: 1, users: [] }),
-    validate: validateUsersDocument
-  },
-  repositories: {
-    path: "private/repositories/mappings.json",
-    empty: () => ({ version: 1, repositories: [] }),
-    validate: validateRepositoryMappingsDocument
-  }
-});
-
 const SHA_PATTERN = /^[a-f0-9]{40}$/i;
 const ID_PATTERN = /^[A-Za-z0-9_-]{8,64}$/;
 const USERNAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{2,31}$/;
@@ -158,6 +145,19 @@ export const validateRepositoryMappingsDocument = (document, usersDocument = nul
   }
   return document;
 };
+
+const PRIVATE_DOCUMENTS = Object.freeze({
+  users: {
+    path: "private/auth/users.json",
+    empty: () => ({ version: 1, users: [] }),
+    validate: validateUsersDocument
+  },
+  repositories: {
+    path: "private/repositories/mappings.json",
+    empty: () => ({ version: 1, repositories: [] }),
+    validate: validateRepositoryMappingsDocument
+  }
+});
 
 const getDocumentConfig = key => {
   const config = PRIVATE_DOCUMENTS[key];
