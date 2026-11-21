@@ -87,8 +87,9 @@ const mappingPublic = mapping => ({
   updatedAt: mapping.updatedAt
 });
 
-const getId = pathname => {
-  const segment = pathname.split("/").pop();
+const getId = (pathname, resource = "last") => {
+  const parts = pathname.split("/");
+  const segment = resource === "user" ? parts[5] : parts[parts.length - 1];
   if (!segment || segment.includes("%")) throw new HttpError("Invalid resource ID", 400);
   let decoded;
   try { decoded = decodeURIComponent(segment); } catch { throw new HttpError("Invalid resource ID", 400); }
@@ -140,7 +141,7 @@ export const handleAdminUsers = async (request, env, pathname) => {
       return success({ users: users.document.users.map(userPublic) });
     }
 
-    const userId = getId(pathname);
+    const userId = getId(pathname, "user");
     const user = users.document.users.find(item => item.id === userId);
     if (!user) throw new HttpError("User not found", 404);
 
