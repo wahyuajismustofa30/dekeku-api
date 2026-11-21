@@ -74,7 +74,7 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Private account and repository mappings live in private `dekeku-db`; password hashes use PBKDF2-SHA256; Admin alone creates/manages accounts and mappings.
 - User CRUD is restricted to `assets/data/` in repositories mapped to that user. Guestbook writes target mapped website repository `assets/data/bukutamu.json`; static public reads bypass Worker.
 - Legacy Guestbook files at `public/data/{hostname}/bukutamu.json` must remain untouched until a separate migration decision.
-- Latest implementation status: RBAC-01 through RBAC-04 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-05. See sections 10–13 and `project/RBAC_PLAN.md`.
+- Latest implementation status: RBAC-01 through RBAC-05 foundations IMPLEMENTED — NOT VERIFIED. Next: RBAC-06. See sections 10–14 and `project/RBAC_PLAN.md`.
 - `npm test`: NOT RUN by explicit user instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED. No source code, secrets, Wrangler config, Cloudflare settings, Production resources, or deployment changed in this documentation checkpoint.
 
 
@@ -129,3 +129,15 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - No account/private data created or changed; no secrets, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
 - Security follow-up: verify WAF/IP rate limiting for User login before production; application-level throttling and audit log remain separate tasks.
 - Next: RBAC-05 User data CRUD confined to assets/data/. RBAC-01–04 runtime verification remains pending.
+
+
+## 14. RBAC-05 — User Data CRUD (2026-11-21)
+- Branch: dev. Added src/modules/rbac/user-data.js; updated src/core/router.js; added test/rbac-user-data.test.js and registered it in package.json.
+- Routes: GET /api/v1/user/repositories and GET/POST/PUT/DELETE /api/v1/user/data.
+- User JWT and active account required. Data routes require mapping ID owned by JWT subject; owner/repo/branch are resolved only from private mappings.
+- User path is relative and server-prefixed assets/data/. Rejects encoded paths, traversal, backslash, absolute/hidden paths, control characters, repeated separators, and non-JSON extensions.
+- GET returns parsed JSON and SHA; POST creates; PUT/DELETE require 40-character SHA. JSON root object/array; max file size 1 MiB; streamed body cap 1,153,434 bytes; strict UTF-8.
+- npm test: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No real account, mapping, or target repository data was created/modified. No secrets, Wrangler/Cloudflare config, deployment, or Production resources changed.
+- Known limitations: no pagination/bulk listing, no application-level write throttling, SHA conflicts are returned without automatic retry.
+- Next: RBAC-06 private/public data boundary review. RBAC-01–05 runtime verification remains pending.
