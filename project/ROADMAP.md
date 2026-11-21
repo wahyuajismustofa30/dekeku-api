@@ -52,14 +52,14 @@
 
 
 ## RBAC Program — Approved Architecture (2026-11-21)
-- **Status (latest)**: RBAC-01 through RBAC-08 source foundations implemented on `dev`, not verified. RBAC-09 Security & Regression Review is next. See `project/RBAC_PLAN.md` and current stage records.
+- **Status (latest)**: RBAC-01 through RBAC-08 source foundations implemented on `dev`, not verified. RBAC-09 regression tests added but NOT VERIFIED. See `project/RBAC_PLAN.md` and `project/PROGRESS.md`.
 - Detail and task tracker: [RBAC_PLAN.md](RBAC_PLAN.md).
 - Roles: Admin (all API-managed data), User (only owned registered repositories under `assets/data/`), Guest (public Guestbook submission only).
 - User JWT: audience `dekeku-user`, role `user`, lifetime 30 minutes; Admin retains `dekeku-admin` audience.
 - Account and repository mapping storage: private `dekeku-db` repository; PBKDF2-SHA256 password hashes; server-authoritative mapping; multiple repositories per User.
 - Guestbook target: each mapped website repository at `assets/data/bukutamu.json`; public reads use static repository/CDN URLs.
 - Existing `public/data/{hostname}/bukutamu.json` files must not be deleted or migrated automatically.
-- RBAC-01 through RBAC-05 are implemented but not verified. Next: RBAC-06 private/public data boundary review. `npm test`: NOT RUN by user instruction; syntax checks and runtime verification: NOT RUN / NOT VERIFIED.
+- RBAC-01 through RBAC-08 are implemented but not verified. RBAC-09 security regression tests have been added; `npm test` remains NOT RUN by user instruction; syntax checks and Development runtime remain NOT VERIFIED.
 
 
 
@@ -136,3 +136,10 @@
 - Regression assertions updated in `test/tester-dashboard.test.js`. Tests/syntax checks NOT RUN per instruction; Development browser/runtime NOT VERIFIED.
 - XSS exposure remains because sessionStorage is readable by same-origin JavaScript.
 - Next: RBAC-09 Security & Regression Review.
+
+
+## RBAC-09 — Security & Regression Review (2026-11-21)
+- Added `test/rbac-security-review.test.js` for ownership isolation, server-derived repository coordinates, client field injection rejection, disabled account handling, and expired JWT rejection.
+- Registered test in `package.json`.
+- Test execution and syntax/static checks NOT RUN; Development WAF and CDN integration NOT VERIFIED.
+- Next: syntax/static checks only (do not run `npm test`), then separately gather Development WAF and CDN evidence.
