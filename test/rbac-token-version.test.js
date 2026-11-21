@@ -107,6 +107,16 @@ describe("R-013 immediate User JWT revocation", () => {
     }).users[0].tokenVersion, 0);
   });
 
+  test("rejects an explicitly malformed tokenVersion claim", async () => {
+    const account = await userRecord();
+    setupGitHub(account);
+    const malformedToken = await tokenFor({ tokenVersion: null });
+    const response = await userAuthMiddleware(
+      userRequest(malformedToken), env, async () => new Response("unexpected success")
+    );
+    assert.equal(response.status, 401);
+  });
+
   test("rejects invalid tokenVersion values in private User records", async () => {
     const account = await userRecord();
     for (const tokenVersion of [-1, 1.5, Number.MAX_SAFE_INTEGER + 1, "1"]) {
@@ -121,6 +131,11 @@ describe("R-013 immediate User JWT revocation", () => {
     const account = await userRecord();
     const github = setupGitHub(account);
     const oldToken = await tokenFor(); // no claim: legacy tokens map to version zero
+
+    const beforeReset = await userAuthMiddleware(
+      userRequest(oldToken), env, async () => new Response("legacy accepted")
+    );
+    assert.equal(beforeReset.status, 200);
 
     const resetResponse = await adminReset(account.id, "new-password-456");
     assert.equal(resetResponse.status, 200);
