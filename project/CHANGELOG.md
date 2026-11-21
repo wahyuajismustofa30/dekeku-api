@@ -317,6 +317,6 @@
 - Successful Admin password reset increments tokenVersion in the same SHA-guarded write as the password hash. SHA conflicts are surfaced without blind overwrite/retry; overflow is rejected.
 - Added and registered test/rbac-token-version.test.js covering legacy compatibility, stale-token rejection, new-password login, Admin JWT isolation, invalid versions, and SHA conflicts.
 ### Verification / Scope
-- Syntax/static checks: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by explicit instruction.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by explicit instruction.
 - Development runtime: NOT VERIFIED; no deployment performed. WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED.
 - No account data, secrets, Cloudflare configuration, or Production resources changed.
