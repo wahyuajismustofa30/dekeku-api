@@ -36,26 +36,35 @@ describe("Tester Dashboard security and request contract", () => {
     }
   });
 
-  test("only the administrative helper attaches the JWT", async () => {
+  test("public, Admin, and User helpers keep their Authorization scopes separate", async () => {
     for (const { script } of await getScripts()) {
-      const publicHelper = script.match(/async function apiRequest\([\s\S]*?\n        }/);
-      const adminHelper = script.match(/async function adminRequest\([\s\S]*?\n        }/);
+      const publicHelper = script.match(/async function apiRequest\\([\\s\\S]*?\\n        }/);
+      const adminHelper = script.match(/async function adminRequest\\([\\s\\S]*?\\n        }/);
+      const userHelper = script.match(/async function userRequest\\([\\s\\S]*?\\n        }/);
       assert.ok(publicHelper);
       assert.ok(adminHelper);
-      assert.doesNotMatch(publicHelper[0], /jwtToken/);
-      assert.match(publicHelper[0], /headers\.delete\('Authorization'\)/);
-      assert.match(adminHelper[0], /Authorization/);
-      assert.match(script, /if \(response\.status === 401\) clearToken\(\)/);
-      assert.match(script, /function clearToken\(\)/);
+      assert.ok(userHelper);
+      assert.doesNotMatch(publicHelper[0], /jwtToken|userAccessToken/);
+      assert.match(publicHelper[0], /headers\\.delete\\('Authorization'\\)/);
+      assert.match(adminHelper[0], /Bearer ' \\+ jwtToken/);
+      assert.match(userHelper[0], /Bearer ' \\+ userAccessToken/);
+      assert.match(script, /if \\(session === 'admin'\\) clearToken\\(true\\)/);
+      assert.match(script, /if \\(session === 'user'\\) clearUserSession\\(true\\)/);
     }
   });
 
-  test("login consumes access_token without displaying or persisting it", async () => {
+  test("User login persists its access token in sessionStorage and clears it on logout", async () => {
     for (const { script } of await getScripts()) {
-      assert.match(script, /res\.data\.access_token/);
-      assert.doesNotMatch(script, /res\.data\.token/);
+      assert.match(script, /const USER_SESSION_KEY = 'dekeku_user_access_token'/);
+      assert.match(script, /sessionStorage\\.getItem\\(USER_SESSION_KEY\\)/);
+      assert.match(script, /sessionStorage\\.setItem\\(USER_SESSION_KEY, res\\.data\\.access_token\\)/);
+      assert.match(script, /sessionStorage\\.removeItem\\(USER_SESSION_KEY\\)/);
+      assert.match(script, /async function testUserLogin\\(/);
+      assert.match(script, /async function loadUserRepositories\\(/);
+      assert.match(script, /function clearUserSession\\(/);
       assert.match(script, /Token is kept in memory only/);
-      assert.doesNotMatch(script, /localStorage\.(getItem|setItem)/);
+      assert.doesNotMatch(script, /localStorage\\.(getItem|setItem)/);
+      assert.doesNotMatch(script, /innerText = .*userAccessToken/);
     }
   });
 
