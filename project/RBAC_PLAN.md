@@ -89,7 +89,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 |---|---|---|---|
 | RBAC-01 | Private account storage & repository mapping | Schema akun, mapping, internal private repository access, validasi dan penyimpanan aman | IMPLEMENTED — NOT VERIFIED |
 | RBAC-02 | Role & ownership middleware | Memisahkan Admin/User audience, role, ownership, dan scope akses | IMPLEMENTED — NOT VERIFIED |
-| RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | BLOCKED BY RBAC-01/02 |
+| RBAC-03 | Admin account management | CRUD akun, status disable, reset password, registrasi/disable repository | IMPLEMENTED — NOT VERIFIED |
 | RBAC-04 | User login & JWT | Login User, PBKDF2, JWT audience user, TTL 30 menit | BLOCKED BY RBAC-01/02 |
 | RBAC-05 | User data CRUD | CRUD JSON terisolasi pada `assets/data/` untuk repository milik user | BLOCKED BY RBAC-01/02/04 |
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | BLOCKED BY RBAC-01/02 |
@@ -130,7 +130,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 4. Pertahankan kompatibilitas Admin yang ada sampai penggantiannya diuji dan disetujui.
 5. Jangan mengubah `main`, Worker Production, secrets, atau melakukan deployment.
 6. Jangan migrasikan atau menghapus Guestbook lama tanpa keputusan eksplisit.
-7. Langkah berikutnya: verifikasi RBAC-01 dan lanjutkan RBAC-02 (role/audience middleware). Jangan menambahkan endpoint account management sebelum isolasi role ditetapkan.
+7. RBAC-01/02/03 telah memiliki fondasi source pada branch dev, tetapi belum diverifikasi. Tahap berikutnya RBAC-04 User login; verifikasi runtime tetap terpisah.
 
 
 ## 7. RBAC-01 Implementation Record (2026-11-21)
@@ -155,3 +155,21 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - `npm test` and syntax/static checks: **NOT RUN** by instruction. Development runtime: **NOT VERIFIED**.
 - User login, user routes, data CRUD, and path scoping are not implemented in this stage. Middleware must be mounted behind `userAuthMiddleware` before ownership checks are used.
 - Next: RBAC-03 Admin account/repository management and RBAC-04 User login; retain the current no-test/no-deploy boundary.
+
+
+## 9. RBAC-03 Implementation Record (2026-11-21)
+- **Status**: IMPLEMENTED — NOT VERIFIED.
+- Added src/modules/rbac/admin.js with Admin-only handlers for:
+  - POST/GET /api/v1/admin/users
+  - GET/PATCH /api/v1/admin/users/:id
+  - POST /api/v1/admin/users/:id/reset-password
+  - POST/GET /api/v1/admin/users/:id/repositories
+  - PATCH/DELETE /api/v1/admin/repositories/:id (DELETE is soft-disable).
+- Added router mounts behind existing Admin JWT middleware; legacy Admin routes remain intact.
+- Account creation accepts only username/password, creates a random immutable ID, fixed role user, active status, and PBKDF2-SHA256 hash. Password length is constrained to 12–128 characters. Hashes are never included in responses.
+- Repository mapping accepts only owner/repo/branch/Origin, validates the complete mapping against current users and uniqueness rules, and writes only to the fixed private mapping document. Client cannot set mapping ID, userId, status, or database path.
+- JSON request bodies are streamed with a 16 KiB cap, require application/json, fatal UTF-8 decoding, and reject unknown fields. Private writes use the latest fetched SHA; conflicts are surfaced without blind overwrite/retry.
+- Added test/rbac-admin.test.js for route authentication isolation and registered it in npm test.
+- Verification: npm test NOT RUN per instruction; syntax/static checks NOT RUN; Development runtime NOT VERIFIED. No account/mapping data was created.
+- Limitations: cross-document operations remain non-transactional; repository existence/ownership on GitHub is not remotely verified at registration time; Admin must supply correct owner/repo/branch. No pagination yet for account/mapping lists.
+- Next: RBAC-04 User login and 30-minute User JWT. RBAC-01/02/03 runtime verification remains pending.
