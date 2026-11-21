@@ -252,7 +252,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Five scenarios cover cross-User mapping rejection before target repository access, server-authoritative repository coordinates, rejection of client-supplied owner/repo/branch, disabled-account rejection before mapping access, and expired JWT rejection before private storage access.
 - Source review confirms separate Admin/User audience+role checks, User active-account checks, mapping ownership verification, fixed `assets/data/` path prefix, exact private storage allowlist, public reader path boundary, bounded JSON payloads, and CORS allowance for Authorization.
 - **Test execution**: `npm test` NOT RUN by explicit instruction. Syntax/static checks NOT RUN. Development runtime NOT VERIFIED.
-- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. R-013 decision is APPROVED: password reset must immediately revoke prior User JWTs. Implementation is pending; until then, an old token may remain usable for its remaining lifetime (up to 30 minutes). Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
+- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. R-013 decision is APPROVED and source implementation is now present on dev: per-user tokenVersion is included in new User JWTs, checked on each authenticated User request, and incremented on Admin password reset. Syntax/test/runtime verification remains pending; deployed Worker may still accept old JWTs until expiry. Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
 - No account/mapping/website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource was changed.
 - **Next**: perform syntax/static checks without running `npm test`; Development WAF and CDN checks require separate evidence.
 
@@ -263,7 +263,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - RBAC-09: TESTS ADDED — NOT VERIFIED.
 - Syntax/static checks for every RBAC source/test file: NOT RUN. `npm test`: NOT RUN by explicit instruction.
 - Development WAF for User Login and Guestbook: NOT VERIFIED. Guestbook CDN/cache behavior: NOT VERIFIED.
-- R-013: owner decision APPROVED (D-023); implementation NOT STARTED. Use per-user token/session version checked on every authenticated User request; increment on reset; Admin JWTs unaffected.
+- R-013: owner decision APPROVED (D-023); source implementation and focused regression test ADDED on dev; syntax/static and test execution NOT RUN. Admin JWTs unaffected.
 - Earlier stage-specific "Next" notes are historical and superseded by this section and EXECUTION_POLICY.
 
 
@@ -273,3 +273,15 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Admin JWTs are out of scope and remain unaffected.
 - Status: implementation NOT STARTED; current runtime behavior remains unchanged until code is implemented and verified.
 - See D-023 in DECISIONS.md, PROGRESS.md, and the ordered work queue in EXECUTION_POLICY.md.
+
+
+## 18. R-013 — Immediate User JWT Revocation Implementation (2026-11-21)
+- Status: SOURCE IMPLEMENTED on dev — NOT VERIFIED.
+- src/modules/rbac/storage.js: accepts an optional non-negative safe-integer tokenVersion; omission remains backward-compatible and means version 0.
+- src/modules/rbac/admin.js: new accounts start at version 0; successful password reset increments version alongside passwordHash in one SHA-guarded write. Overflow is rejected; SHA conflict is returned without retry/overwrite.
+- src/modules/auth/user-login.js: new dekeku-user JWTs carry tokenVersion from the private account record (legacy default 0).
+- src/middleware/auth.js: User auth and repository ownership middleware compare token version against the authoritative private account record on every protected User request. Missing legacy claim means 0; malformed explicit claim is rejected. Admin middleware is unchanged.
+- Added test/rbac-token-version.test.js and registered it in package.json. Coverage includes legacy records/tokens, malformed versions, immediate old-token rejection after reset, successful login with new password, Admin JWT isolation, and SHA conflict behavior.
+- Syntax/static checks: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by owner instruction. Development runtime: NOT VERIFIED.
+- No account data, secrets, Cloudflare settings, deployment, or Production resources changed.
+- Next: run syntax/static checks and the focused test only when a repository execution environment is available; do not run npm test.
