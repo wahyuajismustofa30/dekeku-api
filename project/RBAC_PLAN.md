@@ -237,7 +237,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Added User login UI calling `POST /api/v1/user/login`. It consumes `access_token`, clears the password input, and never renders or logs the JWT.
 - User token is persisted only in `sessionStorage` under `dekeku_user_access_token`; the same tab session can restore it after page reload. If sessionStorage cannot be written, the UI does not establish a session.
 - Added separate `userRequest()` helper that attaches User Bearer token. Public `apiRequest()` strips Authorization, while Admin requests retain the existing in-memory Admin token. Role tokens are never shared between helpers.
-- Added User logout and repository-list request. User 401 clears only User session; Admin 401 clears only Admin in-memory token.
+- Added User logout and repository-list request. User 401 or account-disabled 403 clears only User session; Admin 401 clears only Admin in-memory token.
 - Updated `test/tester-dashboard.test.js` to assert script parsing, same-origin request policy, public/Admin/User Authorization separation, sessionStorage key/read/write/remove, and User session cleanup.
 - Source review: VERIFIED. Automated tests and syntax checks: NOT RUN per explicit instruction. Development browser/runtime: NOT VERIFIED.
 - Security limitation: sessionStorage remains accessible to same-origin JavaScript and does not mitigate XSS. Avoid third-party scripts and preserve output escaping/CSP. JWT remains valid for up to 30 minutes as enforced by API.
