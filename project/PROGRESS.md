@@ -184,3 +184,17 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - **Verification**: source review VERIFIED; regression test source added but **NOT RUN**; syntax/static checks **NOT RUN**; Development runtime **NOT VERIFIED**.
 - No runtime GitHub reads/writes, real account/mapping/data changes, secrets, Wrangler/Cloudflare settings, deployment, or Production resources changed.
 - **Stage status: IMPLEMENTED — NOT VERIFIED.** RBAC-01–06 foundations implemented; runtime verification remains pending. Next: RBAC-07 Guestbook per mapped website repository.
+
+
+## RBAC-07 — Guestbook per Mapped Website Repository (2026-11-21)
+- **Status: IMPLEMENTED — NOT VERIFIED** on branch `dev`.
+- Replaced legacy central-repository Guestbook writes with server-side Origin mapping resolution from private `dekeku-db` documents (`private/auth/users.json` and `private/repositories/mappings.json`).
+- A submission now requires an HTTPS Origin allowed by `ALLOWED_ORIGINS` and an active exact Origin mapping. Client cannot submit repository owner/name/branch, mapping ID, or file path.
+- Destination repository coordinates are derived only from the validated private mapping. Worker verifies the target repository exists and is public, then writes only to fixed `assets/data/bukutamu.json`.
+- Preserved array JSON format, name/message/email validation, strict UTF-8 request parsing, streamed 15 KiB request cap, 1 MiB stored-file cap, SHA optimistic concurrency, and at most three read/write attempts after 409 conflicts.
+- Existing `public/data/{hostname}/bukutamu.json` files are not read, deleted, copied, or migrated.
+- Updated `test/public-submission.test.js` with mapped repository creation/append, SHA conflict retry, unregistered Origin, private/missing target repository, unsupported fields, and method/content-type cases. The test is already registered in `package.json`.
+- Source review: VERIFIED. Test execution: **NOT RUN** per instruction. Syntax/static checks: **NOT RUN**. Development runtime: **NOT VERIFIED**.
+- **Security follow-ups**: Origin is not authentication and can be spoofed by non-browser clients. No application-level Guestbook rate limiter is implemented; Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` must be verified/configured in Development before public exposure. Do not modify Production.
+- No real mapping/account, target website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource changed.
+- Next: RBAC-08 Browser User session integration. RBAC-01–07 remain runtime NOT VERIFIED.
