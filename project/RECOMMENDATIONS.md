@@ -108,3 +108,10 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - Semua implementasi dilakukan pada branch `dev` dan mengikuti alur PR yang tercatat pada D-011.
 - Worker Production `github` dan domain `api.dekeku.my.id` tidak boleh diubah tanpa persetujuan eksplisit.
 - Setiap rekomendasi harus ditutup dengan bukti implementasi dan pengujian; jika belum ada bukti, status tetap NOT VERIFIED atau NOT RUN.
+
+
+## R-012. Guestbook submission abuse protection
+- **Temuan**: Origin allowlisting and repository mapping prevent arbitrary destination selection, but Origin is not authentication and can be forged by non-browser clients. The Worker currently has no application-level per-IP/per-Origin Guestbook rate limiter.
+- **Rekomendasi**: Configure and verify Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` in Development. Select threshold/window based on expected legitimate traffic and monitor false positives. Do not change Production without explicit approval.
+- **Tes penerimaan**: valid submission below threshold, repeated submissions from one IP, independent IP behavior, cooldown/reset, and evidence of the active Development rule.
+- **Status**: OPEN — configuration/runtime NOT VERIFIED. This is a required abuse-protection follow-up before public exposure.
