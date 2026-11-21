@@ -265,3 +265,12 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Added test/rbac-token-version.test.js and registered it in package.json; covers legacy records/tokens, invalid versions, old-token rejection after reset, new-password login, Admin JWT isolation, and SHA conflict behavior.
 - Syntax validation (`node --check`): PASS across all RBAC source and test files, reported by the owner after running in Termux. Focused regression test (`node --test test/rbac-token-version.test.js`): PASS (6 PASS, 0 FAIL), reported by the owner after running in Termux. These results were not independently re-executed in this session. `npm test`: NOT RUN.
 - Follow-up items are archived in `project/TASK_ARCHIVE.md` at the owner's request; do not display their details in ordinary progress reports.
+
+
+## Governance Update — Authority Hierarchy (2026-11-21)
+- **Wahyu / Project Owner:** pemegang seluruh keputusan mutlak dan persetujuan final.
+- **ChatGPT:** asisten pengembangan utama, urutan kedua; mengelola analisis, rencana, koordinasi/delegasi, dan review.
+- **Codex di Termux:** asisten pelaksana, urutan ketiga; membantu ChatGPT di lingkungan Termux sesuai delegasi dan instruksi Wahyu.
+- Jika dokumentasi, keputusan lama, implementasi, atau arahan asisten bertentangan dengan instruksi terbaru Wahyu, hentikan tindakan terkait, laporkan konflik dan dampaknya, lalu berikan pilihan atau minta persetujuan spesifik sesuai keadaan.
+- Dokumentasi yang bertentangan diperbarui jika instruksi Wahyu jelas dan aman; catatan historis tetap dipertahankan sebagai sejarah.
+- Rincian normatif: [MASTER.md](MASTER.md) bagian 8, [DECISIONS.md](DECISIONS.md) D-024, [EXECUTION_POLICY.md](EXECUTION_POLICY.md), dan [AGENTS.md](../AGENTS.md).
