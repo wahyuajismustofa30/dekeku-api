@@ -282,3 +282,13 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 - `BACKLOG.md` priority snapshots are explicitly non-authoritative; CICD-001..010 remain planned, not active. Archived/deferred follow-ups must not resume automatically.
 - **Next:** await the owner's separate selection between (A) RBAC Development runtime verification, requiring explicit deployment approval, or (B) Development CI/CD, beginning with a read-only audit. No technical workstream has been selected.
 - `npm test`: NOT RUN. No source code, test files, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed during this documentation reconciliation.
+
+
+## 2026-11-21 — Development CI/CD Checkpoint (CICD-001/002)
+- Owner selected option C (documentation reconciliation), then explicitly instructed continuation with the Development CI/CD workstream.
+- Repository: `wahyuajismustofa30/dekeku-api`; branch `dev`; audited HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
+- CICD-001 read-only audit complete: no `.github/workflows` files; `wrangler.jsonc` names `dekeku-api-dev`, entrypoint `src/index.js`, no named environment; package scripts have no deploy command and `build`/`check` only run Node syntax check.
+- GitHub branch metadata: `dev.protected=false`, `main.protected=false`; full protection rules NOT VERIFIED because branch-protection endpoint returned 403. Actions secrets/environments/settings NOT VERIFIED.
+- CICD-002 branch policy review complete: development on `dev`; PR to `main`; no direct commits/pushes to `main`. Existing instructions in AGENTS, MASTER, README, D-025 agree.
+- Next: CICD-003 define PR validation contract. No workflow creation or execution authorized by this checkpoint.
+- `npm test`: NOT RUN. No source, Wrangler, Cloudflare, GitHub Actions, secrets, deployment, or Production resources changed.
