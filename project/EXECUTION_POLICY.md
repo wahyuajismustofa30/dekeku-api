@@ -101,3 +101,11 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - GitHub branch metadata reports `protected=false` for `dev` and `main`; required status checks are not configured on `main`. Branch-protection details endpoint returned 403 for the integration, so full protection rules are NOT VERIFIED.
 - GitHub Actions secrets, environments, and repository Actions settings: NOT VERIFIED (sensitive/unsupported endpoint access). No secrets were read.
 - Audit was read-only. No workflows, source, Wrangler config, Cloudflare settings, secrets, deployment, or Production resources changed.
+
+
+## CICD-003 Result — PR Validation Contract
+- CICD-003 is COMPLETE — DEFINED. The normative check matrix, trigger boundary, failure behavior, and test restrictions are in `project/CICD_VALIDATION_CONTRACT.md`.
+- Next active task: CICD-004, implement PR validation workflow only. PR events must not deploy.
+- Required/blocking: `npm ci`; syntax checks for relevant JS under `src/` and `test/`; Wrangler `deploy --dry-run`; mapped focused regression tests for changed code.
+- Initial warnings: `npm audit --audit-level=high`; changed code without a deterministic test mapping.
+- `npm test` remains prohibited/NOT RUN; remote tests remain excluded. Do not add secrets or Production access to PR validation.
