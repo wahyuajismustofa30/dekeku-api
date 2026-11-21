@@ -296,3 +296,14 @@
 - CDN freshness still requires confirming that the query string participates in the cache key, or bypassing cache when it does not.
 ### Scope
 - Documentation only. No WAF/CDN settings, application code, website data, deployment, or Production resources changed.
+
+
+## [Unreleased] — Owner Decision R-013: Immediate User JWT Revocation (2026-11-21)
+### Decision
+- Owner approved immediate invalidation of all User JWTs issued before a successful Admin password reset (D-023).
+- Approved implementation direction: backward-compatible per-user token/session version stored in private account data, embedded in newly issued User JWTs, checked against the authoritative record on every authenticated User request, and incremented during successful password reset with SHA-safe concurrency handling.
+- Admin JWTs are unaffected; User must log in again with the new password.
+### Status / Scope
+- Decision: APPROVED. Implementation: NOT STARTED; current runtime behavior is unchanged and old tokens may remain valid until their remaining expiry (up to 30 minutes).
+- Documentation-only update. No source/schema, account data, secrets, configuration, deployment, or Production resources changed.
+- npm test: NOT RUN per explicit instruction.
