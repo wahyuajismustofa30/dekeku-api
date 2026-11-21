@@ -242,3 +242,15 @@ Status: PHASE 2.3 DOCUMENTED — FOLLOW-UP SECURITY REVIEW PENDING
 - Syntax validation (`node --check`): VERIFIED (exit code 0 for all RBAC source and test files). Focused test (`node --test test/rbac-token-version.test.js`): VERIFIED (6 PASS, 0 FAIL). npm test: NOT RUN per user instruction.
 - WAF remains DEFERRED; CDN cache behavior remains NOT VERIFIED. Production untouched.
 - Next: Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
+
+
+## Termux Verification Checkpoint (2026-11-21)
+- Owner reports that testing was completed in Termux against the current R-013 implementation on `dev`.
+- `node --check`: PASS for all RBAC source and test files.
+- `node --test test/rbac-token-version.test.js`: PASS, 6 PASS, 0 FAIL.
+- `npm test`: NOT RUN, per explicit instruction.
+- Evidence qualification: these results are recorded from the owner's report; they were not independently re-executed in this ChatGPT session.
+- R-013 source and regression test remain present on `dev`; Admin JWT behavior is unchanged by design.
+- Development deployment/runtime: NOT VERIFIED. WAF: DEFERRED. Guestbook CDN/cache behavior: NOT VERIFIED.
+- Production Worker/domain/secrets/configuration/data remain untouched.
+- Next active item: verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior using an isolated safe Development target. Do not deploy or perform real writes without explicit approval.
