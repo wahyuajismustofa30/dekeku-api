@@ -61,7 +61,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 
 ### R-006. Verifikasi penerapan Cloudflare WAF Rate Limiting
 - **Dasar keputusan**: D-013 menyetujui rate limiting berbasis IP melalui Cloudflare WAF untuk mitigasi brute-force login.
-- **Rekomendasi**: Verifikasi konfigurasi aktual untuk `POST /api/v1/admin/login`, scope hostname/environment, threshold, window, action, dan response. Mulai dari Development; jangan mengubah Production tanpa persetujuan eksplisit.
+- **Rekomendasi**: Verifikasi konfigurasi aktual untuk `POST /api/v1/admin/login` dan `POST /api/v1/user/login`, scope hostname/environment, threshold, window, action, dan response. Guestbook abuse protection untuk `POST /api/v1/public/submit` dicatat terpisah pada R-012. Mulai dari Development; jangan mengubah Production tanpa persetujuan eksplisit.
 - **Tes penerimaan**: request normal, percobaan gagal berulang dari IP yang sama, IP berbeda, masa cooldown, dan bukti rule aktif.
 - **Status**: NOT VERIFIED — keputusan telah disetujui, tetapi konfigurasi runtime belum dibuktikan dalam review ini.
 
@@ -115,3 +115,10 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - **Rekomendasi**: Configure and verify Cloudflare WAF/IP rate limiting for `POST /api/v1/public/submit` in Development. Select threshold/window based on expected legitimate traffic and monitor false positives. Do not change Production without explicit approval.
 - **Tes penerimaan**: valid submission below threshold, repeated submissions from one IP, independent IP behavior, cooldown/reset, and evidence of the active Development rule.
 - **Status**: OPEN — configuration/runtime NOT VERIFIED. This is a required abuse-protection follow-up before public exposure.
+
+
+## R-013. Immediate User JWT revocation after password reset
+- **Temuan**: Admin password reset updates `passwordHash`, but User JWTs already issued remain valid until their `exp` (maximum lifetime 30 minutes). The User middleware rechecks account status, not a credential/session version.
+- **Risiko**: A token copied before password reset can continue accessing the account's registered repositories for its remaining lifetime, provided the account remains active.
+- **Rekomendasi**: Decide whether this residual 30-minute window is acceptable. If immediate revocation is required, approve a server-side token/session version or password-change timestamp claim checked on each request. Do not add account fields or alter JWT claims/storage schema without an explicit architecture decision.
+- **Status**: OPEN — decision required; no code/schema change made.
