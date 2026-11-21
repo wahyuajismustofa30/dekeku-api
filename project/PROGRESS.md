@@ -147,10 +147,10 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 | RBAC-03 | Admin account/repository management | IMPLEMENTED | NOT VERIFIED |
 | RBAC-04 | User login and 30-minute JWT | IMPLEMENTED | NOT VERIFIED |
 | RBAC-05 | User CRUD under assets/data/ | IMPLEMENTED | NOT VERIFIED |
-| RBAC-06 | Private/public data boundary | NEXT | NOT RUN |
-| RBAC-07 | Guestbook per website repository | PENDING | NOT RUN |
-| RBAC-08 | Browser User sessionStorage | PENDING | NOT RUN |
-| RBAC-09 | Security/regression review | PENDING | NOT RUN |
+| RBAC-06 | Private/public data boundary | IMPLEMENTED | NOT VERIFIED |
+| RBAC-07 | Guestbook per website repository | IMPLEMENTED | NOT VERIFIED |
+| RBAC-08 | Browser User sessionStorage | IMPLEMENTED | NOT VERIFIED |
+| RBAC-09 | Security/regression review | NEXT | NOT RUN |
 
 ### RBAC-04 Implementation Detail
 - Added src/modules/auth/user-login.js and POST /api/v1/user/login.
