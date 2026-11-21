@@ -18,7 +18,7 @@ const PRIVATE_DOCUMENTS = Object.freeze({
 const SHA_PATTERN = /^[a-f0-9]{40}$/i;
 const ID_PATTERN = /^[A-Za-z0-9_-]{8,64}$/;
 const USERNAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]{2,31}$/;
-const HASH_PATTERN = /^pbkdf2:(?:[1-9][0-9]{4,6}):[a-f0-9]{32}:[a-f0-9]{64}$/i;
+const HASH_PATTERN = /^pbkdf2:([1-9][0-9]{4,6}):[a-f0-9]{32}:[a-f0-9]{64}$/i;
 const OWNER_REPO_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,98}[A-Za-z0-9])?$/;
 
 const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
@@ -54,7 +54,8 @@ export const validateUsersDocument = document => {
     }
     const usernameKey = user.username.toLowerCase();
     if (usernames.has(usernameKey)) throw new HttpError("Duplicate username in private storage", 422);
-    if (typeof user.passwordHash !== "string" || !HASH_PATTERN.test(user.passwordHash)) {
+    const hashMatch = typeof user.passwordHash === "string" ? HASH_PATTERN.exec(user.passwordHash) : null;
+    if (!hashMatch || Number(hashMatch[1]) < 10000 || Number(hashMatch[1]) > 1000000) {
       throw new HttpError("Invalid password hash in private storage", 422);
     }
     if (user.role !== "user" || !["active", "disabled"].includes(user.status)) {
