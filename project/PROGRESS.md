@@ -4,7 +4,7 @@ Tanggal Pembaruan: 2026-11-21
 
 ## Ringkasan Proyek
 - **Fase Aktif**: RBAC Security & Development Verification Follow-up.
-- **Status Keseluruhan**: RBAC-01 s/d RBAC-08 IMPLEMENTED — NOT VERIFIED; RBAC-09 TESTS ADDED — NOT VERIFIED. Syntax/static lengkap dan Development runtime pada HEAD baseline NOT VERIFIED; WAF Development DEFERRED oleh pemilik proyek; perilaku cache-busting `assets` belum diverifikasi.
+- **Status Keseluruhan**: Implementasi RBAC-01 s/d RBAC-08 tersedia di `dev`, tetapi verifikasi sistem lengkap dan Development runtime masih NOT VERIFIED. R-013 source + focused regression test: syntax check dan focused test PASS berdasarkan laporan pengujian pengguna di Termux. WAF Development DEFERRED; perilaku CDN/cache `assets` NOT VERIFIED.
 - **Baseline sebelum dokumentasi**: branch `dev`, commit `6f0360e5166595945320a467a1fa2c91722b7401`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
@@ -231,16 +231,19 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 
 
 ## Current Verification Queue — Authoritative (2026-11-21)
-1. Documentation reconciliation: COMPLETE — D-023 and R-013 status synchronized across decision, progress, backlog, roadmap, RBAC plan, recommendations, changelog, and checkpoint documents.
-2. Limited V8 parser check: PASS 13/13 RBAC source/test files after removing ES-module import/export declarations for parsing; package.json JSON parse and test registration: PASS. Native `node --check` is NOT RUN because the repository execution environment is unavailable; `npm run check` alone is insufficient because it checks only `src/index.js`.
-3. Development WAF for User Login and Guestbook: DEFERRED by owner; no configuration changes.
-4. `assets` retrieval must use a timestamp cache-busting query parameter (for example `?t=<timestamp>`); whether the CDN honors it in its cache key is NOT VERIFIED.
-5. R-013 source implementation and focused regression test: ADDED on dev; limited V8 parser check PASS 13/13; focused test NOT RUN.
-6. `npm test`: NOT RUN by explicit instruction.
-7. Development runtime: NOT VERIFIED. Production untouched.
 
-See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ordered work queue.
+1. R-013 implementation: PRESENT on `dev`; per-user `tokenVersion` is backward-compatible, included in new User JWTs, checked on authenticated User requests, and incremented during successful Admin password reset with SHA-safe concurrency.
+2. R-013 syntax validation: PASS — `node --check` completed for all RBAC source and test files, based on the owner's Termux test report.
+3. R-013 focused regression test: PASS — `node --test test/rbac-token-version.test.js`, 6 PASS, 0 FAIL, based on the owner's Termux test report.
+4. `npm test`: NOT RUN, as explicitly instructed.
+5. Development runtime/deployment: NOT VERIFIED; no Worker deployment was performed. Therefore the deployed Worker may still accept pre-reset User JWTs until their remaining expiry (up to 30 minutes).
+6. Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior: NOT VERIFIED; next active verification task.
+7. Development WAF for User Login and Guestbook: DEFERRED by owner. Do not configure or verify until explicitly requested.
+8. Production Worker/domain/secrets/configuration/data: untouched.
 
+**Evidence qualification:** the syntax and focused-test results above are recorded from the owner's report that testing was completed in Termux. They were not independently re-executed in this ChatGPT session. No `npm test` was run.
+
+See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandatory constraints.
 
 ## Owner Decision — WAF and Fresh Assets Retrieval (2026-11-21)
 - Development WAF configuration and verification are deferred. Do not spend effort on WAF until the owner asks to resume it.
@@ -264,5 +267,5 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ord
 - userAuthMiddleware and repository ownership middleware compare the token claim with the current private account record. Missing legacy claims mean version 0; explicitly malformed claims are rejected.
 - Successful Admin password reset updates passwordHash and increments tokenVersion in the same SHA-guarded private document write. SHA conflicts are surfaced; no blind overwrite/retry. Version overflow is rejected.
 - Added test/rbac-token-version.test.js and registered it in package.json; covers legacy records/tokens, invalid versions, old-token rejection after reset, new-password login, Admin JWT isolation, and SHA conflict behavior.
-- Syntax validation (`node --check`): VERIFIED across all RBAC source and test files. Focused regression test (`node --test test/rbac-token-version.test.js`): VERIFIED (6 PASS, 0 FAIL). npm test: NOT RUN.
+- Syntax validation (`node --check`): PASS across all RBAC source and test files, reported by the owner after running in Termux. Focused regression test (`node --test test/rbac-token-version.test.js`): PASS (6 PASS, 0 FAIL), reported by the owner after running in Termux. These results were not independently re-executed in this session. `npm test`: NOT RUN.
 - Next: Verify Guestbook static CDN URL, JSON response, cache headers/freshness, and post-write behavior.
