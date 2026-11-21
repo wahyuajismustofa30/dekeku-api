@@ -57,3 +57,13 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] **RBAC-09** — Security, regression, and isolation review.
 - **Current next task**: RBAC-01. All stages remain NOT STARTED; design approval is not implementation evidence.
 - **Verification**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED.
+
+
+
+## RBAC-01 Progress (2026-11-21)
+- [x] Add private account and repository-mapping document schemas with strict validation.
+- [x] Add exact private path allowlist and GitHub Contents API read/create/update helpers with SHA concurrency.
+- [x] Add focused storage/schema test file and register it in local test script.
+- [ ] Run RBAC-01 tests and syntax/static checks when test execution is authorized/resumed.
+- [ ] Verify private storage access against Development configuration without writing real account data.
+- **Stage status**: IMPLEMENTED — NOT VERIFIED. Next stage: RBAC-02.
