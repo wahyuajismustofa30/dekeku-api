@@ -7,6 +7,7 @@ import { authMiddleware } from "../middleware/auth.js";
 import { handlePublicSubmit } from "../modules/public/submit.js";
 import { getTesterPage } from "../modules/tester/index.js";
 import { handleAdminUsers, handleAdminRepositories } from "../modules/rbac/admin.js";
+import { userDataRouter, userRepositoriesRouter } from "../modules/rbac/user-data.js";
 
 export const router = async (request, env) => {
   const url = new URL(request.url);
@@ -39,6 +40,18 @@ export const router = async (request, env) => {
   if (pathname === "/api/v1/user/login") {
     if (method !== "POST") return error("Method Not Allowed", 405);
     return userLogin(request, env);
+  }
+
+  // User repository listing and data CRUD (User JWT + ownership checks)
+  if (pathname === "/api/v1/user/repositories") {
+    if (method !== "GET") return error("Method Not Allowed", 405);
+    return userRepositoriesRouter(request, env);
+  }
+  if (pathname === "/api/v1/user/data") {
+    if (!["GET", "POST", "PUT", "DELETE"].includes(method)) {
+      return error("Method Not Allowed", 405);
+    }
+    return userDataRouter(request, env);
   }
 
   // Admin account and repository management (Admin JWT required)
