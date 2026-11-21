@@ -274,3 +274,21 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Jika dokumentasi, keputusan lama, implementasi, atau arahan asisten bertentangan dengan instruksi terbaru Wahyu, hentikan tindakan terkait, laporkan konflik dan dampaknya, lalu berikan pilihan atau minta persetujuan spesifik sesuai keadaan.
 - Dokumentasi yang bertentangan diperbarui jika instruksi Wahyu jelas dan aman; catatan historis tetap dipertahankan sebagai sejarah.
 - Rincian normatif: [MASTER.md](MASTER.md) bagian 8, [DECISIONS.md](DECISIONS.md) D-024, [EXECUTION_POLICY.md](EXECUTION_POLICY.md), dan [AGENTS.md](../AGENTS.md).
+
+
+## CI/CD Development — Owner-Approved Direction (2026-11-21)
+
+- Development work is performed on branch `dev`; changes are proposed to `main` through a Pull Request after they are stable.
+- Pull Requests from `dev` to `main` must run the agreed validation workflow. Critical validation failures block merging; optional/non-critical checks may initially report warnings.
+- A successful update to `main` is the intended trigger for GitHub Actions to deploy **only** the Development Worker `dekeku-api-dev`.
+- A PR itself must not deploy. Deployment must use Development-only credentials and configuration; Production credentials, Worker `github`, domain `api.dekeku.my.id`, and Production data are out of scope.
+- The deployment workflow must prevent overlapping deployments, identify the source commit, and fail closed if the target cannot be confirmed as Development.
+- This is an approved target policy, not evidence that CI/CD has been implemented. Until the relevant tasks are completed and verified, no automatic deployment is assumed to exist.
+
+
+## CI/CD Progress Status (2026-11-21)
+
+- **Owner decision:** D-025 approved. Development on `dev`; stable changes go through PR to `main`; updates to `main` are intended to deploy only to Development Worker `dekeku-api-dev`.
+- **Implementation:** NOT STARTED. No workflow files or GitHub Actions settings were changed in this documentation update.
+- **Active task tracking:** CICD-001..CICD-010 added to `BACKLOG.md`; execution order is recorded in `EXECUTION_POLICY.md`.
+- **Production:** untouched and excluded.
