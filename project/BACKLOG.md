@@ -49,14 +49,14 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] **RBAC-01** — Private account storage and repository mapping in `dekeku-db`.
 - [ ] **RBAC-02** — Role, audience, and ownership middleware (Admin/User isolation).
 - [x] **RBAC-03** — Admin account and repository management endpoints (IMPLEMENTED — NOT VERIFIED).
-- [ ] **RBAC-04** — User login and 30-minute User JWT.
-- [ ] **RBAC-05** — User CRUD restricted to owned repositories under `assets/data/`.
+- [x] **RBAC-04** — User login and 30-minute User JWT (IMPLEMENTED — NOT VERIFIED).
+- [x] **RBAC-05** — User CRUD restricted to owned repositories under `assets/data/` (IMPLEMENTED — NOT VERIFIED).
 - [ ] **RBAC-06** — Enforce private/public data boundary and close unintended public reads.
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [ ] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup.
 - [ ] **RBAC-09** — Security, regression, and isolation review.
-- **Latest status**: RBAC-01 and RBAC-02 foundations are IMPLEMENTED — NOT VERIFIED; RBAC-04 is the next implementation stage. Design approval is not implementation evidence.
-- **Verification**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED.
+- **Latest status**: RBAC-01 through RBAC-05 are IMPLEMENTED — NOT VERIFIED. RBAC-06 is the next implementation stage. Design approval is not implementation evidence.
+- **Verification at initial checkpoint**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED. See subsequent stage records.
 
 
 
@@ -103,3 +103,17 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Verify Development login with a dedicated non-production fixture account.
 - [ ] Verify WAF/IP rate limiting before production exposure.
 - Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-05 User data CRUD under assets/data/. RBAC-01–04 runtime verification remains pending.
+
+
+## RBAC-05 Progress (2026-11-21)
+- [x] Add User repository listing endpoint protected by User JWT.
+- [x] Add User GET/POST/PUT/DELETE data endpoints.
+- [x] Resolve repositoryId against private mapping and enforce mapping ownership against JWT subject.
+- [x] Derive owner/repo/branch exclusively from private storage.
+- [x] Restrict relative file paths to server-prefixed assets/data/ and JSON files; reject traversal/encoding/hidden segments.
+- [x] Enforce 1 MiB JSON file limit, bounded streamed request body, strict UTF-8, and SHA requirements for update/delete.
+- [x] Add and register test/rbac-user-data.test.js.
+- [ ] Run RBAC tests and syntax/static checks when permitted; npm test remains NOT RUN per explicit instruction.
+- [ ] Verify Development behavior with isolated fixtures and confirm ownership isolation against a second account.
+- [ ] Review public reader and private/assets data boundaries (RBAC-06).
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-06. RBAC-01–05 runtime verification remains pending.
