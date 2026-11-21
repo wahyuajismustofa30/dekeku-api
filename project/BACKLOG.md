@@ -180,7 +180,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PROGRESS.md is the single source of current status.
 - [x] Execution policy recorded in project documentation.
 - [x] Reconcile remaining status documents to PROGRESS and EXECUTION_POLICY, including approved R-013 decision D-023.
-- [ ] Syntax/static validation for every RBAC source and test file; do not run `npm test`.
+- [ ] Native node --check for every RBAC source and test file; limited V8 parser check PASS 13/13 after stripping module declarations. Do not run `npm test`.
 - [DEFERRED] Development WAF setup/verification (do not resume until owner requests).
 - [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
 - [x] R-013 decision resolved: immediate User JWT revocation after password reset APPROVED (D-023).
