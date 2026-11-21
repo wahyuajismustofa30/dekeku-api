@@ -207,3 +207,11 @@
 - Status: COMPLETE — DEFINED. See `CICD_VALIDATION_CONTRACT.md` for required checks, warning checks, failure behavior, and safety boundaries.
 - Next: CICD-004 implements PR validation only; no deployment on PR events.
 - `npm test` remains NOT RUN; remote tests are excluded from PR CI.
+
+
+## CICD-004 — PR Validation Workflow (2026-11-21)
+- Status: IMPLEMENTED on `dev` at `.github/workflows/pr-validation.yml`.
+- PR-only for `dev` → `main`; no deployment; minimal permissions; pinned actions; per-PR concurrency.
+- Includes dependency install, full JS syntax scan, explicit Development Worker guard + Wrangler dry-run, mapped focused tests, and warning-only dependency audit.
+- Actual workflow run remains NOT VERIFIED until a PR triggers GitHub Actions. `npm test` and remote tests remain excluded.
+- Next: CICD-006 Development credentials isolation and CICD-007 deployment safeguards before CICD-005.
