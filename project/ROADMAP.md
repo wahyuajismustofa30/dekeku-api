@@ -77,4 +77,13 @@
 - User middleware rechecks active account status from private account storage. Repository ownership middleware resolves an opaque mapping ID against private mappings and attaches only server-sourced repository coordinates.
 - Added `test/rbac-auth.test.js` to the local test command.
 - **Status**: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by user instruction; Development runtime NOT VERIFIED. No endpoints, account records, mappings, secrets, config, deployment, or Production resources changed.
-- Next: RBAC-03 Admin management and RBAC-04 User login. RBAC-01 verification remains pending.
+- Next: RBAC-04 User login. RBAC-01/02/03 runtime verification remains pending.
+
+
+## RBAC-03 — Admin Account & Repository Management (2026-11-21)
+- Added Admin-only account create/list/detail/status-disable/reset-password handlers and repository mapping create/list/soft-disable handlers.
+- Routes are mounted behind the existing Admin JWT middleware; existing Admin auth compatibility is preserved.
+- Private account and mapping records use the fixed dekeku-db paths, schema validation, PBKDF2-SHA256 password hashes, bounded JSON body parsing, and SHA-protected writes.
+- Added test/rbac-admin.test.js to the local test script.
+- Status: IMPLEMENTED — NOT VERIFIED. Tests and syntax checks NOT RUN by instruction; Development runtime NOT VERIFIED. No real account or mapping records were created; no Production/config/secrets/deployment changes.
+- Next: RBAC-04 User login and 30-minute User JWT. RBAC-01/02/03 runtime verification remains pending.
