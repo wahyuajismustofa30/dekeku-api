@@ -31,7 +31,7 @@
 | **D-021** | Legacy Guestbook Preservation | Mencegah kehilangan data lama. | File lama `public/data/{hostname}/bukutamu.json` tidak boleh dihapus atau dimigrasikan otomatis; strategi migrasi memerlukan keputusan terpisah. |
 | **D-022** | Browser User Token Storage | Penyimpanan sesi browser. | Token User disimpan di `sessionStorage` dengan key `dekeku_user_access_token`, bukan `localStorage`; dibersihkan saat logout atau sesi invalid. Risiko XSS tetap harus diperhitungkan. |
 
-Status keputusan D-016 s/d D-022: APPROVED DESIGN; implementation and runtime verification remain pending. See [RBAC_PLAN.md](RBAC_PLAN.md).
+Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RBAC_PLAN.md and remains runtime NOT VERIFIED. D-022 browser sessionStorage implementation is present in both Tester pages; source review VERIFIED, automated test execution and Development browser runtime NOT VERIFIED. See [RBAC_PLAN.md](RBAC_PLAN.md).
 
 
 ### Guestbook destination decision precedence (2026-11-21)
