@@ -150,7 +150,7 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 | RBAC-06 | Private/public data boundary | IMPLEMENTED | NOT VERIFIED |
 | RBAC-07 | Guestbook per website repository | IMPLEMENTED | NOT VERIFIED |
 | RBAC-08 | Browser User sessionStorage | IMPLEMENTED | NOT VERIFIED |
-| RBAC-09 | Security/regression review | NEXT | NOT RUN |
+| RBAC-09 | Security/regression review | TESTS ADDED — NOT VERIFIED | NOT RUN |
 
 ### RBAC-04 Implementation Detail
 - Added src/modules/auth/user-login.js and POST /api/v1/user/login.
