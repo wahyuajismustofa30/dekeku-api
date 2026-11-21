@@ -261,3 +261,16 @@
 - Source review: VERIFIED.
 - Tests and syntax checks: NOT RUN per explicit instruction. Development browser/runtime: NOT VERIFIED.
 - sessionStorage remains exposed to same-origin JavaScript (XSS risk). No secret/configuration/deployment/Production changes.
+
+
+## [Unreleased] — RBAC-09 Security & Regression Review (2026-11-21)
+### Added
+- `test/rbac-security-review.test.js` with five integration regression scenarios for mapping ownership/IDOR, server-authoritative repository coordinates, client repository-coordinate injection, disabled accounts, and expired User JWT.
+- Registered the new security review test file in `package.json`.
+### Reviewed
+- Router, Admin/User auth middleware, private storage, Admin management, User data CRUD, User login/JWT, Guestbook mapping/write path, GitHub client, CORS, public path allowlist, and Tester browser session.
+### Verification
+- Source review: VERIFIED.
+- `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
+- Open risks: WAF rate limiting for User login and Guestbook; spoofable Origin; CDN cache/invalidation; reset-password does not immediately revoke existing JWT; sessionStorage remains XSS-readable.
+- No secrets/configuration/deployment/Production changes.
