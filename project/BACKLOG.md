@@ -128,3 +128,18 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] Run the new suite and syntax/static checks; `npm test` remains NOT RUN per explicit instruction.
 - [ ] Verify Development runtime without modifying Production.
 - Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-07 Guestbook per mapped website repository.
+
+
+## RBAC-07 Progress (2026-11-21)
+- [x] Resolve request Origin through the shared HTTPS allowlist.
+- [x] Read and validate private user/mapping documents from central `dekeku-db`.
+- [x] Require an active exact Origin mapping; reject unregistered Origin.
+- [x] Derive destination owner/repository/branch exclusively from private mapping; reject client-supplied destination fields.
+- [x] Verify mapped target repository exists and is public for static Guestbook reads.
+- [x] Write only to fixed `assets/data/bukutamu.json`; keep legacy `public/data/{hostname}/bukutamu.json` untouched.
+- [x] Preserve strict JSON/UTF-8 validation, 15 KiB request cap, 1 MiB stored file cap, SHA concurrency, and maximum three conflict attempts.
+- [x] Expand `test/public-submission.test.js`; existing npm test script already includes this file.
+- [ ] Run Guestbook/RBAC regression tests and syntax/static checks; `npm test` remains NOT RUN per explicit instruction.
+- [ ] Verify Development runtime with an isolated mapped public repository; do not write to real website data without approval.
+- [ ] Verify/configure Cloudflare WAF rate limiting for `POST /api/v1/public/submit` in Development. Origin is spoofable and is not authentication.
+- Stage status: IMPLEMENTED — NOT VERIFIED. Next: RBAC-08 Browser User session integration.
