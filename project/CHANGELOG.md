@@ -163,3 +163,15 @@
 - Architecture approved; implementation not started.
 - `npm test`: NOT RUN per explicit user instruction. Syntax checks: NOT RUN. Development runtime: NOT VERIFIED.
 - Documentation-only change; no source code, secrets, Worker configuration, deployment, or Production resources changed.
+
+
+
+## [Unreleased] — RBAC-01 Private Storage Foundation (2026-11-21)
+### Added
+- `src/modules/rbac/storage.js`: exact private storage path allowlist, versioned user and repository-mapping schemas, private Contents API reads and SHA-protected writes.
+- Schema constraints for PBKDF2 hashes, fixed User role, account status, repository ownership references, canonical HTTPS Origin, unique active repository and Origin.
+- `test/rbac-storage.test.js` and registration in the local `npm test` script.
+### Verification
+- `npm test`: NOT RUN by explicit user instruction.
+- Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
+- No account data, mapping data, secrets, Worker configuration, deployment, or Production resources changed.
