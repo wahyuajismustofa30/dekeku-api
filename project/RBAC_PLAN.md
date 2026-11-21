@@ -1,10 +1,10 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01–08 IMPLEMENTED — NOT VERIFIED; RBAC-09 TESTS ADDED — NOT VERIFIED
+Status: RBAC-01–08 source implemented; integrated system NOT VERIFIED; RBAC-09 tests added but NOT RUN; R-013 focused verification PASS by owner report
 Target branch: `dev`
 
-Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
+Dokumen ini menyimpan arsitektur, acceptance criteria, dan catatan implementasi RBAC. Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status terkini mengikuti `PROGRESS.md`; antrean mengikuti `EXECUTION_POLICY.md`. Catatan "Next" pada stage lama adalah historis dan tidak menjadi antrean aktif. Persetujuan desain bukan bukti implementasi atau verifikasi runtime.
 
 ## 1. Keputusan Arsitektur yang Disetujui
 
@@ -282,9 +282,9 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - src/modules/auth/user-login.js: new dekeku-user JWTs carry tokenVersion from the private account record (legacy default 0).
 - src/middleware/auth.js: User auth and repository ownership middleware compare token version against the authoritative private account record on every protected User request. Missing legacy claim means 0; malformed explicit claim is rejected. Admin middleware is unchanged.
 - Added test/rbac-token-version.test.js and registered it in package.json. Coverage includes legacy records/tokens, malformed versions, immediate old-token rejection after reset, successful login with new password, Admin JWT isolation, and SHA conflict behavior.
-- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by owner instruction. Development runtime: NOT VERIFIED.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. At that historical checkpoint, native node --check and focused test had not yet been run. The later owner-reported results are recorded in section 19 below. `npm test`: NOT RUN by owner instruction. Development runtime: NOT VERIFIED.
 - No account data, secrets, Cloudflare settings, deployment, or Production resources changed.
-- Next: run syntax/static checks and the focused test only when a repository execution environment is available; do not run npm test.
+- **Historical next step — SUPERSEDED by section 19 and `EXECUTION_POLICY.md`.**
 
 
 ## 19. R-013 Verification Update (2026-11-21) — Current
