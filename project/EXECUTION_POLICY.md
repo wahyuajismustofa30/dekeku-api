@@ -65,3 +65,22 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 - Owner-reported Termux verification: native node --check PASS for all RBAC source/test files; focused test node --test test/rbac-token-version.test.js PASS (6 PASS, 0 FAIL).
 - These checks were not independently re-executed in this session. npm test: NOT RUN by explicit instruction.
 - No Development deployment, Cloudflare configuration, account data, secrets, or Production resources changed.
+
+
+## CI/CD Development — Owner-Approved Direction (2026-11-21)
+
+- Development work is performed on branch `dev`; changes are proposed to `main` through a Pull Request after they are stable.
+- Pull Requests from `dev` to `main` must run the agreed validation workflow. Critical validation failures block merging; optional/non-critical checks may initially report warnings.
+- A successful update to `main` is the intended trigger for GitHub Actions to deploy **only** the Development Worker `dekeku-api-dev`.
+- A PR itself must not deploy. Deployment must use Development-only credentials and configuration; Production credentials, Worker `github`, domain `api.dekeku.my.id`, and Production data are out of scope.
+- The deployment workflow must prevent overlapping deployments, identify the source commit, and fail closed if the target cannot be confirmed as Development.
+- This is an approved target policy, not evidence that CI/CD has been implemented. Until the relevant tasks are completed and verified, no automatic deployment is assumed to exist.
+
+
+## CI/CD Execution Boundary
+
+- Branch kerja aktif tetap `dev`; PR target `main` hanya setelah perubahan stabil.
+- CICD tasks are planned follow-up work and do not replace the current ordered RBAC queue.
+- Do not create or run a deployment workflow until its Development target, credential isolation, and fail-closed safeguards have been reviewed.
+- Once implemented, only an update to `main` may trigger the Development deployment. PR events and pushes to `dev` must not deploy.
+- Production remains prohibited. `npm test` remains NOT RUN unless the owner explicitly changes that instruction.
