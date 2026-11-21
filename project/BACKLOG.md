@@ -55,7 +55,7 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [ ] **RBAC-07** — Route Guestbook submissions to each mapped website repository.
 - [x] **RBAC-08** — Browser User session using sessionStorage and safe logout/401 cleanup (IMPLEMENTED — NOT VERIFIED).
 - [ ] **RBAC-09** — Security, regression, and isolation review.
-- **Latest status**: RBAC-01 through RBAC-05 are IMPLEMENTED — NOT VERIFIED. RBAC-06 is the next implementation stage. Design approval is not implementation evidence.
+- **Latest status**: RBAC-01 through RBAC-08 are IMPLEMENTED — NOT VERIFIED. RBAC-09 Security & Regression Review is the next implementation stage. Design approval is not implementation evidence.
 - **Verification at initial checkpoint**: `npm test` NOT RUN per user instruction; syntax checks NOT RUN; Development runtime NOT VERIFIED. See subsequent stage records.
 
 
