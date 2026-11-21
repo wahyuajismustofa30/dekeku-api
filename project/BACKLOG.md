@@ -169,10 +169,10 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 - [DEFERRED] WAF Development verification for User Login and Guestbook POST; owner requested to skip for now.
 - [ ] Verify `assets` retrieval freshness with timestamp cache-busting query parameter; confirm CDN cache key honors query string or bypasses cache.
 - [x] Owner decision R-013: immediate revocation of all pre-reset User JWTs APPROVED (D-023, 2026-11-21).
-- [ ] Implement per-user token/session version in private User record with backward-compatible default for existing records.
-- [ ] Include token/session version in newly issued User JWTs and validate it against the authoritative private User record on every authenticated User request.
-- [ ] Increment token/session version during successful Admin password reset with SHA-safe concurrency handling; ensure old User JWTs fail immediately and new-password login succeeds.
-- [ ] Add focused regression tests for pre-reset token rejection, post-reset login/token acceptance, existing-record compatibility, concurrent SHA conflict handling, and Admin JWT non-impact. Do not run npm test.
+- [x] Add backward-compatible per-user tokenVersion validation/default semantics in private User records; new accounts start at version 0.
+- [x] Include tokenVersion in newly issued User JWTs and validate it against the authoritative private User record in User auth and ownership middleware.
+- [x] Increment tokenVersion during successful Admin password reset in the SHA-guarded users document write; reject overflow and surface SHA conflicts without overwrite.
+- [x] Add focused regression tests for pre-reset token rejection, post-reset login/token acceptance, existing-record compatibility, SHA conflict handling, malformed claims, and Admin JWT non-impact. Test execution NOT RUN; do not run npm test.
 - Status: TESTS ADDED — NOT VERIFIED.
 
 
@@ -184,7 +184,8 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [DEFERRED] Development WAF setup/verification (do not resume until owner requests).
 - [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
 - [x] R-013 decision resolved: immediate User JWT revocation after password reset APPROVED (D-023).
-- [ ] Implement and verify R-013 token/session version mechanism; no implementation has been made yet.
+- [x] Add R-013 token/session version source implementation and focused regression tests on dev.
+- [ ] Run syntax/static checks and the focused regression test only; do not run npm test.
 - `npm test`: NOT RUN. Development runtime: NOT VERIFIED. WAF: DEFERRED. CDN cache-busting behavior: NOT VERIFIED.
 
 
@@ -200,5 +201,15 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [ ] Include version in new User JWTs and compare with the authoritative account record on every authenticated User request.
 - [ ] Increment version as part of successful password reset using SHA-safe write/concurrency handling.
 - [ ] Add focused regression coverage: old token rejected immediately, new login works, legacy records remain compatible, conflict handling is safe, Admin JWTs unaffected.
-- **Status**: DECISION APPROVED; IMPLEMENTATION NOT STARTED; current runtime still permits old tokens until their remaining expiry (up to 30 minutes).
+- **Status**: SOURCE IMPLEMENTED on dev; syntax/static checks and focused test NOT RUN. No Development deployment; currently deployed Worker may still permit old tokens until their remaining expiry (up to 30 minutes).
 - **Constraints**: work on dev only; npm test remains NOT RUN; no Production changes or deployment without explicit approval.
+
+
+## R-013 Implementation Status (2026-11-21)
+- [x] Backward-compatible tokenVersion field validation and version-zero behavior for legacy records.
+- [x] New User creation initializes version zero; User login signs the version into User JWT.
+- [x] User auth and repository ownership middleware enforce current version from private storage.
+- [x] Admin password reset increments version in the same SHA-guarded account write as the new password hash.
+- [x] Focused regression tests added and registered in package.json.
+- [ ] Syntax/static validation and focused test execution; npm test remains NOT RUN.
+- Status: IMPLEMENTATION ADDED — NOT VERIFIED; Development runtime/deployment not performed; Production untouched.
