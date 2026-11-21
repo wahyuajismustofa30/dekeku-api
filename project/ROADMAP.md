@@ -23,10 +23,11 @@
 - Automatic SHA lookup endpoint and Tester integration implemented on `dev`.
 - Regression tests added; syntax checks, automated test execution, and Development runtime verification remain NOT RUN / NOT VERIFIED.
 
-## Phase 2.3: Public Submission & Guestbook
+## Phase 2.3: Public Submission & Guestbook (historical milestone)
 - **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman tanpa auth admin.
-- **Ruang Lingkup**: Endpoint `POST /api/v1/public/submit`, validasi payload (name, message), penyimpanan concurrent-safe ke `public/data/guestbook/`, CORS wildcard (`*.artoprintingpbg.com`, `*.dekeku.my.id`).
-- **Status**: COMPLETED menurut implementasi terdokumentasi. Hasil pengujian lokal terbaru yang dilaporkan pengguna adalah 149 PASS, 0 FAIL, 0 SKIP pada commit `a6a089d`; runtime/deployment Development tetap NOT VERIFIED.
+- **Ruang Lingkup awal**: Endpoint `POST /api/v1/public/submit` dan penyimpanan Guestbook awal di `public/data/guestbook/`.
+- **Status implementasi**: milestone awal tercatat selesai. Alur Guestbook terbaru untuk RBAC-07 menggunakan mapping Origin dan target `assets/data/bukutamu.json` pada repository website; jangan menganggap path awal sebagai target saat ini.
+- **Verifikasi**: laporan suite lokal 149 PASS, 0 FAIL, 0 SKIP pada commit `a6a089d` adalah bukti historis; Development runtime/deployment tetap NOT VERIFIED.
 
 ## Security Review Follow-up (2026-11-21)
 - R-001 s/d R-005: implementasi remediation Dashboard, CORS, dan test isolation selesai.
@@ -34,6 +35,11 @@
 - R-006 WAF Development: NOT VERIFIED.
 - R-007 failed-login audit logging: menunggu keputusan retensi, akses, dan metadata.
 - R-008 sinkronisasi dokumentasi: COMPLETED.
+
+## Current Workstream Selection
+- Dokumentasi telah direkonsiliasi setelah owner memilih opsi C.
+- Tidak ada prioritas teknis berikutnya yang dipilih. Tunggu keputusan owner antara RBAC Development runtime verification (deployment memerlukan persetujuan eksplisit) dan Development CI/CD (dimulai dengan audit read-only).
+- Lihat `PROGRESS.md` untuk status dan `EXECUTION_POLICY.md` untuk antrean tunggal.
 
 ## Phase 3: Monitoring & Optimization (Future)
 - Monitoring logs & error tracking.
