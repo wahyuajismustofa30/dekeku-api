@@ -1,5 +1,7 @@
 # ROADMAP — DEKEKU API Gateway
 
+> Current status is maintained only in [PROGRESS.md](PROGRESS.md). The ordered work queue and safety rules are in [EXECUTION_POLICY.md](EXECUTION_POLICY.md). Phase 2.x completion statements below are historical milestone records and do not imply current RBAC/runtime verification.
+
 *Catatan Acuan*: Untuk status detail, riwayat pengujian, dan daftar isu aktif, lihat [PROGRESS.md](PROGRESS.md) sebagai sumber status tunggal proyek.
 
 ## Phase 1: Foundation & GitHub Core
@@ -143,3 +145,13 @@
 - Registered test in `package.json`.
 - Test execution and syntax/static checks NOT RUN; Development WAF and CDN integration NOT VERIFIED.
 - Next: syntax/static checks only (do not run `npm test`), then separately gather Development WAF and CDN evidence.
+
+
+## Current RBAC Verification Follow-up (2026-11-21)
+- RBAC-01–08: implementation present on `dev`; NOT VERIFIED.
+- RBAC-09: regression tests added; NOT VERIFIED.
+- Syntax/static checks for all RBAC files: NOT RUN. `npm test`: NOT RUN by owner instruction.
+- Development WAF (User Login and Guestbook): NOT VERIFIED.
+- Guestbook static CDN/cache behavior: NOT VERIFIED.
+- R-013: immediate User JWT revocation recommended; owner decision OPEN.
+- Historical "Next" notes in earlier stage entries do not override the current work queue.
