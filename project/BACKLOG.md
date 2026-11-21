@@ -223,3 +223,23 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [ ] Guestbook CDN/cache freshness verification remains pending.
 - [DEFERRED] Development WAF verification remains deferred by owner.
 - Evidence qualification: test results are recorded from the owner's report; they were not independently re-executed in this session.
+
+
+## CI/CD Development Automation — Owner-Approved Tasks (2026-11-21)
+
+**Target workflow:** local/repository development on `dev` → Pull Request to `main` after stable → PR validation → merge/update `main` → automatic deployment to Development Worker `dekeku-api-dev` only.
+
+- [ ] **CICD-001 — Audit deployment target and Wrangler configuration (CRITICAL).** Read-only audit of `wrangler.jsonc`, Worker name/environment, deployment command, and current GitHub Actions state. Confirm the exact Development target; do not modify Cloudflare or Production.
+- [ ] **CICD-002 — Reconcile branch policy (HIGH).** Ensure all current instructions consistently state that development occurs on `dev`, PR target is `main`, and direct commits/pushes to `main` are prohibited.
+- [ ] **CICD-003 — Define PR validation contract (HIGH).** Specify required checks: dependency installation, syntax/static checks, Wrangler configuration validation, focused relevant tests, and basic security checks. Critical failures block; non-critical/unstable checks may warn initially. Full test suite is not mandatory in the first iteration.
+- [ ] **CICD-004 — Add PR validation workflow (HIGH).** Run the agreed checks for PRs from `dev` to `main`; do not deploy from PR events.
+- [ ] **CICD-005 — Add main-to-Development deployment workflow (CRITICAL).** On updates to `main`, deploy only to `dekeku-api-dev` using an explicit Development target. Do not deploy Production.
+- [ ] **CICD-006 — Isolate Development credentials (CRITICAL).** Use dedicated GitHub Actions secrets/variables for Development only. Never reuse or expose Production credentials. Confirm required values without printing secret contents.
+- [ ] **CICD-007 — Add deployment safety controls (HIGH).** Serialize/cancel overlapping deployments safely, restrict workflow permissions, verify target identity, record commit SHA and deployment result, and fail closed on ambiguity.
+- [ ] **CICD-008 — Validate workflow behavior (HIGH).** Verify PR validation pass/fail behavior, main deployment success/failure handling, missing Development credentials, wrong-target rejection, and concurrency behavior using safe CI evidence.
+- [ ] **CICD-009 — Verify Development deployment (HIGH).** Confirm the deployed version and Development URL/health response after CI deployment. Do not probe or modify Production.
+- [ ] **CICD-010 — Close documentation and checkpoint (MEDIUM).** Update policy, workflow instructions, progress, checkpoint, and changelog using actual CI evidence.
+
+**Execution order:** CICD-001 → CICD-002 → CICD-003 → CICD-004/CICD-006/CICD-007 → CICD-005 → CICD-008 → CICD-009 → CICD-010.
+
+**Current status:** all CICD-001..010 are PLANNED / NOT STARTED. This task list does not authorize Production changes or deployment before the Development-only workflow is implemented and verified.
