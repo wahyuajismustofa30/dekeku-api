@@ -185,7 +185,7 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
 - [x] R-013 decision resolved: immediate User JWT revocation after password reset APPROVED (D-023).
 - [x] Add R-013 token/session version source implementation and focused regression tests on dev.
-- [ ] Run syntax/static checks and the focused regression test only; do not run npm test.
+- [ ] Run native node --check and the focused regression test only; limited V8 parser check PASS 13/13. Do not run npm test.
 - `npm test`: NOT RUN. Development runtime: NOT VERIFIED. WAF: DEFERRED. CDN cache-busting behavior: NOT VERIFIED.
 
 
@@ -211,5 +211,5 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [x] User auth and repository ownership middleware enforce current version from private storage.
 - [x] Admin password reset increments version in the same SHA-guarded account write as the new password hash.
 - [x] Focused regression tests added and registered in package.json.
-- [ ] Syntax/static validation and focused test execution; npm test remains NOT RUN.
+- [ ] Native node --check and focused test execution; limited V8 parser check PASS 13/13 after stripping module declarations. npm test remains NOT RUN.
 - Status: IMPLEMENTATION ADDED — NOT VERIFIED; Development runtime/deployment not performed; Production untouched.
