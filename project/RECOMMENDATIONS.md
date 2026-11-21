@@ -121,8 +121,7 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - **Temuan**: sebelum keputusan D-023, Admin password reset tidak membatalkan JWT User yang telah diterbitkan; token dapat tetap berlaku hingga sisa masa berlaku maksimal 30 menit.
 - **Risiko**: token yang disalin sebelum reset dapat tetap mengakses repository milik User selama sisa masa berlaku.
 - **Keputusan pemilik**: APPROVED (D-023, 2026-11-21). Semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Implementasi menggunakan token/session version server-side; rincian dan acceptance criteria ada pada bagian keputusan R-013 di bawah.
-- **Status**: keputusan APPROVED; implementasi NOT STARTED. Tidak ada perubahan kode/schema pada saat keputusan dicatat.
-- **Status**: OPEN — decision required; no code/schema change made.
+- **Status**: keputusan APPROVED; source implementation and focused regression tests have been added on dev. Syntax/static checks, test execution, and Development runtime verification remain pending. The currently deployed Worker has not been updated.
 
 
 ## R-013 — Immediate User JWT Revocation After Password Reset (Decision 2026-11-21)
@@ -130,5 +129,5 @@ R-008 telah diselesaikan sebagai sinkronisasi dokumentasi pada 2026-11-21.
 - **Implementation direction**: add a backward-compatible per-user token/session version in the private User record; include the current version in newly issued User JWTs; compare the claim with the authoritative private record on every authenticated User request; increment the version during successful password reset using SHA-safe concurrency handling.
 - **Scope**: User JWTs only. Admin JWTs are not revoked by this decision.
 - **Acceptance criteria**: old User JWT rejected immediately after reset; new password can log in and receive a valid token; existing records remain compatible; concurrent SHA conflicts are handled safely; Admin JWTs remain unaffected.
-- **Status**: DECISION APPROVED (D-023); implementation NOT STARTED. Until implementation is verified, old tokens may remain usable for their remaining lifetime (up to 30 minutes).
+- **Status**: DECISION APPROVED (D-023); source implementation ADDED on dev, NOT VERIFIED. Until Development deployment and runtime verification, the currently deployed Worker may still allow old tokens for their remaining lifetime (up to 30 minutes).
 - This decision authorizes the R-013 implementation on dev; it does not authorize deployment or any Production changes.
