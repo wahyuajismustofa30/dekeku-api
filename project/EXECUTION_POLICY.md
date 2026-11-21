@@ -13,12 +13,11 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 - Historical checkpoints and stage notes must not override the latest checkpoint.
 
 ## Mandatory execution instructions
-1. Synchronize all documentation so there is one authoritative current status and one ordered current work queue.
-2. R-013 syntax validation and focused regression testing have been completed in Termux according to the owner's report: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test`.
-3. WAF Development setup/verification is DEFERRED by project owner. Do not configure or verify WAF until the owner explicitly resumes this task.
-4. Verify the `assets` data retrieval path returns current data. Requests must use a cache-busting timestamp query parameter (for example `?t=<timestamp>`); do not rely on CDN cache for freshness. Confirm the CDN/cache key honors the query parameter or explicitly bypasses cache. Do not perform a real write unless an isolated Development fixture and explicit safe test target are available.
-5. R-013 was approved by owner as D-023; source implementation is present on dev and the syntax/focused-test checks are reported PASS from Termux. Admin JWT behavior remains unchanged.
-6. Update the latest checkpoint only with evidence actually obtained.
+1. Keep `project/PROGRESS.md` as the single source of truth for current status.
+2. Keep one ordered active work queue; do not copy archived task details into ordinary progress reports.
+3. R-013 syntax validation and focused regression testing are reported PASS by the owner from Termux: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test`.
+4. Do not resume archived tasks automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly asks for the task archive or reactivates an archived item.
+5. Update the latest checkpoint only with evidence actually obtained.
 
 ## Non-negotiable constraints
 - `npm test`: NOT RUN unless the owner explicitly changes this instruction.
