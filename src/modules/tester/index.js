@@ -261,6 +261,9 @@ export const getTesterPage = (request, env) => {
                 if (response.status === 401) {
                     if (session === 'admin') clearToken(true);
                     if (session === 'user') clearUserSession(true);
+                } else if (session === 'user' && response.status === 403 &&
+                    data && data.error === 'User account is unavailable') {
+                    clearUserSession(true);
                 }
                 log(data || {}, response.status + ' ' + response.statusText);
                 return { status: response.status, data };
