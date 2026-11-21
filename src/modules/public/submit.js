@@ -1,7 +1,6 @@
 import { HttpError } from "../../core/errors.js";
 import { GitHubClient } from "../../core/github.js";
 import { getAllowedOrigin } from "../../middleware/cors.js";
-import { decodeBase64 } from "../../utils/github-content.js";
 import { success } from "../../utils/response.js";
 import { readPrivateDocument } from "../rbac/storage.js";
 
@@ -180,7 +179,6 @@ export const handlePublicSubmit = async (request, env) => {
   // Do not mistake an inaccessible/missing mapped repository for an empty Guestbook.
   await github.getRepository();
 
-  let lastConflict;
   for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt += 1) {
     let entries = [];
     let sha = null;
@@ -214,7 +212,6 @@ export const handlePublicSubmit = async (request, env) => {
       }, 201);
     } catch (err) {
       if (err.status !== 409) throw err;
-      lastConflict = err;
     }
   }
 
