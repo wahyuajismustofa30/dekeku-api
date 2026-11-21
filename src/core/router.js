@@ -1,6 +1,7 @@
 import { getHealth } from "../modules/health/index.js";
 import { githubRouter } from "../modules/github/index.js";
 import { adminLogin } from "../modules/auth/login.js";
+import { userLogin } from "../modules/auth/user-login.js";
 import { error, success } from "../utils/response.js";
 import { authMiddleware } from "../middleware/auth.js";
 import { handlePublicSubmit } from "../modules/public/submit.js";
@@ -32,6 +33,12 @@ export const router = async (request, env) => {
   if (pathname === "/api/v1/admin/login") {
     if (method !== "POST") return error("Method Not Allowed", 405);
     return adminLogin(request, env);
+  }
+
+  // User Login (Public POST; issues a User-audience JWT)
+  if (pathname === "/api/v1/user/login") {
+    if (method !== "POST") return error("Method Not Allowed", 405);
+    return userLogin(request, env);
   }
 
   // Admin account and repository management (Admin JWT required)
