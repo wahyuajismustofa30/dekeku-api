@@ -227,11 +227,11 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Review confirms separate Admin/User audience and role checks, active-account recheck, mapping ownership check, fixed `assets/data/` prefix, fixed private storage allowlist, public reader separation, bounded JSON validation, and CORS support for Authorization.
 - Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting must be evidenced in Development. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. R-013 is APPROVED but implementation is pending; until implemented, previously issued User JWTs can remain usable for up to their remaining 30-minute lifetime. Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
 - No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
-- **Next:** perform permitted syntax/static checks without running `npm test`; obtain Development WAF evidence and verify CDN integration separately.
+- **Next:** perform permitted syntax/static checks without running `npm test`; implement approved R-013 token/session version mechanism with focused regression coverage. WAF remains DEFERRED; CDN freshness verification remains pending.
 
 
 ## Current Verification Queue — Authoritative (2026-11-21)
-1. Documentation reconciliation: PARTIAL — execution policy saved; remaining documents still require synchronization.
+1. Documentation reconciliation: COMPLETE — D-023 and R-013 status synchronized across decision, progress, backlog, roadmap, RBAC plan, recommendations, changelog, and checkpoint documents.
 2. Syntax/static checks for every RBAC source and test file: NOT RUN. `npm run check` alone is insufficient because it checks only `src/index.js`.
 3. Development WAF for User Login and Guestbook: DEFERRED by owner; no configuration changes.
 4. `assets` retrieval must use a timestamp cache-busting query parameter (for example `?t=<timestamp>`); whether the CDN honors it in its cache key is NOT VERIFIED.
