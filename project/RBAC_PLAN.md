@@ -95,7 +95,7 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 | RBAC-06 | Private/public data boundary | Tutup pembacaan data privat; pastikan endpoint publik tidak membocorkan data privat | IMPLEMENTED — NOT VERIFIED |
 | RBAC-07 | Guestbook per website repository | Origin mapping ke repository website; tulis `assets/data/bukutamu.json`; mitigasi concurrency/cache | IMPLEMENTED — NOT VERIFIED |
 | RBAC-08 | Browser User session | Login UI, sessionStorage, Bearer token, logout/401 cleanup | IMPLEMENTED — NOT VERIFIED |
-| RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | BLOCKED BY RBAC-01–08 |
+| RBAC-09 | Security & regression review | Ownership bypass, IDOR, path traversal, role confusion, Origin spoofing, size/rate limits, regression | TESTS ADDED — NOT VERIFIED |
 
 ## 4. Acceptance Criteria Minimum
 
@@ -243,3 +243,15 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Security limitation: sessionStorage remains accessible to same-origin JavaScript and does not mitigate XSS. Avoid third-party scripts and preserve output escaping/CSP. JWT remains valid for up to 30 minutes as enforced by API.
 - No secrets, account/mapping records, Wrangler/Cloudflare settings, deployment, or Production resources changed.
 - Next: RBAC-09 Security & Regression Review.
+
+
+## 15. RBAC-09 — Security & Regression Review (2026-11-21)
+- **Status**: TESTS ADDED — NOT VERIFIED.
+- Reviewed current source in `dev`: router, auth middleware, private storage, Admin management, User data CRUD, User login, Guestbook submission, GitHub client, CORS, JWT, public file allowlist, Worker entry point, and Tester browser session.
+- Added `test/rbac-security-review.test.js` and registered it in `package.json`.
+- Five scenarios cover cross-User mapping rejection before target repository access, server-authoritative repository coordinates, rejection of client-supplied owner/repo/branch, disabled-account rejection before mapping access, and expired JWT rejection before private storage access.
+- Source review confirms separate Admin/User audience+role checks, User active-account checks, mapping ownership verification, fixed `assets/data/` path prefix, exact private storage allowlist, public reader path boundary, bounded JSON payloads, and CORS allowance for Authorization.
+- **Test execution**: `npm test` NOT RUN by explicit instruction. Syntax/static checks NOT RUN. Development runtime NOT VERIFIED.
+- **Open risks**: no application-level rate limiter for User login and Guestbook; Cloudflare WAF/IP rate limiting must be verified in Development. Guestbook Origin can be spoofed by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes is not verified. Password reset does not revoke existing JWTs immediately; a previously issued token may remain usable for up to its remaining 30-minute lifetime while account status remains active. Browser `sessionStorage` is readable by same-origin JavaScript and remains exposed to XSS.
+- No account/mapping/website data, secrets, Wrangler/Cloudflare configuration, deployment, or Production resource was changed.
+- **Next**: perform syntax/static checks without running `npm test`; Development WAF and CDN checks require separate evidence.
