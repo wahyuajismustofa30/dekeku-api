@@ -247,3 +247,17 @@
 - `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime: NOT VERIFIED.
 - Origin spoofing remains possible for non-browser clients; WAF/IP rate limiting for Guestbook POST is a required Development follow-up. CDN cache behavior is not verified.
 - No live account/mapping/website data, secrets, configuration, deployment, or Production resources changed.
+
+
+## [Unreleased] — RBAC-08 Browser User Session Integration (2026-11-21)
+### Added
+- User login UI on generated and static Tester dashboards.
+- User JWT session storage in `sessionStorage` key `dekeku_user_access_token`, with same-tab restoration and logout cleanup.
+- Dedicated User Bearer request helper and User repository listing action.
+- Role-specific 401 cleanup; public requests strip Authorization and Admin token remains in-memory/separate.
+### Tests
+- Updated `test/tester-dashboard.test.js` assertions for both dashboard copies, User token storage lifecycle, helper isolation, and 401/logout behavior.
+### Verification
+- Source review: VERIFIED.
+- Tests and syntax checks: NOT RUN per explicit instruction. Development browser/runtime: NOT VERIFIED.
+- sessionStorage remains exposed to same-origin JavaScript (XSS risk). No secret/configuration/deployment/Production changes.
