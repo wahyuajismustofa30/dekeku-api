@@ -282,6 +282,6 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - src/modules/auth/user-login.js: new dekeku-user JWTs carry tokenVersion from the private account record (legacy default 0).
 - src/middleware/auth.js: User auth and repository ownership middleware compare token version against the authoritative private account record on every protected User request. Missing legacy claim means 0; malformed explicit claim is rejected. Admin middleware is unchanged.
 - Added test/rbac-token-version.test.js and registered it in package.json. Coverage includes legacy records/tokens, malformed versions, immediate old-token rejection after reset, successful login with new password, Admin JWT isolation, and SHA conflict behavior.
-- Syntax/static checks: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by owner instruction. Development runtime: NOT VERIFIED.
+- Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by owner instruction. Development runtime: NOT VERIFIED.
 - No account data, secrets, Cloudflare settings, deployment, or Production resources changed.
 - Next: run syntax/static checks and the focused test only when a repository execution environment is available; do not run npm test.
