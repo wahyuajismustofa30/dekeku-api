@@ -285,3 +285,12 @@ Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access
 - Limited V8 parser check: PASS 13/13 RBAC source/test files after stripping ES-module import/export declarations for parsing; package.json JSON parse and test registration PASS. Native node --check: NOT RUN. Focused test: NOT RUN. npm test: NOT RUN by owner instruction. Development runtime: NOT VERIFIED.
 - No account data, secrets, Cloudflare settings, deployment, or Production resources changed.
 - Next: run syntax/static checks and the focused test only when a repository execution environment is available; do not run npm test.
+
+
+## 19. R-013 Verification Update (2026-11-21) — Current
+- R-013 source implementation and focused regression test remain present on branch `dev`.
+- Owner-reported Termux checks: `node --check` PASS for all RBAC source/test files; `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
+- `npm test`: NOT RUN, per explicit instruction.
+- This is focused verification only; RBAC-01–08 are not thereby certified as a complete integrated system.
+- Development runtime/deployment: NOT VERIFIED. WAF: DEFERRED. Guestbook CDN/cache behavior: NOT VERIFIED. Production untouched.
+- Evidence qualification: the results are based on the owner's Termux report and were not independently re-executed in this session.
