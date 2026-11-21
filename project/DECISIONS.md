@@ -32,3 +32,9 @@
 | **D-022** | Browser User Token Storage | Penyimpanan sesi browser. | Token User disimpan di `sessionStorage` dengan key `dekeku_user_access_token`, bukan `localStorage`; dibersihkan saat logout atau sesi invalid. Risiko XSS tetap harus diperhitungkan. |
 
 Status keputusan D-016 s/d D-022: APPROVED DESIGN; implementation and runtime verification remain pending. See [RBAC_PLAN.md](RBAC_PLAN.md).
+
+
+### Guestbook destination decision precedence (2026-11-21)
+- D-015 documents the earlier per-hostname storage design under `public/data/{hostname}/bukutamu.json`.
+- For the RBAC Guestbook flow, the later approved D-020 is authoritative: new submissions go to `assets/data/bukutamu.json` in the active website repository mapped to the exact Origin.
+- D-021 remains in force: legacy D-015 files are preserved and are not migrated/deleted automatically.
