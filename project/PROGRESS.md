@@ -225,17 +225,17 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Registered the new test file in `package.json`.
 - `npm test`: NOT RUN per explicit instruction. Syntax/static checks: NOT RUN. Development runtime/WAF/CDN: NOT VERIFIED.
 - Review confirms separate Admin/User audience and role checks, active-account recheck, mapping ownership check, fixed `assets/data/` prefix, fixed private storage allowlist, public reader separation, bounded JSON validation, and CORS support for Authorization.
-- Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting must be evidenced in Development. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. R-013 is APPROVED but implementation is pending; until implemented, previously issued User JWTs can remain usable for up to their remaining 30-minute lifetime. Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
+- Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting remains DEFERRED. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. R-013 source implementation and focused regression tests are present on dev but NOT VERIFIED; the deployed Worker has not been updated, so old JWTs may remain usable until their remaining expiry (up to 30 minutes). Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
 - No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
 - **Next:** perform permitted syntax/static checks without running `npm test`; implement approved R-013 token/session version mechanism with focused regression coverage. WAF remains DEFERRED; CDN freshness verification remains pending.
 
 
 ## Current Verification Queue — Authoritative (2026-11-21)
 1. Documentation reconciliation: COMPLETE — D-023 and R-013 status synchronized across decision, progress, backlog, roadmap, RBAC plan, recommendations, changelog, and checkpoint documents.
-2. Syntax/static checks for every RBAC source and test file: NOT RUN. `npm run check` alone is insufficient because it checks only `src/index.js`.
+2. Syntax/static checks for every RBAC source and test file: NOT RUN — no repository execution environment is available in this session. `npm run check` alone is insufficient because it checks only `src/index.js`.
 3. Development WAF for User Login and Guestbook: DEFERRED by owner; no configuration changes.
 4. `assets` retrieval must use a timestamp cache-busting query parameter (for example `?t=<timestamp>`); whether the CDN honors it in its cache key is NOT VERIFIED.
-5. R-013: owner decision APPROVED (D-023); implement per-user token/session version and immediate rejection of pre-reset User JWTs.
+5. R-013 source implementation and focused regression test: ADDED on dev; syntax/static validation and test execution NOT RUN.
 6. `npm test`: NOT RUN by explicit instruction.
 7. Development runtime: NOT VERIFIED. Production untouched.
 
@@ -254,5 +254,15 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for mandatory constraints and ord
 - **Decision: APPROVED**. After Admin successfully resets a User password, every previously issued JWT for that User must be rejected immediately; the User must authenticate again using the new password.
 - Approved implementation direction: add a per-user token/session version to the private User record; include the current version in newly issued User JWTs; compare the JWT claim against the authoritative private record on every authenticated User request; increment the version during successful password reset using SHA-safe concurrency handling.
 - Scope: User JWTs only. Admin JWT behavior is unchanged.
-- Implementation status: NOT STARTED. Until implemented and verified, the current residual-token window (up to 30 minutes) remains.
-- No source/schema, account data, secrets, Worker configuration, deployment, or Production resources changed by recording this decision.
+- Implementation status: SOURCE ADDED on dev, NOT VERIFIED. No Development deployment has been performed; the currently deployed Worker may still allow old JWTs until expiry (up to 30 minutes).
+- The decision-recording change was documentation-only. The subsequent R-013 source implementation is recorded separately below; no account data, secrets, Worker configuration, deployment, or Production resources were changed.
+
+
+## R-013 Implementation Update (2026-11-21)
+- Added optional backward-compatible tokenVersion validation to private User records; legacy records without the field resolve to version 0.
+- New User accounts start at version 0; User login includes the current version in the dekeku-user JWT.
+- userAuthMiddleware and repository ownership middleware compare the token claim with the current private account record. Missing legacy claims mean version 0; explicitly malformed claims are rejected.
+- Successful Admin password reset updates passwordHash and increments tokenVersion in the same SHA-guarded private document write. SHA conflicts are surfaced; no blind overwrite/retry. Version overflow is rejected.
+- Added test/rbac-token-version.test.js and registered it in package.json; covers legacy records/tokens, invalid versions, old-token rejection after reset, new-password login, Admin JWT isolation, and SHA conflict behavior.
+- Source changes are present on dev; syntax/static checks NOT RUN; focused test NOT RUN; npm test NOT RUN. Development runtime NOT VERIFIED and no deployment performed.
+- Next: obtain repository execution environment, run node --check over every RBAC source/test file and run only node --test test/rbac-token-version.test.js (do not run npm test).
