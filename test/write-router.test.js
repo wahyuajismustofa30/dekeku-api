@@ -60,7 +60,7 @@ function setupMockFetch() {
       return mockResponse(200, {
         type: "file",
         path: "public/config.json",
-        sha: "abc123",
+        sha: "a".repeat(40),
         size: 10,
         content: btoa('{"ok":true}'),
         encoding: "base64"
@@ -105,6 +105,53 @@ describe("Write Engine - Router Integration Tests", () => {
   });
 
   after(restoreFetch);
+
+  describe("GET /api/v1/admin/write/sha", () => {
+    test("SHA lookup requires authentication", async () => {
+      const env = createEnv();
+      const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fdata%2Ftest.json");
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 401);
+    });
+
+    test("SHA lookup returns the current GitHub blob SHA", async () => {
+      const mockFetch = setupMockFetch();
+      const env = createEnv();
+      const token = await getAuthToken(env);
+      const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fdata%2Ftest.json", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const res = await worker.fetch(req, env);
+      const data = await res.json();
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(data.path, "public/data/test.json");
+      assert.strictEqual(data.sha, "a".repeat(40));
+      assert.strictEqual(data.message, "File SHA retrieved successfully");
+      assert.strictEqual(mockFetch.mock.calls.length, 1);
+      assert.strictEqual(mockFetch.mock.calls[0].arguments[1].method, "GET");
+      assert.ok(String(mockFetch.mock.calls[0].arguments[0]).includes("/contents/public/data/test.json?ref=main"));
+
+      restoreFetch();
+    });
+
+    test("SHA lookup rejects paths outside public/data/", async () => {
+      const mockFetch = setupMockFetch();
+      const env = createEnv();
+      const token = await getAuthToken(env);
+      const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fother.json", {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const res = await worker.fetch(req, env);
+      assert.strictEqual(res.status, 403);
+      assert.strictEqual(mockFetch.mock.calls.length, 0);
+
+      restoreFetch();
+    });
+  });
 
   describe("POST /api/v1/admin/write/create", () => {
     test("CREATE requires authentication", async () => {
