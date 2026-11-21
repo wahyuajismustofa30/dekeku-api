@@ -29,7 +29,7 @@ export const validateUsersDocument = document => {
   const usernames = new Set();
   for (const user of document.users) {
     if (!isObject(user) || !hasOnlyKeys(user, [
-      "id", "username", "passwordHash", "role", "status", "createdAt", "updatedAt"
+      "id", "username", "passwordHash", "role", "status", "createdAt", "updatedAt", "tokenVersion"
     ])) {
       throw new HttpError("Invalid user record", 422);
     }
@@ -47,6 +47,12 @@ export const validateUsersDocument = document => {
     }
     if (user.role !== "user" || !["active", "disabled"].includes(user.status)) {
       throw new HttpError("Invalid user role or status", 422);
+    }
+    if (
+      user.tokenVersion !== undefined &&
+      (!Number.isSafeInteger(user.tokenVersion) || user.tokenVersion < 0)
+    ) {
+      throw new HttpError("Invalid user token version", 422);
     }
     if (!isTimestamp(user.createdAt) || !isTimestamp(user.updatedAt)) {
       throw new HttpError("Invalid user timestamps", 422);
