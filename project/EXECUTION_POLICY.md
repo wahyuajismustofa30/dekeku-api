@@ -17,7 +17,7 @@ Baseline inspected: `6f0360e5166595945320a467a1fa2c91722b7401`
 2. Run syntax/static validation for every RBAC source and test file without running `npm test`. The current `npm run check` script only checks `src/index.js` and is not comprehensive.
 3. WAF Development setup/verification is DEFERRED by project owner. Do not configure or verify WAF until the owner explicitly resumes this task.
 4. Verify the `assets` data retrieval path returns current data. Requests must use a cache-busting timestamp query parameter (for example `?t=<timestamp>`); do not rely on CDN cache for freshness. Confirm the CDN/cache key honors the query parameter or explicitly bypasses cache. Do not perform a real write unless an isolated Development fixture and explicit safe test target are available.
-5. R-013 source implementation and focused regression test have been added on dev; complete syntax/static and focused test verification without affecting Admin JWTs.
+5. R-013 was approved by owner as D-023; source implementation and focused regression test have been added on dev. Complete syntax/static and focused test verification without affecting Admin JWTs.
 6. Update the latest checkpoint only with evidence actually obtained.
 
 ## Non-negotiable constraints
