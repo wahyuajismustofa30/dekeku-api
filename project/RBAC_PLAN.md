@@ -1,7 +1,7 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: ARCHITECTURE APPROVED — IMPLEMENTATION NOT STARTED
+Status: RBAC-01/02 IMPLEMENTED — NOT VERIFIED
 Target branch: `dev`
 
 Dokumen ini adalah daftar kerja operasional untuk implementasi Role-Based Access Control (RBAC). Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status implementasi dan verifikasi harus diperbarui berdasarkan bukti aktual; persetujuan desain bukan bukti implementasi.
