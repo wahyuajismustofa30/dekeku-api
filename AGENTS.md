@@ -6,6 +6,7 @@ Before starting any task in this repository, you MUST read the following project
 3. `project/PROGRESS.md` - Feature status.
 4. `project/DECISIONS.md` - Architectural decisions.
 5. `project/CHECKPOINT.md` - Last state and next steps.
+6. `project/EXECUTION_POLICY.md` - Mandatory execution sequence, evidence requirements, and ordered current work queue.
 
 Adhere to the authority and security principles defined in `project/MASTER.md`.
 
