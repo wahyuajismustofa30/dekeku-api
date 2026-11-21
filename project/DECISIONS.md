@@ -41,3 +41,11 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 
 
 | **D-023** | Immediate User JWT Revocation | Respons setelah Admin melakukan reset password User. | SETUJU: semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Terapkan mekanisme token/session version server-side pada record User; versi dimasukkan ke JWT baru dan diverifikasi pada setiap request User terautentikasi. Reset password menaikkan versi secara aman menggunakan SHA concurrency. JWT Admin tidak terpengaruh. Keputusan desain disetujui 2026-11-21; implementasi dan verifikasi belum dilakukan. |
+
+
+## D-023 Verification Status Update (2026-11-21)
+- Decision remains APPROVED: successful Admin password reset immediately invalidates all earlier User JWTs for that account; Admin JWTs are unaffected.
+- Implementation is present on branch `dev`.
+- Owner reports Termux verification PASS: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL).
+- The results are owner-reported and were not independently re-executed in this session.
+- Development deployment/runtime remains NOT VERIFIED; the currently deployed Worker has not received this source change. Production remains untouched.
