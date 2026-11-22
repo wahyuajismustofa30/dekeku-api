@@ -115,13 +115,13 @@ Pemeriksaan konfigurasi harus mengikuti kontrak repository publik yang sudah ada
 - ADM-007: Quick actions, selection, export, bulk project-type update.
 - ADM-008: Security review, regression/integration tests, Development runtime verification, dan dokumentasi evidence.
 
-## 9. Status verifikasi
+## 9. Status verifikasi dan pause
 
-- Scope dari polling 57–78: RECORDED.
-- Approval Durable Object + `DB_ENCRYPTION_KEY` Development-only: RECORDED.
-- Source implementation: PRESENT on `dev` for ADM-001 through ADM-007; NOT TESTED.
-- Unit/integration tests: DEFERRED by explicit owner instruction until all ADM-001 through ADM-007 implementation work is complete.
-- Durable Object binding/migration: PRESENT in `wrangler.jsonc` on `dev`; not validated by Wrangler.
-- `DB_ENCRYPTION_KEY` Development secret: NOT VERIFIED from this session. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on the Development Worker is also NOT VERIFIED from this session.
-- Cloudflare Development deployment/runtime: NOT VERIFIED.
-- Production: NOT TOUCHED.
+- Scope dari polling 57–78 dan approval penggunaan Durable Object / `DB_ENCRYPTION_KEY` Development-only: RECORDED.
+- Source implementation ADM-001 through ADM-007: PRESENT on `dev`.
+- Automated tests: OWNER-REPORTED local full-suite PASS — 261/261 tests, 0 failures, 0 skipped across 44 suites. Exact tested HEAD SHA and Node version were not supplied, so this evidence is not conclusively tied to the current GitHub branch head.
+- Wrangler dry-run: OWNER-REPORTED PASS (exit code 0); output showed the Development Durable Object binding and variables. This is a local dry-run, not a Cloudflare deployment or runtime smoke test.
+- Development secret inventory (owner-reported): `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` present; `DB_ENCRYPTION_KEY` missing. Do not provision or rotate keys until encrypted metadata existence and prior key provenance are established. Secret values must never be recorded here.
+- Cloudflare Development deployment/runtime: NOT VERIFIED. Production: NOT TOUCHED.
+- **Current workstream status: PAUSED.** Preserve implementation, tests, specification, and evidence. Do not continue Dashboard work unless the owner explicitly resumes or reprioritizes it.
+- Public Data API is the current priority; this specification does not override `project/PROGRESS.md`.
