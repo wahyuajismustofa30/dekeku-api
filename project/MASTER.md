@@ -98,3 +98,12 @@ Terdapat tiga pihak dalam pengembangan DEKEKU API dengan urutan otoritas berikut
 - Jika instruksi delegasi ChatGPT bertentangan dengan instruksi Wahyu yang lebih baru, instruksi Wahyu berlaku. Jika Codex menemukan instruksi yang tidak aman, kontradiktif, atau tidak mungkin dilakukan, Codex wajib berhenti dan melapor, bukan mengambil keputusan sendiri.
 
 Bagian ini menjadi acuan otoritas terbaru dan memperjelas/menggantikan rumusan pembagian peran yang lebih lama pada dokumen ini.
+
+
+## 9. Admin Dashboard — approved extension (2026-11-23)
+
+Instruksi terbaru pemilik menyetujui Dashboard Admin terpusat untuk discovery dan pengelolaan repository publik. Repository proyek tetap menjadi sumber file publik. Metadata internal dan hasil pemeriksaan terbaru disimpan pada private repository `dekeku-db` dalam bentuk AES-256-GCM authenticated encryption; tidak ada plaintext fallback.
+
+Durable Object digunakan hanya untuk koordinasi refresh manual, progress, cancellation, dan retry item gagal. Dashboard berjalan melalui `/admin`; seluruh endpoint data Dashboard dilindungi Admin JWT. Binding/migration dan `DB_ENCRYPTION_KEY` hanya untuk Development Worker `dekeku-api-dev`. Production tetap di luar cakupan tanpa persetujuan eksplisit.
+
+Urutan kerja khusus sesuai D-029: implementasi ADM-001..ADM-007 diselesaikan terlebih dahulu, kemudian seluruh test/security/runtime verification dilakukan pada ADM-008. Source yang belum diuji harus tetap diberi label NOT TESTED; tidak boleh dianggap VERIFIED.
