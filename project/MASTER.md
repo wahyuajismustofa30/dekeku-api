@@ -107,3 +107,11 @@ Instruksi terbaru pemilik menyetujui Dashboard Admin terpusat untuk discovery da
 Durable Object digunakan hanya untuk koordinasi refresh manual, progress, cancellation, dan retry item gagal. Dashboard berjalan melalui `/admin`; seluruh endpoint data Dashboard dilindungi Admin JWT. Binding/migration dan `DB_ENCRYPTION_KEY` hanya untuk Development Worker `dekeku-api-dev`. Production tetap di luar cakupan tanpa persetujuan eksplisit.
 
 Urutan kerja khusus sesuai D-029: implementasi ADM-001..ADM-007 diselesaikan terlebih dahulu, kemudian seluruh test/security/runtime verification dilakukan pada ADM-008. Source yang belum diuji harus tetap diberi label NOT TESTED; tidak boleh dianggap VERIFIED.
+
+## 10. Public Data API — active implementation scope (2026-11-23)
+
+Public Data API is the current owner-prioritized workstream under D-030. Its generic route is `POST /api/v1/public/data/{resource}`, with a server-side Resource Registry, per-resource validators, shared Project Origin resolver, and shared GitHub storage engine. Guestbook is the first resource; `POST /api/v1/public/submit` remains a compatibility alias.
+
+Guestbook repository resolution now uses the same `resolveProjectRepository()` path as File Manager: trusted canonical HTTPS Origin, schema-v1 `config.json`, trusted `GITHUB_OWNER`, public repository verification, and GitHub default branch. Storage path remains fixed at `assets/data/bukutamu.json`. Website reads remain direct from public repository/CDN; no new public GET API is introduced.
+
+Admin Dashboard ADM-001..ADM-008 is PAUSED temporarily. Existing implementation and evidence are preserved. Public Data API source and tests are on branch `dev` and await Termux validation; no new tests are claimed as passed. No PR, merge, deployment, Cloudflare config/secret/variable change, or Production access is authorized.
