@@ -6,9 +6,9 @@ Dokumen ini memuat panduan lengkap mengenai cara menjalankan, menguji, dan mengg
 
 ## 1. Arsitektur & Lingkungan
 
-DEKEKU API Gateway adalah Cloudflare Worker modular yang menggunakan GitHub Contents API. Fokus pengembangan saat ini adalah pengelolaan data publik di repository masing-masing proyek. Website membaca data publik langsung dari URL GitHub Raw/CDN; operasi administratif akan diarahkan ke repository proyek yang telah divalidasi.
+DEKEKU API Gateway adalah Cloudflare Worker modular yang menggunakan GitHub Contents API. Fokus pengembangan saat ini adalah pengelolaan data publik di repository masing-masing proyek. Website membaca data publik langsung dari URL GitHub Raw/CDN; operasi administratif melalui Gateway menggunakan resolver repository proyek yang divalidasi dari `config.json` schema v1.
 
-**Batas implementasi saat ini:** `GITHUB_OWNER`, `GITHUB_REPO`, dan `GITHUB_BRANCH` masih menjadi konfigurasi repository Worker. Pemetaan dinamis ke beberapa repository publik belum selesai. Jangan menganggap dukungan multi-repository sudah aktif hanya berdasarkan dokumentasi.
+**Status implementasi:** pemilihan repository publik per proyek telah diimplementasikan melalui `config.json` schema v1 dan `resolveProjectRepository`. `GITHUB_OWNER` tetap menjadi trusted owner policy; `GITHUB_REPO`/`GITHUB_BRANCH` merupakan konfigurasi Worker lama/fallback dan bukan sumber identitas repository proyek ketika resolver berhasil. Repository harus public dan branch berasal dari metadata `default_branch` GitHub. Runtime Development masih harus diverifikasi melalui PUB-006.
 
 ### Environment Variables (`wrangler.jsonc` & `.dev.vars`)
 - `GITHUB_OWNER`: Pemilik repository GitHub (contoh: `wahyuajismustofa30`).
@@ -28,10 +28,9 @@ DEKEKU API Gateway adalah Cloudflare Worker modular yang menggunakan GitHub Cont
 - npm
 
 ### Menjalankan Tes Lokal
-Jalankan pemeriksaan syntax dan suite lokal yang terisolasi:
+Jalankan pemeriksaan syntax dan suite terfokus sesuai perubahan. `npm test` tidak boleh dijalankan berdasarkan instruksi pemilik proyek. Contoh suite terfokus:
 ```bash
-npm run check
-npm test
+node --test test/project-origin-selector.test.js test/tester-file-manager.test.js test/tester-dashboard.test.js test/repository-metadata.test.js test/browse-router.test.js test/browse-git-tree.test.js test/write-router.test.js
 ```
 
 Tes remote Development harus dijalankan secara terpisah dan eksplisit:
@@ -41,12 +40,12 @@ npm run test:remote
 **Peringatan:** `test:remote` mengakses Worker Development aktif. Salah satu skenarionya mengirim Guestbook yang menulis data ke repository GitHub. Jangan jalankan sebagai bagian dari tes default atau tanpa persetujuan.
 
 ### Tester Dashboard
-Dashboard tersedia pada route `/` dan `/tester`.
+Dashboard/Tester tersedia pada route `/` dan `/tester`. File Manager PUB-005 sudah diimplementasikan dan focused regression tests dilaporkan 66/66 PASS; browser E2E dan runtime Development belum diverifikasi. PUB-006 adalah gate verifikasi berikutnya.
 - Tujuan API mengikuti origin halaman yang sedang dibuka; dashboard tidak menerima URL API bebas.
 - Origin remote wajib HTTPS. HTTP hanya diizinkan untuk host loopback saat pengembangan lokal.
 - JWT admin hanya disimpan di memori halaman, tidak ditampilkan, dan tidak dipersistenkan. Memuat ulang halaman, logout, atau respons HTTP 401 menghapus sesi.
 - Request publik tidak membawa Authorization; hanya request administratif yang menggunakan helper terpisah.
-- File Manager menyediakan pemilihan proyek melalui Project Origin canonical HTTPS. Tester mengirimkannya sebagai `X-DEKEKU-Project-Origin`; server tetap memvalidasi exact entry di `ALLOWED_ORIGINS` dan membaca `/config.json` dari Origin tersebut. Header ini bukan autentikasi.
+- File Manager menyediakan pemilihan proyek melalui Project Origin canonical HTTPS. Tester mengirimkannya sebagai `X-DEKEKU-Project-Origin`; server memvalidasi exact Origin atau wildcard subdomain yang dikonfigurasi di `ALLOWED_ORIGINS`, lalu membaca `/config.json` dari Origin tersebut. Wildcard subdomain tidak mencakup apex domain. Header ini bukan autentikasi.
 - Setelah Admin login, File Manager menampilkan pohon direktori dari `public/`. Pembacaan/edit JSON dan CREATE/UPDATE/DELETE dibatasi server ke `public/data/*.json`; operasi UPDATE/DELETE mengambil SHA terbaru sebelum mutasi.
 - Project Origin yang dipilih hanya disimpan di `sessionStorage` tab saat ini. Admin JWT tetap hanya di memori halaman.
 
