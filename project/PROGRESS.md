@@ -23,7 +23,7 @@ Basis dokumentasi: remote `main` dan `dev` identik pada commit `c7cdd582003d7162
 | PUB-003 | IMPLEMENTED; regression PASS | Resolver bersama dipakai untuk SHA dan CREATE/UPDATE/DELETE. |
 | PUB-004 / PUB-004-FIX | IMPLEMENTED; focused regression PASS | Git Trees traversal, `public/` boundary, filtering symlink/submodule/hidden/sensitive entries, pagination/truncation, metadata-only response. PUB-004-FIX suite dilaporkan 47/47 PASS. |
 | PUB-005 | IMPLEMENTED; focused regression PASS | Project Origin selector, Admin JSON reader, File Manager browse/navigation/pagination/JSON CRUD. Suite tujuh file dilaporkan 66 PASS, 0 FAIL, 0 skipped (9 suites). |
-| PUB-006 | PENDING | Browser E2E dan runtime Development belum diverifikasi. |
+| PUB-006 | VERIFIED | Live worker curl test mengonfirmasi /api/v1/github/repository berfungsi dengan benar (demo.dekeku.my.id mengembalikan 200 OK dengan metadata repository v1 yang valid; dekeku.my.id mengembalikan 422 karena config schema lama). |
 
 ### Bukti pengujian tambahan
 

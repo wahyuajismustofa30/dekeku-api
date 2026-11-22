@@ -1,3 +1,10 @@
+## Latest Checkpoint — PUB-006 Development E2E Verification Complete (2026-11-22)
+- Tested live Development Worker `https://dekeku-api-dev.wahyuajismustofa30.workers.dev` endpoints using `curl`.
+- `GET /api/v1/github/repository` with Origin `https://demo.dekeku.my.id` returned `200 OK` with valid repository metadata for `wahyuajismustofa30/demo`.
+- `GET /api/v1/github/repository` with Origin `https://www.dekeku.my.id` correctly rejected old schema with `422 Caller repository config does not match schema v1`.
+- All focused test suites (66/66 PASS) and live checks verified.
+- Status: **PUB-006 VERIFIED / COMPLETE**. All planned PUB workstream items (PUB-001 through PUB-006) are now complete and verified.
+
 # CHECKPOINT — DEKEKU API Gateway
 
 ## Latest authoritative checkpoint — 2026-11-22
