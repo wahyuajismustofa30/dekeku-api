@@ -1,3 +1,10 @@
+## [Unreleased] — 2026-11-22
+### Added — PUB-005 Project-aware JSON File Manager
+- Added exact-allowlist-validated X-DEKEKU-Project-Origin selector for the first-party Tester while preserving browser Origin selection for normal websites.
+- Added Admin-authenticated GET /api/v1/admin/write/file to read parsed JSON, size, and SHA from selected project repositories under public/data/.
+- Added project connection, directory browsing/navigation/pagination, JSON editor, create/update/delete flows with SHA concurrency, and delete confirmation to both Tester page copies.
+- Added focused tests for project selection, Admin JSON reading, and Tester File Manager UI. Execution is pending owner local verification.
+
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-22 (PUB-004-FIX Security Audit & Remediation)
