@@ -1,6 +1,6 @@
 # Public Data API — Reference
 
-Status on `dev`: IMPLEMENTED — AWAITING TERMUX VALIDATION.
+Status on `dev`: IMPLEMENTED. Owner-reported focused Termux validation PASS (14/14); exact tested local SHA not yet confirmed against PR #29.
 
 ## Endpoint contract
 
@@ -63,4 +63,4 @@ No new public GET endpoint is introduced. Websites read the JSON file directly f
 
 ## Validation status
 
-Implementation and test cases have been committed to branch `dev`. Tests have NOT been run in this GitHub-only phase. Run focused tests and full checks in Termux before considering the work verified or ready for PR.
+Implementation and test cases are on branch `dev`. Owner-reported local Termux evidence (2026-11-23): `node --test test/public-submission.test.js` — 14 PASS, 0 FAIL; `node --check` — PASS for 7 changed source files. The exact local tested HEAD SHA was not supplied, so this evidence is not conclusively tied to the current `dev`/PR #29 head. Full test suite, remote integration, live repository write, Worker runtime, and deployment remain NOT VERIFIED. Before merge, confirm the tested SHA matches PR #29 head or rerun the focused tests against that exact commit.
