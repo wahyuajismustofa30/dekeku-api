@@ -1,8 +1,18 @@
 # RECOMMENDATIONS — DEKEKU API Gateway
 
-Tanggal pencatatan: 2026-11-21
+Tanggal pencatatan: 2026-11-22
 
 Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. Status tiap rekomendasi dibedakan antara implementasi kode, pengujian lokal, dan verifikasi runtime. R-001 s/d R-005 telah diimplementasikan; suite lokal 149 PASS dan `npm run check` PASS berdasarkan laporan pengguna pada 2026-11-21 (branch `dev`, commit `a6a089d`), sebagai bukti historis yang tidak diverifikasi ulang pada sesi ini. Status penundaan/pengarsipan terbaru harus mengikuti `PROGRESS.md`, `TASK_ARCHIVE.md`, dan `EXECUTION_POLICY.md`; urutan rekomendasi di dokumen ini bukan antrean aktif.
+
+## Prioritas Aktif — Public Repository Management (2026-11-22)
+
+1. Tetapkan skema `config.json` proyek dan aturan Origin tepercaya.
+2. Selesaikan resolusi repository publik di sisi server dan pastikan semua operasi SHA/CRUD memakai repository yang sama.
+3. Tambahkan penjelajahan direktori/file publik dengan validasi path, pagination, dan batas ukuran respons.
+4. Selesaikan Tester menjadi pengelola file JSON bergaya phpMyAdmin.
+5. Verifikasi seluruh alur pada Development dengan sedikitnya dua repository publik yang aman.
+
+Pengaturan repository privat dan pengembangan RBAC lanjutan diarsipkan sebagai A-003; jangan diperlakukan sebagai rekomendasi aktif tanpa reaktivasi pemilik.
 
 ## Prioritas P0 — Keamanan Dashboard Tester
 
