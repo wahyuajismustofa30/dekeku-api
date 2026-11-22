@@ -160,37 +160,43 @@ export class DashboardRefreshCoordinator {
       return;
     }
     await this.state.storage.put("latest-job", job);
-    let result;
+    let itemResult;
     try {
       const repository = { owner: target.owner, name: target.name, defaultBranch: target.defaultBranch, archived: target.archived };
-      result = await inspectPublicRepository(this.env, repository);
-      await this.persistCheck(repository, result);
-      job.results.push({ repository: target.name, success: true, status: result.status, checkedAt: result.checkedAt });
-      job.succeeded += 1;
+      itemResult = await inspectPublicRepository(this.env, repository);
+      await this.persistCheck(repository, itemResult);
+      itemResult = { repository: target.name, success: true, status: itemResult.status, checkedAt: itemResult.checkedAt };
     } catch (error) {
-      job.results.push({
+      itemResult = {
         repository: cleanName(target.name),
         success: false,
         stage: "persist-or-inspect",
         error: error instanceof HttpError ? error.message : "Refresh failed",
         checkedAt: new Date().toISOString()
-      });
-      job.failed += 1;
+      };
     }
-    job.completed += 1;
-    job.remaining = job.pending.length;
-    if (job.cancelRequested) {
-      job.status = "cancelled";
-      job.completedAt = new Date().toISOString();
-    } else if (job.pending.length) {
-      job.status = "running";
-      await this.state.storage.put("latest-job", job);
+
+    // Re-read after network I/O so a concurrent cancel request is not overwritten
+    // by the stale in-memory snapshot held while inspection was running.
+    const latest = await this.readState();
+    if (!latest || latest.jobId !== job.jobId || latest.generation !== job.generation) return;
+    latest.results.push(itemResult);
+    latest.completed += 1;
+    if (itemResult.success) latest.succeeded += 1;
+    else latest.failed += 1;
+    latest.remaining = latest.pending.length;
+    if (latest.cancelRequested) {
+      latest.status = "cancelled";
+      latest.completedAt = new Date().toISOString();
+    } else if (latest.pending.length) {
+      latest.status = "running";
+      await this.state.storage.put("latest-job", latest);
       await this.state.storage.setAlarm(Date.now() + 25);
       return;
     } else {
-      job.status = job.failed ? "completed_with_errors" : "completed";
-      job.completedAt = new Date().toISOString();
+      latest.status = latest.failed ? "completed_with_errors" : "completed";
+      latest.completedAt = new Date().toISOString();
     }
-    await this.state.storage.put("latest-job", job);
+    await this.state.storage.put("latest-job", latest);
   }
 }
