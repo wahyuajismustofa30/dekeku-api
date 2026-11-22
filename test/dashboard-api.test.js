@@ -128,20 +128,24 @@ test("bulk metadata update rejects duplicate or unknown repository targets befor
   const fixture = createEnvironment();
   globalThis.fetch = fixture.fetch;
   try {
-    const duplicate = await handleDashboardBulkType(new Request("https://worker/api/v1/admin/dashboard/bulk-type", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ repositories: ["demo", "DEMO"], projectType: "website", sha: null })
-    }), fixture.env);
-    assert.equal(duplicate.status, 422);
+    await assert.rejects(
+      () => handleDashboardBulkType(new Request("https://worker/api/v1/admin/dashboard/bulk-type", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ repositories: ["demo", "DEMO"], projectType: "website", sha: null })
+      }), fixture.env),
+      error => error.status === 422
+    );
     assert.equal(fixture.writes, 0);
 
-    const unknown = await handleDashboardBulkType(new Request("https://worker/api/v1/admin/dashboard/bulk-type", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ repositories: ["private-repo"], projectType: "website", sha: null })
-    }), fixture.env);
-    assert.equal(unknown.status, 422);
+    await assert.rejects(
+      () => handleDashboardBulkType(new Request("https://worker/api/v1/admin/dashboard/bulk-type", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ repositories: ["private-repo"], projectType: "website", sha: null })
+      }), fixture.env),
+      error => error.status === 422
+    );
     assert.equal(fixture.writes, 0);
   } finally {
     globalThis.fetch = originalFetch;
