@@ -231,6 +231,18 @@ export const getRepositoryMetadata = async (request, env) => {
     throw new HttpError("Caller repository must be public", 403);
   }
 
+  const expectedFullName = `${owner}/${repo}`;
+  if (
+    typeof data.full_name !== "string" ||
+    data.full_name.toLowerCase() !== expectedFullName.toLowerCase() ||
+    typeof data.default_branch !== "string" ||
+    !data.default_branch ||
+    data.default_branch.length > 255 ||
+    /[\\x00-\\x1F\\x7F]/.test(data.default_branch)
+  ) {
+    throw new HttpError("GitHub repository metadata is invalid", 502);
+  }
+
   return success({
     name: data.full_name,
     description: data.description,
