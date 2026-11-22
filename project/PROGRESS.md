@@ -10,8 +10,8 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004-FIX Public Repository File Browser Securi
   - PUB-002 (Enforcement & Discovery): VERIFIED (`src/modules/github/repositories.js`, 12/12 PASS).
   - PUB-003 (Admin File Operations Resolver Routing): VERIFIED (54/54 PASS total combined suites).
   - PUB-004 (Public Repository File Browsing): VERIFIED (`src/modules/github/browse.js`, `GET /api/v1/admin/browse`, 22/22 PASS in PUB-004 suite, 54/54 PASS total).
-  - PUB-004-FIX (Security Audit & Remediation for File Browser): COMPLETE & VERIFIED. Upstream truncation handling (Contents API >= 1000 items & Git Trees API `truncated: true`), strict mode detection (`120000` symlink, `160000` submodule), allowed modes (`100644`/`100755`/`040000`), item path child matching, metadata-only output.
-  - PUB-005 (Tester Public File Manager UI): NEXT ACTIVE TASK.
+  - PUB-004-FIX (Security Audit & Remediation for File Browser): REOPENED — actual Git Trees traversal added; NOT VERIFIED until legacy test fixtures are migrated and focused regression tests pass.
+  - PUB-005 (Tester Public File Manager UI): BLOCKED until PUB-004-FIX is verified and accepted.
   - PUB-006 (End-to-end Development Verification): PENDING.
 
 
