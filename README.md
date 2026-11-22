@@ -63,8 +63,6 @@ dekeku-api/
 │   ├── cors-policy.test.js
 │   └── live-remote.test.js     # Explicit remote test; may write Guestbook data
 ├── project/                    # Project documentation
-│   ├── EVIDENCE.md             # Verification evidence index
-│   ├── PUBLIC_DATA_API_PLAN.md # Active Public Data API plan
 │   ├── MASTER.md              # Core rules & authority
 │   ├── PROGRESS.md            # Feature status (authoritative)
 │   ├── ROADMAP.md             # Phase planning
@@ -187,6 +185,13 @@ For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) a
 - **Usage Guide**: [docs/USAGE.md](docs/USAGE.md)
 - **Roadmap**: [project/ROADMAP.md](project/ROADMAP.md)
 - **Decisions**: [project/DECISIONS.md](project/DECISIONS.md)
+- **Backlog**: [project/BACKLOG.md](project/BACKLOG.md)
+- **Checkpoint**: [project/CHECKPOINT.md](project/CHECKPOINT.md)
+- **Evidence**: [project/EVIDENCE.md](project/EVIDENCE.md)
+- **Public Data API Plan**: [project/PUBLIC_DATA_API_PLAN.md](project/PUBLIC_DATA_API_PLAN.md)
+- **Recommendations**: [project/RECOMMENDATIONS.md](project/RECOMMENDATIONS.md)
+- **Public Data API Reference**: [docs/PUBLIC_DATA_API.md](docs/PUBLIC_DATA_API.md)
+- **Guestbook Integration**: [docs/GUESTBOOK_INTEGRATION.md](docs/GUESTBOOK_INTEGRATION.md)
 - **Change History**: [project/CHANGELOG.md](project/CHANGELOG.md)
 - **Backlog**: [project/BACKLOG.md](project/BACKLOG.md)
 - **Checkpoint**: [project/CHECKPOINT.md](project/CHECKPOINT.md)
