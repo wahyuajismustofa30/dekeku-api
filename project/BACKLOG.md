@@ -36,16 +36,19 @@ Seluruh workstream PUB dan CI/CD telah dinyatakan selesai oleh pemilik. Menunggu
 
 Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jalankan pengujian menyeluruh setelah implementasi selesai pada ADM-008. Jangan menandai kode sebagai VERIFIED sebelum test aktual.
 
-- [x] **ADM-001 — Durable Object + encrypted storage foundation.** Source, binding dan migration sudah ditambahkan ke `dev`; `DB_ENCRYPTION_KEY` Dev belum diverifikasi. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-002 — Paginated public repository discovery.** Source discovery berdasarkan `GITHUB_OWNER` dan filter repository publik. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-003 — Private metadata read/write/upsert storage.** Encrypted `dekeku-db` document, schema validation, SHA optimistic concurrency, bulk project-type update. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-004 — Admin Dashboard UI.** `/admin`, Admin login, table/card, search/filter, details, project navigation. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-005 — Repository inspection pipeline.** `config.json`, `CNAME`, `assets/data`, GitHub archive/visibility facts. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-006 — Background refresh.** Durable Object, latest-only state, progress, cancellation, failed-only retry. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-007 — Quick/bulk actions.** Three-dot actions, selection, refresh selected/all, JSON export, bulk project type. IMPLEMENTED — NOT TESTED.
-- [ ] **ADM-008 — Final verification (READY / NOT RUN).** Security review, unit/integration/regression tests, Wrangler dry-run/build, Dev secret/binding/runtime verification, evidence index. Execution plan: `project/ADM-008_TEST_PLAN.md`.
+- [x] **ADM-001 — Durable Object + encrypted storage foundation.** Automated suite OWNER-REPORTED PASS (included in 261/261); Development secret/runtime remain NOT VERIFIED.
+- [x] **ADM-002 — Paginated public repository discovery.** Source discovery berdasarkan `GITHUB_OWNER` dan filter repository publik. Automated suite OWNER-REPORTED PASS (261/261 overall).
+- [x] **ADM-003 — Private metadata read/write/upsert storage.** Encrypted `dekeku-db` document, schema validation, SHA optimistic concurrency, bulk project-type update. Automated suite OWNER-REPORTED PASS (261/261 overall).
+- [x] **ADM-004 — Admin Dashboard UI.** `/admin`, Admin login, table/card, search/filter, details, project navigation. Automated suite OWNER-REPORTED PASS (261/261 overall).
+- [x] **ADM-005 — Repository inspection pipeline.** `config.json`, `CNAME`, `assets/data`, GitHub archive/visibility facts. Automated suite OWNER-REPORTED PASS (261/261 overall).
+- [x] **ADM-006 — Background refresh.** Durable Object, latest-only state, progress, cancellation, failed-only retry. Automated suite OWNER-REPORTED PASS (261/261 overall).
+- [x] **ADM-007 — Quick/bulk actions.** Three-dot actions, selection, refresh selected/all, JSON export, bulk project type. Automated suite OWNER-REPORTED PASS (261/261 overall).
+- [ ] **ADM-008 — Final verification (PARTIALLY VERIFIED).** Owner-run `npm ci` and `npm test` PASS (261/261, 0 fail, 0 skip; npm audit 0 vulnerabilities). Remaining: verify complete Wrangler target/migration output, Development secret inventory, and runtime (runtime requires separate deployment approval). Execution plan: `project/ADM-008_TEST_PLAN.md`.
 
 ### Catatan operasional
 - `DB_ENCRYPTION_KEY` harus dibuat sebagai Development Worker Secret melalui Cloudflare/Wrangler; jangan pernah commit nilainya.
-- Test dan deployment belum dilakukan. Status seluruh ADM-001..ADM-007 tetap NOT TESTED.
+- Automated test suite has been run by owner and reports 261/261 PASS. Wrangler dry-run was previously owner-reported PASS. Development secret inventory/runtime remain NOT VERIFIED; no deployment performed.
 - Jangan merge ke `main`, jangan membuat PR, dan jangan deploy sampai ADM-008 selesai dan pemilik memberi instruksi.
+
+### ADM status update — 2026-11-23
+The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 failures, 0 skipped across 44 suites. `npm ci` also completed with 0 vulnerabilities. This does not close the remaining Cloudflare configuration/secret/runtime checks. Do not create PR, merge, write secrets, or deploy without the required owner approval.
