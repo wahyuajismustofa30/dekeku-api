@@ -34,6 +34,14 @@
 Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RBAC_PLAN.md and remains runtime NOT VERIFIED. D-022 browser sessionStorage implementation is present in both Tester pages; source review VERIFIED, automated test execution and Development browser runtime NOT VERIFIED. See [RBAC_PLAN.md](RBAC_PLAN.md).
 
 
+### Current Guestbook storage precedence — Public Data API (D-030, 2026-11-23)
+
+- D-015 is the original, superseded per-hostname design (`public/data/{hostname}/bukutamu.json`); it is historical and must not be used for new submissions.
+- D-020 established `assets/data/bukutamu.json` in the website repository selected by the validated Origin. D-021 preserves old D-015 files and forbids automatic migration/deletion.
+- D-030 extends the public submission architecture through `POST /api/v1/public/data/{resource}` and makes Guestbook the first resource. Its current storage contract remains the fixed `assets/data/bukutamu.json` path, resolved using the shared File Manager `resolveProjectRepository()` and schema-v1 `config.json` flow.
+- Current operational details: [`docs/guestbook-storage.md`](../docs/guestbook-storage.md), [`docs/PUBLIC_DATA_API.md`](../docs/PUBLIC_DATA_API.md), and [`docs/GUESTBOOK_INTEGRATION.md`](../docs/GUESTBOOK_INTEGRATION.md).
+- Precedence for new writes: D-030 implementation contract + D-020 destination. D-015 remains historical; D-021 remains active for legacy-file preservation. No automatic migration or deletion is implied.
+
 ### Guestbook destination decision precedence (2026-11-21)
 - D-015 documents the earlier per-hostname storage design under `public/data/{hostname}/bukutamu.json`.
 - For the RBAC Guestbook flow, the later approved D-020 is authoritative: new submissions go to `assets/data/bukutamu.json` in the active website repository mapped to the exact Origin.
