@@ -6,7 +6,7 @@ const SHA_PATTERN = /^[a-f0-9]{40}$/i;
 
 const readBoundedJsonObject = async (request, maxBytes) => {
   const contentType = request.headers.get("Content-Type") || "";
-  if (!/^application\\/json(?:\\s*;|\\s*$)/i.test(contentType)) {
+  if (!/^application\/json(?:\s*;|\s*$)/i.test(contentType)) {
     throw new HttpError("Content-Type must be application/json", 415);
   }
 
@@ -73,7 +73,7 @@ const decodeStoredDocument = (file, resource) => {
 
   let binary;
   try {
-    binary = atob(file.content.replace(/\\s/g, ""));
+    binary = atob(file.content.replace(/\s/g, ""));
   } catch {
     throw new HttpError("Stored document is not valid Base64", 502);
   }
