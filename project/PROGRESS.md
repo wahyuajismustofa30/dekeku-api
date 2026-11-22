@@ -1,11 +1,12 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-21
+Tanggal Pembaruan: 2026-11-21 (CICD-004)
 
 ## Ringkasan Proyek
-- **Fase Aktif**: RBAC Security & Development Verification Follow-up.
-- **Status Keseluruhan**: Implementasi RBAC-01 s/d RBAC-08 tersedia di `dev`, tetapi verifikasi sistem lengkap dan Development runtime masih NOT VERIFIED. R-013 source + focused regression test: syntax check dan focused test PASS berdasarkan laporan pengujian pengguna di Termux. WAF Development DEFERRED; perilaku CDN/cache `assets` NOT VERIFIED.
-- **Baseline sebelum dokumentasi**: branch `dev`, commit `6f0360e5166595945320a467a1fa2c91722b7401`.
+- **Fase Aktif**: Development CI/CD — CICD-004 implementasi workflow selesai; run CI aktual NOT VERIFIED. CICD-001 sampai CICD-003 selesai.
+- **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
+- **Prioritas teknis aktif**: CICD-006 — verifikasi/isolasi kredensial khusus Development untuk workflow deployment mendatang. CICD-005 deployment workflow belum boleh dimulai sebelum CICD-006/007 selesai.
+- **Baseline audit CI/CD**: branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
 - **Larangan tes**: `npm test` NOT RUN sesuai instruksi pemilik proyek. Jangan menjalankannya.
@@ -72,14 +73,8 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - **Public Submission (`test/public-submission.test.js`)**: 4/4 PASS.
 - **Public Policy & Resilience (`test/github-core.test.js`)**: 18/18 PASS.
 
-## Next Steps
-- [x] Dashboard Tester HTML served at / and /tester (VERIFIED).
-- [x] R-001 s/d R-005 — remediation kode dan isolasi test; hasil suite lokal terbaru dilaporkan PASS.
-- [DEFERRED] R-006 — konfigurasi/verifikasi WAF Development ditunda atas keputusan pemilik proyek; jangan dikerjakan sampai diminta.
-- [ ] R-007 — tetapkan kebijakan retensi, akses, dan metadata audit log sebelum implementasi.
-- [ ] R-009 s/d R-011 — evaluasi pemeliharaan/infrastruktur.
-- Pengambilan `assets` wajib mengutamakan data aktual; tambahkan parameter waktu pada URL request (contoh `?t=<timestamp>`) untuk cache-busting. Pastikan CDN memasukkan query parameter ke cache key atau cache dibypass; perilaku aktual masih NOT VERIFIED.
-- Integrasi frontend statis dengan endpoint publik `POST /api/v1/public/submit` tetap menjadi pekerjaan fitur berikutnya.
+## Historical Next Steps — SUPERSEDED
+Daftar berikut adalah snapshot rekomendasi dari tahap sebelumnya, bukan antrean aktif. Status, penundaan, dan pengarsipan terbaru mengikuti `PROGRESS.md`, `BACKLOG.md`, `TASK_ARCHIVE.md`, serta urutan tunggal di `EXECUTION_POLICY.md`. Jangan memulai item hanya karena masih tercantum pada snapshot historis.
 ## Caller Repository Metadata (2026-11-21)
 - **IMPLEMENTED ON BRANCH `dev`**: `GET /api/v1/github/repository` now resolves the caller repository from the validated request `Origin` and its fixed `/config.json` path.
 - Reuses the existing HTTPS `ALLOWED_ORIGINS` policy; rejects missing/unapproved origins, redirects, oversized config (>32 KiB), invalid UTF-8/JSON, malformed repository identity, and owner values that differ from `GITHUB_OWNER`.
@@ -227,10 +222,10 @@ Angka berikut merupakan hasil historis sebelum remediation R-001 s/d R-005 dan t
 - Review confirms separate Admin/User audience and role checks, active-account recheck, mapping ownership check, fixed `assets/data/` prefix, fixed private storage allowlist, public reader separation, bounded JSON validation, and CORS support for Authorization.
 - Open risks: no application-level rate limiter for User login/Guestbook; Cloudflare WAF/IP rate limiting remains DEFERRED. Guestbook Origin is spoofable by non-browser clients and is not authentication. CDN cache/invalidation after Guestbook writes remains unverified. R-013 source implementation and focused regression tests are present on dev but NOT VERIFIED; the deployed Worker has not been updated, so old JWTs may remain usable until their remaining expiry (up to 30 minutes). Browser sessionStorage remains readable by same-origin scripts (XSS exposure).
 - No secrets, account/mapping data, website data, Wrangler/Cloudflare configuration, deployment, or Production resources changed.
-- **Next:** perform permitted syntax/static checks without running `npm test`; implement approved R-013 token/session version mechanism with focused regression coverage. WAF remains DEFERRED; CDN freshness verification remains pending.
+- **Historical next step — SUPERSEDED:** this section predates the R-013 implementation and owner-reported Termux verification recorded below. Do not use this instruction as the current queue; see `EXECUTION_POLICY.md`.
 
 
-## Current Verification Queue — Authoritative (2026-11-21)
+## Current Verification Status — Authoritative (2026-11-21)
 
 1. R-013 implementation: PRESENT on `dev`; per-user `tokenVersion` is backward-compatible, included in new User JWTs, checked on authenticated User requests, and incremented during successful Admin password reset with SHA-safe concurrency.
 2. R-013 syntax validation: PASS — `node --check` completed for all RBAC source and test files, based on the owner's Termux test report.
@@ -274,3 +269,58 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Jika dokumentasi, keputusan lama, implementasi, atau arahan asisten bertentangan dengan instruksi terbaru Wahyu, hentikan tindakan terkait, laporkan konflik dan dampaknya, lalu berikan pilihan atau minta persetujuan spesifik sesuai keadaan.
 - Dokumentasi yang bertentangan diperbarui jika instruksi Wahyu jelas dan aman; catatan historis tetap dipertahankan sebagai sejarah.
 - Rincian normatif: [MASTER.md](MASTER.md) bagian 8, [DECISIONS.md](DECISIONS.md) D-024, [EXECUTION_POLICY.md](EXECUTION_POLICY.md), dan [AGENTS.md](../AGENTS.md).
+
+
+## CI/CD Development — Owner-Approved Direction (2026-11-21)
+
+- Development work is performed on branch `dev`; changes are proposed to `main` through a Pull Request after they are stable.
+- Pull Requests from `dev` to `main` must run the agreed validation workflow. Critical validation failures block merging; optional/non-critical checks may initially report warnings.
+- A successful update to `main` is the intended trigger for GitHub Actions to deploy **only** the Development Worker `dekeku-api-dev`.
+- A PR itself must not deploy. Deployment must use Development-only credentials and configuration; Production credentials, Worker `github`, domain `api.dekeku.my.id`, and Production data are out of scope.
+- The deployment workflow must prevent overlapping deployments, identify the source commit, and fail closed if the target cannot be confirmed as Development.
+- This is an approved target policy, not evidence that CI/CD has been implemented. Until the relevant tasks are completed and verified, no automatic deployment is assumed to exist.
+
+
+## CI/CD Progress Status (2026-11-21)
+
+- **Owner decision:** D-025 approved. Development on `dev`; stable changes go through PR to `main`; updates to `main` are intended to deploy only to Development Worker `dekeku-api-dev`.
+- **Implementation:** NOT STARTED. No workflow files or GitHub Actions settings were changed in this documentation update.
+- **Active task tracking:** CICD-001..CICD-010 added to `BACKLOG.md`; execution order is recorded in `EXECUTION_POLICY.md`.
+- **Production:** untouched and excluded.
+
+
+## Documentation Reconciliation & Owner Workstream Selection (2026-11-21)
+- Owner selected option C: reconcile documentation first; do not start RBAC runtime work or CI/CD during this pass.
+- Current documentation status: reconciled to the owner-reported R-013 Termux verification, explicit `npm test` prohibition, archived/deferred follow-ups, and approved Development-only CI/CD target policy.
+- **Historical status — SUPERSEDED by owner instruction:** at the time of the earlier documentation reconciliation, the next technical workstream had not been selected. The owner subsequently selected Development CI/CD; CICD-001 and CICD-002 are complete and CICD-003 is active.
+- No source code, tests, Wrangler configuration, Cloudflare settings, secrets, accounts, mappings, website data, deployment, or Production resources changed by this documentation task.
+
+
+## Development CI/CD — Current Workstream (2026-11-21)
+- **Owner instruction:** after selecting option C for documentation reconciliation, the owner explicitly instructed to continue with the CI/CD workstream.
+- **CICD-001 — COMPLETE (read-only):** audited repository tree, Wrangler target, package scripts, .gitignore, README, and GitHub branch metadata at dev HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
+- Findings: no .github/workflows exists at the audited commit; Worker name is `dekeku-api-dev`; Wrangler has no named environment; package scripts have no deploy command; build/check are syntax checks only. GitHub Actions secrets/environments/settings are NOT VERIFIED.
+- **CICD-002 — COMPLETE:** current instructions consistently require development on `dev`, PR `dev` → `main`, and prohibit direct commit/push to `main`. No policy conflict found in AGENTS.md, MASTER.md, README.md, and D-025.
+- **Branch protection finding:** GitHub branch metadata reports `protected=false` for both `dev` and `main`; full branch protection detail is NOT VERIFIED due API permission restriction. No settings were changed.
+- **NEXT ACTIVE:** CICD-003 — define PR validation contract only. Do not create/run workflows or deploy until required design and approval gates are satisfied.
+- **Constraints:** `npm test` remains NOT RUN. Production Worker `github`, `api.dekeku.my.id`, Production credentials/config/data untouched. No Wrangler, Cloudflare, secrets, source code, or workflow changes.
+
+
+## CICD-003 — PR Validation Contract (2026-11-21)
+- **Status: COMPLETE — DEFINED.** Kontrak rinci disimpan di [CICD_VALIDATION_CONTRACT.md](CICD_VALIDATION_CONTRACT.md).
+- Required/blocking: `npm ci`, syntax check seluruh JS relevan di `src/` dan `test/`, Wrangler `deploy --dry-run`, serta focused regression test untuk perubahan kode jika suite dapat dipetakan.
+- Warning awal: `npm audit --audit-level=high` dan perubahan kode yang belum memiliki mapping test. Klasifikasi ini dapat diperketat setelah baseline ditinjau.
+- `npm test` tetap NOT RUN; `npm run test:remote` dan `test/live-remote.test.js` dilarang di PR CI karena dapat menulis data aktif.
+- PR workflow hanya memvalidasi; tidak deploy, tidak memerlukan secrets Cloudflare/GitHub API, dan tidak mengakses Production.
+- **NEXT ACTIVE: CICD-004** — implementasi workflow PR validation. Workflow belum dibuat dan belum diuji.
+- README masih memuat instruksi `npm test`; perlu diselaraskan pada pekerjaan dokumentasi terpisah tanpa mengubah larangan pemilik.
+
+
+## CICD-004 — PR Validation Workflow (2026-11-21)
+- **IMPLEMENTED on `dev`**: `.github/workflows/pr-validation.yml`.
+- Trigger: pull request targeting `main`, guarded to head branch `dev`; PR event has no deployment step.
+- Checks: `npm ci`; syntax validation for all `.js` files under `src/` and `test/`; explicit `dekeku-api-dev` Wrangler target guard and `wrangler deploy --dry-run`; deterministic focused test selection for mapped changed source/test files; `npm audit --audit-level=high` warning-only.
+- Security: immutable action commit pins, read-only `contents` permission, checkout credential persistence disabled, per-PR concurrency cancellation. No Cloudflare or GitHub API secrets.
+- `npm test`: NOT RUN. `npm run test:remote` and `test/live-remote.test.js`: NOT RUN and excluded from execution.
+- **CI workflow run / YAML runtime validation: NOT VERIFIED**; requires an actual PR `dev` → `main`. No PR was created and no branch protection settings were changed.
+- **NEXT ACTIVE: CICD-006** — verify and isolate Development-only credentials for the later main-to-Development deployment workflow. No secrets were read or changed.

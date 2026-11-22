@@ -1,0 +1,231 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-validation-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: PR Validation (Development → Main)
+    if: github.event.pull_request.head.ref == 'dev' && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' files < <(find src test -type f -name '*.js' -print0)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::No JavaScript files found under src/ or test/."
+            exit 1
+          fi
+          for file in "${files[@]}"; do
+            node --check "$file"
+          done
+          echo "Checked ${#files[@]} JavaScript files."
+
+      - name: Validate Development Worker configuration and bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! grep -Eq '^[[:space:]]*"name"[[:space:]]*:[[:space:]]*"dekeku-api-dev"[[:space:]]*,?[[:space:]]*$' wrangler.jsonc; then
+            echo "::error::wrangler.jsonc does not explicitly target dekeku-api-dev."
+            exit 1
+          fi
+          npx wrangler deploy --dry-run --outdir "$RUNNER_TEMP/wrangler-dry-run"
+        env:
+          CI: "true"
+
+      - name: Select focused regression tests
+        id: focused
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          declare -A selected=()
+          unmapped=0
+
+          add_suite() {
+            local suite="$1"
+            if [[ -f "test/$suite" ]]; then
+              selected["test/$suite"]=1
+            else
+              echo "::error::Mapped regression suite is missing: test/$suite"
+              exit 1
+            fi
+          }
+
+          for file in "${changed[@]}"; do
+            case "$file" in
+              test/*.test.js)
+                if [[ "$file" == "test/live-remote.test.js" ]]; then
+                  echo "::warning::Remote test changed but is intentionally never executed in PR CI."
+                elif [[ -f "$file" ]]; then
+                  selected["$file"]=1
+                else
+                  echo "::warning::Changed test file was deleted or is unavailable: $file"
+                fi
+                ;;
+              src/core/errors.js)
+                add_suite security-edge-cases.test.js
+                ;;
+              src/core/github.js)
+                add_suite github-core.test.js
+                add_suite github-write.test.js
+                add_suite write-router.test.js
+                add_suite rbac-storage.test.js
+                ;;
+              src/core/router.js|src/index.js)
+                add_suite auth.test.js
+                add_suite write-router.test.js
+                add_suite public-submission.test.js
+                add_suite rbac-boundary.test.js
+                add_suite rbac-admin.test.js
+                add_suite rbac-user-login.test.js
+                add_suite repository-metadata.test.js
+                add_suite tester-dashboard.test.js
+                ;;
+              src/middleware/auth.js)
+                add_suite auth.test.js
+                add_suite rbac-auth.test.js
+                add_suite rbac-boundary.test.js
+                add_suite rbac-security-review.test.js
+                ;;
+              src/middleware/cors.js)
+                add_suite cors-policy.test.js
+                ;;
+              src/modules/auth/login.js)
+                add_suite auth.test.js
+                ;;
+              src/modules/auth/user-login.js)
+                add_suite rbac-user-login.test.js
+                ;;
+              src/modules/github/files.js|src/modules/github/repositories.js)
+                add_suite repository-metadata.test.js
+                add_suite github-core.test.js
+                ;;
+              src/modules/github/write.js|src/modules/github/write-router.js|src/modules/github/index.js)
+                add_suite github-write.test.js
+                add_suite write-foundation.test.js
+                add_suite write-router.test.js
+                ;;
+              src/modules/public/submit.js)
+                add_suite public-submission.test.js
+                ;;
+              src/modules/rbac/admin.js)
+                add_suite rbac-admin.test.js
+                add_suite rbac-storage.test.js
+                add_suite rbac-auth.test.js
+                add_suite rbac-boundary.test.js
+                ;;
+              src/modules/rbac/storage.js)
+                add_suite rbac-storage.test.js
+                add_suite rbac-admin.test.js
+                add_suite rbac-user-login.test.js
+                add_suite rbac-user-data.test.js
+                add_suite rbac-token-version.test.js
+                ;;
+              src/modules/rbac/user-data.js)
+                add_suite rbac-user-data.test.js
+                add_suite rbac-boundary.test.js
+                add_suite rbac-security-review.test.js
+                ;;
+              src/modules/tester/index.js)
+                add_suite tester-dashboard.test.js
+                ;;
+              src/utils/base64.js)
+                add_suite write-foundation.test.js
+                add_suite github-write.test.js
+                ;;
+              src/utils/github-content.js)
+                add_suite github-core.test.js
+                add_suite github-write.test.js
+                add_suite rbac-storage.test.js
+                ;;
+              src/utils/hash.js)
+                add_suite auth.test.js
+                add_suite rbac-user-login.test.js
+                add_suite rbac-admin.test.js
+                ;;
+              src/utils/jwt.js)
+                add_suite auth.test.js
+                add_suite rbac-auth.test.js
+                add_suite rbac-token-version.test.js
+                ;;
+              src/utils/response.js)
+                add_suite security-edge-cases.test.js
+                ;;
+              src/*)
+                echo "::warning::No focused-test mapping for changed source file: $file"
+                unmapped=1
+                ;;
+            esac
+          done
+
+          if (( ${#selected[@]} > 0 )); then
+            printf '%s\n' "${!selected[@]}" | sort > "$RUNNER_TEMP/focused-tests.txt"
+            {
+              echo "has_tests=true"
+              echo "test_files<<EOF"
+              sort "$RUNNER_TEMP/focused-tests.txt"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "has_tests=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if (( unmapped == 1 )); then
+            echo "::warning::At least one changed source file has no focused regression-test mapping."
+          fi
+
+          if (( ${#selected[@]} == 0 )); then
+            echo "No mapped local regression tests selected for this change."
+          fi
+
+      - name: Run focused regression tests
+        if: steps.focused.outputs.has_tests == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t suites < "$RUNNER_TEMP/focused-tests.txt"
+          node --test "${suites[@]}"
+
+      - name: Dependency security audit (warning only)
+        continue-on-error: true
+        run: npm audit --audit-level=high

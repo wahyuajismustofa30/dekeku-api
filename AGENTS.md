@@ -56,16 +56,19 @@ Ketika pekerjaan sudah matang:
 4. Buat commit dengan pesan yang jelas.
 5. Seluruh commit dan push hanya dilakukan ke branch `dev`. Jika branch `dev` lokal belum ada, buat dari `origin/main`. Pembuatan branch `dev` ini diizinkan tanpa persetujuan tambahan.
 6. Push ke `origin/dev` diizinkan setelah kriteria di Bagian C terpenuhi dan tes lulus (tidak ada tes baru yang gagal).
-7. Setelah push, pastikan terdapat Pull Request (PR) dari `dev` ke `main`:
+7. Pastikan terdapat Pull Request (PR) dari `dev` ke `main`:
    - Jika PR terbuka sudah ada: cukup push ke `dev` dan berikan komentar ringkas pada PR tersebut.
    - Jika PR belum ada: buat PR baru dengan deskripsi berisi ringkasan perubahan, daftar file yang diubah, hasil tes aktual (jumlah pass/fail/skip), risiko teknis, dan hal-hal yang tidak dapat diverifikasi.
+   - PR wajib melewati validasi CI yang ditetapkan sebelum dapat dinyatakan siap digabung.
+8. Setelah PR digabung dan perubahan masuk ke `main`, kebijakan target yang disetujui adalah menjalankan GitHub Actions untuk deploy **hanya** ke Development Worker `dekeku-api-dev`. PR event tidak boleh memicu deployment. Kebijakan ini baru berlaku setelah CICD-001 s/d CICD-010 selesai dan workflow diverifikasi.
 
 Ketentuan:
 - Jangan melakukan force-push.
 - Jangan melakukan commit atau push langsung ke branch `main`.
 - Jangan melakukan merge PR secara mandiri.
 - Jangan menghapus branch apa pun, termasuk branch `dev`.
-- Jangan melakukan deployment sebagai bagian otomatis dari commit atau push.
+- Jangan melakukan deployment dari push ke `dev` atau dari event PR. Deployment otomatis hanya boleh dipicu oleh perubahan pada `main` dan hanya ke Development Worker `dekeku-api-dev`, setelah workflow CICD selesai diimplementasikan dan diverifikasi.
+- Production Worker `github`, domain `api.dekeku.my.id`, secrets, variables, dan data Production tetap dilarang disentuh tanpa persetujuan eksplisit; kebijakan CI/CD ini tidak memberi izin deployment Production.
 - Jangan mengubah `wrangler.jsonc` atau secret tanpa persetujuan eksplisit.
 - Membuat atau menghapus branch selain `dev` tetap memerlukan persetujuan eksplisit.
 
@@ -128,3 +131,13 @@ Setiap pengujian yang dijalankan wajib mencatat format berikut:
 - Utamakan pengujian lokal, mock, fixture, atau environment terisolasi.
 - Jangan melakukan pengujian destruktif atau operasi tulis/hapus pada runtime aktif tanpa persetujuan eksplisit.
 - Redaksi informasi sensitif (token, password, JWT, hash, secret) sebelum menyertakan output.
+
+
+## CI/CD Development — Owner-Approved Direction (2026-11-21)
+
+- Development work is performed on branch `dev`; changes are proposed to `main` through a Pull Request after they are stable.
+- Pull Requests from `dev` to `main` must run the agreed validation workflow. Critical validation failures block merging; optional/non-critical checks may initially report warnings.
+- A successful update to `main` is the intended trigger for GitHub Actions to deploy **only** the Development Worker `dekeku-api-dev`.
+- A PR itself must not deploy. Deployment must use Development-only credentials and configuration; Production credentials, Worker `github`, domain `api.dekeku.my.id`, and Production data are out of scope.
+- The deployment workflow must prevent overlapping deployments, identify the source commit, and fail closed if the target cannot be confirmed as Development.
+- This is an approved target policy, not evidence that CI/CD has been implemented. Until the relevant tasks are completed and verified, no automatic deployment is assumed to exist.
