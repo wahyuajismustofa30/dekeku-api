@@ -98,3 +98,14 @@ No live project repository data was written or deleted by this GitHub source/doc
 - **Run URL:** https://github.com/wahyuajismustofa30/dekeku-api/actions/runs/45080601189
 - **Scope:** CI validation only. The run did not deploy a Worker, verify a live Worker runtime, or perform a live project-repository write. It is evidence for the stated commit; later documentation-only commits on `dev` were not automatically validated by this run.
 - **Test mapping note:** CI reported four Public Data API source files without individual test mapping; the changed focused test file `test/public-submission.test.js` was run. Do not infer per-file coverage beyond the actual workflow output.
+
+## 7. Current branch / CI provenance reconciliation — 2026-11-23
+
+- **Latest audited branch:** `dev`.
+- **Latest audited HEAD:** `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
+- **PR #29:** OPEN and unmerged at the latest PR-state query; no merge or deployment performed.
+- **PR workflow query for exact HEAD:** returned an empty `workflow_runs` list. Record this narrowly as **no PR-triggered workflow run returned for this SHA by the queried endpoint**; do not infer a universal absence of checks.
+- **Historical CI evidence:** run #51 SUCCESS is tied to `98d7163add0452832afefeda1462aad5f187ac43`, not the latest HEAD. Reported results remain 139 PASS, 0 FAIL, 0 skipped across 19 suites; npm ci, 64-file syntax checks, Wrangler dry-run, and npm audit 0 vulnerabilities. This evidence does not roll forward to later commits.
+- **Public Data API local evidence:** `PUBDATA-TERMUX-02` remains OWNER-REPORTED 14/14 focused tests plus seven syntax checks PASS; exact tested local SHA unknown, so provenance against the latest PR head is NOT VERIFIED.
+- **Admin Dashboard local evidence:** 261/261 tests and Wrangler dry-run PASS are OWNER-REPORTED local evidence only; exact tested SHA/Node version not supplied. Dashboard remains PAUSED; this evidence does not prove current-head CI, Development runtime, or deployment.
+- No live Worker runtime, live project-repository write, or deployment is established by the evidence above. Production remains untouched.
