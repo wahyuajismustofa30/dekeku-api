@@ -10,7 +10,13 @@ const getCoordinator = env => {
 export const handleDashboardRefresh = async (request, env, action) => {
   const stub = getCoordinator(env);
   const method = action === "state" ? "GET" : "POST";
-  const body = method === "POST" ? await request.text() : undefined;
+  let body;
+  if (method === "POST") {
+    const declaredLength = Number(request.headers.get("content-length"));
+    if (Number.isFinite(declaredLength) && declaredLength > 128 * 1024) throw new HttpError("Request body is too large", 413);
+    body = await request.text();
+    if (new TextEncoder().encode(body).byteLength > 128 * 1024) throw new HttpError("Request body is too large", 413);
+  }
   const response = await stub.fetch(new Request(`https://dashboard-refresh.internal/${action}`, {
     method,
     headers: method === "POST" ? { "Content-Type": "application/json" } : undefined,
