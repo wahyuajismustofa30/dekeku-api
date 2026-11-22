@@ -142,3 +142,15 @@ PR #29 (`dev` → `main`) exists and is OPEN, but has not been merged. No merge,
 - Public Data API is the current active priority. Admin Dashboard ADM-001..ADM-008 remains PAUSED.
 - PUB-006 is COMPLETE & VERIFIED; it is not the next verification gate.
 - No source code, `main`, merge, deployment, Cloudflare configuration/secrets/variables, or Production resources were changed in this documentation repair.
+
+## Latest audit checkpoint — documentation consistency (2026-11-23)
+
+- Latest audited GitHub branch: `dev`; HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
+- PR #29 (`dev` → `main`) remains OPEN and unmerged at the latest state query.
+- PR-triggered workflow query for exact HEAD returned no runs. This is not a claim about all possible check sources.
+- CI run #51 SUCCESS is historical evidence for commit `98d7163add0452832afefeda1462aad5f187ac43` only; it does not validate latest HEAD or later documentation commits.
+- Public Data API remains active; focused 14/14 test and seven syntax checks are owner-reported local evidence, exact tested SHA unknown. Full suite, remote integration, live write, Worker runtime, and deployment remain NOT VERIFIED.
+- Admin Dashboard ADM-001..ADM-008 remains PAUSED. Its 261/261 test and Wrangler dry-run results are owner-reported local evidence; exact tested SHA/Node version unknown, and runtime/deployment are NOT VERIFIED.
+- Terminology: PUB-001..PUB-006 = Public Repository Manager; PUB-DATA-001..007 = Public Data API. Do not conflate PUB-006 and PUB-DATA-006.
+- Guestbook current storage: `assets/data/bukutamu.json`; D-015 path is historical/obsolete for new writes; D-021 preserves old files without automatic migration/deletion. See `docs/guestbook-storage.md`.
+- Documentation-only changes on `dev`. No source code, `main`, merge, deployment, Cloudflare configuration/secrets/variables, or Production resources changed.
