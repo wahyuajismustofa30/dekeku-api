@@ -39,7 +39,7 @@ Tanggal pembaruan: 2026-11-23
 ## Blocker dan verifikasi
 - `DB_ENCRYPTION_KEY` pada Development: NOT CONFIGURED / NOT VERIFIED dari sesi ini. Nilai key tidak boleh disimpan di GitHub.
 - Wrangler dry-run/build: NOT RUN sesuai urutan pengujian yang diminta.
-- Unit/integration tests: NOT RUN — sengaja ditunda sampai implementasi seluruh ADM-001..007 selesai.
+- Test suite baru sudah ditambahkan ke `package.json` dan PR validation mapping (`dashboard-crypto`, `dashboard-storage`, `dashboard-registry`, `dashboard-refresh`, `dashboard-router`); seluruhnya NOT RUN — sengaja ditunda sampai implementasi ADM-001..007 selesai.
 - Deployment dan runtime Development: NOT VERIFIED; tidak dilakukan dari sesi ini.
 - Production: NOT TOUCHED.
 
