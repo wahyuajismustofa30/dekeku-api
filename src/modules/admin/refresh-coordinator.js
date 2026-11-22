@@ -80,11 +80,15 @@ export class DashboardRefreshCoordinator {
       return response({ success: true, job });
     }
     if (url.pathname === "/cancel" && request.method === "POST") {
-      const job = await this.readState();
-      if (!job || !ACTIVE.has(job.status)) return response({ success: false, error: "No active refresh job" }, 409);
-      job.cancelRequested = true;
-      job.status = "cancelling";
-      await this.state.storage.put("latest-job", job);
+      const job = await this.state.storage.transaction(async transaction => {
+        const current = await transaction.get("latest-job");
+        if (!current || !ACTIVE.has(current.status)) return null;
+        current.cancelRequested = true;
+        current.status = "cancelling";
+        await transaction.put("latest-job", current);
+        return current;
+      });
+      if (!job) return response({ success: false, error: "No active refresh job" }, 409);
       return response({ success: true, job });
     }
     if (url.pathname === "/retry" && request.method === "POST") {
