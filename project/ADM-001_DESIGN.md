@@ -86,7 +86,7 @@ Gunakan Web Crypto API yang tersedia di Workers:
 - Data divalidasi sebelum dienkripsi dan setelah didekripsi.
 - Update menggunakan SHA GitHub sebagai optimistic concurrency token; stale SHA menghasilkan conflict dan tidak boleh ditimpa otomatis.
 - Missing private repository atau file yang tidak dapat diakses tidak boleh diam-diam dianggap sebagai database kosong.
-- ADM-001 hanya membuat fondasi crypto dan kontrak storage. CRUD metadata Dashboard dikerjakan pada ADM-003.
+- ADM-001 hanya membuat fondasi crypto dan kontrak storage. Metadata read/write/upsert Dashboard dikerjakan pada ADM-003.
 - Storage RBAC lama tidak otomatis dimigrasikan atau diubah oleh ADM-001. Kondisi dan format penyimpanannya harus diaudit terpisah sebelum keputusan migrasi.
 
 ## 5. Konfigurasi Development
