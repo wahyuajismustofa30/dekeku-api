@@ -106,6 +106,8 @@ const validateRepositoryConfig = (config, trustedOwner) => {
     repository.username.toLowerCase() !== String(trustedOwner || "").toLowerCase() ||
     typeof repository.repo !== "string" ||
     !REPO_PATTERN.test(repository.repo) ||
+    repository.repo === "." ||
+    repository.repo === ".." ||
     CONTROL_CHAR_PATTERN.test(repository.repo)
   ) {
     return false;
