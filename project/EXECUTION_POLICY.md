@@ -38,7 +38,7 @@ Current owner-approved focus: public data management in each project's own publi
 2. [x] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Owner-reported syntax checks PASS and `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP). Development runtime NOT VERIFIED.
 3. [x] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** Shared resolver wired into all four Admin handlers; regression tests verified (54/54 PASS across combined suites).
 4. [x] **PUB-004 — Implement safe public repository browsing (PUB-004-FIX Security Audit Complete).** Endpoint `GET /api/v1/admin/browse` remediated with Admin JWT, path validation (`public/` only), child path exact matching, hidden/sensitive file filtering, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), upstream truncation detection (Contents API >= 1000 & Git Trees API `truncated`), pagination, and metadata-only output. Verified via `node --test` (22/22 PASS in browse suite, 54/54 PASS total).
-5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.
+5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager (IN PROGRESS).** Project Origin selector, folder browser, JSON editor, and SHA-safe CRUD implementation added; focused tests pending.
 6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
 
 Execution remains on `dev`; PR to `main` only after stable and owner review. No Production changes, private repository setup, secrets changes, or writes to real website data without separate explicit approval.
@@ -56,3 +56,9 @@ Execution remains on `dev`; PR to `main` only after stable and owner review. No 
 - `git diff --check`: no output; recorded PASS from owner report.
 - This evidence supersedes the earlier statement that migrated tests had not been run. PUB-004-FIX focused test set is VERIFIED LOCALLY; Development runtime remains NOT VERIFIED.
 - PUB-005 remains blocked pending explicit owner acceptance and authorization. No PR or deployment is authorized by this test result alone.
+
+
+## PUB-005 Current Gate Update (2026-11-22)
+- PUB-004-FIX was accepted by the owner. PUB-005 is authorized and IN PROGRESS.
+- Implementation and new tests are present on dev. Local Node test execution is still pending; do not mark PUB-005 verified until the owner runs the focused command recorded in project/CHECKPOINT.md.
+- Keep all work on dev. No PR, merge, or deployment is authorized by this task.
