@@ -125,7 +125,7 @@ const inspectFile = async (env, repository, path) => {
     if (path === "CNAME") {
       const domain = raw.trim();
       const valid = domain.length <= 253 &&
-        /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/i.test(domain);
+        /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(domain);
       return { exists: true, valid, content: domain.slice(0, 253), ...(valid ? {} : { error: "Invalid CNAME domain" }) };
     }
     return { exists: true, valid: true };
