@@ -192,6 +192,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -232,6 +233,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -258,6 +260,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -282,6 +285,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -307,6 +311,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -329,6 +334,7 @@ describe("Write Engine - Router Integration Tests", () => {
         body: invalidUtf8,
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -372,6 +378,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -399,6 +406,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -438,6 +446,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -463,6 +472,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -503,6 +513,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -529,6 +540,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -569,6 +581,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -593,6 +606,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -661,6 +675,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
