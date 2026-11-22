@@ -64,5 +64,5 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - **PUB-DATA-006:** test cases updated in `test/public-submission.test.js`; **NOT RUN** in this GitHub-only phase.
 - **PUB-DATA-007:** API reference, Usage, Guestbook integration, plan, and project status documents updated.
 - **Validation:** Node tests, syntax/build, full suite, Wrangler dry-run, and Worker runtime are **NOT RUN / NOT VERIFIED** for these changes. Do not claim PASS.
-- **Next required action:** Termux validation on the local `dev` checkout. Run `node --test test/public-submission.test.js` first, then the repository's approved checks. Do not run `test:remote`; it may write to live project data.
+- **Next required action:** Termux validation on the local `dev` checkout. Run `node --test test/public-submission.test.js` and syntax checks for changed source files. `docs/USAGE.md` records the owner's restriction on `npm test`; do not run it without renewed approval. Do not run `test:remote`; it may write to live project data.
 - **Operational boundary:** no PR, no merge, no deployment, no Cloudflare config/secret/variable change, and no Production access. Admin Dashboard remains PAUSED.
