@@ -50,7 +50,7 @@ Historical instruction for the Admin Dashboard checkpoint: the owner required AD
 Semua binding, migration, secret, deployment, dan runtime yang berkaitan dengan Dashboard hanya untuk Development Worker `dekeku-api-dev`. Production tetap dilarang disentuh.
 
 ### ADM-008 update — 2026-11-23
-Owner reports `npm ci` completed with 0 vulnerabilities and full `npm test` passed 261/261 (44 suites, 0 skipped). This confirms automated test coverage only; exact tested commit SHA/Node version, complete Wrangler target/migration output, Development secret inventory, and live runtime remain NOT VERIFIED. No PR/merge/deployment is authorized by this test result.
+Owner reports `npm ci` completed with 0 vulnerabilities and full `npm test` passed 261/261 (44 suites, 0 skipped). This confirms automated test coverage only; exact tested commit SHA/Node version, complete Wrangler target/migration output, Development secret inventory, and live runtime remain NOT VERIFIED. That Dashboard test result did not itself authorize a PR/merge/deployment at that time; Public Data API PR #29 was created separately later and is OPEN.
 
 
 ## Owner priority override — Public Data API (2026-11-23)
