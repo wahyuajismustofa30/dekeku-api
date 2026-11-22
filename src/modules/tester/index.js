@@ -1,145 +1,29 @@
 export const getTesterPage = (request, env) => {
-  const html = `<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEKEKU API Tester Dashboard</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --error: #dc2626;
-            --bg: #f8fafc;
-            --card: #ffffff;
-        }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #1e293b; padding: 20px; line-height: 1.5; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .card { background: var(--card); padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        h1, h2 { margin-top: 0; color: #0f172a; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.875rem; }
-        input, textarea, select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; }
-        button:hover { opacity: 0.9; }
-        button.secondary { background: #64748b; margin-top: 10px; }
-        .result-box { margin-top: 20px; background: #0f172a; color: #38bdf8; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.875rem; overflow-x: auto; white-space: pre-wrap; min-height: 50px; }
-        .status { font-weight: bold; margin-bottom: 10px; display: block; }
-        .token-area { background: #f1f5f9; padding: 10px; border-radius: 4px; font-size: 0.75rem; word-break: break-all; margin-bottom: 15px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>DEKEKU API Tester</h1>
-        
-        <div class="card" style="margin-bottom: 20px;">
-            <label>API Gateway URL</label>
-            <div class="token-area" id="apiOriginDisplay">Loading API origin...</div>
-            <div id="tokenDisplay" style="margin-top: 10px; display: none;">
-                <label>Active JWT Token:</label>
-                <div class="token-area" id="activeTokenText">No active admin session.</div>
-                <button class="secondary" onclick="clearToken()">Logout / Clear Token</button>
-            </div>
-        </div>
-
-        <div class="grid">
-            <!-- 1. PUBLIC ACCESS -->
-            <div class="card">
-                <h2>1. Public Access</h2>
-                <div class="form-group">
-                    <button onclick="testApi('/api/v1/health')">Check Health</button>
-                </div>
-                <div class="form-group">
-                    <button onclick="testApi('/api/v1/github/repository')">Repo Metadata</button>
-                </div>
-                <div class="form-group">
-                    <label>Read Public File</label>
-                    <input type="text" id="readPath" value="public/data/guestbook/list.json">
-                    <button class="secondary" onclick="testRead()">Read File</button>
-                </div>
-            </div>
-
-            <!-- 2. GUESTBOOK SUBMISSION -->
-            <div class="card">
-                <h2>2. Guestbook Submission</h2>
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="gbName" value="Tester HTML">
-                </div>
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea id="gbMessage">Halo dari Dashboard Tester!</textarea>
-                </div>
-                <button id="guestbookSubmit" onclick="testGuestbook()">Submit Guestbook</button>
-            </div>
-
-            <!-- 3. ADMIN LOGIN -->
-            <div class="card">
-                <h2>3. Admin Login</h2>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="loginUser" value="admin">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPass">
-                </div>
-                <button onclick="testLogin()">Login & Save Token</button>
-            </div>
-
-            <!-- 4. USER LOGIN -->
-            <div class="card">
-                <h2>4. User Login</h2>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="userLoginUser" autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="userLoginPass" autocomplete="current-password">
-                </div>
-                <button onclick="testUserLogin()">Login User</button>
-                <button class="secondary" onclick="loadUserRepositories()">Load My Repositories</button>
-                <button class="secondary" onclick="clearUserSession()">Logout User</button>
-                <div class="token-area" id="userSessionStatus" aria-live="polite">No active User session.</div>
-            </div>
-
-            <!-- 5. WRITE ENGINE (ADMIN) -->
-            <div class="card">
-                <h2>4. Write Engine (Admin)</h2>
-                <div class="form-group">
-                    <label>Method</label>
-                    <select id="writeMethod">
-                        <option value="POST">CREATE (POST)</option>
-                        <option value="PUT">UPDATE (PUT)</option>
-                        <option value="DELETE">DELETE (DELETE)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>File Path</label>
-                    <input type="text" id="writePath" value="public/data/test-manual.json">
-                </div>
-                <div class="form-group">
-                    <label>JSON Content (for POST/PUT)</label>
-                    <textarea id="writeContent">{ \"hello\": \"world\", \"updated\": true }</textarea>
-                </div>
-                <div class="form-group">
-                    <label>SHA (required for PUT/DELETE)</label>
-                    <input type="text" id="writeSha" placeholder="40 hex characters">
-                </div>
-                <button onclick="testWrite()">Execute Write Operation</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Response Logs</h2>
-            <div id="responseStatus" class="status">Status: Waiting...</div>
-            <div id="responseBody" class="result-box">No logs yet.</div>
-        </div>
-    </div>
-
-    <script>
+  const html = `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#263746"><title>DEKEKU API Tester</title><style>
+:root{color-scheme:light;--nav:#263746;--blue:#0875bd;--ink:#263746;--muted:#6b7c8d;--line:#dce3e8;--bg:#f2f5f7;--green:#16834a;--red:#c0392b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}
+.topbar{height:54px;background:var(--nav);color:#fff;display:flex;align-items:center;gap:14px;padding:0 20px;position:sticky;top:0;z-index:10;box-shadow:0 2px 5px #16243126}.brand{font-size:17px;font-weight:700}.brand span{color:#8ed1ff}.top-subtitle{color:#c6d4df;font-size:12px;border-left:1px solid #526271;padding-left:14px}.top-spacer{flex:1}.origin-pill{font:12px ui-monospace,monospace;color:#d7e8f5;max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shell{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:calc(100vh - 54px)}.sidebar{background:var(--nav);color:#d9e2e9;padding:17px 12px 28px;min-height:calc(100vh - 54px)}.side-title{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;color:#91a4b4;font-weight:700;padding:13px 10px 6px}.side-link{display:flex;gap:10px;color:#dce6ed;text-decoration:none;padding:9px 11px;border-radius:4px;margin:2px 0;font-size:13px}.side-link:hover,.side-link.active{background:#344c60;color:#fff}.side-icon{width:18px;text-align:center;color:#9fc9e5}.side-note{margin:20px 8px 0;padding:12px;border:1px solid #496071;border-radius:5px;color:#b8c8d4;font-size:11px}
+.main{min-width:0;padding:24px clamp(16px,3vw,38px) 48px;max-width:1500px;width:100%;margin:0 auto}.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:12px}.breadcrumb strong{color:var(--blue)}.page-heading{display:flex;justify-content:space-between;gap:18px;margin-bottom:20px}.page-heading h1{font-size:23px;margin:0 0 4px;font-weight:500}.page-heading p{margin:0;color:var(--muted);font-size:13px}.connection{border:1px solid #b9dec9;background:#edf8f1;color:#226c43;padding:7px 11px;border-radius:4px;font-size:12px;white-space:nowrap}
+.toolbar{display:flex;gap:5px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto}.toolbar a{padding:10px 14px;color:#526574;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}.toolbar a:hover,.toolbar a.active{color:var(--blue);border-color:var(--blue);background:#fff}
+.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}.summary{background:#fff;border:1px solid var(--line);border-radius:5px;padding:13px 15px}.summary small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase}.summary strong{display:block;font-size:14px;margin-top:4px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:5px;margin:0 0 18px;scroll-margin-top:76px;box-shadow:0 1px 2px #1827340f}.panel-head{padding:12px 16px;background:#f8fafb;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h2{font-size:14px;margin:0;font-weight:650;color:#31495a}.panel-head small{color:var(--muted);font-size:11px}.panel-body{padding:17px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}.form-group{margin-bottom:13px}label{display:block;margin-bottom:5px;font-weight:600;font-size:12px;color:#465b6b}
+input,textarea,select{width:100%;padding:9px 10px;border:1px solid #c7d1d9;border-radius:4px;background:#fff;color:#263746;outline:none}input:focus,textarea:focus,select:focus{border-color:#66a9d6;box-shadow:0 0 0 2px #0875bd18}textarea{min-height:90px;resize:vertical;font:12px ui-monospace,monospace}
+button{border:1px solid var(--blue);background:var(--blue);color:#fff;padding:8px 13px;border-radius:4px;font-weight:600;font-size:12px}button:hover{filter:brightness(.95)}button:disabled{opacity:.55;cursor:not-allowed}button.secondary{background:#fff;color:#36566c;border-color:#b9c7d1;margin-top:7px}button.danger{background:#fff;color:var(--red);border-color:#e1b8b4}.button-row,.action-stack{display:flex;gap:8px;flex-wrap:wrap}.button-row button,.action-stack button{width:auto}.token-area{background:#f5f8fa;border:1px solid #e0e7ec;padding:9px 11px;border-radius:4px;font-size:11px;color:#526574;overflow-wrap:anywhere}.result-wrap{background:#172b3a;border-radius:4px;overflow:hidden}.result-meta{padding:8px 12px;color:#b8d3e4;background:#203b4e;font:11px ui-monospace,monospace;display:flex;justify-content:space-between}.result-box{margin:0;padding:14px;color:#d6e9f5;font:12px/1.6 ui-monospace,Consolas,monospace;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;min-height:150px;max-height:480px}.status{font-weight:650;color:#405a6d;font-size:12px}.help{font-size:11px;color:var(--muted);margin:5px 0 0}.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#7b8d9a;margin:0 0 12px}.mobile-menu{display:none;background:transparent;border-color:#6b8293;padding:5px 9px}
+@media(max-width:850px){.shell{grid-template-columns:1fr}.sidebar{display:none;min-height:0;padding:10px 12px}.sidebar.open{display:block}.side-note{display:none}.mobile-menu{display:inline-block}.main{padding:18px 14px 36px}.origin-pill{max-width:34vw}.summary-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.topbar{padding:0 12px;gap:9px}.top-subtitle{display:none}.origin-pill{font-size:10px;max-width:38vw}.page-heading{display:block}.connection{display:inline-block;margin-top:10px}.summary-grid{grid-template-columns:1fr}.panel-body{padding:13px}.grid{grid-template-columns:1fr}}
+</style></head><body>
+<header class="topbar"><button class="mobile-menu" id="mobileMenu" type="button" aria-label="Toggle navigation">☰</button><div class="brand"><span>DEKEKU</span> API</div><div class="top-subtitle">Database & API Tester</div><div class="top-spacer"></div><div class="origin-pill" id="apiOriginDisplay">Loading API origin...</div></header>
+<div class="shell"><aside class="sidebar" id="sidebar"><div class="side-title">Workspace</div><a class="side-link active" href="#overview"><span class="side-icon">▦</span> Overview</a><div class="side-title">API Explorer</div><a class="side-link" href="#panel-public"><span class="side-icon">◉</span> Public API</a><a class="side-link" href="#panel-guestbook"><span class="side-icon">✎</span> Guestbook</a><div class="side-title">Access Control</div><a class="side-link" href="#panel-admin"><span class="side-icon">♙</span> Admin session</a><a class="side-link" href="#panel-user"><span class="side-icon">♧</span> User session</a><div class="side-title">Data Management</div><a class="side-link" href="#panel-write"><span class="side-icon">▤</span> JSON file operations</a><a class="side-link" href="#panel-response"><span class="side-icon">⌁</span> Response console</a><div class="side-note">API requests are restricted to this page's origin. Admin and User credentials use separate sessions.</div></aside>
+<main class="main"><div class="breadcrumb">Server: <strong>DEKEKU API Gateway</strong> / Workspace / Tester</div>
+<section id="overview"><div class="page-heading"><div><h1>API Tester</h1><p>Jelajahi endpoint, autentikasi, dan data API dalam satu workspace.</p></div><div class="connection">● Same-origin connection</div></div><nav class="toolbar" aria-label="Workspace tabs"><a class="active" href="#overview">Overview</a><a href="#panel-public">API Explorer</a><a href="#panel-write">Data operations</a><a href="#panel-response">Response console</a></nav><div class="summary-grid"><div class="summary"><small>Gateway</small><strong>DEKEKU API · v1</strong></div><div class="summary"><small>Request destination</small><strong>Same-origin only</strong></div><div class="summary"><small>Authentication</small><strong>Admin / User separated</strong></div></div></section>
+<section class="panel" id="panel-public"><div class="panel-head"><h2>◉ Public API Explorer</h2><small>GET · No authentication</small></div><div class="panel-body"><p class="section-label">Available public endpoints</p><div class="action-stack"><button type="button" onclick="testApi('/api/v1/health')">Check Health</button><button type="button" class="secondary" onclick="testApi('/api/v1/github/repository')">Repository Metadata</button></div><div class="form-group" style="margin-top:18px;max-width:650px"><label for="readPath">Public file path</label><input type="text" id="readPath" value="public/data/guestbook/list.json"><p class="help">Path harus berada di area public yang diizinkan API.</p><button type="button" class="secondary" onclick="testRead()">Browse / Read file</button></div></div></section>
+<section class="panel" id="panel-guestbook"><div class="panel-head"><h2>✎ Guestbook</h2><small>POST · Public submission</small></div><div class="panel-body"><div class="grid"><div class="form-group"><label for="gbName">Name</label><input type="text" id="gbName" value="Tester HTML"></div><div class="form-group"><label for="gbMessage">Message</label><textarea id="gbMessage">Halo dari Dashboard Tester!</textarea></div></div><button id="guestbookSubmit" type="button" onclick="testGuestbook()">Submit Guestbook</button><p class="help">Form hanya direset setelah server mengonfirmasi submission berhasil.</p></div></section>
+<section class="panel" id="panel-admin"><div class="panel-head"><h2>♙ Admin session</h2><small>JWT · Administrative access</small></div><div class="panel-body"><div class="grid"><div class="form-group"><label for="loginUser">Username</label><input type="text" id="loginUser" value="admin" autocomplete="username"></div><div class="form-group"><label for="loginPass">Password</label><input type="password" id="loginPass" autocomplete="current-password"></div></div><div class="button-row"><button type="button" onclick="testLogin()">Login Admin</button><button type="button" class="secondary" onclick="clearToken()">Logout Admin</button></div><div id="tokenDisplay" style="margin-top:12px;display:none"><div class="token-area" id="activeTokenText">No active admin session.</div></div><p class="help">Admin JWT hanya disimpan di memori halaman dan tidak ditampilkan.</p></div></section>
+<section class="panel" id="panel-user"><div class="panel-head"><h2>♧ User session</h2><small>JWT · User-scoped access</small></div><div class="panel-body"><div class="grid"><div class="form-group"><label for="userLoginUser">Username</label><input type="text" id="userLoginUser" autocomplete="username"></div><div class="form-group"><label for="userLoginPass">Password</label><input type="password" id="userLoginPass" autocomplete="current-password"></div></div><div class="button-row"><button type="button" onclick="testUserLogin()">Login User</button><button type="button" class="secondary" onclick="loadUserRepositories()">Load My Repositories</button><button type="button" class="danger" onclick="clearUserSession()">Logout User</button></div><div class="token-area" id="userSessionStatus" aria-live="polite" style="margin-top:12px">No active User session.</div></div></section>
+<section class="panel" id="panel-write"><div class="panel-head"><h2>▤ JSON file operations</h2><small>Admin JWT required · JSON only</small></div><div class="panel-body"><div class="grid"><div class="form-group"><label for="writeMethod">Operation</label><select id="writeMethod"><option value="POST">CREATE · POST</option><option value="PUT">UPDATE · PUT</option><option value="DELETE">DELETE · DELETE</option></select></div><div class="form-group"><label for="writePath">File path</label><input type="text" id="writePath" value="public/data/test-manual.json"></div></div><div class="form-group"><label for="writeContent">JSON content (CREATE / UPDATE)</label><textarea id="writeContent">{ "hello": "world", "updated": true }</textarea></div><div class="form-group"><label for="writeSha">File SHA (required for UPDATE / DELETE)</label><input type="text" id="writeSha" placeholder="40 hexadecimal characters"><p class="help">Gunakan SHA terbaru untuk mencegah overwrite versi yang berubah.</p></div><button type="button" onclick="testWrite()">Execute operation</button></div></section>
+<section class="panel" id="panel-response"><div class="panel-head"><h2>⌁ Response console</h2><span class="status" id="responseStatus">Waiting for request</span></div><div class="panel-body"><div class="result-wrap"><div class="result-meta"><span>LAST API RESPONSE</span><span>JSON / TEXT</span></div><pre id="responseBody" class="result-box">No requests yet. Choose an action from the API Explorer or Data Management.</pre></div></div></section>
+</main></div>
+<script>
 
         const API_ORIGIN = window.location.origin;
         try { window.localStorage.removeItem('dekeku_jwt'); } catch {}
@@ -443,9 +327,10 @@ export const getTesterPage = (request, env) => {
         updateTokenUI();
         updateUserSessionUI();
 
-    </script>
-</body>
-</html>`;
+    
+const sidebar=document.getElementById('sidebar');const mobileMenu=document.getElementById('mobileMenu');if(mobileMenu)mobileMenu.addEventListener('click',()=>sidebar.classList.toggle('open'));
+document.querySelectorAll('.side-link,.toolbar a').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('.side-link,.toolbar a').forEach(item=>item.classList.remove('active'));link.classList.add('active');if(window.innerWidth<=850)sidebar.classList.remove('open');}));
+</script></body></html>`;
 
   return new Response(html, {
     headers: {
