@@ -84,9 +84,9 @@ Tidak ada izin deployment, perubahan Cloudflare, atau akses Production dari peru
 ## Public Data API implementation update — 2026-11-23
 
 The approved Public Data API implementation is now present on GitHub branch `dev`:
-- PUB-DATA-001..005: IMPLEMENTED.
-- PUB-DATA-006: test cases authored/updated, NOT RUN.
-- PUB-DATA-007: IMPLEMENTED (API reference, Usage, Guestbook integration, and project checkpoint docs).
-- Overall: AWAITING TERMUX VALIDATION; not yet verified.
+- PUB-DATA-001..005: IMPLEMENTED on `dev`.
+- PUB-DATA-006: owner-reported Termux focused tests 14/14 PASS; 7 changed-source syntax checks PASS. Exact tested local SHA is unknown.
+- PUB-DATA-007: IMPLEMENTED on `dev`.
+- PR #29 (`dev` → `main`) exists and remains unmerged.
 
-Next: validate the local `dev` checkout in Termux. Do not run remote mutative tests. No PR, merge, deployment, Cloudflare configuration/secret changes, or Production access is authorized. Admin Dashboard remains paused.
+Next: confirm tested SHA matches PR #29 head, or rerun focused tests against that exact candidate. Full suite, remote integration, live repository write, Worker runtime, and deployment remain NOT VERIFIED. No merge, deployment, Cloudflare configuration/secret changes, or Production access is authorized. Admin Dashboard remains paused.
