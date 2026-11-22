@@ -64,7 +64,7 @@ Prioritas aktif terbaru adalah **Public Data API**. Workstream Admin Dashboard d
 | PUB-DATA-003 | Shared Storage Engine | IMPLEMENTED on dev |
 | PUB-DATA-004 | Guestbook Migration | IMPLEMENTED on dev |
 | PUB-DATA-005 | Legacy Compatibility | IMPLEMENTED on dev |
-| PUB-DATA-006 | Security & Integration Tests | OWNER-REPORTED LOCAL PASS (14/14); SHA pending |
+| PUB-DATA-006 | Security & Integration Tests | OWNER-REPORTED LOCAL PASS (14/14); tested SHA not supplied, candidate provenance NOT VERIFIED |
 | PUB-DATA-007 | Documentation & Checkpoint | IMPLEMENTED on dev |
 | ADM-001..ADM-008 | Centralized Admin Dashboard | PAUSED — resume only on owner instruction or after Public Data API priority is completed |
 
