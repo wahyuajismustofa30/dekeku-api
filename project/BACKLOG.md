@@ -34,11 +34,11 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 Rincian kontrak, desain, acceptance criteria, keamanan, dan batas operasional: `project/PUBLIC_DATA_API_PLAN.md`.
 
 - [x] **PUB-DATA-001 — API Contract.** IMPLEMENTED on GitHub; implementation present on dev. Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
-- [x] **PUB-DATA-002 — Resource Registry.** IMPLEMENTED on GitHub; Termux validation pending. Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
+- [x] **PUB-DATA-002 — Resource Registry.** IMPLEMENTED on GitHub; focused Termux validation owner-reported PASS (14/14); tested SHA pending confirmation. Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
 - [x] **PUB-DATA-003 — Shared Storage Engine.** IMPLEMENTED on GitHub; Termux validation pending. Bounded body parsing, Origin enforcement, Project Origin resolver, repository validation, GitHub write, SHA concurrency, safe errors.
 - [x] **PUB-DATA-004 — Guestbook Migration.** IMPLEMENTED on GitHub; Termux validation pending. Jadikan Guestbook resource pertama dengan kompatibilitas payload dan storage berdasarkan source aktual.
 - [x] **PUB-DATA-005 — Legacy Compatibility.** IMPLEMENTED on GitHub; Termux validation pending. Pertahankan `POST /api/v1/public/submit` sebagai alias ke handler Guestbook yang sama.
-- [ ] **PUB-DATA-006 — Security & Integration Tests.** OWNER-REPORTED Termux PASS: 14/14 focused tests; exact tested SHA not supplied. Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
+- [x] **PUB-DATA-006 — Security & Integration Tests.** OWNER-REPORTED Termux PASS: 14/14 focused tests; exact tested SHA not supplied, so PR candidate validation gate remains pending. Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
 - [x] **PUB-DATA-007 — Documentation & Checkpoint.** IMPLEMENTED on GitHub. Documentation synchronized; owner-reported focused validation recorded.
 
 Historical planning note from before implementation. Superseded by the current status in `project/PROGRESS.md` and the validation evidence `PUBDATA-TERMUX-02` in `project/EVIDENCE.md`.
