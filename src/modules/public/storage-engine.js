@@ -128,10 +128,15 @@ export const writePublicResource = async (request, env, resourceName, resource) 
       exists = false;
     }
 
-    if (resource.documentType === "array") document.push(entry);
-    else throw new HttpError("Unsupported resource document strategy", 500);
+    if (typeof resource.buildDocument !== "function") {
+      throw new HttpError("Resource document strategy is unavailable", 500);
+    }
+    const nextDocument = resource.buildDocument(document, entry);
+    if (resource.documentType === "array" && !Array.isArray(nextDocument)) {
+      throw new HttpError("Resource document shape is invalid", 500);
+    }
 
-    const serialized = JSON.stringify(document, null, 2);
+    const serialized = JSON.stringify(nextDocument, null, 2);
     const bytes = new TextEncoder().encode(serialized);
     if (bytes.byteLength > resource.maxFileBytes) {
       throw new HttpError("Stored document has reached its size limit", 413);
@@ -146,7 +151,7 @@ export const writePublicResource = async (request, env, resourceName, resource) 
         message: "Submission successful",
         file: resource.storagePath.split("/").pop(),
         path: resource.storagePath,
-        count: Array.isArray(document) ? document.length : undefined,
+        count: Array.isArray(nextDocument) ? nextDocument.length : undefined,
         sha: result.content?.sha
       }, 201);
     } catch (error) {
