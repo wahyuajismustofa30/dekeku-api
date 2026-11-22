@@ -113,10 +113,10 @@ test("retry schedules only repositories marked failed in the previous result", a
   }
 });
 
-test("background alarm inspects one repository and persists only encrypted latest metadata", async () => {
+test("background alarm persists the latest inspection snapshot without writing project repositories", async () => {
   const originalFetch = globalThis.fetch;
-  let writtenEnvelope = null;
-  globalThis.fetch = async (url, options = {}) => {
+  let privateWriteCount = 0;
+  globalThis.fetch = async url => {
     const parsed = new URL(url);
     if (parsed.pathname === "/users/wahyuajismustofa30/repos") {
       return response([repository("demo")]);
@@ -126,19 +126,7 @@ test("background alarm inspects one repository and persists only encrypted lates
         parsed.pathname === "/repos/wahyuajismustofa30/demo/contents/assets/data") {
       return response("{}", 404);
     }
-    if (parsed.pathname === "/repos/wahyuajismustofa30/dekeku-db/contents/private/dashboard/projects.json" &&
-        options.method === "GET") {
-      return response("{}", 404);
-    }
-    if (parsed.pathname === "/repos/wahyuajismustofa30/dekeku-db" && options.method === "GET") {
-      return response({ full_name: "wahyuajismustofa30/dekeku-db" });
-    }
-    if (parsed.pathname === "/repos/wahyuajismustofa30/dekeku-db/contents/private/dashboard/projects.json" &&
-        options.method === "PUT") {
-      const body = JSON.parse(options.body);
-      writtenEnvelope = JSON.parse(Buffer.from(body.content, "base64").toString("utf8"));
-      return response({ content: { sha: "c".repeat(40) } });
-    }
+    if (parsed.pathname.includes("/contents/")) privateWriteCount += 1;
     return response("unexpected request", 404);
   };
   const state = makeState();
@@ -147,12 +135,13 @@ test("background alarm inspects one repository and persists only encrypted lates
     await coordinator.fetch(new Request("https://internal/start", { method: "POST", body: "{}" }));
     await coordinator.alarm();
     const job = await state.storage.get("latest-job");
+    const checks = await state.storage.get("latest-checks");
     assert.equal(job.status, "completed");
     assert.equal(job.completed, 1);
     assert.equal(job.succeeded, 1);
     assert.equal(job.results[0].repository, "demo");
-    assert.equal(writtenEnvelope.algorithm, "A256GCM");
-    assert.equal(JSON.stringify(writtenEnvelope).includes("demo"), false);
+    assert.equal(checks["wahyuajismustofa30/demo"].status, "active");
+    assert.equal(privateWriteCount, 0);
   } finally {
     globalThis.fetch = originalFetch;
   }
