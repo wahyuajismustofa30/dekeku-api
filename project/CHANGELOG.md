@@ -1,5 +1,7 @@
 # Changelog
 
+> Entri terbaru berada di bagian paling atas. Older entries below are historical records and must not be read as the current status when superseded by a newer dated entry.
+
 ## 2026-11-23 — Public Data API owner-reported Termux validation and documentation reconciliation
 
 - Owner reports `node --test test/public-submission.test.js`: 14 PASS, 0 FAIL, 0 cancelled, 0 skipped, 0 todo.
