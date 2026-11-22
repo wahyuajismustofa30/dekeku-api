@@ -190,7 +190,7 @@ export class DashboardRefreshCoordinator {
       const repository = { owner: target.owner, name: target.name, defaultBranch: target.defaultBranch, archived: target.archived };
       const inspection = await inspectPublicRepository(this.env, repository);
       await this.persistCheck(repository, inspection);
-      itemResult = { repository: target.name, success: true, status: inspection.status, checkedAt: inspection.checkedAt };
+      itemResult = { repository: target.name, success: !inspection.error, status: inspection.status, checkedAt: inspection.checkedAt, ...(inspection.error ? { stage: inspection.error.stage, error: inspection.error.message, httpStatus: inspection.error.status } : {}) };
     } catch (error) {
       itemResult = {
         repository: cleanName(target.name),
