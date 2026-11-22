@@ -59,7 +59,7 @@ export const discoverPublicRepositories = async env => {
   const owner = env.GITHUB_OWNER;
   if (!OWNER_PATTERN.test(owner || "")) throw new HttpError("Configured GitHub owner is invalid", 500);
   const repositories = [];
-  for (let page = 1; page <= 10; page += 1) {
+  for (let page = 1; page <= 11; page += 1) {
     const response = await githubFetch(env,
       `https://api.github.com/users/${encodeURIComponent(owner)}/repos?type=public&sort=updated&direction=desc&per_page=100&page=${page}`);
     const batch = await response.json();
