@@ -7,7 +7,9 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 ## Prioritas Aktif — Public Repository Management (2026-11-22)
 
 1. **PUB-001 COMPLETE (specification)**: skema `config.json` v1 dan aturan discovery terdokumentasi di `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`.
-2. **PUB-002 VERIFIED (owner-reported)**: syntax checks PASS dan focused metadata tests 12/12 PASS; runtime Development belum diverifikasi.\n3. **PUB-003 IN PROGRESS**: Admin SHA/CRUD telah diarahkan melalui resolver repository publik tervalidasi dan branch default GitHub; jalankan focused regression tests.
+2. **PUB-002 VERIFIED (owner-reported)**: syntax checks PASS dan focused metadata tests 12/12 PASS; runtime Development belum diverifikasi.
+3. **PUB-003 VERIFIED (owner-reported, source/focused tests)**: Admin SHA/CRUD menggunakan resolver repository publik tervalidasi; empat syntax checks PASS dan combined focused tests 37/37 PASS. Runtime Development belum diverifikasi.
+4. **PUB-004 NEXT**: implementasi penjelajahan folder/file publik dengan pagination dan batas ukuran respons.
 2. Selesaikan resolusi repository publik di sisi server dan pastikan semua operasi SHA/CRUD memakai repository yang sama.
 3. Tambahkan penjelajahan direktori/file publik dengan validasi path, pagination, dan batas ukuran respons.
 4. Selesaikan Tester menjadi pengelola file JSON bergaya phpMyAdmin.
