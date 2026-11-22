@@ -71,3 +71,13 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - Deployment menggunakan kredensial khusus Development, verifikasi target, kontrol concurrency, dan pencatatan commit/deployment. Tidak boleh ada fallback ke Production.
 - Production Worker `github`, domain `api.dekeku.my.id`, kredensial, konfigurasi, dan data Production tetap di luar cakupan serta tidak boleh diubah tanpa persetujuan eksplisit.
 - **Status implementasi:** kebijakan target disetujui; workflow belum dibuat atau diverifikasi. Lihat CICD-001 s/d CICD-010 di `BACKLOG.md`.
+
+## D-026 — Maximum Two Branches & Existing Cloudflare Git Deployment (2026-11-22)
+
+- **Status:** DISETUJUI MELALUI INSTRUKSI TERBARU PEMILIK.
+- Repository hanya boleh memiliki dua branch: `main` dan `dev`. Jangan membuat branch ketiga, termasuk branch sementara. Jaga kedua branch tetap sinkron sesuai kebutuhan.
+- Pengembangan tetap dilakukan di `dev`; perubahan stabil diajukan melalui PR ke `main`. Jangan commit/push langsung ke `main` dan jangan merge PR secara mandiri.
+- Pemilik melaporkan Cloudflare Workers auto-deployment melalui GitHub telah dikonfigurasi dan deployment dari GitHub berhasil. Catatan ini adalah laporan pemilik; pengaturan dashboard, pemetaan branch, target Worker, deployed version, dan health belum diverifikasi independen.
+- `.github/workflows/pr-validation.yml` adalah workflow validasi PR saja dan tidak melakukan deployment. Jangan membuat mekanisme deployment duplikat sebelum integrasi Cloudflare yang sudah ada diperiksa.
+- Target deployment yang diperbolehkan dalam pekerjaan ini adalah Development Worker `dekeku-api-dev` saja. Production Worker `github`, domain `api.dekeku.my.id`, kredensial, konfigurasi, dan data Production tetap dilarang disentuh.
+- **Bukti sinkronisasi 2026-11-22:** `dev` fast-forward ke `main`; kedua branch identik pada commit `1649701419f6d1b03b5f659c76f02d02b4355ad8`.
