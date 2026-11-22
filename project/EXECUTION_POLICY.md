@@ -42,3 +42,9 @@ Current owner-approved focus: public data management in each project's own publi
 6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
 
 Execution remains on `dev`; PR to `main` only after stable and owner review. No Production changes, private repository setup, secrets changes, or writes to real website data without separate explicit approval.
+
+
+## PUB-004-FIX Follow-up Gate (2026-11-22)
+- The prior PUB-004-FIX completion claim is superseded by the follow-up audit finding that the Git Trees API was not invoked at runtime.
+- Actual Git Trees traversal has now been added on `dev`, with a new focused integration-style test file. This change is NOT VERIFIED because tests were not run and existing browse-router fixtures still use the old Contents-only flow.
+- PUB-004-FIX remains open until legacy fixtures are migrated and the focused regression suite passes with evidence. PUB-005 is blocked until the owner accepts PUB-004-FIX.
