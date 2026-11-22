@@ -190,8 +190,7 @@ export const handleDashboardMetadata = async (request, env) => {
   const body = await parseBody(request);
   const github = new GitHubClient(env);
   const stored = await readDashboardDocument(github, env);
-  const expectedSha = body.sha === undefined ? stored.sha : body.sha;
-  if (expectedSha !== stored.sha) throw new HttpError("Dashboard metadata changed; reload before saving", 409);
+  if (!Object.prototype.hasOwnProperty.call(body, "sha") || body.sha !== stored.sha) throw new HttpError("Dashboard metadata changed; reload before saving", 409);
   const owner = env.GITHUB_OWNER;
   const repo = body.repo;
   if (typeof repo !== "string" || !REPO_PATTERN.test(repo) ||
