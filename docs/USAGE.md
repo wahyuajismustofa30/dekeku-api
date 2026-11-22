@@ -8,7 +8,7 @@ Dokumen ini memuat panduan lengkap mengenai cara menjalankan, menguji, dan mengg
 
 DEKEKU API Gateway adalah Cloudflare Worker modular yang menggunakan GitHub Contents API. Fokus pengembangan saat ini adalah pengelolaan data publik di repository masing-masing proyek. Website membaca data publik langsung dari URL GitHub Raw/CDN; operasi administratif melalui Gateway menggunakan resolver repository proyek yang divalidasi dari `config.json` schema v1.
 
-**Status implementasi:** pemilihan repository publik per proyek telah diimplementasikan melalui `config.json` schema v1 dan `resolveProjectRepository`. `GITHUB_OWNER` tetap menjadi trusted owner policy; `GITHUB_REPO`/`GITHUB_BRANCH` merupakan konfigurasi Worker lama/fallback dan bukan sumber identitas repository proyek ketika resolver berhasil. Repository harus public dan branch berasal dari metadata `default_branch` GitHub. Runtime Development masih harus diverifikasi melalui PUB-006.
+**Status implementasi:** pemilihan repository publik per proyek telah diimplementasikan melalui `config.json` schema v1 dan `resolveProjectRepository`. `GITHUB_OWNER` tetap menjadi trusted owner policy; `GITHUB_REPO`/`GITHUB_BRANCH` merupakan konfigurasi Worker lama/fallback dan bukan sumber identitas repository proyek ketika resolver berhasil. Repository harus public dan branch berasal dari metadata `default_branch` GitHub. PUB-006 telah dinyatakan selesai dan terverifikasi pada Development menurut bukti historis di `project/EVIDENCE.md`; hal itu terpisah dari verifikasi runtime untuk perubahan Public Data API yang lebih baru.
 
 ### Environment Variables (`wrangler.jsonc` & `.dev.vars`)
 - `GITHUB_OWNER`: Pemilik repository GitHub (contoh: `wahyuajismustofa30`).
@@ -40,7 +40,7 @@ npm run test:remote
 **Peringatan:** `test:remote` mengakses Worker Development aktif. Salah satu skenarionya mengirim Guestbook yang menulis data ke repository GitHub. Jangan jalankan sebagai bagian dari tes default atau tanpa persetujuan.
 
 ### Tester Dashboard
-Dashboard/Tester tersedia pada route `/` dan `/tester`. File Manager PUB-005 sudah diimplementasikan dan focused regression tests dilaporkan 66/66 PASS; browser E2E dan runtime Development belum diverifikasi. PUB-006 adalah gate verifikasi berikutnya.
+Dashboard/Tester tersedia pada route `/` dan `/tester`. File Manager PUB-005 sudah diimplementasikan dan focused regression tests dilaporkan 66/66 PASS; browser E2E dan runtime Development belum diverifikasi. PUB-006 bukan lagi gate berikutnya; workstream tersebut berstatus COMPLETE & VERIFIED. Status Public Data API terbaru dan batas validasinya dicatat di `project/PROGRESS.md` dan `project/EVIDENCE.md`.
 - Tujuan API mengikuti origin halaman yang sedang dibuka; dashboard tidak menerima URL API bebas.
 - Origin remote wajib HTTPS. HTTP hanya diizinkan untuk host loopback saat pengembangan lokal.
 - JWT admin hanya disimpan di memori halaman, tidak ditampilkan, dan tidak dipersistenkan. Memuat ulang halaman, logout, atau respons HTTP 401 menghapus sesi.
