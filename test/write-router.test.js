@@ -125,7 +125,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const env = createEnv();
       const token = await getAuthToken(env);
       const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fdata%2Ftest.json", {
-        headers: { Authorization: "Bearer " + token }
+        headers: { Origin: ADMIN_ORIGIN, Authorization: "Bearer " + token }
       });
 
       const res = await worker.fetch(req, env);
