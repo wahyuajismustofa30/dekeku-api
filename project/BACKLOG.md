@@ -1,37 +1,37 @@
 # TASK BACKLOG — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PUB-004-FIX Security Audit Complete)
+Tanggal pembaruan: 2026-11-22
+Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `project/PROGRESS.md`.
 
-Dokumen ini adalah daftar periksa teknis mendetail. Status ringkas terbaru proyek dikelola secara terpusat di `project/PROGRESS.md`.
+## Batas scope
+- Aktif: pengelolaan data publik pada repository GitHub publik masing-masing proyek.
+- A-003 (arsip): private repository `dekeku-db`, private account storage, repository mapping, dan perluasan RBAC. Jangan reaktivasi tanpa instruksi pemilik.
+- Production Worker `github`, `api.dekeku.my.id`, Production secrets/config/data tidak boleh disentuh tanpa persetujuan eksplisit.
 
-## Catatan Penting Otoritas & Status
-1. **Otoritas**: Wahyu (Pemilik Proyek) memegang otoritas tertinggi.
-2. **Ruang Lingkup Aktif Saat Ini**: Pengelolaan data publik pada repository publik masing-masing proyek (PUB-001 s/d PUB-006).
-3. **Pekerjaan Diarsip (A-003)**: Pengaturan repository privat `dekeku-db`, private account storage, mapping, dan perluasan RBAC dipindahkan ke arsip di `project/TASK_ARCHIVE.md`.
-4. **Strategi CI/CD**: Workflow `.github/workflows/pr-validation.yml` dikonfigurasi untuk validasi PR `dev` → `main`. Auto-deployment Cloudflare Workers dari GitHub dilaporkan aktif oleh pemilik; target deployment terbatas pada Development Worker `dekeku-api-dev`. Production Worker `github`, `api.dekeku.my.id`, secret, dan data Production tidak disentuh.
+## Workstream PUB — Public Repository Management
 
----
+- [x] **PUB-001 — Config contract v1.** Spesifikasi `project/PUBLIC_REPOSITORY_CONTRACT.md` dan JSON Schema tersedia.
+- [x] **PUB-002 — Schema and trusted Origin enforcement.** Implementasi tersedia; focused metadata test pernah dilaporkan 12/12 PASS. Development runtime belum diverifikasi.
+- [x] **PUB-003 — Shared resolver for Admin SHA/CRUD.** Resolver bersama dipakai oleh SHA lookup dan CREATE/UPDATE/DELETE.
+- [x] **PUB-004 — Safe public repository browse.** `GET /api/v1/admin/browse`; Admin JWT, path `public/`, hidden/sensitive filtering, symlink/submodule fail-closed, pagination, truncation, metadata-only response.
+- [x] **PUB-004-FIX — Git Trees traversal and security remediation.** Focused regression suite dilaporkan 47/47 PASS; runtime Development belum diverifikasi.
+- [x] **PUB-005 — Tester File Manager implementation and focused regression.** Project Origin selector, Admin JSON reader, browse/navigation/pagination, JSON editor, CREATE/UPDATE/DELETE with fresh SHA and delete confirmation. Seven-suite command dilaporkan 66 PASS, 0 FAIL, 0 skipped (9 suites). Status ini tidak berarti browser E2E telah lulus.
+- [ ] **PUB-006 — Development end-to-end verification (ACTIVE NEXT).** Minimal dua repository publik; verifikasi auth, project selector, browse/read/CRUD, SHA conflict, invalid Origin/wildcard, dan error handling menggunakan fixture aman. No Production writes.
 
-## Workstream 1: Pengelolaan Repository Publik (ACTIVE WORKSTREAM)
+## Workstream CI/CD
 
-- [x] **PUB-001 — Define public project repository contract.** COMPLETE (specification only): `project/PUBLIC_REPOSITORY_CONTRACT.md` dan `docs/schemas/public-repository-config.schema.json`. Runtime enforcement is PUB-002.
-- [x] **PUB-002 — Enforce public repository config and trusted Origin.** Schema v1, exact canonical HTTPS Origin, owner/name, GitHub identity, public visibility, and default branch checks implemented. Focused metadata tests 12/12 PASS. Development runtime NOT VERIFIED.
-- [x] **PUB-003 — Resolve and route Admin file operations to the selected public repository.** Shared resolver wired to SHA lookup and CREATE/UPDATE/DELETE; focused regression tests verified (54/54 PASS across combined suites).
-- [x] **PUB-004 — Add public repository file browsing (PUB-004-FIX Security Audit Complete).** Endpoint `GET /api/v1/admin/browse` audited and remediated with Admin JWT, path validation (`public/` only), child path exact matching, hidden/sensitive file rejection, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), accurate upstream truncation detection (Contents API >= 1000 items & Git Trees API `truncated`), max 1000 items cap, `truncated` flag, pagination, and metadata-only output. Verified via `node --test` (22/22 PASS in browse suite, 54/54 total across PUB-002/003/004).
-- [ ] **PUB-005 — Complete the Tester as a public JSON file manager (IN PROGRESS).** Initial project Origin selector, authenticated JSON reader, directory browser, JSON editor, and SHA-safe CRUD UI implemented in both Tester copies. Focused tests are added but NOT RUN yet; local verification and remediation remain.
-- [ ] **PUB-006 — Verify end-to-end on Development.** Test multiple public repositories, access boundaries, SHA conflicts, and error handling without touching Production.
+- [x] **CICD-001 — Repository CI/CD audit.** Workflow PR validation telah diperiksa.
+- [x] **CICD-002 — Trigger boundary policy.** PR hanya validasi; target deployment yang disetujui adalah Development setelah perubahan masuk `main` melalui integrasi yang sudah ada.
+- [x] **CICD-003 — PR validation matrix.** Didefinisikan di `project/CICD_VALIDATION_CONTRACT.md`.
+- [x] **CICD-004 — PR validation workflow.** `.github/workflows/pr-validation.yml` tersedia; PR #26 telah melewati validasi setelah perbaikan CI menurut bukti audit sebelumnya.
+- [ ] **CICD-005 — Verify status reporting and required checks.** Pastikan hasil workflow tampil sebagai check yang diwajibkan sebelum PR merge; tidak perlu membuat sistem status duplikat jika GitHub sudah menyediakan check run.
+- [ ] **CICD-006 — Verify existing Cloudflare Git integration.** Periksa dashboard/konfigurasi yang sudah ada: branch pemicu, target `dekeku-api-dev`, commit/version yang terdeploy, dan health. Owner reports integration active; independent verification pending.
+- [ ] **CICD-007 — Post-merge Development deployment evidence.** Verifikasi bahwa merge ke `main` benar-benar menghasilkan deployment Development. Jangan buat workflow deployment baru sebelum CICD-006 selesai.
+- [ ] **CICD-008 — Development smoke test evidence.** Verifikasi health dan `/tester` pada deployment yang terbukti aktif; automation dapat dipertimbangkan setelah mekanisme existing diketahui.
 
----
-
-## Workstream 2: CI/CD & Testing Infrastructure (TARGET APPROVED — STANDBY)
-
-- [x] **CICD-001 — Audit repository CI/CD & deployment configuration.** Read-only audit complete on `dev` commit `09df42e`. No workflow files, secrets, or deployment configs changed.
-- [x] **CICD-002 — Establish workflow trigger boundary.** APPROVED TARGET POLICY: PRs run validation only; merges to `main` trigger Development-only deployment.
-- [x] **CICD-003 — Define PR validation check matrix.** SPEC COMPLETE: `project/CICD_VALIDATION_CONTRACT.md`.
-- [x] **CICD-004 — Implement PR validation workflow.** Workflow `.github/workflows/pr-validation.yml` implemented on `dev`. Validation runs on PR to `main`.
-- [ ] **CICD-005 — Implement PR check status reporting.** Awaiting first live PR validation run.
-- [ ] **CICD-006 — Audit Cloudflare Worker deployment targets.** Development Worker `dekeku-api-dev` approved; Production Worker `github` protected. Existing Cloudflare Git integration needs dashboard verification.
-- [ ] **CICD-007 — Configure GitHub deployment credentials for Development.** Development-only API token / credentials configuration.
-- [ ] **CICD-008 — Create Development deployment workflow.** Deployment triggered only on merge to `main` targeting `dekeku-api-dev`.
-- [ ] **CICD-009 — Implement post-deployment smoke test.** Automated health check against `dekeku-api-dev`.
-- [ ] **CICD-010 — Verify end-to-end CI/CD execution.** Complete PR validation, merge, deployment, and verification flow on Development.
+## Aturan verifikasi
+- `npm test` dilarang dijalankan kecuali pemilik mengubah instruksi.
+- Bedakan unit/regression tests dari runtime/browser E2E dan deployment verification.
+- Gunakan `VERIFIED`, `FAILED`, `NOT VERIFIED`, `NEEDS INVESTIGATION`, atau `NOT RUN`.
+- E2E mutatif hanya menggunakan repository/fixture yang disetujui; jangan menulis atau menghapus data website nyata tanpa izin terpisah.
+- Perubahan kode dikerjakan pada `dev`; PR ke `main` setelah stabil dan review pemilik. Jangan merge PR secara mandiri.
