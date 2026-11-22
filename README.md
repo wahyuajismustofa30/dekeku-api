@@ -96,6 +96,7 @@ dekeku-api/
 
 | Method | Path | Description |
 |--------|------|-------------|
+| GET | `/api/v1/admin/write/file?path=...` | Read parsed JSON content from selected public project repository (admin JWT required) |
 | GET | `/api/v1/admin/write/sha?path=...` | Retrieve current Blob SHA for an existing JSON file (admin JWT required) |
 | POST | `/api/v1/admin/write/create` | Create new JSON file in `public/data/` |
 | PUT | `/api/v1/admin/write/update` | Update existing JSON file (tester retrieves SHA automatically; API still requires SHA) |
