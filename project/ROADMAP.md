@@ -7,7 +7,7 @@ Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PU
 - **PUB-001 specification complete**: `project/PUBLIC_REPOSITORY_CONTRACT.md` and `docs/schemas/public-repository-config.schema.json` define the versioned public project config contract.
 - **PUB-002 verified locally**: syntax checks PASS and `test/repository-metadata.test.js` 12/12 PASS. Development runtime remains unverified.
 - **PUB-003 complete**: Admin SHA/CREATE/UPDATE/DELETE use the shared validated project repository resolver and GitHub-reported default branch; verified via `node --test`.
-- **PUB-004 & PUB-004-FIX complete (audited & remediated)**: `GET /api/v1/admin/browse` implemented with Admin JWT, path allowlisting, child path matching, hidden/sensitive file rejection, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), accurate upstream truncation handling (Contents API >= 1,000 items & Git Trees API `truncated`), 1,000 items cap, and pagination; 22/22 PASS in focused suite (54/54 PASS total).
+- **PUB-004 implemented; PUB-004-FIX follow-up remediation added but NOT VERIFIED**: `GET /api/v1/admin/browse` implemented with Admin JWT, path allowlisting, child path matching, hidden/sensitive file rejection, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), accurate upstream truncation handling (Contents API >= 1,000 items & Git Trees API `truncated`), 1,000 items cap, and pagination; 22/22 PASS in focused suite (54/54 PASS total).
 - Prioritas: kelola data publik pada repository masing-masing proyek.
 - Tahapan aktif: PUB-001 sampai PUB-006 di [BACKLOG.md](BACKLOG.md).
 - Pengaturan repository privat, private account storage, mapping, dan perluasan RBAC diarsipkan (A-003); catatan milestone lama di bawah dipertahankan sebagai sejarah, bukan antrean kerja.
@@ -38,3 +38,7 @@ Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PU
 
 ### PUB-006 — Development End-to-End Verification (PENDING)
 - Uji alur lengkap dengan sedikitnya dua repository proyek publik pada Development Worker `dekeku-api-dev`.
+
+
+### PUB-004-FIX Follow-up Status (2026-11-22)
+Actual Git Trees branch/tree traversal has been implemented in `src/modules/github/browse.js`, branch-name encoding fixed in `src/core/github.js`, and focused integration-style tests added in `test/browse-git-tree.test.js`. This is NOT VERIFIED: tests were not run, and the existing browse-router test mocks still require migration from Contents API responses to Git Trees API responses. PUB-005 remains blocked.
