@@ -67,7 +67,7 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - **PUB-DATA-007:** API reference, Usage, Guestbook integration, plan, and project status documents updated.
 - **Validation:** focused Guestbook test 14/14 PASS and 7 source syntax checks PASS (owner-reported local Termux evidence). Exact tested SHA unknown. Full suite, Wrangler dry-run for this candidate, remote integration, live write, and Worker runtime remain NOT RUN / NOT VERIFIED.
 - **Next required action:** obtain the exact tested local SHA and compare it with the current PR #29 head; if they differ, rerun the focused tests on the exact candidate. Do not run `test:remote`; it may write to live project data. Do not run the full suite unless separately approved.
-- **Operational boundary:** no PR, no merge, no deployment, no Cloudflare config/secret/variable change, and no Production access. Admin Dashboard remains PAUSED.
+- **Operational boundary:** PR #29 (`dev` → `main`) exists and remains unmerged. No merge, deployment, Cloudflare config/secret/variable change, or Production access is authorized. Admin Dashboard remains PAUSED.
 
 
 ## Latest owner validation — Public Data API (2026-11-23)
