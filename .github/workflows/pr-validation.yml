@@ -120,6 +120,10 @@ jobs:
                 add_suite rbac-user-login.test.js
                 add_suite repository-metadata.test.js
                 add_suite tester-dashboard.test.js
+                add_suite dashboard-refresh.test.js
+                add_suite dashboard-registry.test.js
+                add_suite dashboard-storage.test.js
+                add_suite dashboard-crypto.test.js
                 ;;
               src/middleware/auth.js)
                 add_suite auth.test.js
@@ -135,6 +139,12 @@ jobs:
                 ;;
               src/modules/auth/user-login.js)
                 add_suite rbac-user-login.test.js
+                ;;
+              src/modules/admin/dashboard.js|src/modules/admin/dashboard-storage.js|src/modules/admin/refresh.js|src/modules/admin/refresh-coordinator.js|src/modules/admin/dashboard-page.js)
+                add_suite dashboard-registry.test.js
+                add_suite dashboard-storage.test.js
+                add_suite dashboard-refresh.test.js
+                add_suite dashboard-crypto.test.js
                 ;;
               src/modules/github/files.js|src/modules/github/repositories.js)
                 add_suite repository-metadata.test.js
@@ -168,6 +178,10 @@ jobs:
                 ;;
               src/modules/tester/index.js)
                 add_suite tester-dashboard.test.js
+                ;;
+              src/utils/dashboard-crypto.js)
+                add_suite dashboard-crypto.test.js
+                add_suite dashboard-storage.test.js
                 ;;
               src/utils/base64.js)
                 add_suite write-foundation.test.js
