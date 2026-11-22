@@ -48,3 +48,11 @@ Execution remains on `dev`; PR to `main` only after stable and owner review. No 
 - The prior PUB-004-FIX completion claim is superseded by the follow-up audit finding that the Git Trees API was not invoked at runtime.
 - Actual Git Trees traversal has now been added on `dev`, with a new focused integration-style test file. This change is NOT VERIFIED because tests were not run. `test/browse-router.test.js` has now been migrated to branch/tree fixtures; execute the migrated focused suite locally before acceptance.
 - PUB-004-FIX remains open until the migrated focused regression suite passes with evidence. PUB-005 is blocked until the owner accepts PUB-004-FIX.
+
+
+## Latest Evidence Update — PUB-004-FIX (2026-11-22)
+- Owner's local branch is `dev`, working tree clean, HEAD `4f9747a`; remote `origin/dev` independently confirmed at matching SHA `4f9747a3cb0fcddfb50cc9ef9ee595d30a427a86`.
+- Focused command `node --test test/browse-router.test.js test/browse-git-tree.test.js test/repository-metadata.test.js test/write-router.test.js`: **47 PASS, 0 FAIL, 0 SKIP (8 suites)**.
+- `git diff --check`: no output; recorded PASS from owner report.
+- This evidence supersedes the earlier statement that migrated tests had not been run. PUB-004-FIX focused test set is VERIFIED LOCALLY; Development runtime remains NOT VERIFIED.
+- PUB-005 remains blocked pending explicit owner acceptance and authorization. No PR or deployment is authorized by this test result alone.
