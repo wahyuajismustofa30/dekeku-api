@@ -58,6 +58,10 @@ Unknown properties are rejected in contract v1. Values are case-insensitive only
 6. After parsing, verify repository existence, owner policy, and public visibility using GitHub's API before using it as a target.
 7. Origin is a project selector, not user authentication. Every administrative write must still require a valid Admin JWT. Non-browser callers can forge an `Origin` header; authorization must never depend on that header alone.
 
+8. The DEKEKU Tester is served from the Gateway's own origin, so browser JavaScript cannot set the forbidden `Origin` request header to select a different project. For this first-party Tester only, the client may send `X-DEKEKU-Project-Origin` with the desired project Origin. The server validates this value using the same exact canonical HTTPS `ALLOWED_ORIGINS` allowlist and then fetches that Origin's `/config.json`; the header never supplies an owner, repository, or branch.
+9. If `X-DEKEKU-Project-Origin` is present but invalid or untrusted, reject the request. Do not silently fall back to the actual request `Origin`. If the selector header is absent, existing website requests continue to use the browser-supplied `Origin` header.
+10. The selector header is a repository selector only, not authentication or authorization. All Admin browse/read/write operations still require a valid Admin JWT, and the repository owner, public visibility, and default branch are validated server-side as above.
+
 ## 5. Explicitly prohibited fields
 
 Do not publish any of the following in `config.json`:
