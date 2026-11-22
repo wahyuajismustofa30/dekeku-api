@@ -43,3 +43,12 @@ Tanggal pembaruan: 2026-11-23
 
 ## Langkah berikutnya
 Menunggu review pemilik dan instruksi lebih lanjut. Jangan membuat PR, merge, atau deploy tanpa instruksi eksplisit.
+
+
+## Owner priority update — Public Data API (2026-11-23)
+- Prioritas aktif terbaru: **PUB-DATA-001 s.d. PUB-DATA-007**, sesuai `project/PUBLIC_DATA_API_PLAN.md`.
+- Admin Dashboard ADM-001..ADM-008 **PAUSED** sementara. Pekerjaan dan hasil sebelumnya dipertahankan; tidak dihapus atau dirombak.
+- Arsitektur Public Data API disetujui: `POST /api/v1/public/data/{resource}`, server-side Resource Registry, validator per resource, Project Origin/config.json resolver, shared storage engine, Guestbook sebagai resource pertama, dan legacy `/api/v1/public/submit` sebagai alias sementara.
+- Public website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
+- PUB-DATA-001..007: **NOT STARTED**. Belum ada implementasi atau test yang diklaim.
+- Batas: branch `dev` saja; tidak ada PR, merge, deployment, perubahan Cloudflare config/secrets/variables, atau akses Production.
