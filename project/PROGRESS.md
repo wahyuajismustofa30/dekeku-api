@@ -60,3 +60,15 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004-FIX Public Repository File Browser Securi
 - Status PUB-004-FIX: **TESTS VERIFIED LOCALLY; OWNER ACCEPTANCE PENDING**. Klaim NOT VERIFIED pada catatan historis di atas superseded untuk pengujian terpilih ini. Syntax checks tambahan, full suite (dilarang), dan Development runtime tetap NOT RUN / NOT VERIFIED.
 - PUB-005 tetap BLOCKED sampai pemilik secara eksplisit menerima PUB-004-FIX dan mengizinkan tahap berikutnya.
 - Tidak ada PR, deployment, perubahan Cloudflare, atau perubahan Production.
+
+## PUB-005 — Tester Public File Manager (2026-11-22)
+- Owner explicitly accepted PUB-004-FIX and authorized PUB-005.
+- Existing Tester workspace already had a phpMyAdmin-inspired sidebar/layout, but file operations were only manual forms. Added an interactive File Manager panel to both src/modules/tester/index.js (Worker-served route) and public/tester.html (static copy).
+- Added canonical HTTPS Project Origin input. Tester uses X-DEKEKU-Project-Origin; server validates it against the same exact ALLOWED_ORIGINS entries. Invalid explicit selector is rejected without falling back to request Origin. Existing website requests without the selector continue using the actual Origin header.
+- Added authenticated GET /api/v1/admin/write/file?path=... to return parsed JSON content, size, and SHA for files under public/data/*.json.
+- File Manager UI now supports repository metadata connection, browsing public/, directory navigation, pagination, opening/editing JSON, creating JSON files, updating with fresh SHA, and deleting with confirmation + fresh SHA. File names and metadata are rendered with textContent; no server-provided HTML is injected.
+- Admin JWT remains in memory only. Selected project Origin is stored only in tab sessionStorage. No repository owner/repo/branch is accepted from the client.
+- Tests added: test/project-origin-selector.test.js and test/tester-file-manager.test.js. Extracted Tester inline scripts parsed successfully in a V8 syntax check for both page copies.
+- Automated Node test suites and full Worker module syntax checks: NOT RUN in this session. Development runtime: NOT VERIFIED. npm test remains prohibited.
+- No PR, deployment, Cloudflare configuration, secrets, or Production resources changed.
+- Next: run focused local tests for project-origin selector, file manager, repository metadata, browse router/Git Trees, and write router. Fix any failures before marking PUB-005 verified.
