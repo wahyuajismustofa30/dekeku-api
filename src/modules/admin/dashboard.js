@@ -70,7 +70,7 @@ export const discoverPublicRepositories = async env => {
       const expectedFullName = `${owner}/${item.name}`;
       if (typeof item.full_name !== "string" || item.full_name.toLowerCase() !== expectedFullName.toLowerCase()) continue;
       if (typeof item.default_branch !== "string" || !item.default_branch ||
-          item.default_branch.length > 255 || /[\\x00-\\x1f\\x7f]/.test(item.default_branch)) continue;
+          item.default_branch.length > 255 || /[\x00-\x1f\x7f]/.test(item.default_branch)) continue;
       const updatedAt = typeof item.updated_at === "string" && Number.isFinite(Date.parse(item.updated_at))
         ? item.updated_at : null;
       repositories.push({
