@@ -17,6 +17,7 @@ Menjadi infrastruktur backend "serverless" yang handal untuk mengelola seluruh a
 - **Runtime**: Cloudflare Workers (Edge Computing).
 - **Storage utama fase saat ini**: repository GitHub publik milik masing-masing proyek.
 - Website membaca data publik langsung dari URL statis GitHub/CDN; operasi administratif dilakukan melalui DEKEKU API Gateway.
+- Kontrak discovery repository publik v1: [PUBLIC_REPOSITORY_CONTRACT.md](PUBLIC_REPOSITORY_CONTRACT.md); JSON Schema: `docs/schemas/public-repository-config.schema.json`.
 - **Komunikasi**: REST API (JSON).
 - **Security**:
   - Public Access Policy untuk pembacaan publik.
