@@ -124,6 +124,7 @@ jobs:
                 add_suite dashboard-registry.test.js
                 add_suite dashboard-storage.test.js
                 add_suite dashboard-crypto.test.js
+                add_suite dashboard-router.test.js
                 ;;
               src/middleware/auth.js)
                 add_suite auth.test.js
@@ -145,6 +146,7 @@ jobs:
                 add_suite dashboard-storage.test.js
                 add_suite dashboard-refresh.test.js
                 add_suite dashboard-crypto.test.js
+                add_suite dashboard-router.test.js
                 ;;
               src/modules/github/files.js|src/modules/github/repositories.js)
                 add_suite repository-metadata.test.js
