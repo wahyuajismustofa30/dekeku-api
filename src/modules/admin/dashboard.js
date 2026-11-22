@@ -216,18 +216,30 @@ const parseBody = async request => {
   return body;
 };
 
+const readLatestChecks = async env => {
+  if (!env.DASHBOARD_REFRESH) return {};
+  const stub = env.DASHBOARD_REFRESH.get(env.DASHBOARD_REFRESH.idFromName("dashboard-refresh-v1"));
+  const response = await stub.fetch("https://dashboard-refresh.internal/checks");
+  if (!response.ok) throw new HttpError("Latest repository checks are unavailable", 503);
+  const payload = await response.json();
+  return payload && payload.success && payload.checks && typeof payload.checks === "object" ? payload.checks : {};
+};
+
 export const handleDashboardRepositories = async (request, env) => {
-  const [repositories, stored] = await Promise.all([
+  const [repositories, stored, checks] = await Promise.all([
     discoverPublicRepositories(env),
-    readDashboardDocument(new GitHubClient(env), env)
+    readDashboardDocument(new GitHubClient(env), env),
+    readLatestChecks(env)
   ]);
   const metadata = new Map(stored.document.projects.map(project =>
     [`${project.owner.toLowerCase()}/${project.repo.toLowerCase()}`, project]));
   const items = repositories.map(repository => {
-    const project = metadata.get(repository.fullName.toLowerCase()) || null;
+    const key = repository.fullName.toLowerCase();
+    const project = metadata.get(key) || null;
+    const lastCheck = checks[key] || project?.lastCheck || null;
     return { ...repository, projectType: project?.projectType || "other",
-      domain: project?.domain || null, notes: project?.notes || "",
-      lastCheck: project?.lastCheck || null, metadataExists: Boolean(project) };
+      domain: project?.domain || lastCheck?.cname?.domain || null, notes: project?.notes || "",
+      lastCheck, metadataExists: Boolean(project) };
   });
   return success({ items, total: items.length, storageSha: stored.sha }, 200, { "Cache-Control": "no-store" });
 };
