@@ -101,8 +101,17 @@ No live project repository data was written or deleted by this GitHub source/doc
 
 ## 7. Current branch / CI provenance reconciliation — 2026-11-23
 
+### Documentation repair CI — run #74 (2026-11-23)
+
+- **Commit:** `70046cfcba5cefec99e8772f62aeef644bfd91a5`.
+- **Run ID / number:** `45082714389` / #74.
+- **Result:** SUCCESS; PR Validation job completed all listed steps successfully, including dependency install, JavaScript syntax, Wrangler config/bundle dry-run, focused regression tests, and dependency audit.
+- **Job:** `137394247834` — `PR Validation (Development → Main)`; all returned step summaries were `completed / success`.
+- **Scope:** validates this documentation repair commit only. No deployment, live Worker runtime, or live repository write.
+
+
 - **Latest audited branch:** `dev`.
-- **Latest audited HEAD:** `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
+- **Pre-repair baseline HEAD:** `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
 - **PR #29:** OPEN and unmerged at the latest PR-state query; no merge or deployment performed.
 - **PR workflow query for exact HEAD:** returned an empty `workflow_runs` list. Record this narrowly as **no PR-triggered workflow run returned for this SHA by the queried endpoint**; do not infer a universal absence of checks.
 - **Historical CI evidence:** run #51 SUCCESS is tied to `98d7163add0452832afefeda1462aad5f187ac43`, not the latest HEAD. Reported results remain 139 PASS, 0 FAIL, 0 skipped across 19 suites; npm ci, 64-file syntax checks, Wrangler dry-run, and npm audit 0 vulnerabilities. This evidence does not roll forward to later commits.
