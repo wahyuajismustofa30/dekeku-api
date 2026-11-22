@@ -104,9 +104,33 @@ export const handleBrowse = async (request, env) => {
 
   const { client } = await resolveProjectRepository(request, env);
 
-  let rawResponse;
+  // Resolve the directory through Git Trees so every child has authoritative
+  // Git mode/type metadata. Contents API entries alone cannot reliably prove
+  // that a blob is not a symlink.
+  let treeResponse;
   try {
-    rawResponse = await client.getDirectoryContents(pathValidation.path);
+    const branch = await client.getBranch(client.branch);
+    let treeSha = branch?.commit?.commit?.tree?.sha;
+    if (typeof treeSha !== "string" || !/^[0-9a-f]{40}$/i.test(treeSha)) {
+      throw new HttpError("Unable to verify repository tree", 502);
+    }
+
+    for (const segment of pathValidation.segments) {
+      const parentTree = await client.getTree(treeSha);
+      if (!parentTree || !Array.isArray(parentTree.tree) || parentTree.truncated === true) {
+        throw new HttpError("Unable to verify directory tree", 502);
+      }
+
+      const directory = parentTree.tree.find((entry) =>
+        entry && entry.path === segment && entry.type === "tree" && entry.mode === "040000"
+      );
+      if (!directory || typeof directory.sha !== "string" || !/^[0-9a-f]{40}$/i.test(directory.sha)) {
+        throw new HttpError("Directory not found", 404);
+      }
+      treeSha = directory.sha;
+    }
+
+    treeResponse = await client.getTree(treeSha);
   } catch (err) {
     if (err instanceof HttpError && err.status === 404) {
       throw new HttpError("Directory not found", 404);
@@ -114,20 +138,20 @@ export const handleBrowse = async (request, env) => {
     throw err;
   }
 
-  let rawItems = [];
-  let isUpstreamTruncated = false;
-
-  if (Array.isArray(rawResponse)) {
-    rawItems = rawResponse;
-    if (rawItems.length >= 1000) {
-      isUpstreamTruncated = true;
-    }
-  } else if (rawResponse && typeof rawResponse === "object" && Array.isArray(rawResponse.tree)) {
-    rawItems = rawResponse.tree;
-    isUpstreamTruncated = Boolean(rawResponse.truncated) || rawItems.length >= 1000;
-  } else {
-    throw new HttpError("Path is not a directory", 400);
+  if (!treeResponse || !Array.isArray(treeResponse.tree)) {
+    throw new HttpError("Unable to verify directory tree", 502);
   }
+
+  const rawItems = treeResponse.tree.map((entry) => {
+    if (!entry || typeof entry !== "object" || typeof entry.path !== "string") return entry;
+    const name = entry.path;
+    return {
+      ...entry,
+      name,
+      path: `${pathValidation.path}/${name}`
+    };
+  });
+  const isUpstreamTruncated = Boolean(treeResponse.truncated) || rawItems.length >= 1000;
 
   const UPSTREAM_MAX_ITEMS = 1000;
   const filteredItems = [];
@@ -135,7 +159,7 @@ export const handleBrowse = async (request, env) => {
   for (const item of rawItems) {
     if (!item || typeof item !== "object") continue;
 
-    const mode = typeof item.mode === "string" ? item.mode : "";
+    const mode = typeof item.mode === "string" ? item.mode : "";\n    // Git Trees metadata is mandatory: fail closed for entries without a known mode.\n    if (!mode) continue;
     if (mode === "120000" || mode === "160000") {
       continue;
     }
