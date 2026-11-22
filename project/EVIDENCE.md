@@ -34,3 +34,22 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
 - **PUB-004-FIX & Browse/Write tests**: 54 PASS, 0 FAIL.
 - **PUB-005 Tester File Manager**: 66 PASS, 0 FAIL across 9 suites.
 - **`npm test`**: NOT RUN (per strict project execution policy).
+
+
+## 4. Admin Dashboard implementation checkpoints (2026-11-23)
+
+Instruksi pemilik: testing ditunda sampai seluruh implementasi ADM-001..ADM-007 selesai. Entri ini mencatat keberadaan source/config pada branch `dev`, bukan bukti runtime atau test.
+
+| Area | Source / Config | Status |
+|---|---|---|
+| Encryption | `src/utils/dashboard-crypto.js` | PRESENT — NOT TESTED |
+| Encrypted metadata storage | `src/modules/admin/dashboard-storage.js` | PRESENT — NOT TESTED |
+| Discovery and inspection | `src/modules/admin/dashboard.js` | PRESENT — NOT TESTED |
+| Durable Object coordinator | `src/modules/admin/refresh-coordinator.js` | PRESENT — NOT TESTED |
+| Refresh adapter | `src/modules/admin/refresh.js` | PRESENT — NOT TESTED |
+| Admin UI | `src/modules/admin/dashboard-page.js` | PRESENT — NOT TESTED |
+| Routing and DO export | `src/core/router.js`, `src/index.js` | PRESENT — NOT TESTED |
+| Development binding/migration | `wrangler.jsonc` | PRESENT — Wrangler validation NOT RUN |
+| Development encryption secret | `DB_ENCRYPTION_KEY` | NOT CONFIGURED / NOT VERIFIED from this session |
+
+No test command was run for this workstream. No test counts are claimed. Cloudflare Development deployment/runtime was not changed or verified. Production was not touched.
