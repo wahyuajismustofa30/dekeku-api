@@ -28,3 +28,23 @@ Fokus saat ini adalah pengelolaan data publik pada repository publik masing-masi
 2. Rencanakan peningkatan Admin UI atau integrasi selanjutnya sesuai instruksi pemilik.
 
 Tidak ada deployment, perubahan secret/variable, perubahan Cloudflare/Wrangler, atau operasi Production yang diizinkan oleh roadmap ini.
+
+## Workstream ADM — Centralized Admin Dashboard (approved 2026-11-23)
+
+Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `dekeku-db`; ini merupakan scope baru yang lebih baru daripada status arsip A-003/D-027 untuk pengembangan terdahulu. Catatan lama tetap historis dan tidak dihapus.
+
+| Workstream | Ruang lingkup | Status saat ini |
+|---|---|---|
+| ADM-001 | Durable Object, lifecycle job, AES-GCM encrypted storage foundation, Development binding | IMPLEMENTED — NOT TESTED |
+| ADM-002 | Paginated public repository discovery dan normalized registry | IMPLEMENTED — NOT TESTED |
+| ADM-003 | Encrypted private metadata read/write dan bulk type update | IMPLEMENTED — NOT TESTED |
+| ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | IMPLEMENTED — NOT TESTED |
+| ADM-005 | Inspection config.json, CNAME, assets/data | IMPLEMENTED — NOT TESTED |
+| ADM-006 | Background refresh, progress, cancel, retry, latest result | IMPLEMENTED — NOT TESTED |
+| ADM-007 | Quick actions, selection, export, bulk project type | IMPLEMENTED — NOT TESTED |
+| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | PENDING |
+
+### Urutan kerja dan test policy
+Pemilik memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan dahulu; pengujian dilakukan setelah itu dalam ADM-008. Setiap implementasi sebelum ADM-008 wajib tetap ditandai NOT TESTED. Jangan membuat PR, merge, atau deployment sebelum verifikasi akhir dan arahan pemilik.
+
+Semua binding, migration, secret, deployment, dan runtime yang berkaitan dengan Dashboard hanya untuk Development Worker `dekeku-api-dev`. Production tetap dilarang disentuh.
