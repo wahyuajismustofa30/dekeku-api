@@ -78,6 +78,9 @@ const decodeStoredDocument = (file, resource) => {
     throw new HttpError("Stored document is not valid Base64", 502);
   }
   const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  if (bytes.byteLength !== file.size || bytes.byteLength > resource.maxFileBytes) {
+    throw new HttpError("Stored document size metadata is invalid", 502);
+  }
 
   let source;
   try {
