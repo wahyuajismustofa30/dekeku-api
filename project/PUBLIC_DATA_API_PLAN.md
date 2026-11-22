@@ -90,5 +90,5 @@ Request:
 - Tidak membuat PR, tidak merge, tidak menyentuh `main`.
 - Tidak melakukan deployment atau perubahan Cloudflare config/bindings/secrets/variables.
 - Production Worker, domain, credentials, dan data Production tidak disentuh.
-- **Langkah berikutnya wajib di Termux:** periksa branch dan working tree lokal, amankan perubahan lokal yang belum disimpan, lalu sinkronkan `dev`. Jalankan `node --test test/public-submission.test.js` dan `node --check` pada file source yang berubah. Dokumentasi `docs/USAGE.md` mencatat larangan pemilik atas `npm test`; jangan jalankan `npm test` atau `test:remote` tanpa instruksi baru. Review diff dan catat bukti aktual.
-- Setelah validasi Termux, berhenti untuk review pemilik; tidak ada PR/merge/deployment otomatis.
+- **Langkah berikutnya:** dapatkan SHA dari checkout Termux yang menjalankan focused test, lalu cocokkan dengan HEAD PR #29. Jika berbeda, jalankan ulang focused test pada kandidat yang tepat. Jangan jalankan `test:remote` tanpa persetujuan eksplisit karena dapat menulis ke repository proyek aktif.
+- Setelah provenance test cocok, berhenti untuk review pemilik. PR #29 sudah ada tetapi belum digabung; merge dan deployment tetap memerlukan instruksi/approval terpisah.
