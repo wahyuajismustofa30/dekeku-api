@@ -107,6 +107,8 @@ describe("Caller repository metadata", () => {
       { ...validConfig, project: { id: "demo\n" } },
       { ...validConfig, repository: { ...validConfig.repository, username: "wahyuajismustofa30\n" } },
       { ...validConfig, repository: { ...validConfig.repository, repo: "demo\n" } },
+      { ...validConfig, repository: { ...validConfig.repository, repo: "." } },
+      { ...validConfig, repository: { ...validConfig.repository, repo: ".." } },
       { ...validConfig, extra: true },
       { ...validConfig, repository: { ...validConfig.repository, extra: true } }
     ];
