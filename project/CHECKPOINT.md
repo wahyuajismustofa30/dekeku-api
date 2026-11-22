@@ -32,6 +32,8 @@ This section supersedes the earlier Public Data API validation statements above 
 - Active branch: `dev`.
 - All Dashboard changes in this checkpoint were written to `dev` only.
 
+> **Historical snapshots below:** Earlier checkpoint sections preserve the state at the time they were written. Where they conflict with the opening 2026-11-23 Owner validation update, the opening update is authoritative.
+
 ### Current status
 - PUB-001 through PUB-006: COMPLETE & VERIFIED (historical evidence in `project/EVIDENCE.md`).
 - CICD-001 through CICD-008: COMPLETE (owner-confirmed status).
@@ -56,7 +58,7 @@ This section supersedes the earlier Public Data API validation statements above 
 - Owner-run Wrangler dry-run reported exit code 0 and showed `DASHBOARD_REFRESH` Durable Object binding plus Development variables. This does not verify secrets or runtime.
 - Wrangler dry-run was previously reported successful by owner; full output/target/migration still needs review.
 - Development deployment/runtime NOT VERIFIED and not attempted.
-- GitHub connector commits files immediately; source checkpoints are interim and untested. No PR has been created, no merge has occurred, and no deployment has been triggered by this work.
+- GitHub connector commits files immediately; source checkpoints are interim and untested. PR #29 was subsequently created and remains unmerged; no merge or deployment has been performed.
 - Production Worker `github`, `api.dekeku.my.id`, secrets, variables, and data: NOT TOUCHED.
 
 ### Resume instructions
@@ -84,7 +86,7 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 - **Owner decision:** D-030 approved extensible Public Data API architecture and explicitly reprioritized it ahead of Admin Dashboard.
 - **Dashboard:** ADM-001..ADM-008 are PAUSED temporarily. Existing code, test reports, docs, and blockers are preserved; do not delete or continue Dashboard work unless owner asks.
 - **Public Data API design:** `POST /api/v1/public/data/{resource}`; server-side Resource Registry; per-resource validator; Project Origin/config.json resolver; shared storage engine; Guestbook first; old `/api/v1/public/submit` remains a temporary alias; static public repository/CDN reads; no new GET API in initial scope.
-- **Work status:** PUB-DATA-001..007 NOT STARTED. This checkpoint records planning only, not implementation or test evidence.
+- **Historical work status at initial D-030 planning:** PUB-DATA-001..007 NOT STARTED. Superseded by the implementation and owner-reported Termux validation recorded at the top of this checkpoint.
 - **Resume:** start by reading AGENTS and all canonical docs, inspect actual local `dev` repository/source and specifically compare Guestbook resolver with File Manager resolver. Then begin PUB-DATA-001. Do not assume GitHub is local source of truth.
 - **Safety:** no PR, merge, deployment, Cloudflare config/secrets/variables changes, or Production access. Do not modify Admin Dashboard during this priority window.
 
@@ -112,7 +114,7 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 
 ### Current status
 - PUB-DATA-001..005: IMPLEMENTED on GitHub.
-- PUB-DATA-006: 14 focused mock/fixture test cases authored/updated; NOT RUN.
+- PUB-DATA-006: 14 focused mock/fixture test cases; owner-reported Termux result 14/14 PASS (see opening validation update).
 - PUB-DATA-007: documentation/checkpoint updated.
 - Historical status before owner-run Termux validation. Superseded by the opening validation update: focused test 14/14 PASS and 7 syntax checks PASS (owner-reported).
 - Resolver comparison: legacy Guestbook used private central users/mappings; File Manager uses `resolveProjectRepository()` with trusted HTTPS Origin, schema-v1 `config.json`, trusted owner, public repository verification, and GitHub default branch. Guestbook now uses the File Manager resolver.
