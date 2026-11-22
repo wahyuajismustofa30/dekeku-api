@@ -176,4 +176,123 @@ describe("Public Data API and Guestbook legacy alias", () => {
     assert.equal(generic.status, 405);
     assert.equal(legacy.status, 405);
   });
+
+  test("rejects request bodies above the resource byte limit", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => { calls += 1; throw new Error("unexpected fetch"); };
+    const oversized = new Request("https://api.example.test/api/v1/public/data/guestbook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Origin: "https://example.com" },
+      body: " ".repeat(15361)
+    });
+    const response = await worker.fetch(oversized, env);
+    assert.equal(response.status, 413);
+    assert.equal(calls, 0);
+  });
+
+  test("fails closed when project config does not match schema v1", async () => {
+    let githubCalls = 0;
+    globalThis.fetch = async (url) => {
+      if (String(url) === "https://example.com/config.json") {
+        return new Response(JSON.stringify({ ...config, schema_version: 2 }), {
+          status: 200, headers: { "Content-Type": "application/json" }
+        });
+      }
+      githubCalls += 1;
+      throw new Error("unexpected GitHub call");
+    };
+    const response = await worker.fetch(request(
+      "/api/v1/public/data/guestbook", { name: "A", message: "B" }
+    ), env);
+    assert.equal(response.status, 422);
+    assert.equal(githubCalls, 0);
+  });
+
+  test("re-reads the document after a SHA conflict and retries safely", async () => {
+    let reads = 0;
+    let writes = 0;
+    globalThis.fetch = async (url, options = {}) => {
+      const target = String(url);
+      if (target === "https://example.com/config.json") {
+        return new Response(JSON.stringify(config), {
+          status: 200, headers: { "Content-Type": "application/json" }
+        });
+      }
+      if (target === "https://api.github.com/repos/testowner/site-repo") {
+        return githubResponse(200, {
+          full_name: "testowner/site-repo", visibility: "public", default_branch: "main"
+        });
+      }
+      if (target.includes("/contents/assets/data/bukutamu.json?ref=main")) {
+        if (options.method === "GET") {
+          reads += 1;
+          const entries = reads === 1
+            ? [{ name: "Before conflict", message: "Old" }]
+            : [{ name: "Concurrent", message: "Saved" }];
+          return githubResponse(200, fileResponse(entries, reads === 1 ? "c".repeat(40) : "d".repeat(40)));
+        }
+        if (options.method === "PUT") {
+          writes += 1;
+          if (writes === 1) return githubResponse(409, { message: "Conflict" });
+          const payload = JSON.parse(options.body);
+          assert.equal(payload.sha, "d".repeat(40));
+          assert.equal(JSON.parse(atob(payload.content))[0].name, "Concurrent");
+          return githubResponse(200, { content: { sha: "e".repeat(40) } });
+        }
+      }
+      throw new Error("Unexpected request: " + options.method + " " + target);
+    };
+    const response = await worker.fetch(request(
+      "/api/v1/public/data/guestbook", { name: "Retry", message: "Safe retry" }
+    ), env);
+    assert.equal(response.status, 201);
+    assert.equal(reads, 2);
+    assert.equal(writes, 2);
+  });
+
+  test("rejects malformed stored JSON array before writing", async () => {
+    let writes = 0;
+    globalThis.fetch = async (url, options = {}) => {
+      const target = String(url);
+      if (target === "https://example.com/config.json") {
+        return new Response(JSON.stringify(config), {
+          status: 200, headers: { "Content-Type": "application/json" }
+        });
+      }
+      if (target === "https://api.github.com/repos/testowner/site-repo") {
+        return githubResponse(200, {
+          full_name: "testowner/site-repo", visibility: "public", default_branch: "main"
+        });
+      }
+      if (target.includes("/contents/assets/data/bukutamu.json?ref=main")) {
+        if (options.method === "GET") {
+          return githubResponse(200, {
+            type: "file", size: 2, content: btoa(JSON.stringify({ not: "an array" })),
+            sha: "f".repeat(40)
+          });
+        }
+        writes += 1;
+      }
+      throw new Error("Unexpected request: " + options.method + " " + target);
+    };
+    const response = await worker.fetch(request(
+      "/api/v1/public/data/guestbook", { name: "A", message: "B" }
+    ), env);
+    assert.equal(response.status, 502);
+    assert.equal(writes, 0);
+  });
+
+  test("does not match path traversal or nested resource names", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => { calls += 1; throw new Error("unexpected fetch"); };
+    const traversal = await worker.fetch(request(
+      "/api/v1/public/data/../guestbook", { name: "A", message: "B" }
+    ), env);
+    const nested = await worker.fetch(request(
+      "/api/v1/public/data/guestbook/extra", { name: "A", message: "B" }
+    ), env);
+    assert.equal(traversal.status, 404);
+    assert.equal(nested.status, 404);
+    assert.equal(calls, 0);
+  });
 });
