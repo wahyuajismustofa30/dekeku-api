@@ -30,11 +30,11 @@ export class DashboardRefreshCoordinator {
     if (url.pathname === "/start" && request.method === "POST") {
       let body;
       try { body = await request.json(); } catch { return response({ success: false, error: "Invalid request body" }, 400); }
+      const repositories = await discoverPublicRepositories(this.env);
       const previous = await this.readState();
       if (previous && ACTIVE.has(previous.status)) {
         return response({ success: false, error: "A refresh job is already active" }, 409);
       }
-      const repositories = await discoverPublicRepositories(this.env);
       let targets = repositories;
       if (body.repositories !== undefined) {
         if (!Array.isArray(body.repositories) || body.repositories.length < 1 ||
@@ -68,7 +68,14 @@ export class DashboardRefreshCoordinator {
         pending: targets.map(repo => ({ owner: repo.owner, name: repo.name, defaultBranch: repo.defaultBranch, archived: repo.archived })),
         results: []
       };
-      await this.state.storage.put("latest-job", job);
+      const accepted = await this.state.storage.transaction(async transaction => {
+        const latest = await transaction.get("latest-job");
+        if (latest && ACTIVE.has(latest.status)) return false;
+        job.generation = (latest?.generation || 0) + 1;
+        await transaction.put("latest-job", job);
+        return true;
+      });
+      if (!accepted) return response({ success: false, error: "A refresh job is already active" }, 409);
       await this.state.storage.setAlarm(Date.now() + 25);
       return response({ success: true, job });
     }
@@ -103,7 +110,14 @@ export class DashboardRefreshCoordinator {
         pending: targets.map(repo => ({ owner: repo.owner, name: repo.name, defaultBranch: repo.defaultBranch, archived: repo.archived })),
         results: []
       };
-      await this.state.storage.put("latest-job", job);
+      const accepted = await this.state.storage.transaction(async transaction => {
+        const latest = await transaction.get("latest-job");
+        if (!latest || latest.jobId !== previous.jobId || ACTIVE.has(latest.status)) return false;
+        job.generation = (latest.generation || 0) + 1;
+        await transaction.put("latest-job", job);
+        return true;
+      });
+      if (!accepted) return response({ success: false, error: "Refresh state changed; reload and retry" }, 409);
       await this.state.storage.setAlarm(Date.now() + 25);
       return response({ success: true, job });
     }
