@@ -1,7 +1,7 @@
 # ADM-008 — Final Test & Development Verification Plan
 
 Tanggal: 2026-11-23  
-Status: IN PROGRESS — FIRST OWNER-RUN RESULT RECORDED; FIXES COMMITTED; RERUN PENDING  
+Status: TEST SUITE VERIFIED (OWNER-REPORTED); DEVELOPMENT CONFIG/SECRET/RUNTIME CHECKS PENDING  
 Branch: `dev`  
 Target runtime: Development Worker `dekeku-api-dev` only
 
@@ -36,7 +36,7 @@ Test Dashboard mencakup:
 - Admin JWT boundary untuk protected Dashboard routes (list, metadata, bulk, export, dan refresh state/actions).
 - Metadata upsert, bulk project-type update, list, export, serta validasi target sebelum write.
 
-Hasil pertama yang dilaporkan pemilik: 261 tests, 259 PASS, 2 FAIL, exit code 1. Kedua kegagalan berasal dari test fixture/assertion dan telah diperbaiki pada commit `4ffe0f9` (`test(admin): assert bulk validation errors from module handlers`) dan `eab878a` (`test(admin): construct bodyless GET requests in router authorization test`). Rerun `npm test` masih PENDING. Jangan mengubah status menjadi VERIFIED sampai rerun lulus.
+Hasil pertama yang dilaporkan pemilik: 261 tests, 259 PASS, 2 FAIL, exit code 1. Kedua kegagalan berasal dari test fixture/assertion dan telah diperbaiki pada commit `4ffe0f9` (`test(admin): assert bulk validation errors from module handlers`) dan `eab878a` (`test(admin): construct bodyless GET requests in router authorization test`). Rerun pemilik pada 2026-11-23: `npm ci` berhasil, audit npm menemukan 0 vulnerabilities; `npm test` exit code 0 dengan 261 PASS, 0 FAIL, 0 SKIP (44 suites; durasi 10.819 detik). Kedua perbaikan terkonfirmasi oleh rerun ini. Status suite: OWNER-REPORTED PASS; assistant tidak menjalankan ulang secara independen.
 
 ## 3. Wrangler configuration validation
 
@@ -106,3 +106,17 @@ Untuk setiap kelompok test/verification, catat:
 - Jika target Worker tidak eksplisit `dekeku-api-dev`, hentikan.
 - Jangan deploy Production, jangan merge PR, dan jangan mengubah branch `main`.
 - Setelah ADM-008 selesai, berhenti untuk review dan instruksi pemilik.
+
+
+## 8. Latest owner-run verification — 2026-11-23
+
+- **Test ID / Nama Tes**: ADM-008 automated full regression suite
+- **Commit / Branch**: branch `dev`; exact tested HEAD SHA: NOT VERIFIED from supplied terminal output
+- **Environment**: Ubuntu proot in Termux; Node.js runtime version not included in supplied output
+- **Command**: `npm ci`, then `npm test`
+- **Exit Code**: `npm ci` 0; `npm test` 0 (inferred from completed TAP summary and returned shell prompt; explicit numeric echo not supplied)
+- **PASS / FAIL / SKIP**: 261 / 0 / 0; 44 suites
+- **Output Evidence**: owner supplied full TAP output ending `ℹ tests 261`, `ℹ pass 261`, `ℹ fail 0`, `ℹ skipped 0`, `ℹ duration_ms 10819.445539`; npm audit: 0 vulnerabilities.
+- **Result**: OWNER-REPORTED PASS. Full source-to-commit association and independent reproduction NOT VERIFIED.
+
+Next: inspect full Wrangler dry-run output for target and migration; run Development-only `npx wrangler secret list` and verify required secret names without exposing values. Do not write/rotate secrets, deploy, create PR, merge, or touch Production without the applicable owner approval.
