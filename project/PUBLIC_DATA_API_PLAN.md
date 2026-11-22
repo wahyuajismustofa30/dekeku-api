@@ -76,7 +76,7 @@ Request:
 
 ## 6. Keamanan dan kompatibilitas wajib
 
-- Origin adalah trust selector/CORS boundary, bukan autentikasi.
+- Public Data API harus menggunakan request `Origin` aktual dan mengabaikan `X-DEKEKU-Project-Origin` yang hanya disediakan untuk File Manager. Origin adalah trust selector/CORS boundary, bukan autentikasi.
 - Jangan menerima owner, repository, branch, atau storage path dari klien.
 - Registry dan validator fail-closed.
 - Pertahankan batas ukuran body/file, UTF-8/JSON validation, repository public check, dan SHA concurrency.
