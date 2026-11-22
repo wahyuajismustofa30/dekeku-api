@@ -1,6 +1,6 @@
 # ROADMAP — DEKEKU API Gateway
 
- > Current status is maintained only in [PROGRESS.md](PROGRESS.md). The ordered work queue and safety rules are in [EXECUTION_POLICY.md](EXECUTION_POLICY.md). Phase 2.x completion statements below are historical milestone records and do not imply current RBAC/runtime verification.
+> Current status is maintained only in [PROGRESS.md](PROGRESS.md). The ordered work queue and safety rules are in [EXECUTION_POLICY.md](EXECUTION_POLICY.md). Phase 2.x completion statements below are historical milestone records and do not imply current RBAC/runtime verification.
 
 ## Current Focus — Public Repository Management (2026-11-22)
 - Prioritas: kelola data publik pada repository masing-masing proyek.
