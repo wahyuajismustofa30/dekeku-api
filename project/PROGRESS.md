@@ -17,7 +17,7 @@ Tanggal pembaruan: 2026-11-23
 | CICD-001 s.d. CICD-008 | COMPLETE (Owner Confirmed) | Validasi PR dan integrasi/deployment Development berdasarkan catatan pemilik. |
 | ADM-001 | IMPLEMENTED — NOT TESTED | Durable Object coordinator, AES-256-GCM utility, encrypted metadata adapter, Development binding/migration. Secret `DB_ENCRYPTION_KEY` belum diverifikasi. |
 | ADM-002 | IMPLEMENTED — NOT TESTED | Paginated discovery repository publik berdasarkan configured owner. |
-| ADM-003 | IMPLEMENTED — NOT TESTED | Metadata CRUD/upsert dan bulk update pada `dekeku-db`, encrypted at rest. |
+| ADM-003 | IMPLEMENTED — NOT TESTED | Metadata read/write/upsert dan bulk update pada `dekeku-db`, encrypted at rest. |
 | ADM-004 | IMPLEMENTED — NOT TESTED | UI `/admin`, login Admin, tabel/kartu, search, filter, detail, navigasi. |
 | ADM-005 | IMPLEMENTED — NOT TESTED | Pemeriksaan config.json, CNAME, assets/data dan status repository. |
 | ADM-006 | IMPLEMENTED — NOT TESTED | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. |
