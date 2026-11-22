@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-23 — Documentation status/evidence consistency repair
+
+- Clarified Admin Dashboard's historical approval versus current PAUSED status across MASTER, ROADMAP, PROGRESS, BACKLOG, EVIDENCE, and CHECKPOINT.
+- Distinguished PUB-001..PUB-006 (Public Repository Manager) from PUB-DATA-001..007 (Public Data API).
+- Clarified Guestbook storage precedence: current `assets/data/bukutamu.json`, D-015 legacy path obsolete for new writes, D-021 legacy data preservation; linked the canonical storage guide from README.
+- Recorded CI provenance separately: run #51 on `98d7163`, run #74 on `70046cfc`, run #79 on `f951f1a`; final docs-only correction `86bd680` had no PR-triggered run returned at last check.
+- No source code, main, merge, deployment, Cloudflare configuration/secrets/variables, or Production resources changed.
+
 > Entri terbaru berada di bagian paling atas. Older entries below are historical records and must not be read as the current status when superseded by a newer dated entry.
 
 ## 2026-11-23 — Documentation consistency repair (Public Data API)
