@@ -18,3 +18,10 @@
 - Added Dashboard test suites for crypto, encrypted storage, repository discovery/inspection, refresh lifecycle, route authorization, and metadata API integration.
 - Added focused PR validation mappings and `project/ADM-008_TEST_PLAN.md`.
 - Tests and Wrangler dry-run remain NOT RUN by owner-directed sequencing; Development secret inventory/runtime remain NOT VERIFIED.
+
+## 2026-11-23 — ADM-008 automated test rerun
+- Owner ran `npm ci`: completed successfully; npm audit reported 0 vulnerabilities.
+- Owner reran `npm test` after the two test-only fixes: 261 PASS, 0 FAIL, 0 SKIP across 44 suites (10.819 seconds).
+- Recorded as OWNER-REPORTED PASS; exact tested HEAD SHA and Node.js version were not included in the supplied terminal output.
+- Remaining: confirm full Wrangler dry-run target/migration output and Development secret names; runtime smoke test requires separate deployment approval.
+- No secret write/rotation, PR, merge, or deployment performed. Production untouched.

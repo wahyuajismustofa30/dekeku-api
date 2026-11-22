@@ -1,13 +1,13 @@
 # ADM-008 — Final Test & Development Verification Plan
 
 Tanggal: 2026-11-23  
-Status: IN PROGRESS — FIRST OWNER-RUN RESULT RECORDED; FIXES COMMITTED; RERUN PENDING  
+Status: TEST SUITE VERIFIED (OWNER-REPORTED); DEVELOPMENT CONFIG/SECRET/RUNTIME CHECKS PENDING  
 Branch: `dev`  
 Target runtime: Development Worker `dekeku-api-dev` only
 
 ## 1. Owner-directed sequence
 
-Wahyu memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan terlebih dahulu. Source dan test suite sudah disiapkan pada `dev`; pengujian belum dijalankan. Dokumen ini menjadi urutan pelaksanaan tahap akhir ADM-008.
+Wahyu memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan terlebih dahulu. Implementasi dan test suite telah disiapkan pada `dev`; pemilik telah menjalankan full `npm test` dan melaporkan 261 PASS, 0 FAIL, 0 SKIP. Dokumen ini menjadi urutan verifikasi sisa ADM-008 (Wrangler target/migration, secret inventory, dan Development runtime).
 
 Jangan membuat PR, merge ke `main`, atau melakukan deployment sebelum hasil pengujian ditinjau dan pemilik memberi instruksi.
 
@@ -36,7 +36,7 @@ Test Dashboard mencakup:
 - Admin JWT boundary untuk protected Dashboard routes (list, metadata, bulk, export, dan refresh state/actions).
 - Metadata upsert, bulk project-type update, list, export, serta validasi target sebelum write.
 
-Hasil pertama yang dilaporkan pemilik: 261 tests, 259 PASS, 2 FAIL, exit code 1. Kedua kegagalan berasal dari test fixture/assertion dan telah diperbaiki pada commit `4ffe0f9` (`test(admin): assert bulk validation errors from module handlers`) dan `eab878a` (`test(admin): construct bodyless GET requests in router authorization test`). Rerun `npm test` masih PENDING. Jangan mengubah status menjadi VERIFIED sampai rerun lulus.
+Hasil pertama yang dilaporkan pemilik: 261 tests, 259 PASS, 2 FAIL, exit code 1. Kedua kegagalan berasal dari test fixture/assertion dan telah diperbaiki pada commit `4ffe0f9` (`test(admin): assert bulk validation errors from module handlers`) dan `eab878a` (`test(admin): construct bodyless GET requests in router authorization test`). Rerun pemilik pada 2026-11-23: `npm ci` berhasil, audit npm menemukan 0 vulnerabilities; `npm test` exit code 0 dengan 261 PASS, 0 FAIL, 0 SKIP (44 suites; durasi 10.819 detik). Kedua perbaikan terkonfirmasi oleh rerun ini. Status suite: OWNER-REPORTED PASS; assistant tidak menjalankan ulang secara independen.
 
 ## 3. Wrangler configuration validation
 
@@ -56,13 +56,15 @@ Periksa nama secret tanpa membaca atau mencetak nilainya:
 npx wrangler secret list
 ```
 
-Pastikan Development memiliki:
-- `GITHUB_TOKEN`
-- `JWT_SECRET`
-- `ADMIN_PASSWORD_HASH`
-- `DB_ENCRYPTION_KEY`
+Owner-run `npx wrangler secret list --name dekeku-api-dev` pada 2026-11-23 menunjukkan:
+- `GITHUB_TOKEN` — PRESENT (`secret_text`)
+- `JWT_SECRET` — PRESENT (`secret_text`)
+- `ADMIN_PASSWORD_HASH` — PRESENT (`secret_text`)
+- `DB_ENCRYPTION_KEY` — MISSING
 
-Jangan mengasumsikan secret tersedia hanya karena namanya tercantum di dokumen. Jika `DB_ENCRYPTION_KEY` belum ada, buat secret acak 32-byte base64url langsung melalui pipeline CLI, tanpa mencetak nilainya:
+Do not create a replacement key until the existence/readability of `dekeku-db/private/dashboard/projects.json` and any prior encryption-key provenance are established. GitHub connector lookup for that exact path returned HTTP 404, which is inconclusive because inaccessible private resources may also return 404. Never overwrite or rotate an encryption key used by existing ciphertext.
+
+Jangan mengasumsikan secret tersedia hanya karena namanya tercantum di dokumen. If the private encrypted metadata file is confirmed absent and the owner authorizes provisioning, create a new random 32-byte base64url Development secret via CLI without printing its value:
 
 ```bash
 node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("base64url"))' | npx wrangler secret put DB_ENCRYPTION_KEY
@@ -106,3 +108,22 @@ Untuk setiap kelompok test/verification, catat:
 - Jika target Worker tidak eksplisit `dekeku-api-dev`, hentikan.
 - Jangan deploy Production, jangan merge PR, dan jangan mengubah branch `main`.
 - Setelah ADM-008 selesai, berhenti untuk review dan instruksi pemilik.
+
+
+## 8. Latest owner-run verification — 2026-11-23
+
+- **Test ID / Nama Tes**: ADM-008 automated full regression suite
+- **Commit / Branch**: branch `dev`; exact tested HEAD SHA: NOT VERIFIED from supplied terminal output
+- **Environment**: Ubuntu proot in Termux; Node.js runtime version not included in supplied output
+- **Command**: `npm ci`, then `npm test`
+- **Exit Code**: `npm ci` 0; `npm test` 0 (inferred from completed TAP summary and returned shell prompt; explicit numeric echo not supplied)
+- **PASS / FAIL / SKIP**: 261 / 0 / 0; 44 suites
+- **Output Evidence**: owner supplied full TAP output ending `ℹ tests 261`, `ℹ pass 261`, `ℹ fail 0`, `ℹ skipped 0`, `ℹ duration_ms 10819.445539`; npm audit: 0 vulnerabilities.
+- **Result**: OWNER-REPORTED PASS. Full source-to-commit association and independent reproduction NOT VERIFIED.
+
+Next: inspect full Wrangler dry-run output for target and migration; run Development-only `npx wrangler secret list` and verify required secret names without exposing values. Do not write/rotate secrets, deploy, create PR, merge, or touch Production without the applicable owner approval.
+
+
+## 9. Development secret inventory — 2026-11-23
+
+Owner-run `npx wrangler secret list --name dekeku-api-dev` output confirms `ADMIN_PASSWORD_HASH`, `GITHUB_TOKEN`, and `JWT_SECRET` are present as `secret_text`; `DB_ENCRYPTION_KEY` is missing. Exact secret values were not requested or exposed. GitHub lookup for `dekeku-db/private/dashboard/projects.json` returned 404; this is inconclusive for private-resource existence/access. Provisioning a new key is held until the encrypted metadata file and key provenance are confirmed. No secret was written or rotated.

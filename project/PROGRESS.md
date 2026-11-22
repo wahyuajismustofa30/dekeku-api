@@ -38,7 +38,6 @@ Tanggal pembaruan: 2026-11-23
 ## Blocker dan catatan verifikasi
 - Local test execution (`npm test`): **261 tests, 261 PASS, 0 FAIL, 0 skipped** (44 test suites).
 - Wrangler dry-run (`npx wrangler deploy --dry-run`): **SUCCESS (exit code 0)**. Menampilkan binding `DASHBOARD_REFRESH` (DashboardRefreshCoordinator) serta environment variables `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, dan `ALLOWED_ORIGINS`.
-- Secret inventory (`wrangler secret list`): NOT RUN / NOT VERIFIED (memerlukan autentikasi Cloudflare interaktif di sandbox offline).
 - Deployment Cloudflare Worker Development (`dekeku-api-dev`): NOT RUN (sengaja dilewati sesuai batasan instruksi "jangan melakukan deployment").
 - Production: NOT TOUCHED.
 

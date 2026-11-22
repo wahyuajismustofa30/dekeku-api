@@ -35,16 +35,19 @@ Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `deke
 
 | Workstream | Ruang lingkup | Status saat ini |
 |---|---|---|
-| ADM-001 | Durable Object, lifecycle job, AES-GCM encrypted storage foundation, Development binding | IMPLEMENTED — NOT TESTED |
-| ADM-002 | Paginated public repository discovery dan normalized registry | IMPLEMENTED — NOT TESTED |
-| ADM-003 | Encrypted private metadata read/write/upsert dan bulk type update | IMPLEMENTED — NOT TESTED |
-| ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | IMPLEMENTED — NOT TESTED |
-| ADM-005 | Inspection config.json, CNAME, assets/data | IMPLEMENTED — NOT TESTED |
-| ADM-006 | Background refresh, progress, cancel, retry, latest result | IMPLEMENTED — NOT TESTED |
-| ADM-007 | Quick actions, selection, export, bulk project type | IMPLEMENTED — NOT TESTED |
-| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | READY TO EXECUTE — NOT RUN |
+| ADM-001 | Durable Object, lifecycle job, AES-GCM encrypted storage foundation, Development binding | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-002 | Paginated public repository discovery dan normalized registry | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-003 | Encrypted private metadata read/write/upsert dan bulk type update | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-005 | Inspection config.json, CNAME, assets/data | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-006 | Background refresh, progress, cancel, retry, latest result | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-007 | Quick actions, selection, export, bulk project type | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | AUTOMATED TESTS PASS (OWNER-REPORTED); CONFIG/SECRET/RUNTIME PENDING |
 
 ### Urutan kerja dan test policy
-Pemilik memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan dahulu; pengujian dilakukan setelah itu dalam ADM-008. Setiap implementasi sebelum ADM-008 wajib tetap ditandai NOT TESTED. Jangan membuat PR, merge, atau deployment sebelum verifikasi akhir dan arahan pemilik.
+Pemilik memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan dahulu; pengujian dilakukan setelah itu dalam ADM-008. Urutan tersebut telah dipenuhi dan full automated test suite dilaporkan PASS (261/261). Secret inventory dan runtime Development masih menunggu verifikasi. Jangan membuat PR, merge, atau deployment sebelum seluruh verifikasi akhir dan arahan pemilik.
 
 Semua binding, migration, secret, deployment, dan runtime yang berkaitan dengan Dashboard hanya untuk Development Worker `dekeku-api-dev`. Production tetap dilarang disentuh.
+
+### ADM-008 update — 2026-11-23
+Owner reports `npm ci` completed with 0 vulnerabilities and full `npm test` passed 261/261 (44 suites, 0 skipped). This confirms automated test coverage only; exact tested commit SHA/Node version, complete Wrangler target/migration output, Development secret inventory, and live runtime remain NOT VERIFIED. No PR/merge/deployment is authorized by this test result.
