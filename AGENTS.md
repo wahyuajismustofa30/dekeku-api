@@ -60,7 +60,7 @@ Ketika pekerjaan sudah matang:
    - Jika PR terbuka sudah ada: cukup push ke `dev` dan berikan komentar ringkas pada PR tersebut.
    - Jika PR belum ada: buat PR baru dengan deskripsi berisi ringkasan perubahan, daftar file yang diubah, hasil tes aktual (jumlah pass/fail/skip), risiko teknis, dan hal-hal yang tidak dapat diverifikasi.
    - PR wajib melewati validasi CI yang ditetapkan sebelum dapat dinyatakan siap digabung.
-8. Setelah PR digabung dan perubahan masuk ke `main`, kebijakan target yang disetujui adalah menjalankan GitHub Actions untuk deploy **hanya** ke Development Worker `dekeku-api-dev`. PR event tidak boleh memicu deployment. Kebijakan ini baru berlaku setelah CICD-001 s/d CICD-010 selesai dan workflow diverifikasi.
+8. Setelah PR digabung ke `main`, deployment yang diperbolehkan hanya ke Development Worker `dekeku-api-dev`. PR event tidak boleh memicu deployment. Pemilik melaporkan integrasi Cloudflare GitHub yang sudah ada; sebelum membuat workflow deployment tambahan, verifikasi integrasi tersebut (branch trigger, target Worker, deployed version, health). `.github/workflows/pr-validation.yml` hanya validasi PR dan bukan deployment. Jangan deploy sampai mekanisme dan target Development terbukti. Production tetap terlarang.
 
 Ketentuan:
 - Jangan melakukan force-push.
