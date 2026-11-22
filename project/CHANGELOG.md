@@ -4,7 +4,7 @@
 
 ## 2026-11-23 — Documentation consistency repair (Public Data API)
 
-- Reconciled `README.md`, `project/BACKLOG.md`, `project/PUBLIC_DATA_API_PLAN.md`, `project/EVIDENCE.md`, `project/ROADMAP.md`, `project/PROGRESS.md`, `project/CHECKPOINT.md`, `project/DECISIONS.md`, and `project/RECOMMENDATIONS.md` with the implemented Public Data API state and owner-reported validation evidence.
+- Reconciled `README.md`, `project/BACKLOG.md`, `project/PUBLIC_DATA_API_PLAN.md`, `project/EVIDENCE.md`, `project/ROADMAP.md`, `project/PROGRESS.md`, `project/CHECKPOINT.md`, `project/DECISIONS.md`, and `project/RECOMMENDATIONS.md`, and `AGENTS.md` with the implemented Public Data API state and owner-reported validation evidence.
 - Marked old planning and pending-test notes as historical/superseded where later implementation or test evidence exists; clarified that 14/14 is the total focused suite result, not a per-task count.
 - Corrected the resolver migration status, PR #29 status, README documentation inventory, and obsolete AI context link.
 - Documentation-only changes on `dev`. No source code, `main`, merge, deployment, Cloudflare configuration, secrets, variables, or Production resources changed.
