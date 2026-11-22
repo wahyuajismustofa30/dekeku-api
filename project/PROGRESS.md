@@ -5,9 +5,8 @@ Tanggal pembaruan: 2026-11-23
 ## Ringkasan kondisi
 - PUB-001 s.d. PUB-006: COMPLETE & VERIFIED sesuai bukti historis pada Evidence Index.
 - CICD-001 s.d. CICD-008: COMPLETE (sebagian berdasarkan konfirmasi pemilik).
-- Workstream aktif terbaru: Admin Dashboard terpusat (ADM-001 s.d. ADM-008), sesuai instruksi eksplisit pemilik 2026-11-23.
-- Seluruh perubahan Dashboard hanya pada branch `dev`; Production Worker `github`, domain `api.dekeku.my.id`, secrets, variables, dan data Production tidak disentuh.
-- Pemilik memerintahkan pengujian ditunda sampai implementasi ADM-001 s.d. ADM-007 selesai. Karena itu seluruh kode Dashboard berstatus IMPLEMENTED — NOT TESTED, bukan VERIFIED.
+- ADM-001 s.d. ADM-008 (Admin Dashboard terpusat): IMPLEMENTED & LOCALLY VERIFIED (`npm test`: 261 PASS, 0 FAIL; Wrangler dry-run: PASS). Cloudflare deployment/remote runtime tidak dilakukan sesuai instruksi (jangan melakukan deployment).
+- Seluruh perubahan Dashboard pada branch `dev`; Production Worker `github`, domain `api.dekeku.my.id`, secrets, variables, dan data Production tidak disentuh.
 
 ## Status workstream
 
@@ -15,16 +14,16 @@ Tanggal pembaruan: 2026-11-23
 |---|---|---|
 | PUB-001 s.d. PUB-006 | COMPLETE & VERIFIED | Kontrak, trusted Origin, resolver, browse, file manager, dan E2E CRUD historis. |
 | CICD-001 s.d. CICD-008 | COMPLETE (Owner Confirmed) | Validasi PR dan integrasi/deployment Development berdasarkan catatan pemilik. |
-| ADM-001 | IMPLEMENTED — NOT TESTED | Durable Object coordinator, AES-256-GCM utility, encrypted metadata adapter, Development binding/migration. Secret `DB_ENCRYPTION_KEY` belum diverifikasi. |
-| ADM-002 | IMPLEMENTED — NOT TESTED | Paginated discovery repository publik berdasarkan configured owner. |
-| ADM-003 | IMPLEMENTED — NOT TESTED | Metadata read/write/upsert dan bulk update pada `dekeku-db`, encrypted at rest. |
-| ADM-004 | IMPLEMENTED — NOT TESTED | UI `/admin`, login Admin, tabel/kartu, search, filter, detail, navigasi. |
-| ADM-005 | IMPLEMENTED — NOT TESTED | Pemeriksaan config.json, CNAME, assets/data dan status repository. |
-| ADM-006 | IMPLEMENTED — NOT TESTED | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. |
-| ADM-007 | IMPLEMENTED — NOT TESTED | Quick actions, checkbox, bulk refresh, export, bulk project-type update. |
-| ADM-008 | READY TO EXECUTE — NOT RUN | Test suite dan rencana final tersedia di `project/ADM-008_TEST_PLAN.md`. Perlu Node.js 22/Wrangler untuk menjalankan test dan dry-run; secret inventory serta runtime Development belum diverifikasi. |
+| ADM-001 | IMPLEMENTED & VERIFIED (Local) | Durable Object coordinator, AES-256-GCM utility, encrypted metadata adapter, Development binding/migration. Test round-trip dan enkripsi lulus. |
+| ADM-002 | IMPLEMENTED & VERIFIED (Local) | Paginated discovery repository publik berdasarkan configured owner. Test discovery lulus. |
+| ADM-003 | IMPLEMENTED & VERIFIED (Local) | Metadata read/write/upsert dan bulk update pada `dekeku-db`, encrypted at rest. Test storage lulus. |
+| ADM-004 | IMPLEMENTED & VERIFIED (Local) | UI `/admin`, login Admin, tabel/kartu, search, filter, detail, navigasi. Test router/API lulus. |
+| ADM-005 | IMPLEMENTED & VERIFIED (Local) | Pemeriksaan config.json, CNAME, assets/data dan status repository. Test inspection lulus. |
+| ADM-006 | IMPLEMENTED & VERIFIED (Local) | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. Test refresh lulus. |
+| ADM-007 | IMPLEMENTED & VERIFIED (Local) | Quick actions, checkbox, bulk refresh, export, bulk project-type update. Test API/router lulus. |
+| ADM-008 | COMPLETED & VERIFIED (Local) | Test suite lokal `npm test` (261 PASS, 0 FAIL) dan Wrangler dry-run berhasil. Deployment remote / secret list Cloudflare: NOT RUN (per instruksi). |
 
-## Implementasi Dashboard yang sudah masuk branch dev
+## Implementasi Dashboard yang sudah diverifikasi pada branch dev
 - `src/utils/dashboard-crypto.js`
 - `src/modules/admin/dashboard-storage.js`
 - `src/modules/admin/dashboard.js`
@@ -34,14 +33,14 @@ Tanggal pembaruan: 2026-11-23
 - `src/core/router.js`
 - `src/index.js`
 - `wrangler.jsonc`
-- Dokumen desain/spesifikasi dan instruksi kerja diperbarui.
+- Test suite: `test/dashboard-crypto.test.js`, `test/dashboard-storage.test.js`, `test/dashboard-registry.test.js`, `test/dashboard-refresh.test.js`, `test/dashboard-router.test.js`, `test/dashboard-api.test.js` (seluruhnya lulus).
 
-## Blocker dan verifikasi
-- `DB_ENCRYPTION_KEY` pada Development: NOT VERIFIED dari sesi ini. Ketersediaan `GITHUB_TOKEN`, `JWT_SECRET`, dan `ADMIN_PASSWORD_HASH` pada Worker Development juga NOT VERIFIED dari sesi ini. Nilai secret tidak boleh disimpan di GitHub.
-- Wrangler dry-run: OWNER-REPORTED PASS (exit code 0); output menunjukkan Durable Object binding dan vars Development. Full output/target/migration belum diverifikasi independen.
-- Test suite baru sudah ditambahkan ke `package.json` dan PR validation mapping (`dashboard-crypto`, `dashboard-storage`, `dashboard-registry`, `dashboard-refresh`, `dashboard-router`, `dashboard-api`); seluruhnya NOT RUN — sengaja ditunda sampai implementasi ADM-001..007 selesai.
-- Deployment dan runtime Development: NOT VERIFIED; tidak dilakukan dari sesi ini.
+## Blocker dan catatan verifikasi
+- Local test execution (`npm test`): **261 tests, 261 PASS, 0 FAIL, 0 skipped** (44 test suites).
+- Wrangler dry-run (`npx wrangler deploy --dry-run`): **SUCCESS (exit code 0)**. Menampilkan binding `DASHBOARD_REFRESH` (DashboardRefreshCoordinator) serta environment variables `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, dan `ALLOWED_ORIGINS`.
+- Secret inventory (`wrangler secret list`): NOT RUN / NOT VERIFIED (memerlukan autentikasi Cloudflare interaktif di sandbox offline).
+- Deployment Cloudflare Worker Development (`dekeku-api-dev`): NOT RUN (sengaja dilewati sesuai batasan instruksi "jangan melakukan deployment").
 - Production: NOT TOUCHED.
 
 ## Langkah berikutnya
-Implementasi ADM-001..ADM-007 dan test suite sudah tersedia di `dev`. Langkah berikutnya jalankan ADM-008 sesuai `project/ADM-008_TEST_PLAN.md` pada lingkungan Node.js/Wrangler; setelah itu tunggu review dan instruksi pemilik. Jangan buat PR, merge, atau deploy.
+Menunggu review pemilik dan instruksi lebih lanjut. Jangan membuat PR, merge, atau deploy tanpa instruksi eksplisit.

@@ -30,26 +30,27 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
 - **Findings**: File `config.json` is missing from the public repository serving Arto Printing. Gateway requests expecting JSON configuration contract v1 receive HTML error pages, leading to upstream 502/422 responses.
 - **Status**: VERIFIED (Read-Only observation).
 
-## 3. Focused Unit & Regression Tests (Owner-Reported / Prior Audits)
+## 3. Focused Unit & Regression Tests (Prior Audits)
 - **PUB-004-FIX & Browse/Write tests**: 54 PASS, 0 FAIL.
 - **PUB-005 Tester File Manager**: 66 PASS, 0 FAIL across 9 suites.
-- **`npm test`**: NOT RUN (per strict project execution policy).
 
-
-## 4. Admin Dashboard implementation checkpoints (2026-11-23)
-
-Instruksi pemilik: testing ditunda sampai seluruh implementasi ADM-001..ADM-007 selesai. Entri ini mencatat keberadaan source/config pada branch `dev`, bukan bukti runtime atau test.
-
-| Area | Source / Config | Status |
-|---|---|---|
-| Encryption | `src/utils/dashboard-crypto.js` | PRESENT — NOT TESTED |
-| Encrypted metadata storage | `src/modules/admin/dashboard-storage.js` | PRESENT — NOT TESTED |
-| Discovery and inspection | `src/modules/admin/dashboard.js` | PRESENT — NOT TESTED |
-| Durable Object coordinator and latest-check snapshots | `src/modules/admin/refresh-coordinator.js` | PRESENT — NOT TESTED |
-| Refresh adapter | `src/modules/admin/refresh.js` | PRESENT — NOT TESTED |
-| Admin UI | `src/modules/admin/dashboard-page.js` | PRESENT — NOT TESTED |
-| Routing and DO export | `src/core/router.js`, `src/index.js` | PRESENT — NOT TESTED |
-| Development binding/migration | `wrangler.jsonc` | PRESENT — Wrangler validation NOT RUN |
-| Development encryption secret | `DB_ENCRYPTION_KEY` | NOT VERIFIED from this session |
-
-Final execution plan: `project/ADM-008_TEST_PLAN.md` (READY / NOT RUN). Test files prepared: `test/dashboard-crypto.test.js`, `test/dashboard-storage.test.js`, `test/dashboard-registry.test.js`, `test/dashboard-refresh.test.js`, `test/dashboard-router.test.js`, and `test/dashboard-api.test.js`; included in `npm test` and focused PR validation mapping. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on Development is also NOT VERIFIED from this session. No test command was run for this workstream. No test counts are claimed. Cloudflare Development deployment/runtime was not changed or verified. Production was not touched.
+## 4. ADM-008 Admin Dashboard Local Test & Dry-Run Verification (2026-11-23)
+- **Test ID**: ADM-008 Admin Dashboard Suite & Dry-Run
+- **Date / Timestamp**: 2026-11-23
+- **Environment**: Local Node.js 22 & Wrangler CLI
+- **Branch / Commit**: `dev` (clean working tree)
+- **Command 1**: `npm test`
+  - **Exit Code**: 0
+  - **Result**: PASS (`261 tests`, `261 PASS`, `0 FAIL`, `0 skipped`, `44 test suites`).
+  - **Dashboard Test Files Executed**:
+    - `test/dashboard-crypto.test.js` (AES-256-GCM encryption, IV uniqueness, tampering/auth, key constraints, size ceiling)
+    - `test/dashboard-storage.test.js` (Encrypted metadata storage, SHA handling, plaintext rejection)
+    - `test/dashboard-registry.test.js` (Public repository discovery, pagination, config/CNAME/assets validation)
+    - `test/dashboard-refresh.test.js` (Durable Object background refresh coordination, progress, cancel, retry failures-only, snapshots)
+    - `test/dashboard-router.test.js` (Admin JWT boundary, UI shell availability, protection of mutation/data routes)
+    - `test/dashboard-api.test.js` (Metadata upsert, bulk project-type updates, validation, export)
+- **Command 2**: `npx wrangler deploy --dry-run --outdir /tmp/dekeku-dashboard-dry-run`
+  - **Exit Code**: 0
+  - **Result**: PASS (Wrangler dry-run build successful; displays binding `env.DASHBOARD_REFRESH` to `DashboardRefreshCoordinator` Durable Object and environment variables `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, `ALLOWED_ORIGINS`).
+- **Secret List & Remote Deployment**: NOT RUN (per strict execution policy "jangan melakukan deployment" and offline sandbox limitations).
+- **Production**: NOT TOUCHED.
