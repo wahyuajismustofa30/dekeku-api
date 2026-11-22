@@ -51,14 +51,14 @@ Unknown properties are rejected in contract v1. Values are case-insensitive only
 ## 4. Origin-to-config discovery rules
 
 1. The request must contain a canonical HTTPS `Origin` (scheme + host only; no credentials, path, query, fragment, or non-default port).
-2. Origin must be explicitly trusted for repository discovery. In the current implementation, an exact canonical HTTPS entry in `ALLOWED_ORIGINS` is the trust allowlist; wildcard entries are ignored for repository discovery even though they remain usable for CORS. A broad CORS wildcard is not sufficient evidence that a hostname is an approved project-to-repository mapping.
+2. Origin must be trusted for repository discovery by an exact canonical HTTPS entry or an explicitly configured subdomain wildcard in `ALLOWED_ORIGINS`. A wildcard such as `*.dekeku.my.id` matches one or more DNS labels below `dekeku.my.id` (including nested subdomains), but does not match the apex `dekeku.my.id` itself. Matching is case-insensitive and uses a DNS-label boundary, so lookalike suffixes such as `notdekeku.my.id` are rejected. Wildcard trust applies only to canonical HTTPS Origins with no port, path, credentials, query, or fragment.
 3. Fetch only `https://{validated-origin}/config.json`; do not accept a client-supplied config URL, repository URL, API URL, or redirect target.
 4. Fetch with redirects disabled, credentials omitted, an 8-second timeout, and a 32 KiB maximum response body.
 5. Require a successful response and valid UTF-8 JSON matching this schema. Reject missing, malformed, oversized, unsupported-version, or invalid-field documents.
 6. After parsing, verify repository existence, owner policy, and public visibility using GitHub's API before using it as a target.
 7. Origin is a project selector, not user authentication. Every administrative write must still require a valid Admin JWT. Non-browser callers can forge an `Origin` header; authorization must never depend on that header alone.
 
-8. The DEKEKU Tester is served from the Gateway's own origin, so browser JavaScript cannot set the forbidden `Origin` request header to select a different project. For this first-party Tester only, the client may send `X-DEKEKU-Project-Origin` with the desired project Origin. The server validates this value using the same exact canonical HTTPS `ALLOWED_ORIGINS` allowlist and then fetches that Origin's `/config.json`; the header never supplies an owner, repository, or branch.
+8. The DEKEKU Tester is served from the Gateway's own origin, so browser JavaScript cannot set the forbidden `Origin` request header to select a different project. For this first-party Tester only, the client may send `X-DEKEKU-Project-Origin` with the desired project Origin. The server validates this value using the same exact-origin or configured wildcard HTTPS rules from `ALLOWED_ORIGINS` and then fetches that Origin's `/config.json`; the header never supplies an owner, repository, or branch.
 9. If `X-DEKEKU-Project-Origin` is present but invalid or untrusted, reject the request. Do not silently fall back to the actual request `Origin`. If the selector header is absent, existing website requests continue to use the browser-supplied `Origin` header.
 10. The selector header is a repository selector only, not authentication or authorization. All Admin browse/read/write operations still require a valid Admin JWT, and the repository owner, public visibility, and default branch are validated server-side as above.
 
@@ -74,7 +74,7 @@ Do not publish any of the following in `config.json`:
 
 ## 6. Compatibility and implementation status
 
-`src/modules/github/repositories.js` now enforces the schema-v1 object shape, required project ID and repository fields, rejects unknown fields, validates owner against `GITHUB_OWNER`, and accepts repository discovery only from exact canonical HTTPS entries in `ALLOWED_ORIGINS` (wildcard entries are excluded). It also verifies that GitHub returns the requested repository identity, public visibility, and a non-empty safe default branch.
+`src/modules/github/repositories.js` enforces the schema-v1 object shape, required project ID and repository fields, rejects unknown fields, validates owner against `GITHUB_OWNER`, and accepts repository discovery from exact canonical HTTPS entries or configured HTTPS subdomain wildcards in `ALLOWED_ORIGINS`. Wildcards match subdomains only, not the apex, and do not weaken Admin JWT authentication. It also verifies that GitHub returns the requested repository identity, public visibility, and a non-empty safe default branch.
 
 PUB-002 resolver/metadata enforcement is implemented and its focused test suite was reported PASS by the owner (12 PASS, 0 FAIL, 0 SKIP); syntax checks were also reported PASS.
 
