@@ -31,7 +31,7 @@ Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PU
 ### PUB-004 — Public Repository File Browsing (implemented); PUB-004-FIX follow-up (NOT VERIFIED)
 - Endpoint `GET /api/v1/admin/browse?path=public&page=1&per_page=50`.
 - Validasi path `public/`, pementalan traversal, hidden/sensitive files, symlink/submodule filtering (mode `120000`/`160000`, type `symlink`/`submodule`/`commit`, properti `target`/`submodule_git_url`), pencocokan child path presisi, batas upstream 1.000 item, deteksi `truncated: true` presisi, pagination, dan keluaran metadata murni (`name`, `path`, `type`, `size`, `sha`).
-- Verified via `node --test test/browse-router.test.js` (22/22 PASS).
+- Historical pre-remediation test result: `node --test test/browse-router.test.js` (22/22 PASS). This does NOT verify the new Git Trees traversal; current follow-up tests are NOT RUN and legacy mocks require migration.
 
 ### PUB-005 — Tester Public File Manager UI (BLOCKED pending PUB-004-FIX acceptance)
 - Lengkapi UI Tester untuk memilih proyek/repository, menampilkan pohon folder, tabel/editor JSON, serta operasi CRUD aman melalui DEKEKU API Gateway.
