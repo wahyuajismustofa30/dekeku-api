@@ -61,3 +61,10 @@ DEKEKU API Gateway berfungsi sebagai perantara aman (*reverse proxy* & data gate
     - F-02: Konversi Base64 `btoa(String.fromCharCode(...bytes))` belum menggunakan chunking untuk payload > 100KB.
     - F-03: `parseAndValidateBody` belum secara eksplisit menolak jika field `content` bernilai `undefined`.
     - F-04: Header CORS belum dikembalikan pada respons `catch` error di `src/index.js` dan belum memuat method `PUT, DELETE`.
+
+
+## Public Data API architecture update (2026-11-23)
+
+The active public write contract is `POST /api/v1/public/data/{resource}`, with a server-side Resource Registry and per-resource validation/storage policy. Guestbook is the first resource. The resolver uses the request's trusted HTTPS `Origin`, the project's schema-v1 `config.json`, the trusted `GITHUB_OWNER`, public-repository verification, and the repository default branch. Public Data API requests do not accept client-selected owner/repository/branch/path and explicitly ignore `X-DEKEKU-Project-Origin`, which remains a File Manager selector. Guestbook data is appended to the fixed path `assets/data/bukutamu.json`; public websites read it directly from the project's public repository/CDN. The legacy `POST /api/v1/public/submit` route delegates to the same Guestbook handler.
+
+Owner-reported local Termux validation: focused test 14/14 PASS and syntax checks for 7 changed source files PASS. Exact tested local HEAD SHA is unknown; full suite, remote integration, live write, Worker runtime, and deployment remain NOT VERIFIED. See `project/EVIDENCE.md` and `project/CHECKPOINT.md`.
