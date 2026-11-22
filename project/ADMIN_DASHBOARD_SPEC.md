@@ -108,7 +108,7 @@ Pemeriksaan konfigurasi harus mengikuti kontrak repository publik yang sudah ada
 
 - ADM-001: Dev-only Durable Object binding, lifecycle, dan encrypted storage foundation.
 - ADM-002: Paginated public repository discovery dan normalized registry.
-- ADM-003: Private metadata CRUD di `dekeku-db` dengan enkripsi.
+- ADM-003: Private metadata read/write/upsert dan bulk project-type update di `dekeku-db` dengan enkripsi.
 - ADM-004: Admin dashboard UI, list/table/card, search, filter, sort, detail.
 - ADM-005: Repository inspection/check pipeline.
 - ADM-006: Background refresh orchestration, progress, cancel, retry, latest-result persistence.
