@@ -1,19 +1,19 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-22 (PUB-002 implementation in progress)
+Tanggal Pembaruan: 2026-11-22 (PUB-003 implementation in progress)
 
 ## Ringkasan Proyek
 - **Ruang lingkup aktif terbaru**: pengelolaan data publik pada repository masing-masing proyek. Tugas pengaturan repository privat/RBAC dipindahkan ke arsip A-003; kode dan catatan historis tetap dipertahankan.
-- **Fokus pekerjaan berikutnya**: selesaikan verifikasi PUB-002; setelah lulus lanjutkan PUB-003 untuk routing Admin CRUD. Antrean urut ada di `EXECUTION_POLICY.md`.
+- **Fokus pekerjaan saat ini**: PUB-003 — routing Admin SHA/CREATE/UPDATE/DELETE melalui repository publik yang tervalidasi. Antrean urut ada di `EXECUTION_POLICY.md`.
 - **Fase Aktif**: Public Repository Management — pemetaan repository proyek dan pengelolaan file publik. Implementasi multi-repository belum selesai.
 - **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
-- **Prioritas teknis aktif**: PUB-002 — source enforcement sudah ditambahkan, pengujian dan runtime masih menunggu verifikasi.
+- **Prioritas teknis aktif**: PUB-003 — source routing sudah diperbarui; focused regression/syntax tests dan Development runtime masih menunggu verifikasi.
 - **Baseline audit CI/CD**: branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
 - **Larangan tes**: `npm test` NOT RUN sesuai instruksi pemilik proyek. Jangan menjalankannya.
 
-## Daftar Fitur & Status
+## PUB-002 Verification Update (2026-11-22)\n- Owner-reported local verification on branch `dev`: `node --check src/modules/github/repositories.js` PASS; `node --check test/repository-metadata.test.js` PASS; `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP).\n- PUB-002 source and focused test verification are COMPLETE. Development runtime remains NOT VERIFIED.\n\n## PUB-003 Implementation Update (2026-11-22)\n- `resolveProjectRepository(request, env)` is now the shared server-side resolver for metadata and Admin file operations. It requires a canonical trusted Origin, fetches `/config.json`, validates schema v1 and owner, verifies GitHub repository identity/public visibility, and takes `default_branch` only from GitHub metadata.\n- Admin SHA lookup and CREATE/UPDATE/DELETE now construct their GitHub client from that validated repository context; static `GITHUB_REPO`/`GITHUB_BRANCH` no longer determine these write targets. Admin JWT remains enforced by the outer router.\n- `test/write-router.test.js` was updated to mock the config/metadata discovery sequence and assert the GitHub-reported branch is used. These updated tests and syntax checks are NOT RUN yet.\n- Development runtime NOT VERIFIED. No real website repository data was written; no deployment, Wrangler/Cloudflare setting, secret, or Production resource was changed.\n\n## Daftar Fitur & Status
 
 | Komponen | Fitur | Status | Catatan & Temuan Aktual |
 | :--- | :--- | :--- | :--- |
