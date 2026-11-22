@@ -16,7 +16,7 @@ Fokus saat ini adalah pengelolaan data publik pada repository publik masing-masi
 | PUB-004 — Safe public repository browsing | VERIFIED | Git Trees traversal dan pembatasan path teruji. |
 | PUB-004-FIX — Git Trees security remediation | VERIFIED | Fail-closed symlink/submodule/unknown mode teruji. |
 | PUB-005 — Tester File Manager | VERIFIED | File Manager dan JSON CRUD teruji. |
-| PUB-006 — Development end-to-end verification & Investigation | COMPLETE & VERIFIED | Live Development Worker E2E CRUD lifecycle test and Arto Printing config investigation completed successfully. |
+| PUB-006 — Development end-to-end verification & Investigation | COMPLETE & VERIFIED (PUB Repository Manager) | Ini workstream Public Repository Manager/File Manager yang terpisah dari PUB-DATA-006; bukti E2E historis tercatat di `project/EVIDENCE.md`. |
 
 ## CI/CD dan deployment
 - `.github/workflows/pr-validation.yml` menjalankan validasi pada PR `dev` → `main`; workflow ini tidak melakukan deployment.
@@ -29,20 +29,22 @@ Fokus saat ini adalah pengelolaan data publik pada repository publik masing-masi
 
 Tidak ada deployment, perubahan secret/variable, perubahan Cloudflare/Wrangler, atau operasi Production yang diizinkan oleh roadmap ini.
 
-## Workstream ADM — Centralized Admin Dashboard (approved 2026-11-23)
+## Workstream ADM — Centralized Admin Dashboard (historically approved; CURRENT STATUS: PAUSED)
 
 Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `dekeku-db`; ini merupakan scope baru yang lebih baru daripada status arsip A-003/D-027 untuk pengembangan terdahulu. Catatan lama tetap historis dan tidak dihapus.
 
 | Workstream | Ruang lingkup | Status saat ini |
 |---|---|---|
-| ADM-001 | Durable Object, lifecycle job, AES-GCM encrypted storage foundation, Development binding | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
-| ADM-002 | Paginated public repository discovery dan normalized registry | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
-| ADM-003 | Encrypted private metadata read/write/upsert dan bulk type update | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
-| ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
-| ADM-005 | Inspection config.json, CNAME, assets/data | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-001 | Durable Object, lifecycle job, AES-GCM encrypted storage foundation, Development binding | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
+| ADM-002 | Paginated public repository discovery dan normalized registry | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
+| ADM-003 | Encrypted private metadata read/write/upsert dan bulk type update | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
+| ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
+| ADM-005 | Inspection config.json, CNAME, assets/data | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
 | ADM-006 | Background refresh, progress, cancel, retry, latest result | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
-| ADM-007 | Quick actions, selection, export, bulk project type | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
-| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | AUTOMATED TESTS PASS (OWNER-REPORTED); CONFIG/SECRET/RUNTIME PENDING |
+| ADM-007 | Quick actions, selection, export, bulk project type | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
+| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | OWNER-REPORTED LOCAL TEST PASS; CONFIG/SECRET/RUNTIME NOT VERIFIED; WORKSTREAM PAUSED |
+
+**Interpretasi status ADM:** laporan `npm test` 261/261 (44 suites) dan Wrangler dry-run PASS adalah bukti lokal yang dilaporkan pemilik pada checkpoint Dashboard; exact tested SHA dan Node version tidak tersedia. Bukti tersebut bukan CI pada HEAD saat ini, bukan bukti Development runtime/deployment, dan tidak mengubah status workstream yang sekarang PAUSED.
 
 ### Urutan kerja dan test policy (historical Admin Dashboard instruction)
 Historical instruction for the Admin Dashboard checkpoint: the owner required ADM-001..ADM-007 implementation before ADM-008 testing. Urutan tersebut telah dipenuhi dan full automated test suite dilaporkan PASS (261/261). Secret inventory dan runtime Development masih menunggu verifikasi. That instruction applied to the Dashboard phase at that time; Public Data API PR #29 has since been opened. Merge and deployment still require explicit owner approval.
@@ -52,6 +54,10 @@ Semua binding, migration, secret, deployment, dan runtime yang berkaitan dengan 
 ### ADM-008 update — 2026-11-23
 Owner reports `npm ci` completed with 0 vulnerabilities and full `npm test` passed 261/261 (44 suites, 0 skipped). This confirms automated test coverage only; exact tested commit SHA/Node version, complete Wrangler target/migration output, Development secret inventory, and live runtime remain NOT VERIFIED. That Dashboard test result did not itself authorize a PR/merge/deployment at that time; Public Data API PR #29 was created separately later and is OPEN.
 
+
+## Terminology clarification — PUB vs PUB-DATA
+
+`PUB-001..PUB-006` adalah workstream Public Repository Manager/File Manager yang lebih dahulu selesai. `PUB-DATA-001..PUB-DATA-007` adalah workstream Public Data API yang berbeda dan menjadi prioritas aktif. Khususnya, PUB-006 E2E CRUD tidak sama dengan PUB-DATA-006 focused security/integration tests.
 
 ## Owner priority override — Public Data API (2026-11-23)
 
