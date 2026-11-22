@@ -87,8 +87,8 @@ Historical instruction at the time of the Dashboard checkpoint: continue ADM-001
 - **Dashboard:** ADM-001..ADM-008 are PAUSED temporarily. Existing code, test reports, docs, and blockers are preserved; do not delete or continue Dashboard work unless owner asks.
 - **Public Data API design:** `POST /api/v1/public/data/{resource}`; server-side Resource Registry; per-resource validator; Project Origin/config.json resolver; shared storage engine; Guestbook first; old `/api/v1/public/submit` remains a temporary alias; static public repository/CDN reads; no new GET API in initial scope.
 - **Historical work status at initial D-030 planning:** PUB-DATA-001..007 NOT STARTED. Superseded by the implementation and owner-reported Termux validation recorded at the top of this checkpoint.
-- **Resume:** start by reading AGENTS and all canonical docs, inspect actual local `dev` repository/source and specifically compare Guestbook resolver with File Manager resolver. Then begin PUB-DATA-001. Do not assume GitHub is local source of truth.
-- **Safety:** no PR, merge, deployment, Cloudflare config/secrets/variables changes, or Production access. Do not modify Admin Dashboard during this priority window.
+- **Resume (current):** read AGENTS and canonical docs, inspect actual local `dev` checkout and working tree, then obtain the exact tested Termux HEAD SHA. Compare it with the live PR #29 head; if they differ, rerun only the focused test and seven syntax checks on the exact candidate. PUB-DATA-001..005 are already implemented; do not restart them or repeat the resolver comparison.
+- **Safety:** PR #29 already exists and is OPEN; do not create a duplicate. No merge, deployment, Cloudflare config/secrets/variables changes, or Production access. Do not modify Admin Dashboard during this priority window.
 
 
 ## Latest checkpoint — Public Data API implementation on GitHub (2026-11-23)
@@ -121,14 +121,12 @@ Historical instruction at the time of the Dashboard checkpoint: continue ADM-001
 - Legacy `POST /api/v1/public/submit` delegates to the same `guestbook` registry handler.
 - Storage path remains `assets/data/bukutamu.json`; no existing data was moved or deleted.
 
-### Required Termux validation
-1. Confirm local repository path, branch `dev`, and working tree before synchronizing. Do not overwrite unknown local changes.
-2. Fetch/pull the updated `origin/dev` only after preserving any local work.
-3. Run `node --test test/public-submission.test.js`.
-4. Run `node --test test/public-submission.test.js` and `node --check` on changed source files; record actual exit codes and output. `docs/USAGE.md` records the owner's restriction on `npm test`; do not run it without renewed approval.
-5. Review `git diff` and confirm no unrelated files or secrets.
-6. Do not run `npm run test:remote`; it can write to active project repositories.
-7. Report test evidence and stop for owner review.
+### Remaining validation / next action
+1. Obtain `git rev-parse HEAD` from the local Termux checkout that produced the reported 14/14 result.
+2. Fetch the current PR #29 head SHA from GitHub; documentation-only commits may advance the PR head, so do not use an old copied SHA.
+3. If the tested SHA differs from PR #29 head, run `node --test test/public-submission.test.js` and `node --check` for the seven changed source files on the exact candidate; record command, exit code, and output.
+4. Do not run `npm test` or `npm run test:remote` unless separately approved; the remote suite may write to active project repositories.
+5. Review the documentation diff and report evidence. Stop for owner review; do not merge or deploy.
 
 ### Safety
-No PR, merge, deployment, Cloudflare config/bindings/secrets/variables change, or Production access was performed or authorized. Do not proceed to these actions without explicit owner instruction.
+PR #29 (`dev` → `main`) exists and is OPEN, but has not been merged. No merge, deployment, Cloudflare config/bindings/secrets/variables change, or Production access was performed or authorized. Do not proceed without explicit owner instruction.
