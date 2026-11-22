@@ -66,7 +66,7 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - **PUB-DATA-006:** owner-reported local Termux focused test PASS (14/14; 0 failures); see `project/EVIDENCE.md` evidence `PUBDATA-TERMUX-02`.
 - **PUB-DATA-007:** API reference, Usage, Guestbook integration, plan, and project status documents updated.
 - **Validation:** focused Guestbook test 14/14 PASS and 7 source syntax checks PASS (owner-reported local Termux evidence). Exact tested SHA unknown. Full suite, Wrangler dry-run for this candidate, remote integration, live write, and Worker runtime remain NOT RUN / NOT VERIFIED.
-- **Next required action:** obtain the exact tested local SHA and compare it with the current PR #29 head; if they differ, rerun the focused tests on the exact candidate. Do not run `test:remote`; it may write to live project data. Do not run the full suite unless separately approved.
+- **Next required action:** obtain the exact tested local SHA and compare it with PR #29 head `9d010b4f10159975d378df10b2b505d584d535a6`; if they differ, rerun the focused tests on that exact candidate. Do not run `test:remote`; it may write to live project data. Do not run the full suite unless separately approved.
 - **Operational boundary:** PR #29 (`dev` → `main`) exists and remains unmerged. No merge, deployment, Cloudflare config/secret/variable change, or Production access is authorized. Admin Dashboard remains PAUSED.
 
 
