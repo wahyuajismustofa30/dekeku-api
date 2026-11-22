@@ -376,7 +376,7 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - `src/modules/github/repositories.js` now validates exact schema-v1 keys, `schema_version`, project ID format/length, repository username/name, and owner equality with `GITHUB_OWNER`.
 - Repository discovery now requires an exact canonical HTTPS origin listed in `ALLOWED_ORIGINS`; wildcard entries are ignored for this purpose (they remain CORS-only).
 - GitHub metadata must match the requested `owner/repo`, have `visibility: public`, and provide a non-empty default branch without control characters.
-- `test/repository-metadata.test.js` was updated with valid schema fixtures and regression cases for wildcard-only origins, unsupported/missing schema fields, invalid project ID, unknown properties, owner mismatch, invalid repository name, GitHub identity mismatch, missing default branch, and private visibility.
+- `test/repository-metadata.test.js` was updated with valid schema fixtures and regression cases for wildcard-only origins, unsupported/missing schema fields, invalid project ID, control characters, dot-segment repository names, unknown properties, owner mismatch, invalid repository name, GitHub identity mismatch, missing default branch, and private visibility.
 - **Automated tests / syntax checks**: NOT RUN in this session. `npm test` remains prohibited; focused `node --test test/repository-metadata.test.js` is permitted but has not yet been executed because no local checkout/runtime is attached to this session.
 - **Development runtime**: NOT VERIFIED. **Production, Wrangler, Cloudflare settings, secrets and data**: untouched.
 - Next: run the focused suite in the project Termux/Ubuntu checkout; fix any failures, then close PUB-002 before PUB-003.
