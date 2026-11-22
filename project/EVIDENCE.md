@@ -65,7 +65,7 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
 | PUBDATA-SRC-03 | Source | GitHub branch dev | `src/modules/public/submit.js`, `src/core/router.js` | Generic route and legacy alias added; execution NOT VERIFIED |
 | PUBDATA-TEST-01 | Test source | GitHub branch dev | `test/public-submission.test.js` | Mock/fixture test cases updated; NOT RUN |
 | PUBDATA-DOC-01 | Documentation | GitHub branch dev | `docs/PUBLIC_DATA_API.md`, `docs/USAGE.md`, `docs/GUESTBOOK_INTEGRATION.md` | Documentation updated |
-| PUBDATA-TERMUX-01 | Pending validation | Local Termux required | Focused test, syntax/build, approved full suite, diff review | NOT RUN; required before declaring VERIFIED |
+| PUBDATA-TERMUX-01 | Historical pending checkpoint (superseded) | Local Termux required | Focused test, syntax/build, approved full suite, diff review | NOT RUN at that earlier checkpoint; superseded by owner-reported `PUBDATA-TERMUX-02` for the focused test and syntax checks. |
 
 No live project repository data was written or deleted by this GitHub source/documentation work. No Cloudflare deployment or Production change was performed.
 
@@ -73,6 +73,8 @@ No live project repository data was written or deleted by this GitHub source/doc
 
 
 ## 5. Public Data API focused Termux validation — owner-reported (2026-11-23)
+
+> Status note: `PUBDATA-TERMUX-01` is retained as historical evidence of the earlier pending state. It is superseded only for the focused test and seven syntax checks by `PUBDATA-TERMUX-02`; it is not evidence of full-suite, remote, live-write, Worker-runtime, or deployment validation.
 
 - **Evidence ID**: PUBDATA-TERMUX-02
 - **Environment**: Owner's local Termux / Ubuntu proot checkout.
