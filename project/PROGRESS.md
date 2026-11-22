@@ -50,3 +50,13 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004-FIX Public Repository File Browser Securi
 - Added `test/browse-git-tree.test.js` with integration-style mocks verifying real branch/tree endpoints, mode-based symlink/submodule exclusion, and truncation propagation.
 - Verification: NOT RUN in this session (no repository runtime/test runner available through GitHub connector). `test/browse-router.test.js` has now been migrated to mock branch/tree traversal and cover authentication, path restrictions, nested directories, pagination, truncation, default-branch selection, and mode filtering. Tests remain NOT RUN in this session; previous 54/54 evidence predates the new implementation and cannot be carried forward. Do not claim PUB-004-FIX verified yet.
 - PUB-005 remains blocked until the updated focused test suite passes and the owner accepts PUB-004-FIX.
+
+
+## Status Otoritatif Terbaru — PUB-004-FIX (2026-11-22)
+- Branch `dev` telah tersinkron dengan lokal pada commit `4f9747a` (`test(pub-004): normalize fixture formatting`). Working tree lokal dilaporkan bersih.
+- Pemilik menjalankan: `node --test test/browse-router.test.js test/browse-git-tree.test.js test/repository-metadata.test.js test/write-router.test.js` — **47 PASS, 0 FAIL, 0 SKIP** (8 suites; durasi sekitar 2,88 detik).
+- `git diff --check` tidak menghasilkan output; dicatat PASS berdasarkan laporan lokal.
+- Cakupan: Git Trees integration, branch/tree traversal, mode filtering symlink/submodule, truncation propagation, browse router/path/auth/pagination/default branch, repository metadata, dan write router regressions.
+- Status PUB-004-FIX: **TESTS VERIFIED LOCALLY; OWNER ACCEPTANCE PENDING**. Klaim NOT VERIFIED pada catatan historis di atas superseded untuk pengujian terpilih ini. Syntax checks tambahan, full suite (dilarang), dan Development runtime tetap NOT RUN / NOT VERIFIED.
+- PUB-005 tetap BLOCKED sampai pemilik secara eksplisit menerima PUB-004-FIX dan mengizinkan tahap berikutnya.
+- Tidak ada PR, deployment, perubahan Cloudflare, atau perubahan Production.
