@@ -140,9 +140,9 @@ test("uses actual Git Trees metadata and filters symlinks, submodules, hidden an
       { path: ".hidden", type: "blob", mode: "100644", sha: "4".repeat(40), size: 2 },
       { path: "secrets.json", type: "blob", mode: "100644", sha: "5".repeat(40), size: 2 },
       { path: "unknown", type: "blob", mode: "999999", sha: "6".repeat(40), size: 2 },
-      { path: "unverifiable", type: "blob", sha: "7".repeat(40), size: 2 }
-      ,{ path: "nested/forged.json", type: "blob", mode: "100644", sha: "8".repeat(40), size: 2 }
-      ,{ path: "missing-sha.json", type: "blob", mode: "100644", size: 2 }
+      { path: "unverifiable", type: "blob", sha: "7".repeat(40), size: 2 },
+      { path: "nested/forged.json", type: "blob", mode: "100644", sha: "8".repeat(40), size: 2 },
+      { path: "missing-sha.json", type: "blob", mode: "100644", size: 2 }
     ]
   });
 
