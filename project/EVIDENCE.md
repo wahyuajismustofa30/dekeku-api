@@ -66,3 +66,12 @@ Final execution plan: `project/ADM-008_TEST_PLAN.md` (READY / NOT RUN). Test fil
 - **Output Evidence**: full owner-supplied output ends with `ℹ tests 261`, `ℹ pass 261`, `ℹ fail 0`, `ℹ cancelled 0`, `ℹ skipped 0`, `ℹ todo 0`.
 - **Result**: OWNER-REPORTED PASS. Not independently reproduced in this session; does not verify Wrangler target/migration, Cloudflare secrets, Durable Object runtime, or live Development behavior.
 - **Next gate**: confirm complete Wrangler dry-run output and list Development secret names only. Runtime verification requires separate deployment approval. Production NOT TOUCHED.
+
+
+## 6. Development secret inventory — Owner-reported (2026-11-23)
+- Command: `npx wrangler secret list --name dekeku-api-dev`.
+- Present: `ADMIN_PASSWORD_HASH`, `GITHUB_TOKEN`, `JWT_SECRET` (all `secret_text`).
+- Missing: `DB_ENCRYPTION_KEY`.
+- Secret values were not disclosed.
+- GitHub connector lookup for `dekeku-db/private/dashboard/projects.json` returned 404; inconclusive for existence/access to private resource.
+- No secret was written/rotated. New key provisioning held until existing encrypted metadata and prior key provenance are confirmed.
