@@ -84,3 +84,17 @@ No live project repository data was written or deleted by this GitHub source/doc
 - **Syntax validation**: `node --check` succeeded for all 7 changed files: `src/core/router.js`, `src/modules/public/index.js`, `src/modules/public/resource-registry.js`, `src/modules/public/resource-validators.js`, `src/modules/public/storage-engine.js`, `src/modules/public/submit.js`, and `src/modules/github/repositories.js`.
 - **Commit identity**: exact local tested HEAD SHA was not supplied; therefore this evidence is not yet cryptographically tied to the GitHub `dev` HEAD. The SHA `d8dd289` was the earlier pre-documentation-update PR head recorded at audit time; subsequent documentation commits advanced `dev`, so it must not be treated as the current branch head.
 - **Scope boundary**: focused local tests and syntax checks only. No remote integration test, live project data write, Worker runtime test, or deployment is claimed. Production remains untouched.
+
+
+## 6. GitHub Actions PR Validation — run #51 (2026-11-23)
+
+- **Evidence ID:** CICD-PR-051
+- **Workflow:** PR Validation
+- **Run ID / number:** `45080601189` / #51
+- **Commit:** `98d7163add0452832afefeda1462aad5f187ac43`
+- **Result:** SUCCESS
+- **Reported test result:** 139 PASS, 0 FAIL, 0 skipped; 19 test suites.
+- **Other checks:** `npm ci` PASS; syntax checks on 64 JavaScript files PASS; `npx wrangler deploy --dry-run` PASS; `npm audit` reported 0 vulnerabilities.
+- **Run URL:** https://github.com/wahyuajismustofa30/dekeku-api/actions/runs/45080601189
+- **Scope:** CI validation only. The run did not deploy a Worker, verify a live Worker runtime, or perform a live project-repository write. It is evidence for the stated commit; later documentation-only commits on `dev` were not automatically validated by this run.
+- **Test mapping note:** CI reported four Public Data API source files without individual test mapping; the changed focused test file `test/public-submission.test.js` was run. Do not infer per-file coverage beyond the actual workflow output.
