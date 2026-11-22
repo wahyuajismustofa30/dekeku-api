@@ -1,6 +1,8 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-> **Current-state authority (2026-11-23):** The latest Public Data API status is recorded in the final section of this document and supersedes earlier planning-only / NOT STARTED / NOT RUN statements below. Historical entries are retained as history, not current status.
+> **Current-state authority (2026-11-23):** The latest Public Data API status is recorded in the final section below and supersedes earlier planning-only / NOT STARTED / NOT RUN statements. `PUB-001..PUB-006` refer to the separate Public Repository Manager workstream; `PUB-DATA-001..007` refer to the active Public Data API. Admin Dashboard ADM-001..ADM-008 is PAUSED. Historical entries are retained as history, not current status.
+>
+> **Evidence qualification:** Dashboard `npm test` 261/261 and Wrangler dry-run are OWNER-REPORTED local results with no exact tested SHA/Node version supplied; they are not current-HEAD CI or Development runtime evidence. Public Data API focused 14/14 plus seven syntax checks are also owner-reported local evidence with tested SHA unknown. CI run #51 is separately tied only to commit `98d7163`; latest audited `dev` HEAD `e2bc6f4` returned no PR-triggered workflow runs in the commit-runs query.
 
 Tanggal pembaruan: 2026-11-23
 
@@ -16,14 +18,14 @@ Tanggal pembaruan: 2026-11-23
 |---|---|---|
 | PUB-001 s.d. PUB-006 | COMPLETE & VERIFIED | Kontrak, trusted Origin, resolver, browse, file manager, dan E2E CRUD historis. |
 | CICD-001 s.d. CICD-008 | COMPLETE (Owner Confirmed) | Validasi PR dan integrasi/deployment Development berdasarkan catatan pemilik. |
-| ADM-001 | IMPLEMENTED & VERIFIED (Local) | Durable Object coordinator, AES-256-GCM utility, encrypted metadata adapter, Development binding/migration. Test round-trip dan enkripsi lulus. |
+| ADM-001 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Durable Object coordinator, AES-256-GCM utility, encrypted metadata adapter, Development binding/migration. Test round-trip dan enkripsi lulus. |
 | ADM-002 | IMPLEMENTED & VERIFIED (Local) | Paginated discovery repository publik berdasarkan configured owner. Test discovery lulus. |
 | ADM-003 | IMPLEMENTED & VERIFIED (Local) | Metadata read/write/upsert dan bulk update pada `dekeku-db`, encrypted at rest. Test storage lulus. |
 | ADM-004 | IMPLEMENTED & VERIFIED (Local) | UI `/admin`, login Admin, tabel/kartu, search, filter, detail, navigasi. Test router/API lulus. |
 | ADM-005 | IMPLEMENTED & VERIFIED (Local) | Pemeriksaan config.json, CNAME, assets/data dan status repository. Test inspection lulus. |
 | ADM-006 | IMPLEMENTED & VERIFIED (Local) | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. Test refresh lulus. |
 | ADM-007 | IMPLEMENTED & VERIFIED (Local) | Quick actions, checkbox, bulk refresh, export, bulk project-type update. Test API/router lulus. |
-| ADM-008 | COMPLETED & VERIFIED (Local) | Test suite lokal `npm test` (261 PASS, 0 FAIL) dan Wrangler dry-run berhasil. Deployment remote / secret list Cloudflare: NOT RUN (per instruksi). |
+| ADM-008 | COMPLETED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Test suite lokal `npm test` (261 PASS, 0 FAIL) dan Wrangler dry-run berhasil. Deployment remote / secret list Cloudflare: NOT RUN (per instruksi). |
 
 ## Implementasi Dashboard yang sudah diverifikasi pada branch dev
 - `src/utils/dashboard-crypto.js`
@@ -40,7 +42,7 @@ Tanggal pembaruan: 2026-11-23
 ## Blocker dan catatan verifikasi
 - Local test execution (`npm test`): **261 tests, 261 PASS, 0 FAIL, 0 skipped** (44 test suites).
 - Wrangler dry-run (`npx wrangler deploy --dry-run`): **SUCCESS (exit code 0)**. Menampilkan binding `DASHBOARD_REFRESH` (DashboardRefreshCoordinator) serta environment variables `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, dan `ALLOWED_ORIGINS`.
-- Deployment Cloudflare Worker Development (`dekeku-api-dev`): NOT RUN (sengaja dilewati sesuai batasan instruksi "jangan melakukan deployment").
+- Deployment Cloudflare Worker Development (`dekeku-api-dev`): NOT RUN; runtime NOT VERIFIED. Dashboard workstream PAUSED.
 - Production: NOT TOUCHED.
 
 ## Langkah berikutnya (historical Admin Dashboard checkpoint)
