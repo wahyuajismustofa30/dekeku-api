@@ -19,5 +19,21 @@
       "GITHUB_BRANCH": "main",
       "ALLOWED_ORIGINS": "https://dekeku.my.id,*.dekeku.my.id,https://artoprintingpbg.com,*.artoprintingpbg.com"
     }
-  }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DASHBOARD_REFRESH",
+        "class_name": "DashboardRefreshCoordinator"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-dashboard-refresh",
+      "new_sqlite_classes": [
+        "DashboardRefreshCoordinator"
+      ]
+    }
+  ]
 }
