@@ -19,7 +19,7 @@ const getTrustedProjectOrigin = (value, env = {}) => {
     return null;
   }
 
-  // Origin headers must be canonical HTTPS origins, never URLs with paths,
+  // Project Origin selectors must be canonical HTTPS origins, never URLs with paths,
   // credentials, query strings, fragments, or explicit ports.
   if (
     parsed.protocol !== "https:" ||
