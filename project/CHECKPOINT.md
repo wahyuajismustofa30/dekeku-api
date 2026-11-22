@@ -145,6 +145,9 @@ PR #29 (`dev` → `main`) exists and is OPEN, but has not been merged. No merge,
 
 ## Latest audit checkpoint — documentation consistency (2026-11-23)
 ### Documentation repair CI result
+- Run #79 (`45082860459`) completed SUCCESS on preceding docs commit `f951f1a257584bf7b61061e60ea625f3e2e60d07`; all returned validation steps passed.
+- Final docs-only summary correction commit `86bd6807d743067558f2621172bfa9675df3e951` has no PR-triggered run returned and no combined status at the time of this checkpoint. Run #79 must not be attributed to that final SHA.
+
 
 - Commit `70046cfcba5cefec99e8772f62aeef644bfd91a5` received PR Validation run #74 (`45082714389`) with SUCCESS.
 - The returned PR Validation job and every listed step completed successfully, including install, syntax, Wrangler dry-run, focused regression tests, and dependency audit.
