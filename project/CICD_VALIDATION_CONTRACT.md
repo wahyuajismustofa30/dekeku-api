@@ -1,7 +1,7 @@
 # CICD-003 — PR Validation Contract
 
 Tanggal: 2026-11-21
-Status: IMPLEMENTED — workflow dibuat; menunggu validasi run PR aktual.
+Status: IMPLEMENTED — PR validation run #51 SUCCESS (commit 98d7163, 2026-11-23).
 Target PR: `dev` → `main`.
 Batas: validasi CI saja; tidak melakukan deployment.
 
@@ -51,7 +51,7 @@ Batas: validasi CI saja; tidak melakukan deployment.
 - [x] Secrets dan akses Production dikecualikan.
 - [x] Hasil gagal/ambigu fail closed untuk pemeriksaan wajib.
 - [x] Implementasi workflow PR: `.github/workflows/pr-validation.yml` dibuat pada CICD-004.
-- [ ] Bukti run PR aktual: NOT VERIFIED; memerlukan PR `dev` → `main` dan hasil GitHub Actions.
+- [x] Bukti run PR aktual: VERIFIED — GitHub Actions run #51 (ID `45080601189`) pada commit `98d7163add0452832afefeda1462aad5f187ac43`; hasil SUCCESS. Laporan: 139 PASS, 0 FAIL, 0 skipped, 19 suites; `npm ci` PASS; syntax check 64 JavaScript files PASS; Wrangler dry-run PASS; `npm audit` 0 vulnerabilities. Run: https://github.com/wahyuajismustofa30/dekeku-api/actions/runs/45080601189.
 
 
 ## CICD-004 Implementation Notes
@@ -59,4 +59,4 @@ Batas: validasi CI saja; tidak melakukan deployment.
 - Actions are pinned to immutable commit SHAs; permissions are read-only; checkout credentials are not persisted; concurrency is scoped per PR.
 - Focused test selection uses an explicit source-to-test mapping. Changed test files run directly; `test/live-remote.test.js` is never executed.
 - Dependency audit is warning-only. The workflow has no deployment step, Cloudflare credentials, or GitHub write permission.
-- Workflow syntax, job execution, and actual PR check result remain NOT VERIFIED until a real PR run is available.
+- Workflow syntax, job execution, and actual PR check result were verified by run #51 above. This validates the CI workflow only; it is not evidence of deployment, live Worker runtime, or live repository writes.
