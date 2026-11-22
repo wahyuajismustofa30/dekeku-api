@@ -68,3 +68,5 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
 | PUBDATA-TERMUX-01 | Pending validation | Local Termux required | Focused test, syntax/build, approved full suite, diff review | NOT RUN; required before declaring VERIFIED |
 
 No live project repository data was written or deleted by this GitHub source/documentation work. No Cloudflare deployment or Production change was performed.
+
+| PUBDATA-SEC-02 | Test source | GitHub branch dev | `test/public-submission.test.js` | Added regression case proving public route ignores `X-DEKEKU-Project-Origin`; NOT RUN |
