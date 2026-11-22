@@ -90,13 +90,69 @@ describe("Caller repository metadata", () => {
     assert.equal(response.status, 403);
   });
 
-  test("rejects wildcard-only Origin for repository discovery", async () => {
-    globalThis.fetch = async () => {
-      assert.fail("wildcard CORS entries must not authorize repository discovery");
+  test("accepts any HTTPS subdomain covered by the configured wildcard", async () => {
+    const calls = [];
+    globalThis.fetch = async (url) => {
+      calls.push(String(url));
+      return String(url) === "https://shop.dekeku.my.id/config.json"
+        ? configResponse()
+        : githubResponse();
     };
 
     const response = await worker.fetch(request("https://shop.dekeku.my.id"), env);
+    const body = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(body.name, "wahyuajismustofa30/demo");
+    assert.deepEqual(calls, [
+      "https://shop.dekeku.my.id/config.json",
+      "https://api.github.com/repos/wahyuajismustofa30/demo"
+    ]);
+  });
+
+  test("accepts nested HTTPS subdomains covered by the configured wildcard", async () => {
+    globalThis.fetch = async (url) => String(url).endsWith("/config.json")
+      ? configResponse()
+      : githubResponse();
+
+    const response = await worker.fetch(request("https://store.eu.dekeku.my.id"), env);
+    assert.equal(response.status, 200);
+  });
+
+  test("rejects lookalike domains outside the wildcard DNS boundary", async () => {
+    globalThis.fetch = async () => {
+      assert.fail("untrusted lookalike domain must not trigger outbound requests");
+    };
+
+    const response = await worker.fetch(request("https://notdekeku.my.id"), env);
     assert.equal(response.status, 403);
+  });
+
+  test("wildcard does not authorize the apex domain by itself", async () => {
+    globalThis.fetch = async () => {
+      assert.fail("wildcard must not authorize the apex domain");
+    };
+
+    const response = await worker.fetch(request("https://dekeku.my.id"), {
+      ...env,
+      ALLOWED_ORIGINS: "*.dekeku.my.id"
+    });
+    assert.equal(response.status, 403);
+  });
+
+  test("wildcard subdomain trust still requires canonical HTTPS Origin", async () => {
+    globalThis.fetch = async () => {
+      assert.fail("invalid Origin must not trigger outbound requests");
+    };
+
+    for (const origin of [
+      "http://shop.dekeku.my.id",
+      "https://shop.dekeku.my.id:8443",
+      "https://shop.dekeku.my.id/path",
+      "https://shop.dekeku.my.id.evil.example"
+    ]) {
+      const response = await worker.fetch(request(origin), env);
+      assert.equal(response.status, 403, origin);
+    }
   });
 
   test("rejects unsupported schema versions and missing required fields", async () => {
