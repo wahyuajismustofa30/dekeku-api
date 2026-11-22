@@ -1,6 +1,6 @@
 import { HttpError } from "../core/errors.js";
 
-const KEY_ID_PATTERN = /^[A-Za-z0-9._-]{1,32}$/;
+const CURRENT_KEY_ID = "v1";
 const ENVELOPE_KEYS = ["version", "algorithm", "keyId", "iv", "ciphertext"];
 const MAX_PLAINTEXT_BYTES = 700 * 1024;
 const MAX_CIPHERTEXT_BYTES = MAX_PLAINTEXT_BYTES + 64;
@@ -44,9 +44,9 @@ const validatePath = path => {
   }
 };
 
-export const encryptDashboardDocument = async (document, secret, path, keyId = "v1") => {
+export const encryptDashboardDocument = async (document, secret, path, keyId = CURRENT_KEY_ID) => {
   validatePath(path);
-  if (!KEY_ID_PATTERN.test(keyId)) throw new HttpError("Invalid encryption key identifier", 500);
+  if (keyId !== CURRENT_KEY_ID) throw new HttpError("Invalid encryption key identifier", 500);
   let plaintext;
   try { plaintext = new TextEncoder().encode(JSON.stringify(document)); }
   catch { throw new HttpError("Dashboard document cannot be serialized", 422); }
@@ -79,7 +79,7 @@ export const decryptDashboardDocument = async (envelope, secret, path) => {
     Object.keys(envelope).length !== ENVELOPE_KEYS.length ||
     ENVELOPE_KEYS.some(key => !Object.prototype.hasOwnProperty.call(envelope, key)) ||
     envelope.version !== 1 || envelope.algorithm !== "A256GCM" ||
-    typeof envelope.keyId !== "string" || !KEY_ID_PATTERN.test(envelope.keyId)
+    envelope.keyId !== CURRENT_KEY_ID
   ) {
     throw new HttpError("Encrypted dashboard metadata is invalid", 502);
   }
