@@ -36,13 +36,29 @@ const getTrustedProjectOrigin = (value, env = {}) => {
 
   if (typeof env.ALLOWED_ORIGINS !== "string") return null;
 
-  // Only exact entries establish a project-to-repository trust boundary.
-  // Wildcard entries remain valid for CORS, but are deliberately ignored here.
-  const trustedOrigins = env.ALLOWED_ORIGINS
+  // Exact HTTPS origins and explicitly configured HTTPS subdomain wildcards
+  // are trusted for repository discovery. Wildcards match subdomains only,
+  // never the apex domain, and use a label boundary to prevent suffix spoofing.
+  const trusted = env.ALLOWED_ORIGINS
     .split(",")
     .map((entry) => entry.trim())
-    .filter((entry) => {
-      if (!entry || entry.startsWith("*.")) return false;
+    .filter(Boolean)
+    .some((entry) => {
+      if (entry.startsWith("*.")) {
+        const suffix = entry.slice(2).toLowerCase();
+        if (
+          !suffix ||
+          suffix.includes("/") ||
+          suffix.includes(":") ||
+          suffix.includes("*") ||
+          suffix.startsWith(".") ||
+          suffix.endsWith(".")
+        ) return false;
+
+        const hostname = parsed.hostname.toLowerCase();
+        return hostname !== suffix && hostname.endsWith("." + suffix);
+      }
+
       try {
         const candidate = new URL(entry);
         return (
@@ -53,14 +69,15 @@ const getTrustedProjectOrigin = (value, env = {}) => {
           candidate.pathname === "/" &&
           !candidate.search &&
           !candidate.hash &&
-          candidate.origin === entry
+          candidate.origin === entry &&
+          candidate.origin === value
         );
       } catch {
         return false;
       }
     });
 
-  return trustedOrigins.includes(value) ? value : null;
+  return trusted ? value : null;
 };
 
 const validateRepositoryConfig = (config, trustedOwner) => {
