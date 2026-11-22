@@ -2,7 +2,7 @@
 
 - **Contract ID:** PUB-CONFIG-001
 - **Version:** 1
-- **Status:** SPECIFICATION APPROVED FOR IMPLEMENTATION
+- **Status:** IMPLEMENTED IN SOURCE; focused regression tests PASS; Development runtime NOT VERIFIED
 - **Scope:** Public repository metadata only. This contract does not configure private repositories, credentials, user accounts, or RBAC.
 
 ## 1. Purpose
@@ -74,13 +74,26 @@ Do not publish any of the following in `config.json`:
 
 ## 6. Compatibility and implementation status
 
-`src/modules/github/repositories.js` enforces the schema-v1 object shape, required project ID and repository fields, rejects unknown fields, validates owner against `GITHUB_OWNER`, and accepts repository discovery from exact canonical HTTPS entries or configured HTTPS subdomain wildcards in `ALLOWED_ORIGINS`. Wildcards match subdomains only, not the apex, and do not weaken Admin JWT authentication. It also verifies that GitHub returns the requested repository identity, public visibility, and a non-empty safe default branch.
+The current implementation in `src/modules/github/repositories.js` enforces the schema-v1 object shape, required project ID and repository fields, rejects unknown fields, validates owner against `GITHUB_OWNER`, and verifies GitHub repository identity, public visibility, and the repository's safe `default_branch`.
 
-PUB-002 resolver/metadata enforcement is implemented and its focused test suite was reported PASS by the owner (12 PASS, 0 FAIL, 0 SKIP); syntax checks were also reported PASS.
+Trusted Origin validation accepts:
+- Exact canonical HTTPS Origin entries; and
+- Configured HTTPS subdomain wildcard entries such as `*.dekeku.my.id` and `*.artoprintingpbg.com`.
 
-PUB-003 reuses `resolveProjectRepository(request, env)` for Admin SHA lookup and CREATE/UPDATE/DELETE operations.
+A wildcard matches one or more subdomain labels (including nested subdomains), but not the apex domain. Matching is case-insensitive and respects DNS-label boundaries. HTTP, explicit non-default ports, credentials, paths, query strings, fragments, and deceptive suffixes are rejected. Origin remains a project selector, never authentication.
 
-PUB-004 & PUB-004-FIX implement `GET /api/v1/admin/browse` using `resolveProjectRepository(request, env)`. It enforces `public/` path restriction, rejects traversal, hidden/sensitive files, symlinks (mode `"120000"`, type `"symlink"`, or `target`), submodules (mode `"160000"`, type `"submodule"`/`"commit"`, or `submodule_git_url`), requires exact child path matching (`item.path === '${pathValidation.path}/${name}'`), flags upstream truncation accurately (Contents API >= 1,000 items & Git Trees API `truncated: true`), supports pagination (max 100 per page), and returns metadata only (`name`, `path`, `type`, `size`, `sha`) without file contents or internal API URLs. Automated tests verified (22/22 PASS in PUB-004 suite; 54/54 PASS across PUB-002/003/004 combined suites). Development runtime remains NOT VERIFIED.
+PUB-002 through PUB-005 implementation is present in the current source:
+- PUB-003 uses `resolveProjectRepository(request, env)` for Admin SHA lookup and CREATE/UPDATE/DELETE.
+- PUB-004/PUB-004-FIX implements `GET /api/v1/admin/browse` using Git Trees traversal, `public/` restriction, traversal and hidden/sensitive filtering, symlink/submodule/unknown-mode rejection, exact child path matching, truncation reporting, pagination, and metadata-only responses.
+- PUB-005 adds the first-party Tester selector `X-DEKEKU-Project-Origin`, authenticated JSON reader `GET /api/v1/admin/write/file`, and File Manager in both Worker-served and static Tester copies. Admin JWT remains mandatory for all admin operations.
+
+Owner-reported focused regression evidence:
+- PUB-004-FIX focused suite: 47 PASS, 0 FAIL, 0 SKIP.
+- Wildcard Origin metadata suite: 16 PASS, 0 FAIL.
+- PUB-005 seven-file regression command: 66 PASS, 0 FAIL, 0 skipped (9 suites).
+- Development runtime and browser end-to-end behavior: NOT VERIFIED.
+
+The PR containing PUB-005 and wildcard Origin support (#26) has been merged. Remote `main` and `dev` were verified identical at merge commit `c7cdd582003d7162a3842fd9ec612224fc733921`. Merge status does not prove a live Development deployment. Verify the active Worker/version and run PUB-006 before treating the full workflow as operationally accepted.
 
 ## 7. Acceptance criteria for PUB-001
 
