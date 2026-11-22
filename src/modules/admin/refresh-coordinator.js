@@ -77,7 +77,7 @@ export class DashboardRefreshCoordinator {
         return true;
       });
       if (!accepted) return response({ success: false, error: "A refresh job is already active" }, 409);
-      await this.state.storage.setAlarm(Date.now() + 25);
+      await this.state.storage.setAlarm(Date.now() + 1000);
       return response({ success: true, job });
     }
     if (url.pathname === "/cancel" && request.method === "POST") {
@@ -124,7 +124,7 @@ export class DashboardRefreshCoordinator {
         return true;
       });
       if (!accepted) return response({ success: false, error: "Refresh state changed; reload and retry" }, 409);
-      await this.state.storage.setAlarm(Date.now() + 25);
+      await this.state.storage.setAlarm(Date.now() + 1000);
       return response({ success: true, job });
     }
     return response({ success: false, error: "Not Found" }, 404);
@@ -225,6 +225,6 @@ export class DashboardRefreshCoordinator {
       await transaction.put("latest-job", latest);
       return false;
     });
-    if (shouldContinue) await this.state.storage.setAlarm(Date.now() + 25);
+    if (shouldContinue) await this.state.storage.setAlarm(Date.now() + 1000);
   }
 }
