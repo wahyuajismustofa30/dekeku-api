@@ -13,6 +13,7 @@ import { error, success } from "../utils/response.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 import { handlePublicSubmit } from "../modules/public/submit.js";
+import { handlePublicData } from "../modules/public/index.js";
 
 import { getTesterPage } from "../modules/tester/index.js";
 
@@ -71,6 +72,14 @@ export const router = async (request, env) => {
 
     return handlePublicSubmit(request, env);
 
+  }
+
+  // Extensible public data resources. Resource names are resolved only by the
+  // server-side registry; clients cannot supply repository coordinates or paths.
+  const publicDataMatch = pathname.match(/^\/api\/v1\/public\/data\/([a-z0-9-]+)$/);
+  if (publicDataMatch) {
+    if (method !== "POST") return error("Method Not Allowed", 405);
+    return handlePublicData(request, env, publicDataMatch[1]);
   }
 
 
