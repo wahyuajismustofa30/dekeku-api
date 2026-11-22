@@ -7,6 +7,7 @@ const CONFIG_TIMEOUT_MS = 8000;
 const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPO_PATTERN = /^[A-Za-z0-9_.-]{1,100}$/;
 const PROJECT_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CONTROL_CHAR_PATTERN = /[\x00-\x1F\x7F]/;
 
 const getTrustedProjectOrigin = (value, env = {}) => {
   if (typeof value !== "string" || !value) return null;
@@ -88,7 +89,8 @@ const validateRepositoryConfig = (config, trustedOwner) => {
     typeof project.id !== "string" ||
     project.id.length < 2 ||
     project.id.length > 48 ||
-    !PROJECT_ID_PATTERN.test(project.id)
+    !PROJECT_ID_PATTERN.test(project.id) ||
+    CONTROL_CHAR_PATTERN.test(project.id)
   ) {
     return false;
   }
@@ -100,9 +102,11 @@ const validateRepositoryConfig = (config, trustedOwner) => {
     Object.keys(repository).length !== 2 ||
     typeof repository.username !== "string" ||
     !OWNER_PATTERN.test(repository.username) ||
+    CONTROL_CHAR_PATTERN.test(repository.username) ||
     repository.username.toLowerCase() !== String(trustedOwner || "").toLowerCase() ||
     typeof repository.repo !== "string" ||
-    !REPO_PATTERN.test(repository.repo)
+    !REPO_PATTERN.test(repository.repo) ||
+    CONTROL_CHAR_PATTERN.test(repository.repo)
   ) {
     return false;
   }
