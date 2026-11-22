@@ -28,12 +28,12 @@ Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PU
 - Integrasi `resolveProjectRepository(request, env)` ke Admin SHA lookup dan CREATE/UPDATE/DELETE file.
 - Verified via `node --test` (54/54 PASS total combined suites).
 
-### PUB-004 & PUB-004-FIX — Public Repository File Browsing & Security Audit (COMPLETE & VERIFIED)
+### PUB-004 — Public Repository File Browsing (implemented); PUB-004-FIX follow-up (NOT VERIFIED)
 - Endpoint `GET /api/v1/admin/browse?path=public&page=1&per_page=50`.
 - Validasi path `public/`, pementalan traversal, hidden/sensitive files, symlink/submodule filtering (mode `120000`/`160000`, type `symlink`/`submodule`/`commit`, properti `target`/`submodule_git_url`), pencocokan child path presisi, batas upstream 1.000 item, deteksi `truncated: true` presisi, pagination, dan keluaran metadata murni (`name`, `path`, `type`, `size`, `sha`).
 - Verified via `node --test test/browse-router.test.js` (22/22 PASS).
 
-### PUB-005 — Tester Public File Manager UI (NEXT ACTIVE TASK)
+### PUB-005 — Tester Public File Manager UI (BLOCKED pending PUB-004-FIX acceptance)
 - Lengkapi UI Tester untuk memilih proyek/repository, menampilkan pohon folder, tabel/editor JSON, serta operasi CRUD aman melalui DEKEKU API Gateway.
 
 ### PUB-006 — Development End-to-End Verification (PENDING)
