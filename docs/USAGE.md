@@ -84,19 +84,25 @@ npm run dev
    - **Path**: `/api/v1/public/*`
    - **Deskripsi**: Membaca file statis dari direktori `public/` (aman dari path traversal dan pembacaan file sensitif).
 
-4. **Public Guestbook Submission**
+4. **Public Data Submission**
    - **Method**: `POST`
-   - **Path**: `/api/v1/public/submit`
+   - **Path**: `/api/v1/public/data/{resource}`
+   - **Resource aktif**: `guestbook`
    - **Content-Type**: `application/json`
-   - **Payload**:
+   - **Authentication**: tidak memerlukan Admin JWT.
+   - **Origin**: HTTPS Origin harus sesuai `ALLOWED_ORIGINS`; Worker mengambil `config.json` dan memvalidasi repository public melalui resolver File Manager.
+   - **Payload Guestbook**:
      ```json
      {
        "name": "Nama Pengunjung",
-       "message": "Pesan guestbook..."
+       "message": "Pesan guestbook...",
+       "email": "opsional@example.com"
      }
      ```
-   - **Deskripsi**: Mengirimkan pesan guestbook publik yang disimpan secara otomatis ke `public/data/guestbook/`.
-   - **Respons**: `201 Created`
+   - **Storage**: path tetap server-side `assets/data/bukutamu.json` pada repository proyek.
+   - **Legacy alias**: `POST /api/v1/public/submit` meneruskan ke resource Guestbook yang sama.
+   - **Response**: `201 Created`; website membaca JSON langsung dari GitHub Raw/CDN, bukan GET API Gateway.
+   - **Batas**: body 15.360 byte; file 1 MiB; name 1–100, message 1–1000, email opsional maksimal 254 karakter.
 
 ---
 
