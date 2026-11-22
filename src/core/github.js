@@ -176,7 +176,7 @@ export class GitHubClient {
   }
 
   async getBranch(branchName = this.branch) {
-    return this.request(`/branches/${branchName}`, { method: "GET" });
+    return this.request(`/branches/${encodeURIComponent(branchName)}`, { method: "GET" });
   }
 
   async getFile(path) {
