@@ -1,5 +1,7 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
+> **Current-state authority (2026-11-23):** The latest Public Data API status is recorded in the final section of this document and supersedes earlier planning-only / NOT STARTED / NOT RUN statements below. Historical entries are retained as history, not current status.
+
 Tanggal pembaruan: 2026-11-23
 
 ## Ringkasan kondisi
@@ -50,7 +52,7 @@ Menunggu review pemilik dan instruksi lebih lanjut. Jangan membuat PR, merge, at
 - Admin Dashboard ADM-001..ADM-008 **PAUSED** sementara. Pekerjaan dan hasil sebelumnya dipertahankan; tidak dihapus atau dirombak.
 - Arsitektur Public Data API disetujui: `POST /api/v1/public/data/{resource}`, server-side Resource Registry, validator per resource, Project Origin/config.json resolver, shared storage engine, Guestbook sebagai resource pertama, dan legacy `/api/v1/public/submit` sebagai alias sementara.
 - Public website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
-- PUB-DATA-001..007: **NOT STARTED**. Belum ada implementasi atau test yang diklaim.
+- Historical status at the time of D-030 approval: PUB-DATA-001..007 NOT STARTED. Superseded by the implementation and validation updates below.
 - Batas: branch `dev` saja; tidak ada PR, merge, deployment, perubahan Cloudflare config/secrets/variables, atau akses Production.
 
 
@@ -61,10 +63,10 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - **Active workstream:** PUB-DATA-001..PUB-DATA-007.
 - **GitHub implementation:** completed on branch `dev`.
 - **PUB-DATA-001..005:** IMPLEMENTED — API contract/router, server-side registry, shared storage engine, Guestbook migration, and legacy alias.
-- **PUB-DATA-006:** test cases updated in `test/public-submission.test.js`; **NOT RUN** in this GitHub-only phase.
+- **PUB-DATA-006:** owner-reported local Termux focused test PASS (14/14; 0 failures); see `project/EVIDENCE.md` evidence `PUBDATA-TERMUX-02`.
 - **PUB-DATA-007:** API reference, Usage, Guestbook integration, plan, and project status documents updated.
-- **Validation:** Node tests, syntax/build, full suite, Wrangler dry-run, and Worker runtime are **NOT RUN / NOT VERIFIED** for these changes. Do not claim PASS.
-- **Next required action:** Termux validation on the local `dev` checkout. Run `node --test test/public-submission.test.js` and syntax checks for changed source files. `docs/USAGE.md` records the owner's restriction on `npm test`; do not run it without renewed approval. Do not run `test:remote`; it may write to live project data.
+- **Validation:** focused Guestbook test 14/14 PASS and 7 source syntax checks PASS (owner-reported local Termux evidence). Exact tested SHA unknown. Full suite, Wrangler dry-run for this candidate, remote integration, live write, and Worker runtime remain NOT RUN / NOT VERIFIED.
+- **Next required action:** obtain the exact tested local SHA and compare it with the current PR #29 head; if they differ, rerun the focused tests on the exact candidate. Do not run `test:remote`; it may write to live project data. Do not run the full suite unless separately approved.
 - **Operational boundary:** no PR, no merge, no deployment, no Cloudflare config/secret/variable change, and no Production access. Admin Dashboard remains PAUSED.
 
 
