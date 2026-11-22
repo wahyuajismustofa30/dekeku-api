@@ -64,11 +64,11 @@ This section supersedes the earlier Public Data API validation statements above 
 ### Resume instructions
 Historical instruction at the time of the Dashboard checkpoint: continue ADM-001..ADM-007 and defer testing until ADM-008. This is superseded by the later owner priority decision D-030. Do not resume Dashboard while Public Data API remains the active priority. Do not create a PR, merge, or deploy without explicit instruction.
 
-### Latest checkpoint update — 2026-11-23
+### Historical checkpoint update — 2026-11-23 (Admin Dashboard)
 - Automated regression tests: OWNER-REPORTED PASS, 261/261; 0 failed, 0 skipped.
 - npm dependency install/audit: OWNER-REPORTED PASS; 0 vulnerabilities.
 - Remaining ADM-008 checks: full Wrangler dry-run target + migration confirmation; Development secret inventory by names only; runtime smoke test still requires separate explicit deployment approval.
-- No PR, merge, secret write/rotation, or deployment performed by this update. Production remains untouched.
+- At that Dashboard checkpoint no PR, merge, secret write/rotation, or deployment had been performed. PR #29 for Public Data API was created later and is currently OPEN. Production remains untouched.
 
 
 ### Development secret inventory — 2026-11-23
