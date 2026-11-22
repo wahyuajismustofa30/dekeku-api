@@ -124,5 +124,4 @@ Pemeriksaan konfigurasi harus mengikuti kontrak repository publik yang sudah ada
 - Durable Object binding/migration: PRESENT in `wrangler.jsonc` on `dev`; not validated by Wrangler.
 - `DB_ENCRYPTION_KEY` Development secret: NOT VERIFIED from this session. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on the Development Worker is also NOT VERIFIED from this session.
 - Cloudflare Development deployment/runtime: NOT VERIFIED.
-- Development deployment/runtime: NOT VERIFIED.
 - Production: NOT TOUCHED.
