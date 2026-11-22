@@ -32,11 +32,11 @@ export class DashboardRefreshCoordinator {
       let body;
       try { body = await request.json(); } catch { return response({ success: false, error: "Invalid request body" }, 400); }
       if (!body || typeof body !== "object" || Array.isArray(body)) return response({ success: false, error: "Invalid request body" }, 400);
-      const repositories = await discoverPublicRepositories(this.env);
       const previous = await this.readState();
       if (previous && ACTIVE.has(previous.status)) {
         return response({ success: false, error: "A refresh job is already active" }, 409);
       }
+      const repositories = await discoverPublicRepositories(this.env);
       let targets = repositories;
       if (body.repositories !== undefined) {
         if (!Array.isArray(body.repositories) || body.repositories.length < 1 ||
