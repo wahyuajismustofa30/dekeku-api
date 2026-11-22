@@ -70,3 +70,15 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
 No live project repository data was written or deleted by this GitHub source/documentation work. No Cloudflare deployment or Production change was performed.
 
 | PUBDATA-SEC-02 | Test source | GitHub branch dev | `test/public-submission.test.js` | Added regression case proving public route ignores `X-DEKEKU-Project-Origin`; NOT RUN |
+
+
+## 5. Public Data API focused Termux validation — owner-reported (2026-11-23)
+
+- **Evidence ID**: PUBDATA-TERMUX-02
+- **Environment**: Owner's local Termux / Ubuntu proot checkout.
+- **Command**: `node --test test/public-submission.test.js`
+- **Result**: **14 PASS, 0 FAIL, 0 cancelled, 0 skipped, 0 todo**.
+- **Coverage**: generic Guestbook POST without JWT; legacy alias; append with SHA; unknown resource; missing/untrusted Origin; malformed payload and unsupported fields; private repository rejection; POST-only enforcement; request byte limit; config schema-v1 validation; SHA-conflict retry; malformed stored array; path traversal/nested resource rejection; and public-route rejection of the File Manager project-origin override header.
+- **Syntax validation**: `node --check` succeeded for all 7 changed files: `src/core/router.js`, `src/modules/public/index.js`, `src/modules/public/resource-registry.js`, `src/modules/public/resource-validators.js`, `src/modules/public/storage-engine.js`, `src/modules/public/submit.js`, and `src/modules/github/repositories.js`.
+- **Commit identity**: exact local tested HEAD SHA was not supplied; therefore this evidence is not yet cryptographically tied to the current GitHub `dev` HEAD (`d8dd289` reported in the repository audit).
+- **Scope boundary**: focused local tests and syntax checks only. No remote integration test, live project data write, Worker runtime test, or deployment is claimed. Production remains untouched.
