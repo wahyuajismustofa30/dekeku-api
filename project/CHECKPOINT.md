@@ -25,7 +25,7 @@
 - `project/ADMIN_DASHBOARD_SPEC.md`, `project/ADM-001_DESIGN.md`, and canonical project docs updated.
 
 ### Outstanding blockers / limitations
-- Availability of Development secret `DB_ENCRYPTION_KEY` was NOT VERIFIED in this session. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on the Development Worker is also NOT VERIFIED. Add secrets only through Cloudflare Worker Secret management; never commit values to Git.
+- Owner-run inventory confirms `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` are present; `DB_ENCRYPTION_KEY` is missing. GitHub lookup for `dekeku-db/private/dashboard/projects.json` returned 404, inconclusive for private-resource existence/access. Do not provision a replacement key until encrypted metadata existence and prior key provenance are established. Never commit secret values.
 - Historical first owner-run result: 261 total, 259 PASS, 2 FAIL. Test-only fixes were committed as `4ffe0f9` and `eab878a`.
 - Latest owner-run rerun on 2026-11-23: `npm ci` succeeded; `npm test` reports 261 PASS, 0 FAIL, 0 SKIP across 44 suites (OWNER-REPORTED PASS). Exact tested HEAD SHA and Node version were not supplied.
 - Owner-run Wrangler dry-run reported exit code 0 and showed `DASHBOARD_REFRESH` Durable Object binding plus Development variables. This does not verify secrets or runtime.
@@ -42,3 +42,12 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 - npm dependency install/audit: OWNER-REPORTED PASS; 0 vulnerabilities.
 - Remaining ADM-008 checks: full Wrangler dry-run target + migration confirmation; Development secret inventory by names only; runtime smoke test still requires separate explicit deployment approval.
 - No PR, merge, secret write/rotation, or deployment performed by this update. Production remains untouched.
+
+
+### Development secret inventory — 2026-11-23
+- `ADMIN_PASSWORD_HASH`: PRESENT (`secret_text`), owner-reported.
+- `GITHUB_TOKEN`: PRESENT (`secret_text`), owner-reported.
+- `JWT_SECRET`: PRESENT (`secret_text`), owner-reported.
+- `DB_ENCRYPTION_KEY`: MISSING, owner-reported.
+- Lookup of `dekeku-db/private/dashboard/projects.json` returned 404 via GitHub connector; this does not conclusively establish absence because private-resource access can also return 404.
+- No key created, overwritten, or rotated. Confirm metadata absence and key provenance before provisioning.
