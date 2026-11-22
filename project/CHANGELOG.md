@@ -1,3 +1,14 @@
+## [Unreleased] — PUB-002 Public Repository Validation (2026-11-22)
+### Changed
+- Enforced schema-v1 config shape in `src/modules/github/repositories.js`: exact keys, supported version, project ID, repository owner/name, and control-character rejection.
+- Restricted repository discovery to exact canonical HTTPS origins explicitly listed in `ALLOWED_ORIGINS`; wildcard CORS entries no longer establish repository trust.
+- Added upstream metadata checks for exact requested repository identity, public visibility, and a valid default branch.
+- Expanded `test/repository-metadata.test.js` with focused regression cases for schema errors, wildcard origins, owner/repository validation, GitHub identity, visibility, and default branch.
+### Verification / Scope
+- Focused tests and syntax checks: NOT RUN in this session; `npm test` remains prohibited.
+- Development runtime: NOT VERIFIED.
+- No Wrangler configuration, Cloudflare settings, secrets, deployment, real website data, or Production resources changed.
+
 # CHANGELOG — DEKEKU API Gateway
 
 ## [Unreleased] - 2026-11-21
