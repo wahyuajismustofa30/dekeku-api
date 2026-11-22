@@ -12,5 +12,5 @@
 ### Policy and verification
 - Owner instructed that implementation ADM-001..ADM-007 must finish before tests are run; final tests and runtime checks are deferred to ADM-008.
 - Source/config changes are IMPLEMENTED — NOT TESTED. Wrangler validation and Development runtime are NOT VERIFIED.
-- `DB_ENCRYPTION_KEY` Development secret has not been configured or verified in this session.
+- Availability of the `DB_ENCRYPTION_KEY` Development secret was NOT VERIFIED in this session.
 - Production resources were not touched; no PR, merge, or deployment was performed.
