@@ -60,6 +60,11 @@ Batas: validasi CI saja; tidak melakukan deployment.
 - The PR Validation job completed all listed steps successfully: checkout PR head, Node setup, locked dependency install, JavaScript syntax validation, Development Worker config/bundle dry-run, focused regression test selection/execution, and dependency security audit (warning-only step).
 - This run validates that specific documentation-repair commit, not a subsequent commit unless a new run confirms it. It is not a deployment, live Worker runtime test, or live repository write.
 
+### Subsequent documentation-only commits
+
+- Run #79 (ID `45082860459`) completed SUCCESS on commit `f951f1a257584bf7b61061e60ea625f3e2e60d07`; all listed PR Validation steps passed.
+- A final documentation-only correction was then committed as `86bd6807d743067558f2621172bfa9675df3e951`. The commit-runs query returned no PR-triggered run for this final SHA at the time of this check, and its combined commit status contained no statuses. Do not claim run #79 validates `86bd680`.
+
 ## Latest HEAD evidence boundary — 2026-11-23
 
 - Latest audited `dev` HEAD at this checkpoint: `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
