@@ -1,6 +1,6 @@
 import { success, error } from "../../utils/response.js";
 import { HttpError } from "../../core/errors.js";
-import { GitHubClient } from "../../core/github.js";
+import { resolveProjectRepository } from "./repositories.js";
 import { parseAndValidateBody, validateWritablePath, createFile, updateFile, deleteFile } from "./write.js";
 
 /**
@@ -18,7 +18,7 @@ export const handleGetSha = async (request, env) => {
     throw new HttpError(pathValidation.error, pathValidation.status);
   }
 
-  const client = new GitHubClient(env);
+  const { client } = await resolveProjectRepository(request, env);
   const file = await client.getFile(path);
   if (file.type !== "file") {
     throw new HttpError("Path is not a file", 400);
@@ -46,7 +46,7 @@ export const handleCreate = async (request, env) => {
   try {
     const { path, content, message, finalSize, serialisedContent } = await parseAndValidateBody(request);
 
-    const client = new GitHubClient(env);
+    const { client } = await resolveProjectRepository(request, env);
     const result = await createFile(client, path, serialisedContent, message || "Create file");
 
     return success({
@@ -78,7 +78,7 @@ export const handleUpdate = async (request, env) => {
       throw new HttpError("SHA is required for update operation", 400);
     }
 
-    const client = new GitHubClient(env);
+    const { client } = await resolveProjectRepository(request, env);
     const result = await updateFile(client, path, serialisedContent, sha, message || "Update file");
 
     return success({
@@ -147,7 +147,7 @@ export const handleDelete = async (request, env) => {
     }
 
     // 6. Perform DELETE
-    const client = new GitHubClient(env);
+    const { client } = await resolveProjectRepository(request, env);
     const result = await deleteFile(client, path, sha, message || "Delete file");
 
     return success({
