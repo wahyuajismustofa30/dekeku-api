@@ -26,7 +26,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 ## Mandatory execution instructions
 1. Keep `project/PROGRESS.md` as the single source of truth for current status.
 2. Keep one ordered active work queue; do not copy archived task details into ordinary progress reports.
-3. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 is next. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
+3. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 specification is complete and PUB-002 is in progress. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
 4. Do not resume archived tasks automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly asks for the task archive or reactivates an archived item.
 5. Update the latest checkpoint only with evidence actually obtained.
 6. R-013 syntax validation and focused regression testing are historical owner-reported evidence: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test` unless the owner explicitly authorizes it.
@@ -44,8 +44,8 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 Current owner-approved focus: public data management in each project's own public GitHub repository. Private repository setup and RBAC expansion are archived (A-003).
 
 1. [x] **PUB-001 — Define public project repository contract.** SPEC COMPLETE: `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`; runtime enforcement is not included.
-2. [ ] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Reject unsupported schema, untrusted/wildcard-only Origin mappings, owner mismatch, and non-public repositories.
-3. [ ] **PUB-003 — Resolve target public repository and route Admin SHA/CREATE/UPDATE/DELETE to it.** All operations for one request must use the same validated repository context and GitHub-reported default branch.
+2. [~] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Source and regression tests added: reject unsupported schema, untrusted/wildcard-only Origin mappings, owner mismatch, non-public repositories, mismatched GitHub identity, and missing/invalid default branch. Focused tests and runtime verification pending.
+3. [ ] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** All operations for one request must use the same validated repository context and GitHub-reported default branch.
 
 4. [ ] **PUB-004 — Implement safe public repository browsing.** Directory/file listing, path allowlist, pagination, bounded responses, and error mapping.
 5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.
@@ -62,7 +62,7 @@ Execution remains on `dev`; PR to `main` only after stable and owner review. No 
 - `npm test`: NOT RUN by explicit instruction.
 - Development runtime/deployment: NOT VERIFIED.
 - Deferred/archived follow-up items are stored in `project/TASK_ARCHIVE.md` and are intentionally omitted from the active queue.
-- Historical baseline before the owner's latest instruction (SUPERSEDED): no technical workstream was selected. Current selection is public repository management; PUB-001 is next.
+- Historical baseline before the owner's latest instruction (SUPERSEDED): no technical workstream was selected. Current selection is public repository management; PUB-001 specification is complete and PUB-002 is in progress.
 - Production Worker/domain/secrets/configuration/data: untouched.
 
 ## R-013 Implementation Evidence (2026-11-21)
