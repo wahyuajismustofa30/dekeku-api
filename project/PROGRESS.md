@@ -1,13 +1,13 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-22 (fokus pengelolaan repository publik)
+Tanggal Pembaruan: 2026-11-22 (PUB-001 contract defined)
 
 ## Ringkasan Proyek
 - **Ruang lingkup aktif terbaru**: pengelolaan data publik pada repository masing-masing proyek. Tugas pengaturan repository privat/RBAC dipindahkan ke arsip A-003; kode dan catatan historis tetap dipertahankan.
-- **Fokus pekerjaan berikutnya**: PUB-001 sampai PUB-006 sebagaimana di `BACKLOG.md`; antrean urut ada di `EXECUTION_POLICY.md`.
+- **Fokus pekerjaan berikutnya**: PUB-002 — implementasikan validasi kontrak dan pemetaan Origin tepercaya di sisi server. Antrean urut ada di `EXECUTION_POLICY.md`.
 - **Fase Aktif**: Public Repository Management — pemetaan repository proyek dan pengelolaan file publik. Implementasi multi-repository belum selesai.
 - **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
-- **Prioritas teknis aktif**: PUB-001 — tetapkan kontrak konfigurasi repository publik proyek sebelum mengubah routing operasi file.
+- **Prioritas teknis aktif**: PUB-002 — enforce schema v1 dan explicit trusted-Origin mapping. PUB-001 specification is complete; runtime enforcement is not implemented.
 - **Baseline audit CI/CD**: branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
@@ -360,3 +360,12 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - `dev` kemudian di-fast-forward ke commit yang sama dengan `force=false`; perbandingan GitHub `main` ↔ `dev` menunjukkan `identical` (0 ahead / 0 behind).
 - Branch inventory tetap tepat dua: `main` dan `dev`.
 - `npm test` tidak dijalankan. Tidak ada deployment Cloudflare atau perubahan Production.
+
+
+## PUB-001 — Public Repository Config Contract (2026-11-22)
+- **Status desain**: COMPLETE. Normative contract: `project/PUBLIC_REPOSITORY_CONTRACT.md` (PUB-CONFIG-001 v1); machine-readable schema: `docs/schemas/public-repository-config.schema.json`.
+- Config is published at the website origin root as `/config.json`; required fields: `schema_version: 1`, `project.id`, and `repository.username` + `repository.repo`.
+- Repository owner must match trusted `GITHUB_OWNER`; target repository must be public. GitHub API `default_branch` is authoritative; schema v1 intentionally has no branch override.
+- Discovery requires an explicitly trusted canonical HTTPS Origin. CORS wildcard alone is not a trusted repository mapping. Origin is a selector, never authentication.
+- Existing `repositories.js` reads username/repo, checks owner, and checks public visibility, but does not yet enforce schema_version/project.id or explicit-Origin mapping. Admin write routes still use Worker-bound GitHubClient. Those gaps remain open for PUB-002/PUB-003.
+- **Source code changes**: none. **Automated tests/schema validation**: NOT RUN. **Development runtime**: NOT VERIFIED. **Production/Cloudflare settings/secrets/data**: untouched.
