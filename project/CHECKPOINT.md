@@ -1,3 +1,14 @@
+## Latest Technical Checkpoint — PUB-001 (2026-11-22)
+
+- Owner instructed to begin work; active scope remains public repository management only.
+- PUB-001 specification completed on `dev`: `project/PUBLIC_REPOSITORY_CONTRACT.md` (PUB-CONFIG-001 v1) and `docs/schemas/public-repository-config.schema.json`.
+- Required `/config.json` shape: `schema_version`, `project.id`, `repository.username`, `repository.repo`. Owner must match trusted `GITHUB_OWNER`; repository must be public; GitHub `default_branch` is authoritative; no branch override in v1.
+- Origin must be canonical HTTPS and explicitly trusted for repository discovery. A broad CORS wildcard is not sufficient; Origin is not authentication.
+- Existing code partially implements discovery (`repository.username`/`repo`, owner check, public visibility) but does not enforce schema version/project ID or exact trusted-Origin mapping. Admin write endpoints still instantiate `GitHubClient(env)` using Worker-bound repository settings.
+- No source code, tests, Worker configuration, Cloudflare setting, secret, runtime data, deployment, or Production resource was changed.
+- Automated schema validation/tests: NOT RUN. Development runtime: NOT VERIFIED.
+- **Next task: PUB-002 — enforce schema v1 and explicit trusted-Origin mapping server-side.**
+
 ## Latest Owner Scope Update — 2026-11-22
 
 - Fokus proyek sekarang adalah pengelolaan data publik di repository masing-masing proyek.
