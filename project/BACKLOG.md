@@ -69,7 +69,7 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 - Dashboard sekarang PAUSED. Instruksi lama untuk tidak membuat PR berlaku pada fase ADM-008 saat itu dan telah disupersede: PR #29 untuk Public Data API kini sudah ada dan OPEN. Jangan merge/deploy tanpa instruksi pemilik.
 
 ### ADM status update — 2026-11-23
-The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 failures, 0 skipped across 44 suites. `npm ci` also completed with 0 vulnerabilities. This does not close the remaining Cloudflare configuration/secret/runtime checks. Do not create PR, merge, write secrets, or deploy without the required owner approval.
+The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 failures, 0 skipped across 44 suites. `npm ci` also completed with 0 vulnerabilities. This does not close the remaining Cloudflare configuration/secret/runtime checks. Historical Dashboard-phase restriction: no PR, merge, secret write, or deployment was authorized at that time. It does not describe Public Data API PR #29, which was created later and is OPEN. Dashboard remains PAUSED; do not resume it or perform merge/deployment without owner approval.
 
 
 ### PUB-DATA implementation status — 2026-11-23
