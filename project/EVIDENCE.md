@@ -54,3 +54,17 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
   - **Result**: PASS (Wrangler dry-run build successful; displays binding `env.DASHBOARD_REFRESH` to `DashboardRefreshCoordinator` Durable Object and environment variables `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, `ALLOWED_ORIGINS`).
 - **Secret List & Remote Deployment**: NOT RUN (per strict execution policy "jangan melakukan deployment" and offline sandbox limitations).
 - **Production**: NOT TOUCHED.
+
+
+## EVD-PUB-DATA — GitHub implementation handoff (2026-11-23)
+
+| Evidence ID | Jenis | Sumber | Lokasi / Referensi | Kesimpulan |
+|---|---|---|---|---|
+| PUBDATA-SRC-01 | Source | GitHub branch dev | `src/modules/public/resource-registry.js`, `resource-validators.js` | Resource allowlist and Guestbook schema added; execution NOT VERIFIED |
+| PUBDATA-SRC-02 | Source | GitHub branch dev | `src/modules/public/storage-engine.js`, `src/modules/public/index.js` | Shared bounded parser, Project Origin resolver, public repository check, fixed-path write and SHA retry added; execution NOT VERIFIED |
+| PUBDATA-SRC-03 | Source | GitHub branch dev | `src/modules/public/submit.js`, `src/core/router.js` | Generic route and legacy alias added; execution NOT VERIFIED |
+| PUBDATA-TEST-01 | Test source | GitHub branch dev | `test/public-submission.test.js` | Mock/fixture test cases updated; NOT RUN |
+| PUBDATA-DOC-01 | Documentation | GitHub branch dev | `docs/PUBLIC_DATA_API.md`, `docs/USAGE.md`, `docs/GUESTBOOK_INTEGRATION.md` | Documentation updated |
+| PUBDATA-TERMUX-01 | Pending validation | Local Termux required | Focused test, syntax/build, approved full suite, diff review | NOT RUN; required before declaring VERIFIED |
+
+No live project repository data was written or deleted by this GitHub source/documentation work. No Cloudflare deployment or Production change was performed.
