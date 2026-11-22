@@ -21,7 +21,7 @@
 - Updated `test/write-router.test.js` fixtures and assertions for the discovery flow and GitHub-reported `data-release` branch.
 ### Verification / Scope
 - PUB-002 owner-reported verification: syntax checks PASS; metadata tests 12 PASS, 0 FAIL, 0 SKIP.
-- PUB-003 syntax checks and focused tests: NOT RUN. Development runtime: NOT VERIFIED.
+- Owner-reported syntax checks: PASS for `src/core/github.js`, `src/modules/github/repositories.js`, `src/modules/github/write-router.js`, and `test/write-router.test.js`.\n- Owner-reported focused command `node --test test/write-router.test.js test/repository-metadata.test.js`: 37 PASS, 0 FAIL, 0 SKIP.\n- Development runtime: NOT VERIFIED; no real project data write, deployment, Cloudflare configuration, secrets, or Production resources changed.
 - No real project data, Worker deployment, Wrangler/Cloudflare settings, secrets, or Production resources changed.
 
 ## [Unreleased] — PUB-002 Public Repository Validation (2026-11-22)

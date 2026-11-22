@@ -7,11 +7,11 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 ## Prioritas Aktif — Public Repository Management (2026-11-22)
 
 1. **PUB-001 COMPLETE (specification)**: skema `config.json` v1 dan aturan discovery terdokumentasi di `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`.
-2. **PUB-002 VERIFIED (owner-reported)**: syntax checks PASS dan focused metadata tests 12/12 PASS; runtime Development belum diverifikasi.\n3. **PUB-003 IN PROGRESS**: Admin SHA/CRUD telah diarahkan melalui resolver repository publik tervalidasi dan branch default GitHub; jalankan focused regression tests.
-2. Selesaikan resolusi repository publik di sisi server dan pastikan semua operasi SHA/CRUD memakai repository yang sama.
-3. **PUB-004 COMPLETE**: penjelajahan direktori publik (`GET /api/v1/admin/browse`) telah diimplementasikan dengan validasi path `public/`, pementalan hidden/sensitive files, symlink/submodule filtering, pagination max 100, dan batas entri 1.000 dengan flag `truncated`.
-4. Selesaikan Tester menjadi pengelola file JSON bergaya phpMyAdmin.
-5. Verifikasi seluruh alur pada Development dengan sedikitnya dua repository publik yang aman.
+2. **PUB-002 VERIFIED**: syntax checks PASS dan focused metadata tests 12/12 PASS; runtime Development belum diverifikasi.
+3. **PUB-003 VERIFIED**: Admin SHA/CRUD menggunakan resolver repository publik tervalidasi; syntax checks PASS dan combined focused tests 37/37 PASS. Runtime Development belum diverifikasi.
+4. **PUB-004 COMPLETE**: penjelajahan direktori publik (`GET /api/v1/admin/browse`) telah diimplementasikan dengan validasi path `public/`, pementalan hidden/sensitive files, symlink/submodule filtering, pagination max 100, dan batas entri 1.000 dengan flag `truncated` (51/51 PASS pada suite PUB-002/003/004).
+5. **PUB-005 NEXT**: selesaikan Tester menjadi pengelola file JSON bergaya phpMyAdmin.
+6. **PUB-006**: verifikasi seluruh alur pada Development dengan sedikitnya dua repository publik yang aman.
 
 Pengaturan repository privat dan pengembangan RBAC lanjutan diarsipkan sebagai A-003; jangan diperlakukan sebagai rekomendasi aktif tanpa reaktivasi pemilik.
 

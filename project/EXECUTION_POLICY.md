@@ -140,4 +140,4 @@ Execution remains on `dev`; PR to `main` only after stable and owner review. No 
 - Current focus is public repository management per project, as recorded in D-027.
 - Private repository setup, `dekeku-db` account/mapping storage, User RBAC expansion, and associated verification are archived under A-003. Do not resume automatically.
 - Existing source code and historical decision records remain intact. No code, Worker configuration, Cloudflare setting, secret, data, or deployment was changed by this scope update.
-- The current public repository implementation is not complete: repository resolution and Admin write routing still need to be aligned; see PUB-001..PUB-006.
+- Current next task: PUB-004 — implement bounded, paginated directory/file browsing for the validated public project repository. PUB-001..PUB-003 source/focused verification is complete; Development runtime remains NOT VERIFIED.

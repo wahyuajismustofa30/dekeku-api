@@ -13,11 +13,11 @@
 
 - PUB-002 verification received from owner: `node --check` for `src/modules/github/repositories.js` and `test/repository-metadata.test.js` PASS; `node --test test/repository-metadata.test.js` PASS (12/12, 0 failures).
 - PUB-003 source changes on `dev`: exported shared `resolveProjectRepository()` from `src/modules/github/repositories.js`; `src/modules/github/write-router.js` now uses it for SHA lookup and CREATE/UPDATE/DELETE. Each operation resolves the trusted Origin's `/config.json`, validates schema/owner, verifies public repository identity, then uses GitHub's `default_branch`.
-- `test/write-router.test.js` now supplies the trusted Origin, mocks repository discovery, and asserts file SHA and write requests use the GitHub-reported `data-release` branch. Tests/syntax checks for these changes are NOT RUN.
+- `test/write-router.test.js` supplies trusted Origin, mocks repository discovery, and asserts SHA/file writes use the GitHub-reported `data-release` branch. Owner-reported syntax checks PASS for all four changed source/test files; focused combined suite `node --test test/write-router.test.js test/repository-metadata.test.js` PASS (37 PASS, 0 FAIL, 0 SKIP).
 - No runtime/Development deployment, real data write, Wrangler/Cloudflare configuration, secrets, or Production resources changed.
-- Next: sync local `dev`, run syntax checks and focused `node --test test/write-router.test.js test/repository-metadata.test.js`; fix any failures. Do not run `npm test`. Then consider PUB-003 complete and proceed to PUB-004.
+- PUB-003 source and focused test verification are COMPLETE based on the owner's local terminal report. Branch/commit identity of that local checkout was not included in the report. Development runtime remains NOT VERIFIED. `npm test` remains prohibited.\n- Next: PUB-004 — implement bounded, paginated directory/file browsing for the selected public repository. Keep path validation and repository context server-side; do not deploy or access Production.
 
-## Latest Technical Checkpoint — PUB-002 In Progress (2026-11-22)
+## Historical Technical Checkpoint — PUB-002 In Progress (2026-11-22)
 
 - Source change on `dev`: `src/modules/github/repositories.js` now validates the public repository config v1 schema (exact top-level/nested keys, version, project ID, owner and repository name).
 - Repository discovery requires a canonical HTTPS Origin that exactly matches an entry in `ALLOWED_ORIGINS`. Wildcard entries remain available for CORS but cannot select a repository.
@@ -25,7 +25,7 @@
 - Regression tests updated in `test/repository-metadata.test.js`: valid schema fixture; wildcard-only Origin; unsupported/missing schema fields; invalid project ID; unknown properties; owner mismatch; invalid repo name; GitHub identity mismatch; missing default branch; private repository.
 - Tests and syntax checks have NOT RUN in this session. `npm test` remains prohibited; focused `node --test test/repository-metadata.test.js` is permitted but awaits execution in the user's local Termux/Ubuntu checkout.
 - Development runtime NOT VERIFIED. No Wrangler config, Cloudflare settings, secrets, deployment, real data, or Production resources changed.
-- PUB-002 remains IN PROGRESS pending focused test execution and review. Next after passing verification: PUB-003 Admin SHA/CRUD routing through the validated repository context.
+- Superseded: PUB-002 focused tests subsequently passed (12/12) as recorded in the latest checkpoint above.
 
 ## Latest Technical Checkpoint — PUB-001 (2026-11-22)
 

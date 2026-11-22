@@ -32,8 +32,8 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004 Public Repository File Browser complete)
 ## PUB-003 Implementation Update (2026-11-22)
 - `resolveProjectRepository(request, env)` is now the shared server-side resolver for metadata and Admin file operations. It requires a canonical trusted Origin, fetches `/config.json`, validates schema v1 and owner, verifies GitHub repository identity/public visibility, and takes `default_branch` only from GitHub metadata.
 - Admin SHA lookup and CREATE/UPDATE/DELETE now construct their GitHub client from that validated repository context; static `GITHUB_REPO`/`GITHUB_BRANCH` no longer determine these write targets. Admin JWT remains enforced by the outer router.
-- `test/write-router.test.js` was updated to mock the config/metadata discovery sequence and assert the GitHub-reported branch is used. These updated tests and syntax checks are NOT RUN yet.
-- Development runtime NOT VERIFIED. No real website repository data was written; no deployment, Wrangler/Cloudflare setting, secret, or Production resource was changed.
+- Owner-reported local verification: `node --check` PASS for `src/core/github.js`, `src/modules/github/repositories.js`, `src/modules/github/write-router.js`, and `test/write-router.test.js`; focused `node --test test/write-router.test.js test/repository-metadata.test.js` PASS (37 PASS, 0 FAIL, 0 SKIP).
+- PUB-003 source + focused verification COMPLETE based on owner-reported terminal output. Development runtime remains NOT VERIFIED. No real website repository data was written; no deployment, Wrangler/Cloudflare setting, secret, or Production resource was changed.
 
 ## Daftar Fitur & Status
 
@@ -389,7 +389,7 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Config is published at the website origin root as `/config.json`; required fields: `schema_version: 1`, `project.id`, and `repository.username` + `repository.repo`.
 - Repository owner must match trusted `GITHUB_OWNER`; target repository must be public. GitHub API `default_branch` is authoritative; schema v1 intentionally has no branch override.
 - Discovery requires an explicitly trusted canonical HTTPS Origin. CORS wildcard alone is not a trusted repository mapping. Origin is a selector, never authentication.
-- At the PUB-001 specification checkpoint, schema version/project ID and exact-Origin enforcement were still gaps. PUB-002 source enforcement is now recorded below; Admin write routes still use Worker-bound GitHubClient and remain the PUB-003 gap.
+- At the PUB-001 specification checkpoint, schema version/project ID and exact-Origin enforcement were still gaps. PUB-002 and PUB-003 now close those source-level gaps; later checkpoints below record implementation and owner-reported test evidence.
 - **Source code changes**: none. **Automated tests/schema validation**: NOT RUN. **Development runtime**: NOT VERIFIED. **Production/Cloudflare settings/secrets/data**: untouched.
 
 
@@ -401,4 +401,4 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - `test/repository-metadata.test.js` was updated with valid schema fixtures and regression cases for wildcard-only origins, unsupported/missing schema fields, invalid project ID, control characters, dot-segment repository names, unknown properties, owner mismatch, invalid repository name, GitHub identity mismatch, missing default branch, and private visibility.
 - **Automated tests / syntax checks**: NOT RUN in this session. `npm test` remains prohibited; focused `node --test test/repository-metadata.test.js` is permitted but has not yet been executed because no local checkout/runtime is attached to this session.
 - **Development runtime**: NOT VERIFIED. **Production, Wrangler, Cloudflare settings, secrets and data**: untouched.
-- Next: run the focused suite in the project Termux/Ubuntu checkout; fix any failures, then close PUB-002 before PUB-003.
+- Verification completed: owner reported syntax checks PASS and `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP). Development runtime remains NOT VERIFIED.
