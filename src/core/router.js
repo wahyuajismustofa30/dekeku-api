@@ -26,6 +26,7 @@ import {
   handleDashboardExport
 } from "../modules/admin/dashboard.js";
 import { handleDashboardRefresh } from "../modules/admin/refresh.js";
+import { getAdminDashboardPage } from "../modules/admin/dashboard-page.js";
 
 
 
@@ -39,7 +40,7 @@ export const router = async (request, env) => {
 
 
 
-  // 0. Dashboard Tester (Public)
+  // Admin Dashboard shell (public page; all data APIs are Admin-JWT protected).\n  if (pathname === "/admin" && method === "GET") return getAdminDashboardPage();\n\n  // 0. Dashboard Tester (Public)
 
   if ((pathname === "/" || pathname === "/tester") && method === "GET") {
 
