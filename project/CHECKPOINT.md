@@ -45,3 +45,11 @@
   node --test test/project-origin-selector.test.js test/tester-file-manager.test.js test/tester-dashboard.test.js test/repository-metadata.test.js test/browse-router.test.js test/browse-git-tree.test.js test/write-router.test.js
 - Review and fix any failures before accepting PUB-005.
 - Production, Cloudflare configuration, secrets, and deployment remain untouched.
+
+## PUB-005 Latest Remote Checkpoint (2026-11-22)
+- Current remote branch head verified: dev at d174a11a3c7e55993f787dd4e659185881e5a814.
+- package.json test script now includes browse-router, browse-git-tree, project-origin-selector, and tester-file-manager regression suites. This does not authorize running npm test locally; owner instruction remains in force.
+- package.json parses as valid JSON.
+- Static syntax checks using V8 parsing passed for changed Worker modules after removing module import/export declarations, both Tester inline scripts, and both new test modules after module-only syntax adaptation. These are preliminary parse checks, not a substitute for node --check or test execution in the repository runtime.
+- Both Tester HTML copies were compared after extracting the generated HTML template and are byte-for-byte identical (46,350 characters).
+- Automated Node tests remain NOT RUN. Next action is owner-side focused test execution after pulling latest dev.
