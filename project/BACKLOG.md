@@ -68,6 +68,8 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 - Automated test suite 261/261 PASS dan Wrangler dry-run adalah bukti owner-reported untuk workstream Dashboard pada checkpoint ADM-008, bukan validasi Public Data API.
 - Dashboard sekarang PAUSED. Instruksi lama untuk tidak membuat PR berlaku pada fase ADM-008 saat itu dan telah disupersede: PR #29 untuk Public Data API kini sudah ada dan OPEN. Jangan merge/deploy tanpa instruksi pemilik.
 
+**Evidence qualification:** the 261/261 full-suite result and Wrangler dry-run are owner-reported local Dashboard evidence. Exact tested SHA and Node version were not supplied. They do not establish CI on current `dev`, Cloudflare Development runtime, or deployment. ADM remains PAUSED independently of those local test results.
+
 ### ADM status update — 2026-11-23
 The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 failures, 0 skipped across 44 suites. `npm ci` also completed with 0 vulnerabilities. This does not close the remaining Cloudflare configuration/secret/runtime checks. Historical Dashboard-phase restriction: no PR, merge, secret write, or deployment was authorized at that time. It does not describe Public Data API PR #29, which was created later and is OPEN. Dashboard remains PAUSED; do not resume it or perform merge/deployment without owner approval.
 
