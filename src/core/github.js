@@ -160,6 +160,21 @@ export class GitHubClient {
     }
   }
 
+  
+  async getDirectoryContents(path) {
+    if (!path || typeof path !== "string") {
+      throw new HttpError("Invalid path", 400);
+    }
+
+    const segments = path.split("/").filter(Boolean);
+    const encodedPath = segments.map(encodeURIComponent).join("/");
+    const endpoint = encodedPath
+      ? `/contents/${encodedPath}?ref=${encodeURIComponent(this.branch)}`
+      : `/contents?ref=${encodeURIComponent(this.branch)}`;
+
+    return this.request(endpoint, { method: "GET" });
+  }
+
   async getRepository() {
     return this.request("", { method: "GET" });
   }

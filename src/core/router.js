@@ -1,3 +1,4 @@
+import { handleBrowse } from "../modules/github/browse.js";
 import { getHealth } from "../modules/health/index.js";
 import { githubRouter } from "../modules/github/index.js";
 import { adminLogin } from "../modules/auth/login.js";
@@ -68,6 +69,13 @@ export const router = async (request, env) => {
       return error("Method Not Allowed", 405);
     }
     return githubRouter(request, env);
+  }
+
+  
+  // Admin Browse Endpoint (Admin JWT required)
+  if (pathname === "/api/v1/admin/browse") {
+    if (method !== "GET") return error("Method Not Allowed", 405);
+    return authMiddleware(request, env, async (req, e) => handleBrowse(req, e));
   }
 
   // 4. Protected Admin Write Routes

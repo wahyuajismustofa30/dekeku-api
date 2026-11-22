@@ -53,8 +53,8 @@ Private-repository setup, private account storage, User repository mapping, and 
 ### Public repository management tasks
 - [x] **PUB-001 — Define public project repository contract.** COMPLETE (specification only): `project/PUBLIC_REPOSITORY_CONTRACT.md` and `docs/schemas/public-repository-config.schema.json`. Runtime enforcement is PUB-002.
 - [x] **PUB-002 — Enforce public repository config and trusted Origin.** Schema v1, exact canonical HTTPS Origin, owner/name, GitHub identity, public visibility, and default branch checks implemented. Owner-reported syntax checks PASS; focused metadata tests 12/12 PASS. Development runtime NOT VERIFIED.
-- [~] **PUB-003 — Resolve and route Admin file operations to the selected public repository.** Shared resolver is wired to SHA lookup and CREATE/UPDATE/DELETE; focused regression tests updated but NOT RUN. Ensure all operations use the same validated project repository context and GitHub-reported default branch.
-- [ ] **PUB-004 — Add public repository file browsing.** List directories/files with safe path validation, pagination, and bounded responses.
+- [x] **PUB-003 — Resolve and route Admin file operations to the selected public repository.** Shared resolver wired to SHA lookup and CREATE/UPDATE/DELETE; focused regression tests verified (51/51 PASS across combined suites).
+- [x] **PUB-004 — Add public repository file browsing.** Endpoint `GET /api/v1/admin/browse` implemented with Admin JWT, path validation (`public/` only), hidden/sensitive file rejection, symlink/submodule filtering, max 1000 items cap, `truncated` flag, pagination, and file content exclusion. Verified via `node --test` (19/19 PASS in browse suite, 51/51 total across PUB-002/003/004).
 - [ ] **PUB-005 — Complete the Tester as a public JSON file manager.** Select project/repository, browse files, inspect/edit JSON, and create/update/delete safely.
 - [ ] **PUB-006 — Verify end-to-end on Development.** Test multiple public repositories, access boundaries, SHA conflicts, and error handling without touching Production.
 

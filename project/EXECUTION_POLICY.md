@@ -26,7 +26,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 ## Mandatory execution instructions
 1. Keep `project/PROGRESS.md` as the single source of truth for current status.
 2. Keep one ordered active work queue; do not copy archived task details into ordinary progress reports.
-3. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 specification is complete and PUB-002 is in progress. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
+3. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 through PUB-004 complete; PUB-005 is next active task. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
 4. Do not resume archived tasks automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly asks for the task archive or reactivates an archived item.
 5. Update the latest checkpoint only with evidence actually obtained.
 6. R-013 syntax validation and focused regression testing are historical owner-reported evidence: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test` unless the owner explicitly authorizes it.
@@ -45,9 +45,9 @@ Current owner-approved focus: public data management in each project's own publi
 
 1. [x] **PUB-001 — Define public project repository contract.** SPEC COMPLETE: `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`; runtime enforcement is not included.
 2. [x] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Owner-reported syntax checks PASS and `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP). Development runtime NOT VERIFIED.
-3. [~] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** Shared resolver wired into all four Admin handlers; regression tests updated but NOT RUN. All operations must use the validated project repository and GitHub-reported default branch.
+3. [x] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** Shared resolver wired into all four Admin handlers; regression tests verified (51/51 PASS across combined suites).
 
-4. [ ] **PUB-004 — Implement safe public repository browsing.** Directory/file listing, path allowlist, pagination, bounded responses, and error mapping.
+4. [x] **PUB-004 — Implement safe public repository browsing.** Endpoint `GET /api/v1/admin/browse` complete with Admin JWT, path validation (`public/` only), hidden/sensitive file filtering, symlink/submodule exclusion, max 1000 items cap, pagination, and metadata-only output. Verified via `node --test` (19/19 PASS in browse suite, 51/51 PASS total).
 5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.
 6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
 

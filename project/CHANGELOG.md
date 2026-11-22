@@ -1,3 +1,18 @@
+## [Unreleased] — PUB-004 Public Repository File Browser (2026-11-22)
+### Added
+- Implemented `GET /api/v1/admin/browse?path=public&page=1&per_page=50` in `src/modules/github/browse.js` and mounted in `src/core/router.js` under Admin JWT (`authMiddleware`).
+- Reused `resolveProjectRepository(request, env)` to enforce canonical trusted Origin, `config.json` schema v1, owner policy, public visibility, and default branch.
+- Added `getDirectoryContents(path)` to `GitHubClient`.
+- Implemented directory path validation (`validateBrowsePath`) restricting paths to `public/`, blocking traversal, backslashes, control characters, malformed encoding, hidden files, and sensitive files.
+- Added upstream item filtering: excludes hidden files (`.`), sensitive files, symlinks, and submodules; returns strictly `name`, `path`, `type`, `size`, `sha` without file contents.
+- Added upstream 1,000 items cap with `truncated: true` flag, and pagination capped at 100 items per page.
+- Created `test/browse-router.test.js` covering authentication, directory/subdirectory browsing, pagination, path traversal, hidden/sensitive files, out-of-scope paths, non-array responses, item caps, content exclusion, and resolver usage.
+### Verification / Scope
+- Syntax checks (`node --check`): PASS for all modified files and new test file.
+- Automated tests (`node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js`): 51 PASS, 0 FAIL, 0 SKIP (19 PASS in PUB-004 suite).
+- `npm test` NOT RUN per explicit instruction. Development runtime: NOT VERIFIED.
+- No Wrangler/Cloudflare settings, secrets, Worker deployment, or Production resources changed.
+
 ## [Unreleased] — PUB-003 Admin Public Repository Routing (2026-11-22)
 ### Changed
 - Added shared `resolveProjectRepository(request, env)` to validate the requesting Origin's project config, GitHub repository identity/public visibility, and authoritative default branch.

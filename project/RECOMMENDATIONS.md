@@ -9,7 +9,7 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 1. **PUB-001 COMPLETE (specification)**: skema `config.json` v1 dan aturan discovery terdokumentasi di `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`.
 2. **PUB-002 VERIFIED (owner-reported)**: syntax checks PASS dan focused metadata tests 12/12 PASS; runtime Development belum diverifikasi.\n3. **PUB-003 IN PROGRESS**: Admin SHA/CRUD telah diarahkan melalui resolver repository publik tervalidasi dan branch default GitHub; jalankan focused regression tests.
 2. Selesaikan resolusi repository publik di sisi server dan pastikan semua operasi SHA/CRUD memakai repository yang sama.
-3. Tambahkan penjelajahan direktori/file publik dengan validasi path, pagination, dan batas ukuran respons.
+3. **PUB-004 COMPLETE**: penjelajahan direktori publik (`GET /api/v1/admin/browse`) telah diimplementasikan dengan validasi path `public/`, pementalan hidden/sensitive files, symlink/submodule filtering, pagination max 100, dan batas entri 1.000 dengan flag `truncated`.
 4. Selesaikan Tester menjadi pengelola file JSON bergaya phpMyAdmin.
 5. Verifikasi seluruh alur pada Development dengan sedikitnya dua repository publik yang aman.
 

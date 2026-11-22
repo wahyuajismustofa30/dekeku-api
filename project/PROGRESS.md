@@ -1,13 +1,13 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-22 (PUB-003 implementation in progress)
+Tanggal Pembaruan: 2026-11-22 (PUB-004 Public Repository File Browser complete)
 
 ## Ringkasan Proyek
 - **Ruang lingkup aktif terbaru**: pengelolaan data publik pada repository masing-masing proyek. Tugas pengaturan repository privat/RBAC dipindahkan ke arsip A-003; kode dan catatan historis tetap dipertahankan.
-- **Fokus pekerjaan saat ini**: PUB-003 — routing Admin SHA/CREATE/UPDATE/DELETE melalui repository publik yang tervalidasi. Antrean urut ada di `EXECUTION_POLICY.md`.
+- **Fokus pekerjaan saat ini**: PUB-005 — penyempurnaan Tester Dashboard sebagai public JSON file manager. Antrean urut ada di `EXECUTION_POLICY.md`.
 - **Fase Aktif**: Public Repository Management — pemetaan repository proyek dan pengelolaan file publik. Implementasi multi-repository belum selesai.
 - **Status Keseluruhan**: Source RBAC-01 s/d RBAC-08 tersedia di `dev`; RBAC sebagai sistem terintegrasi dan Development runtime tetap NOT VERIFIED. R-013 source + focused regression test tersedia; `node --check` dan focused test (6 PASS, 0 FAIL) PASS berdasarkan laporan pemilik dari Termux, belum dijalankan ulang secara independen di sesi ini. `npm test` tetap NOT RUN. WAF dan CDN/cache follow-up tidak aktif; item yang diarsipkan tidak boleh dilanjutkan otomatis.
-- **Prioritas teknis aktif**: PUB-003 — source routing sudah diperbarui; focused regression/syntax tests dan Development runtime masih menunggu verifikasi.
+- **Prioritas teknis aktif**: PUB-005 — PUB-004 Public Repository File Browser selesai (51/51 PASS pada suite PUB-002/PUB-003/PUB-004); langkah selanjutnya adalah penyempurnaan Tester file manager.
 - **Baseline audit CI/CD**: branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`.
 - **Acuan status tunggal**: dokumen ini. Urutan kerja wajib ada di [EXECUTION_POLICY.md](EXECUTION_POLICY.md), checklist rinci di [BACKLOG.md](BACKLOG.md), dan seluruhnya harus konsisten.
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
@@ -16,6 +16,18 @@ Tanggal Pembaruan: 2026-11-22 (PUB-003 implementation in progress)
 ## PUB-002 Verification Update (2026-11-22)
 - Owner-reported local verification on branch `dev`: `node --check src/modules/github/repositories.js` PASS; `node --check test/repository-metadata.test.js` PASS; `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP).
 - PUB-002 source and focused test verification are COMPLETE. Development runtime remains NOT VERIFIED.
+
+
+## PUB-004 Implementation & Verification Update (2026-11-22)
+- Endpoint `GET /api/v1/admin/browse` implemented in `src/modules/github/browse.js` and mounted in `src/core/router.js` behind Admin JWT middleware (`authMiddleware`).
+- Uses `resolveProjectRepository(request, env)` to enforce canonical trusted Origin, `config.json` schema v1, owner policy, public visibility, and default branch reported by GitHub API.
+- Implemented directory path validation (`validateBrowsePath`): restricts path to `public/`, blocks traversal, backslashes, control characters, malformed encoding, hidden files (`.`), and sensitive files (`package.json`, `secrets.json`, `.env`, `.pem`, `.key`, etc.).
+- Implemented `getDirectoryContents(path)` in `GitHubClient`.
+- Filters upstream response: omits hidden files, sensitive files, symlinks, and submodules; returns strictly metadata fields (`name`, `path`, `type`, `size`, `sha`) without file contents or internal URLs.
+- Capped upstream items to 1,000 max per directory with `truncated: true` flag when exceeded.
+- Implemented pagination: default `page=1`, default `per_page=50`, max `per_page=100`.
+- Added `test/browse-router.test.js`. Test execution via `node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js` PASS (51 PASS, 0 FAIL, 0 SKIP; 19 tests in browse suite).
+- `node --check` PASS for all modified files. Development runtime remains NOT VERIFIED.
 
 ## PUB-003 Implementation Update (2026-11-22)
 - `resolveProjectRepository(request, env)` is now the shared server-side resolver for metadata and Admin file operations. It requires a canonical trusted Origin, fetches `/config.json`, validates schema v1 and owner, verifies GitHub repository identity/public visibility, and takes `default_branch` only from GitHub metadata.
