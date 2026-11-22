@@ -212,7 +212,11 @@ const fetchCallerRepositoryConfig = async (origin) => {
 };
 
 export const resolveProjectRepository = async (request, env) => {
-  const origin = request.headers.get("Origin");
+  // The browser cannot set the forbidden Origin header. The Tester may select
+  // a project with this explicit selector header; it is still checked against
+  // the same exact server-side allowlist and is never an authentication factor.
+  const selectedOrigin = request.headers.get("X-DEKEKU-Project-Origin");
+  const origin = selectedOrigin !== null ? selectedOrigin : request.headers.get("Origin");
   const trustedOrigin = getTrustedProjectOrigin(origin, env);
   if (!trustedOrigin) throw new HttpError("Origin is not trusted for repository discovery", 403);
 
