@@ -39,7 +39,20 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - If a required dashboard, runtime, credential, or safe fixture is unavailable, record `NOT VERIFIED` with the exact blocker. Do not infer success from source code or documentation.
 - Keep implementation, syntax/static validation, automated tests, Development runtime, WAF, and CDN verification as separate evidence categories.
 
-## Ordered current work queue,,Current owner-approved focus: public data management in each project's own public GitHub repository. Private repository setup and RBAC expansion are archived (A-003).,,1. [ ] **PUB-001 — Define public project repository contract.** Specify config.json fields, trusted Origin resolution, owner restrictions, and branch selection.,2. [ ] **PUB-002 — Resolve and validate the target public repository server-side.** Confirm repository identity, visibility, and default branch; reject client-supplied arbitrary coordinates.,3. [ ] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** All operations for one request must use the same validated repository context.,4. [ ] **PUB-004 — Implement safe public repository browsing.** Directory/file listing, path allowlist, pagination, bounded responses, and error mapping.,5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.,6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.,,Execution remains on `dev`; PR to `main` only after stable and owner review. No Production changes, private repository setup, secrets changes, or writes to real website data without separate explicit approval.,## Baseline evidence
+## Ordered current work queue
+
+Current owner-approved focus: public data management in each project's own public GitHub repository. Private repository setup and RBAC expansion are archived (A-003).
+
+1. [ ] **PUB-001 — Define public project repository contract.** Specify config.json fields, trusted Origin resolution, owner restrictions, and branch selection.
+2. [ ] **PUB-002 — Resolve and validate the target public repository server-side.** Confirm repository identity, visibility, and default branch; reject client-supplied arbitrary coordinates.
+3. [ ] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** All operations for one request must use the same validated repository context.
+4. [ ] **PUB-004 — Implement safe public repository browsing.** Directory/file listing, path allowlist, pagination, bounded responses, and error mapping.
+5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.
+6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
+
+Execution remains on `dev`; PR to `main` only after stable and owner review. No Production changes, private repository setup, secrets changes, or writes to real website data without separate explicit approval.
+
+## Baseline evidence
 
 - Target branch: `dev`; work is restricted to this branch.
 - R-013 implementation and focused regression test are present in the repository.
