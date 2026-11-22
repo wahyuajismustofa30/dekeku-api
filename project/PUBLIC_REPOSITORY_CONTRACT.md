@@ -37,7 +37,7 @@ Example:
 | `schema_version` | Yes | Integer constant `1`; unsupported versions must be rejected |
 | `project.id` | Yes | Stable lowercase slug, 2–48 chars, letters/numbers separated by single hyphens |
 | `repository.username` | Yes | GitHub owner/login; 1–39 chars; GitHub-compatible alphanumeric/hyphen format |
-| `repository.repo` | Yes | GitHub repository name; 1–100 chars; letters, numbers, dot, underscore, hyphen |
+| `repository.repo` | Yes | GitHub repository name; 1–100 chars; letters, numbers, dot, underscore, hyphen; exact `.` and `..` segments are forbidden |
 
 Unknown properties are rejected in contract v1. Values are case-insensitive only where GitHub treats them that way; preserve the published spelling when displaying metadata.
 
