@@ -1,8 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { webcrypto } from "node:crypto";
 import { HttpError } from "../src/core/errors.js";
 import { readDashboardDocument, writeDashboardDocument, validateDashboardDocument } from "../src/modules/admin/dashboard-storage.js";
 import { encryptDashboardDocument } from "../src/utils/dashboard-crypto.js";
+
+globalThis.crypto ||= webcrypto;
 
 const KEY = Buffer.from(new Uint8Array(32).fill(31)).toString("base64url");
 const PATH = "private/dashboard/projects.json";
