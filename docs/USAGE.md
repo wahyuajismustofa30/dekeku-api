@@ -12,7 +12,7 @@ DEKEKU API Gateway adalah Cloudflare Worker modular yang menggunakan GitHub Cont
 
 ### Environment Variables (`wrangler.jsonc` & `.dev.vars`)
 - `GITHUB_OWNER`: Pemilik repository GitHub (contoh: `wahyuajismustofa30`).
-- `GITHUB_REPO`: Nama repository yang saat ini dikonfigurasi pada Worker Development. Nilai aktual harus diperiksa dari `wrangler.jsonc` sebelum pengujian; dukungan pemilihan repository publik per proyek belum selesai.
+- `GITHUB_REPO`: Konfigurasi repository Worker lama/fallback. Saat project resolver digunakan, identitas repository berasal dari `config.json` schema v1 yang tervalidasi; nilai Worker bukan selector repository dari klien.
 - `GITHUB_BRANCH`: Branch target (contoh: `main`).
 - `ALLOWED_ORIGINS`: Daftar origin CORS yang diizinkan (mendukung domain eksak dan wildcard subdomain seperti `*.dekeku.my.id`, `*.artoprintingpbg.com`).
 - `GITHUB_TOKEN`: Personal Access Token GitHub (Secret, disimpan di Cloudflare Secrets / `.dev.vars`).
