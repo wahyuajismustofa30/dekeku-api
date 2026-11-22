@@ -51,7 +51,7 @@ Unknown properties are rejected in contract v1. Values are case-insensitive only
 ## 4. Origin-to-config discovery rules
 
 1. The request must contain a canonical HTTPS `Origin` (scheme + host only; no credentials, path, query, fragment, or non-default port).
-2. Origin must be explicitly trusted for repository discovery. A broad CORS wildcard is not sufficient evidence that a hostname is an approved project-to-repository mapping.
+2. Origin must be explicitly trusted for repository discovery. In the current implementation, an exact canonical HTTPS entry in `ALLOWED_ORIGINS` is the trust allowlist; wildcard entries are ignored for repository discovery even though they remain usable for CORS. A broad CORS wildcard is not sufficient evidence that a hostname is an approved project-to-repository mapping.
 3. Fetch only `https://{validated-origin}/config.json`; do not accept a client-supplied config URL, repository URL, API URL, or redirect target.
 4. Fetch with redirects disabled, credentials omitted, an 8-second timeout, and a 32 KiB maximum response body.
 5. Require a successful response and valid UTF-8 JSON matching this schema. Reject missing, malformed, oversized, unsupported-version, or invalid-field documents.
@@ -70,9 +70,9 @@ Do not publish any of the following in `config.json`:
 
 ## 6. Compatibility and implementation status
 
-The current source in `src/modules/github/repositories.js` already reads `repository.username` and `repository.repo`, validates the owner against `GITHUB_OWNER`, and rejects non-public repositories. It currently does **not** validate `schema_version` or `project.id`, and it accepts any Origin admitted by the shared CORS allowlist (including wildcard entries). It also resolves metadata only; it does not route Admin SHA/CREATE/UPDATE/DELETE to this repository.
+`src/modules/github/repositories.js` now enforces the schema-v1 object shape, required project ID and repository fields, rejects unknown fields, validates owner against `GITHUB_OWNER`, and accepts repository discovery only from exact canonical HTTPS entries in `ALLOWED_ORIGINS` (wildcard entries are excluded). It also verifies that GitHub returns the requested repository identity, public visibility, and a non-empty safe default branch.
 
-Therefore this document defines the target contract, not a claim that the complete contract is already enforced. PUB-002 must implement strict schema/version validation and a separate explicit trusted-Origin mapping policy. PUB-003 must use the resolved repository and its GitHub-reported default branch consistently for every file operation.
+This is the PUB-002 resolver/metadata enforcement. It does not yet route Admin SHA/CREATE/UPDATE/DELETE to the resolved repository; that remains PUB-003. Automated tests have been added but are not yet executed in the current environment; Development runtime remains NOT VERIFIED.
 
 ## 7. Acceptance criteria for PUB-001
 
