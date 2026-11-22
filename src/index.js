@@ -41,3 +41,7 @@ export default {
     }
   }
 };
+
+
+// Development-only Dashboard background job coordinator class.
+export { DashboardRefreshCoordinator } from "./modules/admin/refresh-coordinator.js";
