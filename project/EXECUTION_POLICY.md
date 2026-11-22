@@ -27,7 +27,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 1. Keep `project/PROGRESS.md` as the single source of truth for current status.
 2. Keep one ordered active work queue; do not copy archived task details into ordinary progress reports.
 3. R-013 syntax validation and focused regression testing are reported PASS by the owner from Termux: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test`.
-6. The owner selected option C (documentation reconciliation), then explicitly instructed continuation with the Development CI/CD track. CICD-001 read-only audit is complete; CICD-002 branch-policy reconciliation is complete. CICD-003 is the next active task.
+6. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 is next. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
 4. Do not resume archived tasks automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly asks for the task archive or reactivates an archived item.
 5. Update the latest checkpoint only with evidence actually obtained.
 
@@ -48,7 +48,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - `npm test`: NOT RUN by explicit instruction.
 - Development runtime/deployment: NOT VERIFIED.
 - Deferred/archived follow-up items are stored in `project/TASK_ARCHIVE.md` and are intentionally omitted from the active queue.
-- Historical baseline before the owner's latest instruction (SUPERSEDED): no technical workstream was selected. Current selection is Development CI/CD; CICD-003 is next.
+- Historical baseline before the owner's latest instruction (SUPERSEDED): no technical workstream was selected. Current selection is public repository management; PUB-001 is next.
 - Production Worker/domain/secrets/configuration/data: untouched.
 
 ## R-013 Implementation Evidence (2026-11-21)
@@ -72,7 +72,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 ## CI/CD Execution Boundary
 
 - Branch kerja aktif tetap `dev`; PR target `main` hanya setelah perubahan stabil.
-- The owner selected the Development CI/CD workstream. CICD-001 and CICD-002 are complete; CICD-003 is the next active task. The approved workflow policy is not evidence of an implemented workflow.
+- Historical note: the owner previously selected the Development CI/CD workstream. This is superseded by the 2026-11-22 public-repository scope decision.
 - Do not create or run a deployment workflow until its Development target, credential isolation, and fail-closed safeguards have been reviewed.
 - Once implemented, only an update to `main` may trigger the Development deployment. PR events and pushes to `dev` must not deploy.
 - Production remains prohibited. `npm test` remains NOT RUN unless the owner explicitly changes that instruction.
@@ -91,7 +91,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 
 ## CICD-003 Result — PR Validation Contract
 - CICD-003 is COMPLETE — DEFINED. The normative check matrix, trigger boundary, failure behavior, and test restrictions are in `project/CICD_VALIDATION_CONTRACT.md`.
-- Next active task: CICD-004, implement PR validation workflow only. PR events must not deploy.
+- Historical next step at the time of this record: CICD-004. Superseded by the 2026-11-22 public-repository scope decision.
 - Required/blocking: `npm ci`; syntax checks for relevant JS under `src/` and `test/`; Wrangler `deploy --dry-run`; mapped focused regression tests for changed code.
 - Initial warnings: `npm audit --audit-level=high`; changed code without a deterministic test mapping.
 - `npm test` remains prohibited/NOT RUN; remote tests remain excluded. Do not add secrets or Production access to PR validation.
@@ -102,14 +102,14 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - Workflow is PR-only for `dev` → `main`; read-only permissions; immutable action pins; per-PR concurrency; no deployment step or secrets.
 - Checks: `npm ci`, syntax checks for JS under `src/` and `test/`, explicit Development Worker name guard plus Wrangler dry-run, focused mapped `node --test` suites, and warning-only `npm audit`.
 - `npm test` and remote tests remain prohibited. Workflow run and YAML execution are NOT VERIFIED until an actual PR triggers it.
-- Next active task: CICD-006 Development credential isolation review; do not create the deployment workflow before CICD-006/007 safeguards are established.
+- Historical next step at the time of this record: CICD-006. Superseded by the 2026-11-22 public-repository scope decision.
 
 ## Current Owner Update — 2026-11-22 (Supersedes stale queue statements above)
 
 - Exactly two repository branches are allowed: `main` and `dev`. Do not create additional branches. Both are synchronized at commit `1649701419f6d1b03b5f659c76f02d02b4355ad8`; `dev` was fast-forwarded without force-push.
 - Owner reports Cloudflare Workers auto-deployment from GitHub is configured and a GitHub deployment succeeded. This is owner-reported, not independently verified. Verify the Cloudflare dashboard integration, branch mapping, Worker target, deployed version and health before treating it as verified.
 - `.github/workflows/pr-validation.yml` is a PR validation workflow only; it contains no deployment step. Do not create a duplicate deployment mechanism before auditing the existing Cloudflare Git integration.
-- Next active task: documentation-only PR `dev` → `main` to trigger the existing validation workflow, then inspect actual CI results. Do not merge independently.
+- Historical next step at the time of this record: documentation-only PR validation. Superseded by the 2026-11-22 public-repository scope decision.
 - Reassess CICD-005..010 after verifying the existing Cloudflare deployment integration; preserve Development-only scope (`dekeku-api-dev`).
 - `npm test` remains NOT RUN. Remote tests remain prohibited. Production remains untouched.
 
