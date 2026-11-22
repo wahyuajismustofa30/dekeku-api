@@ -388,3 +388,13 @@
 - `npm test` and remote tests NOT RUN. No PR created, branch protection changed, secrets read/changed, Cloudflare config changed, Worker deployed, or Production resource touched.
 
 - Follow-up hardening: job guard also requires the PR head repository to equal the base repository, preventing same-named `dev` branches from forks from running this trusted-branch workflow.
+
+
+## [Unreleased] — Branch Synchronization Checkpoint (2026-11-22)
+### Changed
+- Fast-forwarded `dev` to the current `main` commit after confirming `dev` was strictly behind and had no unique commits.
+- Verified `main` and `dev` point to the same commit; repository branch inventory contains only these two branches.
+### Verification / Scope
+- GitHub compare result after synchronization: `identical`, 0 commits ahead/behind.
+- Documentation-only checkpoint; no application source, tests, Wrangler configuration, secrets, Cloudflare settings, deployment, or Production resources changed.
+- `npm test`: NOT RUN per owner instruction.
