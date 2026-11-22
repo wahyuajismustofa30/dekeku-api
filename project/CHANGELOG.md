@@ -2,6 +2,7 @@
 ### Changed
 - Added shared `resolveProjectRepository(request, env)` to validate the requesting Origin's project config, GitHub repository identity/public visibility, and authoritative default branch.
 - Routed authenticated Admin SHA lookup and CREATE/UPDATE/DELETE handlers through the shared resolver; all file operations use the selected repository and GitHub-reported default branch instead of static Worker repository/branch bindings.
+- Encoded the selected branch when building Contents API read query parameters, supporting valid Git branch names containing `/`.
 - Updated `test/write-router.test.js` fixtures and assertions for the discovery flow and GitHub-reported `data-release` branch.
 ### Verification / Scope
 - PUB-002 owner-reported verification: syntax checks PASS; metadata tests 12 PASS, 0 FAIL, 0 SKIP.
