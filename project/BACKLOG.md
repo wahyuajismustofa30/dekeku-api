@@ -38,7 +38,7 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 
 - [x] **ADM-001 — Durable Object + encrypted storage foundation.** Source, binding dan migration sudah ditambahkan ke `dev`; `DB_ENCRYPTION_KEY` Dev belum diverifikasi. IMPLEMENTED — NOT TESTED.
 - [x] **ADM-002 — Paginated public repository discovery.** Source discovery berdasarkan `GITHUB_OWNER` dan filter repository publik. IMPLEMENTED — NOT TESTED.
-- [x] **ADM-003 — Private metadata CRUD/storage.** Encrypted `dekeku-db` document, schema validation, SHA optimistic concurrency, bulk project-type update. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-003 — Private metadata read/write/upsert storage.** Encrypted `dekeku-db` document, schema validation, SHA optimistic concurrency, bulk project-type update. IMPLEMENTED — NOT TESTED.
 - [x] **ADM-004 — Admin Dashboard UI.** `/admin`, Admin login, table/card, search/filter, details, project navigation. IMPLEMENTED — NOT TESTED.
 - [x] **ADM-005 — Repository inspection pipeline.** `config.json`, `CNAME`, `assets/data`, GitHub archive/visibility facts. IMPLEMENTED — NOT TESTED.
 - [x] **ADM-006 — Background refresh.** Durable Object, latest-only state, progress, cancellation, failed-only retry. IMPLEMENTED — NOT TESTED.
