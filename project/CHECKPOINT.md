@@ -25,7 +25,7 @@ This section supersedes the earlier Public Data API validation statements above 
 - Production Worker/domain/config/secrets/data remain untouched.
 # CHECKPOINT — DEKEKU API Gateway
 
-## Latest checkpoint — 2026-11-23 (Admin Dashboard implementation)
+## Historical checkpoint — 2026-11-23 (Admin Dashboard implementation; superseded as active priority)
 
 ### Repository
 - Repository: `wahyuajismustofa30/dekeku-api`.
@@ -62,7 +62,7 @@ This section supersedes the earlier Public Data API validation statements above 
 - Production Worker `github`, `api.dekeku.my.id`, secrets, variables, and data: NOT TOUCHED.
 
 ### Resume instructions
-Continue code review and any remaining implementation gaps in ADM-001..ADM-007 on `dev`. Do not run tests yet. Once all implementation work is complete, perform the complete ADM-008 verification sequence, record actual outputs, then stop for owner review. Do not create a PR, merge, or deploy without explicit instruction.
+Historical instruction at the time of the Dashboard checkpoint: continue ADM-001..ADM-007 and defer testing until ADM-008. This is superseded by the later owner priority decision D-030. Do not resume Dashboard while Public Data API remains the active priority. Do not create a PR, merge, or deploy without explicit instruction.
 
 ### Latest checkpoint update — 2026-11-23
 - Automated regression tests: OWNER-REPORTED PASS, 261/261; 0 failed, 0 skipped.
