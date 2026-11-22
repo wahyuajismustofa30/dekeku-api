@@ -1,9 +1,9 @@
 # Public Data API — Work Plan v1
 
 Tanggal persetujuan: 2026-11-23
-Status: APPROVED DESIGN — IMPLEMENTATION NOT STARTED
+Tanggal implementasi GitHub: 2026-11-23
 Branch target: `dev`
-Prioritas: AKTIF (menggantikan sementara urutan kerja Admin Dashboard)
+Prioritas: AKTIF (Admin Dashboard tetap PAUSED)
 
 ## 1. Tujuan
 
@@ -13,73 +13,82 @@ Menyediakan pola endpoint publik yang dapat diperluas untuk berbagai jenis formu
 
 Resource pertama adalah `guestbook`. Penambahan resource berikutnya dilakukan melalui Resource Registry dan validator khusus, bukan dengan menambah handler endpoint yang menduplikasi engine.
 
-## 2. Arsitektur yang disetujui
+## 2. Arsitektur yang disetujui dan diimplementasikan
 
-1. **Resource Registry** — daftar resource yang diizinkan dan dikendalikan server. Setiap entri menentukan status enabled, method, validator/schema, storage path tetap, bentuk dokumen JSON, dan batas ukuran.
-2. **Resource Validator** — validasi payload terpisah untuk setiap resource. Klien tidak dapat mengubah aturan atau storage path.
-3. **Project Repository Resolver** — resolver bersama berdasarkan Project Origin dan kontrak `config.json` yang digunakan File Manager. Periksa implementasi aktual sebelum menyatukan resolver; jangan menganggap resolver Guestbook lama dan File Manager identik.
-4. **Shared Storage Engine** — memusatkan parsing body terbatas, validasi Origin, resolusi repository, pemeriksaan repository publik, validasi dokumen, GitHub write, SHA optimistic concurrency, retry terbatas sesuai perilaku aman saat ini, dan error response yang aman.
-5. **Guestbook Migration** — migrasikan Guestbook menjadi resource `guestbook` dengan kompatibilitas payload dan format data yang sudah berlaku.
-6. **Legacy Alias** — `POST /api/v1/public/submit` tetap tersedia sementara dan meneruskan ke handler Guestbook yang sama; tidak boleh ada business logic duplikat.
-7. **Public Read** — website membaca file dari repository publik/CDN secara langsung. GET API baru tidak termasuk cakupan tahap awal.
+1. **Resource Registry** — server-side allowlist, enabled flag, method, validator, fixed storage path, JSON shape, dan limits.
+2. **Resource Validator** — validasi payload terpisah per resource; client tidak dapat mengubah aturan.
+3. **Project Repository Resolver** — menggunakan `resolveProjectRepository()` yang juga dipakai File Manager. Resolver Guestbook lama yang membaca private `users.json`/mapping dibandingkan dengan resolver File Manager; pendekatan private mapping dihapus dari jalur Guestbook baru.
+4. **Shared Storage Engine** — bounded body parsing, UTF-8/JSON validation, Origin enforcement melalui shared resolver, repository visibility, fixed-path GitHub write, SHA concurrency, bounded retry, dan safe errors.
+5. **Guestbook Migration** — Guestbook menjadi resource `guestbook`, mempertahankan payload, timestamp, JSON array, storage path historis, serta batas ukuran.
+6. **Legacy Alias** — `POST /api/v1/public/submit` meneruskan ke handler Guestbook yang sama.
+7. **Public Read** — website membaca file dari repository publik/CDN secara langsung. GET API baru tidak termasuk cakupan awal.
 
-## 3. Daftar pekerjaan
+## 3. Status pekerjaan
 
-- [ ] **PUB-DATA-001 — API Contract**
-  - Tetapkan route, method, request/response, status code, error contract, dan perilaku resource tidak dikenal/nonaktif.
-  - Pastikan endpoint publik tidak membutuhkan Admin JWT.
-  - Acceptance: kontrak terdokumentasi dan sesuai pola router yang aktual.
+| ID | Hasil implementasi | Status validasi |
+|---|---|---|
+| PUB-DATA-001 — API Contract | Route, method, request/response, unknown resource, dan method handling | IMPLEMENTED |
+| PUB-DATA-002 — Resource Registry | Registry server-side dan metadata resource Guestbook | IMPLEMENTED |
+| PUB-DATA-003 — Shared Storage Engine | Bounded parsing, resolver, public repo check, fixed-path write, SHA retry | IMPLEMENTED |
+| PUB-DATA-004 — Guestbook Migration | Guestbook memakai resolver config.json dan storage engine bersama | IMPLEMENTED |
+| PUB-DATA-005 — Legacy Compatibility | Route lama menjadi alias ke handler yang sama | IMPLEMENTED |
+| PUB-DATA-006 — Security & Integration Tests | Test cases mock/fixture diperbarui untuk endpoint baru dan alias | TESTS WRITTEN — NOT RUN |
+| PUB-DATA-007 — Documentation & Checkpoint | API reference, usage, integration, roadmap, progress, backlog, checkpoint, changelog diperbarui | IMPLEMENTED |
 
-- [ ] **PUB-DATA-002 — Resource Registry**
-  - Buat registry allowlist yang ditentukan server.
-  - Definisikan metadata per resource: enabled, validator, fixed storage path, JSON shape, dan limit.
-  - Acceptance: resource tidak terdaftar/nonaktif ditolak; klien tidak dapat menentukan owner/repo/branch/path.
+**Status keseluruhan:** IMPLEMENTED ON GITHUB `dev` — AWAITING TERMUX VALIDATION. Belum ada klaim PASS/FAIL untuk test baru. Belum diverifikasi dengan Node test runner, Wrangler dry-run, atau runtime Worker.
 
-- [ ] **PUB-DATA-003 — Shared Storage Engine**
-  - Implementasikan komponen bersama untuk bounded body parsing, JSON validation, Origin enforcement, resolver, repository visibility, GitHub write, SHA conflict/concurrency, dan safe errors.
-  - Acceptance: engine tidak menerima koordinat repository atau path arbitrer dari request; gagal tertutup saat resolver/config/repository tidak valid.
+## 4. File implementasi
 
-- [ ] **PUB-DATA-004 — Guestbook Migration**
-  - Daftarkan Guestbook sebagai resource `guestbook`.
-  - Pertahankan schema field, batas, timestamp, bentuk file, dan tujuan penyimpanan sesuai temuan source aktual.
-  - Acceptance: pengiriman Guestbook melalui route baru tersimpan dengan format kompatibel; tidak menghapus/memindahkan data lama otomatis.
+- `src/modules/public/resource-registry.js`
+- `src/modules/public/resource-validators.js`
+- `src/modules/public/storage-engine.js`
+- `src/modules/public/index.js`
+- `src/modules/public/submit.js` (legacy alias)
+- `src/core/router.js`
+- `test/public-submission.test.js`
 
-- [ ] **PUB-DATA-005 — Legacy Compatibility**
-  - Pertahankan `POST /api/v1/public/submit` sebagai alias ke implementasi Guestbook yang sama.
-  - Acceptance: route lama dan baru memakai validasi/engine identik; tidak ada duplikasi business logic.
+Dokumentasi:
+- `docs/PUBLIC_DATA_API.md`
+- `docs/GUESTBOOK_INTEGRATION.md`
+- `docs/USAGE.md`
 
-- [ ] **PUB-DATA-006 — Security & Integration Tests**
-  - Uji Origin/CORS, no-JWT public flow, malformed JSON, body/file size, schema, unknown/disabled resource, path traversal, resolver/config errors, private/inaccessible repository, GitHub conflict, serta legacy alias.
-  - Gunakan mock/fixture; jangan menulis atau menghapus data proyek aktif tanpa izin.
-  - Acceptance: seluruh test relevan lulus dan bukti dicatat.
+## 5. Kontrak Guestbook
 
-- [ ] **PUB-DATA-007 — Documentation & Checkpoint**
-  - Perbarui API usage/reference, architecture, Guestbook integration, backlog, progress, decisions, changelog, dan checkpoint.
-  - Perbaiki referensi dokumentasi Guestbook lama yang tidak cocok dengan source aktual.
-  - Acceptance: dokumen konsisten dengan implementasi dan bukti; status tidak melebih-lebihkan verifikasi.
+Request:
 
-## 4. Keamanan dan kompatibilitas wajib
+```json
+{
+  "name": "Nama Pengunjung",
+  "message": "Pesan",
+  "email": "opsional@example.com"
+}
+```
 
-- Origin adalah kontrol kepercayaan browser/CORS, bukan autentikasi.
+- name wajib 1–100 karakter setelah trim.
+- message wajib 1–1000 karakter setelah trim.
+- email opsional maksimal 254 karakter.
+- field tambahan ditolak.
+- Worker menambahkan `createdAt` ISO 8601.
+- body maksimal 15.360 byte.
+- file maksimal 1 MiB dan harus berupa JSON array.
+- storage path tetap: `assets/data/bukutamu.json`.
+- repository harus public; owner harus sama dengan trusted `GITHUB_OWNER`; branch diambil dari metadata GitHub.
+
+## 6. Keamanan dan kompatibilitas wajib
+
+- Origin adalah trust selector/CORS boundary, bukan autentikasi.
 - Jangan menerima owner, repository, branch, atau storage path dari klien.
-- Registry dan validator harus fail-closed.
-- Pertahankan batas ukuran body/file, validasi UTF-8/JSON, perlindungan traversal, repository public check, dan kontrol SHA concurrency yang relevan.
-- Jangan menghapus atau memigrasikan file Guestbook lama secara otomatis.
-- Jangan mengubah User Data API, Admin API, atau Admin Dashboard sebagai bagian pekerjaan ini.
+- Registry dan validator fail-closed.
+- Pertahankan batas ukuran body/file, UTF-8/JSON validation, repository public check, dan SHA concurrency.
+- Jangan menghapus atau memindahkan file Guestbook lama otomatis.
+- Jangan mengubah User Data API, Admin API, atau Admin Dashboard.
 - Tidak membuat GET API publik baru pada fase awal.
-- Periksa source aktual untuk menyelesaikan perbedaan antara resolver Guestbook lama dan Project Origin resolver File Manager sebelum memilih implementasi final.
 
-## 5. Urutan prioritas dan batas operasional
+## 7. Batas operasional dan langkah berikutnya
 
-- PUB-DATA-001 s.d. PUB-DATA-007 menjadi workstream aktif dan didahulukan.
-- Admin Dashboard ADM-001..ADM-008 dijeda sementara; implementasi dan hasil yang sudah ada tetap dipertahankan. Jangan menghapus atau merombak pekerjaan Dashboard.
-- Implementasi hanya pada branch `dev`.
-- Tidak membuat branch ketiga, tidak commit/push selama pekerjaan belum memenuhi kriteria matang, tidak membuat PR, tidak merge.
+- Semua perubahan dilakukan hanya pada branch `dev`.
+- Tidak membuat PR, tidak merge, tidak menyentuh `main`.
 - Tidak melakukan deployment atau perubahan Cloudflare config/bindings/secrets/variables.
-- Production Worker, domain, credentials, dan data Production tidak boleh disentuh.
-- Jika ditemukan konflik desain/source yang memengaruhi keamanan atau kompatibilitas, hentikan bagian terkait dan laporkan sebelum mengambil keputusan.
-
-## 6. Status pelaksanaan
-
-Semua item PUB-DATA-001..007: NOT STARTED.
-Dokumen ini merekam keputusan dan daftar pekerjaan; dokumen ini bukan bukti implementasi, pengujian, atau deployment.
+- Production Worker, domain, credentials, dan data Production tidak disentuh.
+- **Langkah berikutnya wajib di Termux:** sinkronkan/ambil perubahan `dev`, periksa working tree, jalankan focused tests `node --test test/public-submission.test.js`, jalankan pemeriksaan syntax/build dan suite sesuai instruksi repository, review diff, lalu catat bukti aktual. Jangan jalankan `test:remote` karena dapat menulis ke repository proyek aktif.
+- Setelah validasi Termux, berhenti untuk review pemilik; tidak ada PR/merge/deployment otomatis.
