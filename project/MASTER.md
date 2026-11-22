@@ -6,7 +6,7 @@ DEKEKU API Gateway adalah layanan API terpusat berbasis Cloudflare Workers yang 
 ## 2. Latar Belakang & Tujuan
 Proyek ini dibuat untuk memusatkan logika akses data dan pengelolaan file.
 - **Sentralisasi**: Satu API untuk banyak aplikasi.
-- **Penyimpanan Aman**: Menggunakan repository GitHub privat sebagai database dan file server.
+- **Pengelolaan Data Publik**: Mengelola file publik pada repository GitHub masing-masing proyek melalui API Gateway.
 - **Abstraksi**: Menyembunyikan kompleksitas GitHub API dari klien.
 - **Keamanan**: Melindungi GitHub Token di sisi server (Secret).
 
@@ -15,7 +15,8 @@ Menjadi infrastruktur backend "serverless" yang handal untuk mengelola seluruh a
 
 ## 4. Arsitektur Tingkat Tinggi
 - **Runtime**: Cloudflare Workers (Edge Computing).
-- **Storage**: GitHub Private Repository (API-driven).
+- **Storage utama fase saat ini**: repository GitHub publik milik masing-masing proyek.
+- Website membaca data publik langsung dari URL statis GitHub/CDN; operasi administratif dilakukan melalui DEKEKU API Gateway.
 - **Komunikasi**: REST API (JSON).
 - **Security**:
   - Public Access Policy untuk pembacaan publik.
@@ -29,7 +30,8 @@ Menjadi infrastruktur backend "serverless" yang handal untuk mengelola seluruh a
 - **Modules**: Fitur spesifik (Health, GitHub, Guestbook, dsb).
 
 ## 6. Prinsip Keamanan & Batasan
-- **Public READ**: Diizinkan hanya pada direktori `public/` dengan ekstensi yang disetujui.
+- **Public READ**: Website membaca data publik langsung dari repository/CDN; API reader tetap membatasi path sesuai allowlist `public/`.
+- **Public Repository WRITE**: Operasi pengelolaan data publik dilakukan melalui API Gateway setelah repository proyek tervalidasi.
 - **Admin WRITE**: Wajib menggunakan autentikasi JWT admin (sudah diimplementasikan).
 - **Size Limit**: Batas maksimal file 1 MB.
 - **No Direct GitHub Access**: Klien tidak boleh mengakses GitHub API secara langsung.
