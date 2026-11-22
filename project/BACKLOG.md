@@ -43,7 +43,7 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 - [x] **ADM-005 — Repository inspection pipeline.** `config.json`, `CNAME`, `assets/data`, GitHub archive/visibility facts. IMPLEMENTED — NOT TESTED.
 - [x] **ADM-006 — Background refresh.** Durable Object, latest-only state, progress, cancellation, failed-only retry. IMPLEMENTED — NOT TESTED.
 - [x] **ADM-007 — Quick/bulk actions.** Three-dot actions, selection, refresh selected/all, JSON export, bulk project type. IMPLEMENTED — NOT TESTED.
-- [ ] **ADM-008 — Final verification.** Security review, unit/integration/regression tests, Wrangler dry-run/build, Dev secret/binding/runtime verification, evidence index. Mulai setelah review ADM-001..ADM-007 selesai.
+- [ ] **ADM-008 — Final verification (READY / NOT RUN).** Security review, unit/integration/regression tests, Wrangler dry-run/build, Dev secret/binding/runtime verification, evidence index. Execution plan: `project/ADM-008_TEST_PLAN.md`.
 
 ### Catatan operasional
 - `DB_ENCRYPTION_KEY` harus dibuat sebagai Development Worker Secret melalui Cloudflare/Wrangler; jangan pernah commit nilainya.
