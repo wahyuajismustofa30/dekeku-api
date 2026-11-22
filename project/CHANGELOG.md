@@ -1,3 +1,17 @@
+# CHANGELOG — DEKEKU API Gateway
+
+## 2026-11-22 — Documentation reconciliation after PR #26
+### Updated
+- Reconciled PROGRESS, ROADMAP, BACKLOG, CHECKPOINT, RECOMMENDATIONS, EXECUTION_POLICY, public repository contract, usage guide, and architecture decision status.
+- Recorded PUB-005 implementation and owner-reported focused regression result (66 PASS, 0 FAIL, 0 skipped; 9 suites) separately from unverified Development/browser E2E.
+- Recorded PR #26 merge and remote branch equality at `c7cdd582003d7162a3842fd9ec612224fc733921`; local checkout sync remains unconfirmed.
+- Set PUB-006 Development E2E as the next active gate; recorded historical project-domain config observations as needing recheck.
+- Clarified wildcard Origin behavior and that PR validation workflow does not deploy.
+### Verification / Scope
+- Documentation-only changes. No application source, tests, Wrangler configuration, secrets, Cloudflare settings, deployment, or Production resources changed.
+- No tests executed during this documentation update; previously owner-reported focused results are recorded as such.
+- `npm test` NOT RUN.
+
 ## [Unreleased] — 2026-11-22
 ### Added — PUB-005 Project-aware JSON File Manager
 - Added exact-allowlist-validated X-DEKEKU-Project-Origin selector for the first-party Tester while preserving browser Origin selection for normal websites.
