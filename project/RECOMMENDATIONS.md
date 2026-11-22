@@ -6,7 +6,8 @@ Dokumen ini menyimpan rekomendasi hasil review repository dan dashboard Tester. 
 
 ## Prioritas Aktif — Public Repository Management (2026-11-22)
 
-1. **PUB-001 COMPLETE (specification)**: skema `config.json` v1 dan aturan discovery terdokumentasi di `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`. Lanjutkan PUB-002 untuk enforcement server-side.
+1. **PUB-001 COMPLETE (specification)**: skema `config.json` v1 dan aturan discovery terdokumentasi di `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`.
+2. **PUB-002 IN PROGRESS**: enforcement schema dan exact trusted-Origin sudah ditambahkan ke resolver; jalankan focused tests sebelum melanjutkan.
 2. Selesaikan resolusi repository publik di sisi server dan pastikan semua operasi SHA/CRUD memakai repository yang sama.
 3. Tambahkan penjelajahan direktori/file publik dengan validasi path, pagination, dan batas ukuran respons.
 4. Selesaikan Tester menjadi pengelola file JSON bergaya phpMyAdmin.
