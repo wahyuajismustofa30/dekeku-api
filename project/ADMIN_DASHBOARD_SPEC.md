@@ -122,7 +122,7 @@ Pemeriksaan konfigurasi harus mengikuti kontrak repository publik yang sudah ada
 - Source implementation: PRESENT on `dev` for ADM-001 through ADM-007; NOT TESTED.
 - Unit/integration tests: DEFERRED by explicit owner instruction until all ADM-001 through ADM-007 implementation work is complete.
 - Durable Object binding/migration: PRESENT in `wrangler.jsonc` on `dev`; not validated by Wrangler.
-- `DB_ENCRYPTION_KEY` Development secret: NOT CONFIGURED / NOT VERIFIED from this session.
+- `DB_ENCRYPTION_KEY` Development secret: NOT CONFIGURED / NOT VERIFIED from this session. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on the Development Worker is also NOT VERIFIED from this session.
 - Cloudflare Development deployment/runtime: NOT VERIFIED.
 - Development deployment/runtime: NOT VERIFIED.
 - Production: NOT TOUCHED.
