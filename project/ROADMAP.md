@@ -40,7 +40,7 @@ Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `deke
 | ADM-003 | Encrypted private metadata read/write/upsert dan bulk type update | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
 | ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
 | ADM-005 | Inspection config.json, CNAME, assets/data | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
-| ADM-006 | Background refresh, progress, cancel, retry, latest result | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
+| ADM-006 | Background refresh, progress, cancel, retry, latest result | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
 | ADM-007 | Quick actions, selection, export, bulk project type | OWNER-REPORTED LOCAL TEST PASS; WORKSTREAM PAUSED |
 | ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | OWNER-REPORTED LOCAL TEST PASS; CONFIG/SECRET/RUNTIME NOT VERIFIED; WORKSTREAM PAUSED |
 
