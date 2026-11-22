@@ -151,6 +151,8 @@ Instruksi eksplisit terbaru Wahyu untuk workstream Admin Dashboard:
 
 Wahyu's latest explicit instruction prioritizes Public Data API PUB-DATA-001..007 and pauses Admin Dashboard ADM-001..ADM-008. This instruction supersedes the earlier Dashboard implementation sequencing above for current work priority. Preserve Dashboard code, tests, docs, and evidence; do not continue or remove Dashboard work during this priority window.
 
-Current Public Data API implementation is committed to GitHub branch `dev` and awaits local Termux validation. Test cases have been authored but are NOT RUN in this GitHub-only phase. Do not claim test success. The next execution must validate the local checkout safely, avoid overwriting unknown local changes, and must not run `test:remote` because it may mutate active project data.
+Public Data API PUB-DATA-001..007 is the active priority; Admin Dashboard ADM-001..ADM-008 remains PAUSED. Implementation for PUB-DATA-001..005 and documentation for PUB-DATA-007 are present on GitHub branch `dev`. Owner-reported Termux validation for PUB-DATA-006: `node --test test/public-submission.test.js` passed 14/14 (0 failures), and `node --check` passed for all 7 changed source files.
 
-No PR, merge, deployment, Cloudflare configuration/binding/secret/variable change, or Production access is authorized by this priority instruction.
+Evidence limitation: the exact local tested `git rev-parse HEAD` was not supplied. Therefore, the 14/14 result is owner-reported local evidence and is not yet conclusively attributable to current GitHub `dev` HEAD or PR #29 head. No remote integration test, live project repository write, Worker runtime smoke test, or deployment is claimed. Before merge/release, confirm the tested SHA against PR #29 head or rerun the focused tests on the exact candidate.
+
+PR #29 (`dev` → `main`) exists and remains unmerged according to the latest recorded checkpoint. This documentation update does not authorize merge, deployment, Cloudflare configuration/binding/secret/variable changes, or Production access. Do not run `test:remote`; it may mutate active project data.
