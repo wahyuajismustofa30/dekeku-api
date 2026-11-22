@@ -11,7 +11,7 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004-FIX Public Repository File Browser Securi
   - PUB-003 (Admin File Operations Resolver Routing): VERIFIED (54/54 PASS total combined suites).
   - PUB-004 (Public Repository File Browsing): VERIFIED (`src/modules/github/browse.js`, `GET /api/v1/admin/browse`, 22/22 PASS in PUB-004 suite, 54/54 PASS total).
   - PUB-004-FIX (Security Audit & Remediation for File Browser): REOPENED — actual Git Trees traversal added; NOT VERIFIED until legacy test fixtures are migrated and focused regression tests pass.
-  - PUB-005 (Tester Public File Manager UI): BLOCKED until PUB-004-FIX is verified and accepted.
+  - PUB-005 (Tester Public File Manager UI): IN PROGRESS — project selector, authenticated JSON reader, and interactive file manager implemented; focused verification pending.
   - PUB-006 (End-to-end Development Verification): PENDING.
 
 
