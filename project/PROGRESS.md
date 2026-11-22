@@ -52,3 +52,17 @@ Menunggu review pemilik dan instruksi lebih lanjut. Jangan membuat PR, merge, at
 - Public website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
 - PUB-DATA-001..007: **NOT STARTED**. Belum ada implementasi atau test yang diklaim.
 - Batas: branch `dev` saja; tidak ada PR, merge, deployment, perubahan Cloudflare config/secrets/variables, atau akses Production.
+
+
+## Latest implementation checkpoint — Public Data API (2026-11-23)
+
+This section supersedes the earlier planning-only status for PUB-DATA. The earlier PUB-001..PUB-006 entries refer to the separate Public Repository Manager workstream.
+
+- **Active workstream:** PUB-DATA-001..PUB-DATA-007.
+- **GitHub implementation:** completed on branch `dev`.
+- **PUB-DATA-001..005:** IMPLEMENTED — API contract/router, server-side registry, shared storage engine, Guestbook migration, and legacy alias.
+- **PUB-DATA-006:** test cases updated in `test/public-submission.test.js`; **NOT RUN** in this GitHub-only phase.
+- **PUB-DATA-007:** API reference, Usage, Guestbook integration, plan, and project status documents updated.
+- **Validation:** Node tests, syntax/build, full suite, Wrangler dry-run, and Worker runtime are **NOT RUN / NOT VERIFIED** for these changes. Do not claim PASS.
+- **Next required action:** Termux validation on the local `dev` checkout. Run `node --test test/public-submission.test.js` first, then the repository's approved checks. Do not run `test:remote`; it may write to live project data.
+- **Operational boundary:** no PR, no merge, no deployment, no Cloudflare config/secret/variable change, and no Production access. Admin Dashboard remains PAUSED.
