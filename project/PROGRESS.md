@@ -37,7 +37,7 @@ Tanggal pembaruan: 2026-11-23
 - Dokumen desain/spesifikasi dan instruksi kerja diperbarui.
 
 ## Blocker dan verifikasi
-- `DB_ENCRYPTION_KEY` pada Development: NOT CONFIGURED / NOT VERIFIED dari sesi ini. Ketersediaan `GITHUB_TOKEN`, `JWT_SECRET`, dan `ADMIN_PASSWORD_HASH` pada Worker Development juga NOT VERIFIED dari sesi ini. Nilai secret tidak boleh disimpan di GitHub.
+- `DB_ENCRYPTION_KEY` pada Development: NOT VERIFIED dari sesi ini. Ketersediaan `GITHUB_TOKEN`, `JWT_SECRET`, dan `ADMIN_PASSWORD_HASH` pada Worker Development juga NOT VERIFIED dari sesi ini. Nilai secret tidak boleh disimpan di GitHub.
 - Wrangler dry-run/build: NOT RUN sesuai urutan pengujian yang diminta.
 - Test suite baru sudah ditambahkan ke `package.json` dan PR validation mapping (`dashboard-crypto`, `dashboard-storage`, `dashboard-registry`, `dashboard-refresh`, `dashboard-router`); seluruhnya NOT RUN — sengaja ditunda sampai implementasi ADM-001..007 selesai.
 - Deployment dan runtime Development: NOT VERIFIED; tidak dilakukan dari sesi ini.
