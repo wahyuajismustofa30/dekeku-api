@@ -63,6 +63,6 @@
 - Updated Public Data API, Usage, and Guestbook integration documentation.
 
 ### Validation boundary
-- Updated focused Guestbook/Public Data API test cases; **NOT RUN** in this GitHub-only phase.
+- Updated focused Guestbook/Public Data API test cases; **NOT RUN at that earlier GitHub-only checkpoint**. Superseded for the focused suite by the owner-reported 14/14 Termux run recorded in `PUBDATA-TERMUX-02`.
 - Syntax/build, full local test suite, Wrangler dry-run, and runtime are NOT VERIFIED for these changes.
 - Next required step: local Termux validation. No PR, merge, deployment, Cloudflare configuration/secret change, or Production access.
