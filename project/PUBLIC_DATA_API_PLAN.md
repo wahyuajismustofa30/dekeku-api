@@ -90,5 +90,5 @@ Request:
 - PR #29 (`dev` → `main`) sudah dibuat dan saat audit 2026-11-23 berstatus OPEN, belum merged. Tidak ada perubahan langsung ke `main`.
 - Tidak melakukan deployment atau perubahan Cloudflare config/bindings/secrets/variables.
 - Production Worker, domain, credentials, dan data Production tidak disentuh.
-- **Langkah berikutnya:** dapatkan `git rev-parse HEAD` dari checkout Termux yang menjalankan focused test dan cocokkan dengan PR #29 HEAD `9d010b4f10159975d378df10b2b505d584d535a6`. Jika berbeda, jalankan ulang focused test pada checkout kandidat tersebut. Jangan jalankan `test:remote` tanpa persetujuan eksplisit karena dapat menulis ke repository proyek aktif.
+- **Langkah berikutnya:** dapatkan `git rev-parse HEAD` dari checkout Termux yang menjalankan focused test dan cocokkan dengan HEAD PR #29 terkini melalui metadata GitHub. Jangan menyalin SHA PR ke dokumen sebagai nilai permanen karena setiap pembaruan branch dapat mengubahnya. Jika berbeda, jalankan ulang focused test pada checkout kandidat tersebut. Jangan jalankan `test:remote` tanpa persetujuan eksplisit karena dapat menulis ke repository proyek aktif.
 - Setelah provenance test cocok, berhenti untuk review pemilik. PR #29 sudah ada tetapi belum digabung; merge dan deployment tetap memerlukan instruksi/approval terpisah.
