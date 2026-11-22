@@ -1,7 +1,7 @@
 # CICD-003 — PR Validation Contract
 
 Tanggal: 2026-11-21
-Status: IMPLEMENTED — PR validation run #51 SUCCESS (commit 98d7163, 2026-11-23).
+Status: IMPLEMENTED — historical PR validation run #51 SUCCESS on commit `98d7163`; latest audited `dev` HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477` has no PR-triggered workflow run returned by the commit-runs query (2026-11-23).
 Target PR: `dev` → `main`.
 Batas: validasi CI saja; tidak melakukan deployment.
 
@@ -53,6 +53,13 @@ Batas: validasi CI saja; tidak melakukan deployment.
 - [x] Implementasi workflow PR: `.github/workflows/pr-validation.yml` dibuat pada CICD-004.
 - [x] Bukti run PR aktual: VERIFIED — GitHub Actions run #51 (ID `45080601189`) pada commit `98d7163add0452832afefeda1462aad5f187ac43`; hasil SUCCESS. Laporan: 139 PASS, 0 FAIL, 0 skipped, 19 suites; `npm ci` PASS; syntax check 64 JavaScript files PASS; Wrangler dry-run PASS; `npm audit` 0 vulnerabilities. Run: https://github.com/wahyuajismustofa30/dekeku-api/actions/runs/45080601189.
 
+
+## Latest HEAD evidence boundary — 2026-11-23
+
+- Latest audited `dev` HEAD at this checkpoint: `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
+- Querying PR-triggered workflow runs for that exact commit returned an empty list. This means **no PR-triggered run was returned by that query**; it is not a claim that every possible GitHub check source is absent.
+- Run #51 remains successful historical CI evidence for `98d7163add0452832afefeda1462aad5f187ac43` only. It does not validate `e2bc6f4` or later documentation commits.
+- Documentation-only repair does not justify claiming a fresh CI run. Check the latest PR head and its checks again before treating the candidate as CI-validated.
 
 ## CICD-004 Implementation Notes
 - Workflow runs only for pull requests targeting `main` and is gated to head branch `dev`.
