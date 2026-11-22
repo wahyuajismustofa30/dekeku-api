@@ -1,7 +1,7 @@
 # ADM-008 — Final Test & Development Verification Plan
 
 Tanggal: 2026-11-23  
-Status: READY TO EXECUTE / NOT RUN  
+Status: IN PROGRESS — FIRST OWNER-RUN RESULT RECORDED; FIXES COMMITTED; RERUN PENDING  
 Branch: `dev`  
 Target runtime: Development Worker `dekeku-api-dev` only
 
@@ -36,7 +36,7 @@ Test Dashboard mencakup:
 - Admin JWT boundary untuk protected Dashboard routes (list, metadata, bulk, export, dan refresh state/actions).
 - Metadata upsert, bulk project-type update, list, export, serta validasi target sebelum write.
 
-Catat hasil aktual PASS/FAIL/SKIP dan exit code. Jangan mengubah status menjadi VERIFIED bila ada test yang belum dijalankan.
+Hasil pertama yang dilaporkan pemilik: 261 tests, 259 PASS, 2 FAIL, exit code 1. Kedua kegagalan berasal dari test fixture/assertion dan telah diperbaiki pada commit `4ffe0f9` (`test(admin): assert bulk validation errors from module handlers`) dan `eab878a` (`test(admin): construct bodyless GET requests in router authorization test`). Rerun `npm test` masih PENDING. Jangan mengubah status menjadi VERIFIED sampai rerun lulus.
 
 ## 3. Wrangler configuration validation
 
@@ -46,7 +46,7 @@ Setelah `npm test` selesai:
 npx wrangler deploy --dry-run --outdir /tmp/dekeku-dashboard-dry-run
 ```
 
-Pastikan konfigurasi yang dibaca secara eksplisit menargetkan `dekeku-api-dev`, binding `DASHBOARD_REFRESH`, dan migration `v1-dashboard-refresh`. Perintah ini hanya dry-run; jangan jalankan deploy.
+Hasil owner-reported: `npx wrangler deploy --dry-run --outdir /tmp/dekeku-dashboard-dry-run` selesai dengan exit code 0 dan menampilkan `DASHBOARD_REFRESH` sebagai Durable Object binding serta variabel `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`, dan `ALLOWED_ORIGINS`. Dry-run tidak melakukan deployment dan tidak membuktikan ketersediaan secret/runtime. Periksa kembali target `dekeku-api-dev` dan migration `v1-dashboard-refresh` pada output lengkap lokal. Jangan jalankan deploy.
 
 ## 4. Development secret inventory
 
