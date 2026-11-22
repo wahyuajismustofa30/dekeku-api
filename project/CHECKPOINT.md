@@ -1,16 +1,35 @@
 # CHECKPOINT — DEKEKU API Gateway
 
-## Latest authoritative checkpoint — 2026-11-23
+## Latest checkpoint — 2026-11-23 (Admin Dashboard implementation)
 
-### Repository and branches
+### Repository
 - Repository: `wahyuajismustofa30/dekeku-api`.
-- Branch: `dev` (synchronized with `origin/dev`).
+- Active branch: `dev`.
+- All Dashboard changes in this checkpoint were written to `dev` only.
 
-### Implementation & Verification Status
-- PUB-001 through PUB-006: Complete & Verified.
-- CICD-001 through CICD-008: Complete (Owner-confirmed).
-- Documentation migration and evidence indexing (`project/EVIDENCE.md`) completed and pushed to `origin/dev`.
+### Current status
+- PUB-001 through PUB-006: COMPLETE & VERIFIED (historical evidence in `project/EVIDENCE.md`).
+- CICD-001 through CICD-008: COMPLETE (owner-confirmed status).
+- ADM-001 through ADM-007: source/config implementation present on `dev`; all are IMPLEMENTED — NOT TESTED.
+- ADM-008: pending final security review, tests, Wrangler validation, Development secret/runtime verification, and evidence.
+- Owner explicitly instructed: finish all implementation first; run tests only after ADM-001..ADM-007 are complete.
 
-### Safety and operational boundaries
-- Production resources, secrets, variables, and domains remain untouched.
-- Ready for next instructions from the project owner.
+### Dashboard files added/changed
+- `src/utils/dashboard-crypto.js` — AES-256-GCM authenticated encryption.
+- `src/modules/admin/dashboard-storage.js` — encrypted private metadata storage in `dekeku-db`.
+- `src/modules/admin/dashboard.js` — public repository discovery, inspection, metadata CRUD, bulk type, export.
+- `src/modules/admin/refresh-coordinator.js` — Durable Object background refresh state machine.
+- `src/modules/admin/refresh.js` — Worker-to-DO adapter.
+- `src/modules/admin/dashboard-page.js` — Admin UI at `/admin`.
+- `src/core/router.js`, `src/index.js`, `wrangler.jsonc` — routes, DO class export, Development binding/migration.
+- `project/ADMIN_DASHBOARD_SPEC.md`, `project/ADM-001_DESIGN.md`, and canonical project docs updated.
+
+### Outstanding blockers / limitations
+- Development secret `DB_ENCRYPTION_KEY` has NOT been configured or verified in this session. It must be added as a Cloudflare Worker Secret, never committed to Git.
+- Wrangler dry-run/build and all tests are NOT RUN by explicit owner instruction; defer until ADM-008.
+- Development deployment/runtime NOT VERIFIED and not attempted.
+- GitHub connector commits files immediately; source checkpoints are interim and untested. No PR has been created, no merge has occurred, and no deployment has been triggered by this work.
+- Production Worker `github`, `api.dekeku.my.id`, secrets, variables, and data: NOT TOUCHED.
+
+### Resume instructions
+Continue code review and any remaining implementation gaps in ADM-001..ADM-007 on `dev`. Do not run tests yet. Once all implementation work is complete, perform the complete ADM-008 verification sequence, record actual outputs, then stop for owner review. Do not create a PR, merge, or deploy without explicit instruction.
