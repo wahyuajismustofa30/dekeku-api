@@ -1,7 +1,5 @@
-import { GitHubClient } from "../../core/github.js";
 import { HttpError } from "../../core/errors.js";
 import { discoverPublicRepositories, inspectPublicRepository } from "./dashboard.js";
-import { readDashboardDocument, writeDashboardDocument } from "./dashboard-storage.js";
 
 const ACTIVE = new Set(["queued", "running", "cancelling"]);
 const MAX_TARGETS = 1000;
@@ -26,6 +24,9 @@ export class DashboardRefreshCoordinator {
     const url = new URL(request.url);
     if (url.pathname === "/state" && request.method === "GET") {
       return response({ success: true, job: await this.readState() });
+    }
+    if (url.pathname === "/checks" && request.method === "GET") {
+      return response({ success: true, checks: await this.state.storage.get("latest-checks") || {} });
     }
     if (url.pathname === "/start" && request.method === "POST") {
       let body;
@@ -131,30 +132,10 @@ export class DashboardRefreshCoordinator {
   }
 
   async persistCheck(repository, result) {
-    const github = new GitHubClient(this.env);
-    const stored = await readDashboardDocument(github, this.env);
-    const projects = [...stored.document.projects];
-    const index = projects.findIndex(item =>
-      item.owner.toLowerCase() === repository.owner.toLowerCase() &&
-      item.repo.toLowerCase() === repository.name.toLowerCase()
-    );
-    const timestamp = new Date().toISOString();
-    if (index >= 0) {
-      projects[index] = { ...projects[index], updatedAt: timestamp, lastCheck: result, domain: projects[index].domain || result.cname?.domain || null };
-    } else {
-      projects.push({
-        id: crypto.randomUUID().replace(/-/g, "").slice(0, 24),
-        owner: repository.owner,
-        repo: repository.name,
-        projectType: "other",
-        domain: result.cname?.domain || null,
-        notes: "",
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        lastCheck: result
-      });
-    }
-    await writeDashboardDocument(github, this.env, { version: 1, projects }, stored.sha);
+    const checks = await this.state.storage.get("latest-checks") || {};
+    const key = `${repository.owner.toLowerCase()}/${repository.name.toLowerCase()}`;
+    checks[key] = result;
+    await this.state.storage.put("latest-checks", checks);
   }
 
   async alarm() {
