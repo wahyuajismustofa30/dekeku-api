@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dekeku.my.id/schemas/public-repository-config.schema.json",
   "title": "DEKEKU Public Project Repository Config",
   "description": "Public, non-secret metadata that identifies the GitHub repository owned by one website project.",
   "type": "object",
