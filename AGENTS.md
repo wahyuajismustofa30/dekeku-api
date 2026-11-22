@@ -133,3 +133,14 @@ Setiap pengujian yang dijalankan wajib mencatat format berikut:
 - Utamakan pengujian lokal, mock, fixture, atau environment terisolasi.
 - Jangan melakukan pengujian destruktif atau operasi tulis/hapus pada runtime aktif tanpa persetujuan eksplisit.
 - Redaksi informasi sensitif (token, password, JWT, hash, secret) sebelum menyertakan output.
+
+
+## OWNER OVERRIDE — DASHBOARD IMPLEMENTATION TEST SEQUENCING (2026-11-23)
+
+Instruksi eksplisit terbaru Wahyu untuk workstream Admin Dashboard:
+- Lanjutkan seluruh implementasi ADM-001 sampai ADM-007 terlebih dahulu.
+- Pengujian terintegrasi dan regression test dilakukan setelah seluruh implementasi selesai, sebagai tahap ADM-008.
+- Selama tahap implementasi, perubahan pada branch `dev` boleh disimpan sebagai checkpoint kerja meskipun test belum dijalankan; setiap checkpoint wajib diberi status IMPLEMENTED — NOT TESTED. Ini adalah pengecualian khusus untuk workstream Dashboard dan tidak mengubah kebijakan branch.
+- Jangan membuat PR ke `main`, merge, atau melakukan deployment sebelum tahap ADM-008 selesai, hasil test aktual ditinjau, dan pemilik memberi instruksi lanjutan.
+- Tetap lakukan review kode dan dokumentasi saat implementasi; “test ditunda” bukan izin mengabaikan validasi input, keamanan, atau konsistensi desain.
+- Secret `DB_ENCRYPTION_KEY` dan seluruh binding/migration Dashboard hanya untuk Development. Jika tindakan memerlukan akses Cloudflare yang tidak tersedia, catat sebagai BLOCKED / NOT VERIFIED dan jangan mengarang hasil.
