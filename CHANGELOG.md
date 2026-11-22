@@ -24,3 +24,16 @@
 ## [2026-11-19] - Secret Provisioning (Dev)
 ### Added
 - Provisioning of `JWT_SECRET` and `ADMIN_PASSWORD_HASH`.
+
+
+## [2026-11-23] — Documentation consistency repair
+### Fixed
+- Updated Guestbook storage contract to the current fixed path `assets/data/bukutamu.json` and shared project-repository resolver; explicitly marked the old hostname-derived `public/data/` path obsolete.
+- Reconciled architecture gap list F-01..F-04 with current source; all four are resolved. Rate limiting and JWT revocation remain separate limitations.
+- Updated Usage PUB-006 status and CI validation contract with GitHub Actions run #51 evidence.
+- Marked Admin Dashboard specification as PAUSED and reconciled progress, evidence, checkpoint, and backlog statuses.
+- Replaced malformed archive placeholders with transparent archival notices; original placeholder contents were not recoverable.
+- Marked root-level checkpoint as a historical snapshot; canonical active checkpoint is `project/CHECKPOINT.md`.
+
+### Scope
+- Documentation-only updates on `dev`; no source code, `main`, merge, deployment, Cloudflare configuration/secrets/variables, or Production resources changed.
