@@ -1,6 +1,6 @@
 # PROGRESS STATUS — DEKEKU API Gateway
 
-Tanggal Pembaruan: 2026-11-22 (PUB-004 Public Repository File Browser complete)
+Tanggal Pembaruan: 2026-11-22 (PUB-004 Public Repository File Browser audit & remediation complete)
 
 ## Ringkasan Proyek
 - **Ruang lingkup aktif terbaru**: pengelolaan data publik pada repository masing-masing proyek. Tugas pengaturan repository privat/RBAC dipindahkan ke arsip A-003; kode dan catatan historis tetap dipertahankan.
@@ -18,16 +18,17 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004 Public Repository File Browser complete)
 - PUB-002 source and focused test verification are COMPLETE. Development runtime remains NOT VERIFIED.
 
 
-## PUB-004 Implementation & Verification Update (2026-11-22)
+## PUB-004 Audit & Remediation Update (2026-11-22)
 - Endpoint `GET /api/v1/admin/browse` implemented in `src/modules/github/browse.js` and mounted in `src/core/router.js` behind Admin JWT middleware (`authMiddleware`).
-- Uses `resolveProjectRepository(request, env)` to enforce canonical trusted Origin, `config.json` schema v1, owner policy, public visibility, and default branch reported by GitHub API.
-- Implemented directory path validation (`validateBrowsePath`): restricts path to `public/`, blocks traversal, backslashes, control characters, malformed encoding, hidden files (`.`), and sensitive files (`package.json`, `secrets.json`, `.env`, `.pem`, `.key`, etc.).
-- Implemented `getDirectoryContents(path)` in `GitHubClient`.
-- Filters upstream response: omits hidden files, sensitive files, symlinks, and submodules; returns strictly metadata fields (`name`, `path`, `type`, `size`, `sha`) without file contents or internal URLs.
-- Capped upstream items to 1,000 max per directory with `truncated: true` flag when exceeded.
-- Implemented pagination: default `page=1`, default `per_page=50`, max `per_page=100`.
-- Added `test/browse-router.test.js`. Test execution via `node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js` PASS (51 PASS, 0 FAIL, 0 SKIP; 19 tests in browse suite).
-- `node --check` PASS for all modified files. Development runtime remains NOT VERIFIED.
+- Resolves target repository and branch exclusively via `resolveProjectRepository(request, env)`.
+- Enforces strict path validation: restricts browsing to `public/`, blocks traversal, backslashes, control characters, malformed encoding, hidden files (`.`), and sensitive files (`package.json`, `secrets.json`, `.env`, `.pem`, `.key`, etc.).
+- Enhanced item child path validation: requires `item.path === \`\${pathValidation.path}/\${item.name}\``, rejecting items outside the requested directory.
+- Enhanced symlink/submodule rejection: explicitly rejects items carrying `target` or `submodule_git_url` properties, even if typed as `file` or `dir`.
+- Filters directory listings to omit hidden/sensitive files, symlinks, and submodules. Returns strictly required metadata (`name`, `path`, `type`, `size`, `sha`) without file contents or internal GitHub API URLs.
+- Upstream items capped at 1,000 max per directory with `truncated: true` flag when exceeded. Pagination capped at 100 items per page.
+- Added regression tests in `test/browse-router.test.js` for child path mismatch and fake symlink/submodule properties.
+- Verification: `node --check` PASS for all modified files (`src/modules/github/browse.js`, `src/core/github.js`, `src/core/router.js`, `test/browse-router.test.js`). `node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js` PASS (52 PASS, 0 FAIL, 0 SKIP; 20 tests in browse suite). `git diff --check` PASS (exit code 0).
+- `npm test` NOT RUN per explicit instruction. Development runtime remains NOT VERIFIED.
 
 ## PUB-003 Implementation Update (2026-11-22)
 - `resolveProjectRepository(request, env)` is now the shared server-side resolver for metadata and Admin file operations. It requires a canonical trusted Origin, fetches `/config.json`, validates schema v1 and owner, verifies GitHub repository identity/public visibility, and takes `default_branch` only from GitHub metadata.

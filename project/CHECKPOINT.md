@@ -1,11 +1,13 @@
 
-## Checkpoint — PUB-004 Public Repository File Browser Complete (2026-11-22)
-- Endpoint `GET /api/v1/admin/browse?path=public&page=1&per_page=50` implemented on branch `dev`.
+## Checkpoint — PUB-004 Public Repository File Browser Audit & Remediation Complete (2026-11-22)
+- Endpoint `GET /api/v1/admin/browse?path=public&page=1&per_page=50` implemented and audited on branch `dev`.
 - Requires Admin JWT (`authMiddleware`). Resolves target repository and branch exclusively via `resolveProjectRepository(request, env)`.
 - Enforces `public/` path boundaries, blocks traversal, backslashes, control characters, malformed encoding, hidden files, and sensitive files.
-- Filters upstream directory listings to exclude hidden files, sensitive files, symlinks, and submodules. Returns metadata (`name`, `path`, `type`, `size`, `sha`) without file contents.
+- Strictly validates child path alignment (`item.path === \`\${pathValidation.path}/\${item.name}\``) and rejects items outside requested directory.
+- Strictly filters symlinks and submodules (rejecting items with `target` or `submodule_git_url` properties even if typed as `file` or `dir`).
+- Returns metadata (`name`, `path`, `type`, `size`, `sha`) without file contents or internal GitHub API URLs.
 - Upstream items capped at 1,000 per directory with `truncated: true` flag when exceeded. Pagination capped at 100 items per page.
-- Verification: `node --check` PASS for all modified files. `node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js` PASS (51 PASS, 0 FAIL, 0 SKIP; 19 tests in PUB-004 suite).
+- Verification: `node --check` PASS for all modified files. `node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js` PASS (52 PASS, 0 FAIL, 0 SKIP; 20 tests in PUB-004 suite). `git diff --check` PASS.
 - `npm test` NOT RUN per explicit instruction. Development runtime remains NOT VERIFIED. No deployment, Wrangler/Cloudflare settings, secrets, or Production resources changed.
 - Next active task: PUB-005 — complete the phpMyAdmin-like Tester public file manager.
 

@@ -47,7 +47,7 @@ Current owner-approved focus: public data management in each project's own publi
 2. [x] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Owner-reported syntax checks PASS and `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP). Development runtime NOT VERIFIED.
 3. [x] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** Shared resolver wired into all four Admin handlers; regression tests verified (51/51 PASS across combined suites).
 
-4. [x] **PUB-004 — Implement safe public repository browsing.** Endpoint `GET /api/v1/admin/browse` complete with Admin JWT, path validation (`public/` only), hidden/sensitive file filtering, symlink/submodule exclusion, max 1000 items cap, pagination, and metadata-only output. Verified via `node --test` (19/19 PASS in browse suite, 51/51 PASS total).
+4. [x] **PUB-004 — Implement safe public repository browsing.** Endpoint `GET /api/v1/admin/browse` audited & remediated with Admin JWT, path validation (`public/` only), child path exact matching, hidden/sensitive file filtering, symlink/submodule property exclusion, max 1000 items cap, pagination, and metadata-only output. Verified via `node --test` (20/20 PASS in browse suite, 52/52 PASS total).
 5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.
 6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
 

@@ -129,6 +129,10 @@ export const handleBrowse = async (request, env) => {
       continue;
     }
 
+    if (item.target !== undefined || item.submodule_git_url !== undefined) {
+      continue;
+    }
+
     const name = typeof item.name === "string" ? item.name : "";
     if (!name) continue;
 
@@ -141,7 +145,8 @@ export const handleBrowse = async (request, env) => {
     if (SENSITIVE_PATTERNS.some((p) => p.test(lowerName))) continue;
 
     const itemPath = typeof item.path === "string" ? item.path : "";
-    if (!itemPath || !itemPath.startsWith("public")) continue;
+    const expectedPath = `${pathValidation.path}/${name}`;
+    if (!itemPath || itemPath !== expectedPath) continue;
 
     filteredItems.push({
       name: item.name,

@@ -74,7 +74,7 @@ Do not publish any of the following in `config.json`:
 
 PUB-002 resolver/metadata enforcement is implemented and its focused test suite was reported PASS by the owner (12 PASS, 0 FAIL, 0 SKIP); syntax checks were also reported PASS.\n\nPUB-003 reuses `resolveProjectRepository(request, env)` for Admin SHA lookup and CREATE/UPDATE/DELETE operations.
 
-PUB-004 implements `GET /api/v1/admin/browse` using `resolveProjectRepository(request, env)`. It enforces `public/` path restriction, rejects traversal, hidden/sensitive files, symlinks, and submodules, limits upstream items to 1,000 per directory (with `truncated: true` flag), supports pagination (max 100 per page), and returns metadata only (`name`, `path`, `type`, `size`, `sha`) without file contents. Automated tests verified (19/19 PASS in PUB-004 suite; 51/51 PASS across PUB-002/003/004 combined suites). Development runtime remains NOT VERIFIED.
+PUB-004 implements `GET /api/v1/admin/browse` using `resolveProjectRepository(request, env)`. It enforces `public/` path restriction, rejects traversal, hidden/sensitive files, symlinks, and submodules (including items carrying `target` or `submodule_git_url` properties), requires exact child path matching (`item.path === \`\${pathValidation.path}/\${item.name}\`), limits upstream items to 1,000 per directory (with `truncated: true` flag), supports pagination (max 100 per page), and returns metadata only (`name`, `path`, `type`, `size`, `sha`) without file contents or internal API URLs. Automated tests verified (20/20 PASS in PUB-004 suite; 52/52 PASS across PUB-002/003/004 combined suites). Development runtime remains NOT VERIFIED.
 
 ## 7. Acceptance criteria for PUB-001
 

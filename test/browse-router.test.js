@@ -341,7 +341,9 @@ describe("PUB-004 Public Repository File Browser Router", () => {
             { name: "secrets.json", path: "public/secrets.json", sha: "3".repeat(40), size: 10, type: "file" },
             { name: "package.json", path: "public/package.json", sha: "4".repeat(40), size: 10, type: "file" },
             { name: "link", path: "public/link", sha: "5".repeat(40), size: 0, type: "symlink" },
-            { name: "submod", path: "public/submod", sha: "6".repeat(40), size: 0, type: "submodule" }
+            { name: "submod", path: "public/submod", sha: "6".repeat(40), size: 0, type: "submodule" },
+            { name: "fake_symlink", path: "public/fake_symlink", sha: "7".repeat(40), size: 0, type: "file", target: "../private" },
+            { name: "fake_submod", path: "public/fake_submod", sha: "8".repeat(40), size: 0, type: "dir", submodule_git_url: "git@github.com:evil/repo.git" }
           ]);
         }
         return mockResponse(404, {});
@@ -360,6 +362,50 @@ describe("PUB-004 Public Repository File Browser Router", () => {
       assert.strictEqual(res.status, 200);
       assert.strictEqual(body.items.length, 1);
       assert.strictEqual(body.items[0].name, "normal.json");
+
+      globalThis.fetch = originalFetch;
+    });
+
+    test("rejects items whose path does not match exact child path of requested directory", async () => {
+      globalThis.fetch = mock.fn(async (url) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({
+            schema_version: 1,
+            project: { id: "dekeku" },
+            repository: { username: "mock-owner", repo: "mock-repo" }
+          }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url) === "https://api.github.com/repos/mock-owner/mock-repo") {
+          return mockResponse(200, {
+            full_name: "mock-owner/mock-repo",
+            default_branch: "main",
+            visibility: "public"
+          });
+        }
+        if (String(url).includes("/contents/public/data?ref=main")) {
+          return mockResponse(200, [
+            { name: "valid.json", path: "public/data/valid.json", sha: "1".repeat(40), size: 10, type: "file" },
+            { name: "mismatched.json", path: "public/outside/mismatched.json", sha: "2".repeat(40), size: 10, type: "file" },
+            { name: "spoofed.json", path: "public/data_fake/spoofed.json", sha: "3".repeat(40), size: 10, type: "file" }
+          ]);
+        }
+        return mockResponse(404, {});
+      });
+
+      const env = createEnv();
+      const token = await getAuthToken(env);
+
+      const req = new Request("http://api/api/v1/admin/browse?path=public/data", {
+        headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
+      });
+
+      const res = await worker.fetch(req, env);
+      const body = await res.json();
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(body.items.length, 1);
+      assert.strictEqual(body.items[0].name, "valid.json");
+      assert.strictEqual(body.items[0].path, "public/data/valid.json");
 
       globalThis.fetch = originalFetch;
     });

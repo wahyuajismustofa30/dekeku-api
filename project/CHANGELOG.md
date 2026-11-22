@@ -6,10 +6,12 @@
 - Implemented directory path validation (`validateBrowsePath`) restricting paths to `public/`, blocking traversal, backslashes, control characters, malformed encoding, hidden files, and sensitive files.
 - Added upstream item filtering: excludes hidden files (`.`), sensitive files, symlinks, and submodules; returns strictly `name`, `path`, `type`, `size`, `sha` without file contents.
 - Added upstream 1,000 items cap with `truncated: true` flag, and pagination capped at 100 items per page.
-- Created `test/browse-router.test.js` covering authentication, directory/subdirectory browsing, pagination, path traversal, hidden/sensitive files, out-of-scope paths, non-array responses, item caps, content exclusion, and resolver usage.
+- Enforced exact child path validation (`item.path === \`\${pathValidation.path}/\${item.name}\`) and explicit symlink/submodule property rejection (`target`, `submodule_git_url`).
+- Created `test/browse-router.test.js` covering authentication, directory/subdirectory browsing, pagination, path traversal, hidden/sensitive files, out-of-scope paths, non-array responses, item caps, content exclusion, fake symlinks/submodules, child path mismatches, and resolver usage.
 ### Verification / Scope
 - Syntax checks (`node --check`): PASS for all modified files and new test file.
-- Automated tests (`node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js`): 51 PASS, 0 FAIL, 0 SKIP (19 PASS in PUB-004 suite).
+- Automated tests (`node --test test/browse-router.test.js test/repository-metadata.test.js test/write-router.test.js`): 52 PASS, 0 FAIL, 0 SKIP (20 PASS in PUB-004 suite).
+- Whitespace check (`git diff --check`): PASS (exit code 0).
 - `npm test` NOT RUN per explicit instruction. Development runtime: NOT VERIFIED.
 - No Wrangler/Cloudflare settings, secrets, Worker deployment, or Production resources changed.
 
