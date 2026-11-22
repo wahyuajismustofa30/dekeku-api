@@ -81,3 +81,13 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - `.github/workflows/pr-validation.yml` adalah workflow validasi PR saja dan tidak melakukan deployment. Jangan membuat mekanisme deployment duplikat sebelum integrasi Cloudflare yang sudah ada diperiksa.
 - Target deployment yang diperbolehkan dalam pekerjaan ini adalah Development Worker `dekeku-api-dev` saja. Production Worker `github`, domain `api.dekeku.my.id`, kredensial, konfigurasi, dan data Production tetap dilarang disentuh.
 - **Bukti sinkronisasi 2026-11-22:** `dev` fast-forward ke `main`; kedua branch identik pada commit `1649701419f6d1b03b5f659c76f02d02b4355ad8`.
+
+
+## D-027 — Fokus Pengelolaan Repository Publik (2026-11-22)
+
+- **Status:** DISETUJUI MELALUI INSTRUKSI TERBARU PEMILIK.
+- Fokus pekerjaan saat ini adalah pengelolaan data publik pada repository masing-masing proyek.
+- Website membaca data publik langsung dari repository publik/CDN; operasi administratif create/read/update/delete dan penjelajahan file dikelola melalui DEKEKU API Gateway.
+- Pengaturan repository privat `dekeku-db`, private account storage, repository mapping, dan perluasan RBAC dipindahkan ke arsip dan tidak menjadi antrean aktif sampai pemilik meminta reaktivasi.
+- Kode, test, dan keputusan historis terkait repository privat tidak dihapus oleh perubahan ruang lingkup ini.
+- Implementasi harus memvalidasi Origin dan identitas repository di sisi server; jangan menerima owner/repository/branch arbitrer dari klien. Production tetap di luar cakupan tanpa persetujuan eksplisit.
