@@ -142,7 +142,7 @@ Instruksi eksplisit terbaru Wahyu untuk workstream Admin Dashboard:
 - Lanjutkan seluruh implementasi ADM-001 sampai ADM-007 terlebih dahulu.
 - Pengujian terintegrasi dan regression test dilakukan setelah seluruh implementasi selesai, sebagai tahap ADM-008.
 - Selama tahap implementasi, perubahan pada branch `dev` boleh disimpan sebagai checkpoint kerja meskipun test belum dijalankan; setiap checkpoint wajib diberi status IMPLEMENTED — NOT TESTED. Ini adalah pengecualian khusus untuk workstream Dashboard dan tidak mengubah kebijakan branch.
-- Jangan membuat PR ke `main`, merge, atau melakukan deployment sebelum tahap ADM-008 selesai, hasil test aktual ditinjau, dan pemilik memberi instruksi lanjutan.
+- Historical Dashboard-only instruction from the ADM-008 phase: do not create a PR to `main`, merge, or deploy before final testing and owner instruction. This does not describe the current Public Data API state; PR #29 has since been created and is OPEN. The later owner-priority override below controls current work.
 - Tetap lakukan review kode dan dokumentasi saat implementasi; “test ditunda” bukan izin mengabaikan validasi input, keamanan, atau konsistensi desain.
 - Secret `DB_ENCRYPTION_KEY` dan seluruh binding/migration Dashboard hanya untuk Development. Jika tindakan memerlukan akses Cloudflare yang tidak tersedia, catat sebagai BLOCKED / NOT VERIFIED dan jangan mengarang hasil.
 
