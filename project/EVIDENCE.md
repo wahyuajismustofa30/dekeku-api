@@ -45,11 +45,11 @@ Instruksi pemilik: testing ditunda sampai seluruh implementasi ADM-001..ADM-007 
 | Encryption | `src/utils/dashboard-crypto.js` | PRESENT — NOT TESTED |
 | Encrypted metadata storage | `src/modules/admin/dashboard-storage.js` | PRESENT — NOT TESTED |
 | Discovery and inspection | `src/modules/admin/dashboard.js` | PRESENT — NOT TESTED |
-| Durable Object coordinator | `src/modules/admin/refresh-coordinator.js` | PRESENT — NOT TESTED |
+| Durable Object coordinator and latest-check snapshots | `src/modules/admin/refresh-coordinator.js` | PRESENT — NOT TESTED |
 | Refresh adapter | `src/modules/admin/refresh.js` | PRESENT — NOT TESTED |
 | Admin UI | `src/modules/admin/dashboard-page.js` | PRESENT — NOT TESTED |
 | Routing and DO export | `src/core/router.js`, `src/index.js` | PRESENT — NOT TESTED |
 | Development binding/migration | `wrangler.jsonc` | PRESENT — Wrangler validation NOT RUN |
 | Development encryption secret | `DB_ENCRYPTION_KEY` | NOT CONFIGURED / NOT VERIFIED from this session |
 
-No test command was run for this workstream. No test counts are claimed. Cloudflare Development deployment/runtime was not changed or verified. Production was not touched.
+Test files prepared: `test/dashboard-crypto.test.js`, `test/dashboard-storage.test.js`, `test/dashboard-registry.test.js`, `test/dashboard-refresh.test.js`, and `test/dashboard-router.test.js`; included in `npm test` and focused PR validation mapping. No test command was run for this workstream. No test counts are claimed. Cloudflare Development deployment/runtime was not changed or verified. Production was not touched.
