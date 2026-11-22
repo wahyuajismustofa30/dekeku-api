@@ -26,10 +26,10 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 ## Mandatory execution instructions
 1. Keep `project/PROGRESS.md` as the single source of truth for current status.
 2. Keep one ordered active work queue; do not copy archived task details into ordinary progress reports.
-3. R-013 syntax validation and focused regression testing are reported PASS by the owner from Termux: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test`.
-6. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 is next. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
+3. Latest owner scope (2026-11-22): public repository management is the active workstream; PUB-001 is next. Private repository/RBAC tasks are archived under A-003. Earlier CI/CD queue notes below are historical and not active.
 4. Do not resume archived tasks automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly asks for the task archive or reactivates an archived item.
 5. Update the latest checkpoint only with evidence actually obtained.
+6. R-013 syntax validation and focused regression testing are historical owner-reported evidence: `node --check` for all RBAC source/test files and `node --test test/rbac-token-version.test.js` (6 PASS, 0 FAIL). Do not run `npm test` unless the owner explicitly authorizes it.
 
 ## Non-negotiable constraints
 - `npm test`: NOT RUN unless the owner explicitly changes this instruction.
@@ -126,7 +126,7 @@ Execution remains on `dev`; PR to `main` only after stable and owner review. No 
 - Reassess CICD-005..010 after verifying the existing Cloudflare deployment integration; preserve Development-only scope (`dekeku-api-dev`).
 - `npm test` remains NOT RUN. Remote tests remain prohibited. Production remains untouched.
 
-## PR #23 — Current Gate (2026-11-22)
+## PR #23 — Historical Validation Gate (2026-11-22; superseded by latest owner scope)
 
 - Documentation-only PR #23 is open: https://github.com/wahyuajismustofa30/dekeku-api/pull/23
 - Head `dev`: `49a0b92dbe8a8530907c0c50879a07c7026a7abf`; base `main`: `1649701419f6d1b03b5f659c76f02d02b4355ad8`.
