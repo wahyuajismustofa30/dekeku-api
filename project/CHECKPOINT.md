@@ -51,3 +51,14 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 - `DB_ENCRYPTION_KEY`: MISSING, owner-reported.
 - Lookup of `dekeku-db/private/dashboard/projects.json` returned 404 via GitHub connector; this does not conclusively establish absence because private-resource access can also return 404.
 - No key created, overwritten, or rotated. Confirm metadata absence and key provenance before provisioning.
+
+
+## Latest owner priority checkpoint — Public Data API (2026-11-23)
+
+- **Active priority:** PUB-DATA-001..PUB-DATA-007. Detailed plan: `project/PUBLIC_DATA_API_PLAN.md`.
+- **Owner decision:** D-030 approved extensible Public Data API architecture and explicitly reprioritized it ahead of Admin Dashboard.
+- **Dashboard:** ADM-001..ADM-008 are PAUSED temporarily. Existing code, test reports, docs, and blockers are preserved; do not delete or continue Dashboard work unless owner asks.
+- **Public Data API design:** `POST /api/v1/public/data/{resource}`; server-side Resource Registry; per-resource validator; Project Origin/config.json resolver; shared storage engine; Guestbook first; old `/api/v1/public/submit` remains a temporary alias; static public repository/CDN reads; no new GET API in initial scope.
+- **Work status:** PUB-DATA-001..007 NOT STARTED. This checkpoint records planning only, not implementation or test evidence.
+- **Resume:** start by reading AGENTS and all canonical docs, inspect actual local `dev` repository/source and specifically compare Guestbook resolver with File Manager resolver. Then begin PUB-DATA-001. Do not assume GitHub is local source of truth.
+- **Safety:** no PR, merge, deployment, Cloudflare config/secrets/variables changes, or Production access. Do not modify Admin Dashboard during this priority window.
