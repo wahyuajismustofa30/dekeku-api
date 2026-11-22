@@ -13,7 +13,7 @@ The file is discovery metadata, not an authentication credential and not proof t
 
 ## 2. Canonical JSON structure
 
-The normative JSON Schema is [public-repository-config.schema.json](../schemas/public-repository-config.schema.json).
+The normative JSON Schema is [public-repository-config.schema.json](../docs/schemas/public-repository-config.schema.json).
 
 Example:
 
