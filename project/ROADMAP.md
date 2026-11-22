@@ -1,6 +1,12 @@
 # ROADMAP — DEKEKU API Gateway
 
-> Current status is maintained only in [PROGRESS.md](PROGRESS.md). The ordered work queue and safety rules are in [EXECUTION_POLICY.md](EXECUTION_POLICY.md). Phase 2.x completion statements below are historical milestone records and do not imply current RBAC/runtime verification.
+ > Current status is maintained only in [PROGRESS.md](PROGRESS.md). The ordered work queue and safety rules are in [EXECUTION_POLICY.md](EXECUTION_POLICY.md). Phase 2.x completion statements below are historical milestone records and do not imply current RBAC/runtime verification.
+
+## Current Focus — Public Repository Management (2026-11-22)
+- Prioritas: kelola data publik pada repository masing-masing proyek.
+- Tahapan aktif: PUB-001 sampai PUB-006 di [BACKLOG.md](BACKLOG.md).
+- Pengaturan repository privat, private account storage, mapping, dan perluasan RBAC diarsipkan (A-003); catatan milestone lama di bawah dipertahankan sebagai sejarah, bukan antrean kerja.
+
 
 *Catatan Acuan*: Untuk status detail, riwayat pengujian, dan daftar isu aktif, lihat [PROGRESS.md](PROGRESS.md) sebagai sumber status tunggal proyek.
 
