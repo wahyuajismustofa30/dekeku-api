@@ -342,3 +342,11 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 - Tes otomatis dan syntax checks: NOT RUN (mengikuti instruksi proyek untuk tidak menjalankan `npm test`). Browser Development/runtime: NOT VERIFIED.
 - Belum commit/push/PR/deploy. Production tidak disentuh.
 - Langkah berikutnya: jalankan pemeriksaan yang diizinkan dan review tampilan di Development setelah persetujuan/alur deploy yang berlaku.
+
+
+## Checkpoint — Branch Sync Complete (2026-11-22)
+- PR #24 `sync: bring Tester workspace updates from dev into main` merged setelah PR Validation run #7 berstatus `completed / success`.
+- Merge commit: `13529fc915859fcc86ff33e65f242235605819d8`.
+- Branch `dev` di-fast-forward ke merge commit tersebut menggunakan `force=false` dan expected old SHA.
+- Verifikasi akhir: hanya `main` dan `dev`; kedua branch identik, ahead/behind 0/0.
+- Tidak menjalankan `npm test`, tidak melakukan deployment, dan tidak menyentuh Production.
