@@ -239,12 +239,10 @@ export const resolveProjectRepository = async (request, env) => {
   ) throw new HttpError("GitHub repository metadata is invalid", 502);
 
   // The branch comes only from GitHub metadata; config.json cannot override it.
-  const client = new GitHubClient({
-    ...env,
-    GITHUB_OWNER: owner,
-    GITHUB_REPO: repo,
-    GITHUB_BRANCH: data.default_branch
-  });
+  // Reuse the validated discovery client and pin every Contents API call
+  // to the default branch reported by GitHub.
+  discoveryClient.branch = data.default_branch;
+  const client = discoveryClient;
 
   return {
     client,
