@@ -131,3 +131,14 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - Rencana dan acceptance criteria: `project/PUBLIC_DATA_API_PLAN.md`; backlog PUB-DATA-001..007.
 - Pelaksanaan hanya pada `dev`; keputusan ini tidak mengizinkan commit/push yang belum matang, PR, merge, deployment, perubahan Cloudflare config/secrets/variables, atau perubahan Production.
 - Status saat keputusan dicatat: desain disetujui; PUB-DATA-001..007 NOT STARTED; tidak ada implementasi/test/deployment yang diklaim.
+
+
+### D-030 implementation update — 2026-11-23
+
+The approved architecture has now been implemented on GitHub branch `dev`:
+- Generic route, server-side registry, per-resource Guestbook validator, and shared storage engine are present.
+- Guestbook now resolves repository using the File Manager's `resolveProjectRepository()` and schema-v1 `config.json`.
+- Public submissions explicitly ignore `X-DEKEKU-Project-Origin`; they are bound to the request's actual `Origin`. The selector header remains available to File Manager workflows.
+- Legacy `/api/v1/public/submit` delegates to the same Guestbook handler.
+- Focused mock/fixture tests are authored but NOT RUN. Implementation remains NOT VERIFIED pending Termux.
+- No PR, merge, deployment, Cloudflare configuration/secret change, or Production access.
