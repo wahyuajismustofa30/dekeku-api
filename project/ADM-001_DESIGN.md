@@ -12,7 +12,7 @@ ADM-001 menyiapkan dua fondasi terpisah:
 1. Durable Object untuk koordinasi satu pekerjaan pemeriksaan repository yang berjalan di background.
 2. Utility enkripsi terautentikasi untuk metadata Dashboard yang disimpan pada private repository `dekeku-db`.
 
-Durable Object bukan pengganti `dekeku-db`. Metadata proyek tetap disimpan di repository privat melalui GitHub Contents API; Durable Object menyimpan state operasional terbaru dari job refresh. Tidak ada perubahan atau migrasi data lama sebagai bagian ADM-001.
+Durable Object bukan pengganti `dekeku-db`. Metadata internal proyek (jenis, domain, catatan) tetap disimpan terenkripsi di repository privat melalui GitHub Contents API; Durable Object menyimpan state job dan snapshot pemeriksaan terbaru per repository. Kedua storage tidak menyimpan histori refresh. Pemeriksaan tidak menulis ke repository proyek. Tidak ada perubahan atau migrasi data lama sebagai bagian ADM-001.
 
 Seluruh binding, migration, secret, test, dan verifikasi runtime hanya untuk Development. Production Worker `github`, domain `api.dekeku.my.id`, konfigurasi, secrets, dan data Production tidak boleh disentuh.
 
