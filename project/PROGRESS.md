@@ -41,3 +41,12 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004-FIX Public Repository File Browser Securi
 3. `git diff --check`: PASS (0 formatting errors).
 4. `npm test`: NOT RUN (dilarang oleh instruksi pemilik).
 5. Development Worker Deployment & Runtime: NOT VERIFIED. Production Worker & Domain: UNTOUCHED.
+
+
+## PUB-004-FIX Follow-up — Actual Git Trees Integration (2026-11-22)
+- Previous implementation had a security gap: `handleBrowse()` accepted a Git Trees-shaped object in its parser but fetched only the Contents API. The Git Trees API was not actually called, so symlink/submodule mode metadata was not authoritative.
+- Remediation on `dev`: `handleBrowse()` now resolves the repository branch's root tree SHA, traverses each requested `public/` directory segment using non-recursive Git Trees requests, and fetches the target directory tree. Only recognized Git modes/types are accepted; missing mode metadata fails closed. Git Trees `truncated` is propagated.
+- `GitHubClient.getBranch()` now URL-encodes branch names.
+- Added `test/browse-git-tree.test.js` with integration-style mocks verifying real branch/tree endpoints, mode-based symlink/submodule exclusion, and truncation propagation.
+- Verification: NOT RUN in this session (no repository runtime/test runner available through GitHub connector). Existing `test/browse-router.test.js` fixtures still mock the Contents API rather than branch/tree traversal and must be migrated before the previous 54/54 result can be reused. Do not claim PUB-004-FIX verified yet.
+- PUB-005 remains blocked until the updated focused test suite passes and the owner accepts PUB-004-FIX.
