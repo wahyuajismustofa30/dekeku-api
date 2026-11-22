@@ -152,34 +152,41 @@ export class DashboardRefreshCoordinator {
   }
 
   async alarm() {
-    const job = await this.readState();
-    if (!job || !ACTIVE.has(job.status)) return;
-    if (job.cancelRequested) {
-      job.status = "cancelled";
-      job.completedAt = new Date().toISOString();
-      job.remaining = job.pending.length;
-      await this.state.storage.put("latest-job", job);
-      return;
-    }
-    if (!job.startedAt) {
-      job.startedAt = new Date().toISOString();
-      job.status = "running";
-    }
-    const target = job.pending.shift();
-    if (!target) {
-      job.status = job.failed ? "completed_with_errors" : "completed";
-      job.completedAt = new Date().toISOString();
-      job.remaining = 0;
-      await this.state.storage.put("latest-job", job);
-      return;
-    }
-    await this.state.storage.put("latest-job", job);
+    const claim = await this.state.storage.transaction(async transaction => {
+      const current = await transaction.get("latest-job");
+      if (!current || !ACTIVE.has(current.status)) return null;
+      if (current.cancelRequested) {
+        current.status = "cancelled";
+        current.completedAt = new Date().toISOString();
+        current.remaining = current.pending.length;
+        await transaction.put("latest-job", current);
+        return { terminal: true };
+      }
+      if (!current.startedAt) {
+        current.startedAt = new Date().toISOString();
+        current.status = "running";
+      }
+      const target = current.pending.shift();
+      if (!target) {
+        current.status = current.failed ? "completed_with_errors" : "completed";
+        current.completedAt = new Date().toISOString();
+        current.remaining = 0;
+        await transaction.put("latest-job", current);
+        return { terminal: true };
+      }
+      current.remaining = current.pending.length;
+      await transaction.put("latest-job", current);
+      return { job: current, target };
+    });
+    if (!claim || claim.terminal) return;
+
+    const { job, target } = claim;
     let itemResult;
     try {
       const repository = { owner: target.owner, name: target.name, defaultBranch: target.defaultBranch, archived: target.archived };
-      itemResult = await inspectPublicRepository(this.env, repository);
-      await this.persistCheck(repository, itemResult);
-      itemResult = { repository: target.name, success: true, status: itemResult.status, checkedAt: itemResult.checkedAt };
+      const inspection = await inspectPublicRepository(this.env, repository);
+      await this.persistCheck(repository, inspection);
+      itemResult = { repository: target.name, success: true, status: inspection.status, checkedAt: inspection.checkedAt };
     } catch (error) {
       itemResult = {
         repository: cleanName(target.name),
@@ -190,27 +197,28 @@ export class DashboardRefreshCoordinator {
       };
     }
 
-    // Re-read after network I/O so a concurrent cancel request is not overwritten
-    // by the stale in-memory snapshot held while inspection was running.
-    const latest = await this.readState();
-    if (!latest || latest.jobId !== job.jobId || latest.generation !== job.generation) return;
-    latest.results.push(itemResult);
-    latest.completed += 1;
-    if (itemResult.success) latest.succeeded += 1;
-    else latest.failed += 1;
-    latest.remaining = latest.pending.length;
-    if (latest.cancelRequested) {
-      latest.status = "cancelled";
-      latest.completedAt = new Date().toISOString();
-    } else if (latest.pending.length) {
-      latest.status = "running";
-      await this.state.storage.put("latest-job", latest);
-      await this.state.storage.setAlarm(Date.now() + 25);
-      return;
-    } else {
-      latest.status = latest.failed ? "completed_with_errors" : "completed";
-      latest.completedAt = new Date().toISOString();
-    }
-    await this.state.storage.put("latest-job", latest);
+    const shouldContinue = await this.state.storage.transaction(async transaction => {
+      const latest = await transaction.get("latest-job");
+      if (!latest || latest.jobId !== job.jobId || latest.generation !== job.generation) return false;
+      latest.results.push(itemResult);
+      latest.completed += 1;
+      if (itemResult.success) latest.succeeded += 1;
+      else latest.failed += 1;
+      latest.remaining = latest.pending.length;
+      if (latest.cancelRequested) {
+        latest.status = "cancelled";
+        latest.completedAt = new Date().toISOString();
+      } else if (latest.pending.length) {
+        latest.status = "running";
+        await transaction.put("latest-job", latest);
+        return true;
+      } else {
+        latest.status = latest.failed ? "completed_with_errors" : "completed";
+        latest.completedAt = new Date().toISOString();
+      }
+      await transaction.put("latest-job", latest);
+      return false;
+    });
+    if (shouldContinue) await this.state.storage.setAlarm(Date.now() + 25);
   }
 }
