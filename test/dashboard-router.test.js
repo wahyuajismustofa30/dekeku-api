@@ -19,6 +19,7 @@ test("dashboard mutation routes reject unauthenticated requests", async () => {
     ["/api/v1/admin/dashboard/metadata", "POST"],
     ["/api/v1/admin/dashboard/bulk-type", "POST"],
     ["/api/v1/admin/dashboard/export", "POST"],
+    ["/api/v1/admin/dashboard/refresh/state", "GET"],
     ["/api/v1/admin/dashboard/refresh/start", "POST"],
     ["/api/v1/admin/dashboard/refresh/cancel", "POST"],
     ["/api/v1/admin/dashboard/refresh/retry", "POST"]
