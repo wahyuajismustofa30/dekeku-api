@@ -1,6 +1,6 @@
 # BACKLOG — DEKEKU API Gateway
 
-*Catatan Acuan*: Rincian progres fitur ada di [PROGRESS.md](PROGRESS.md). Rekomendasi teknis dan kriteria penerimaan ada di [RECOMMENDATIONS.md](RECOMMENDATIONS.md).
+*Catatan Acuan*: Rincian progres fitur ada di [PROGRESS.md](PROGRESS.md). Rekomendasi teknis ada di [RECOMMENDATIONS.md](RECOMMENDATIONS.md). Rencana repository privat/RBAC hanya referensi historis dan telah diarsipkan di [TASK_ARCHIVE.md](TASK_ARCHIVE.md) A-003.
 
 > **Penting:** bagian prioritas dan checklist historis di bawah bukan antrean kerja aktif. Status tunggal ada di `PROGRESS.md`; satu-satunya urutan kerja aktif ada di `EXECUTION_POLICY.md`. Item yang tidak aktif atau diarsipkan tidak boleh dilanjutkan otomatis.
 
