@@ -9,7 +9,7 @@ Tanggal pembaruan: 2026-11-23
 ## Ringkasan kondisi
 - PUB-001 s.d. PUB-006: COMPLETE & VERIFIED sesuai bukti historis pada Evidence Index.
 - CICD-001 s.d. CICD-008: COMPLETE (sebagian berdasarkan konfirmasi pemilik).
-- ADM-001 s.d. ADM-008 (Admin Dashboard terpusat): IMPLEMENTED & LOCALLY VERIFIED (`npm test`: 261 PASS, 0 FAIL; Wrangler dry-run: PASS). Cloudflare deployment/remote runtime tidak dilakukan sesuai instruksi (jangan melakukan deployment).
+- ADM-001 s.d. ADM-008 (Admin Dashboard terpusat): IMPLEMENTED; OWNER-REPORTED local test PASS (261/261) dan Wrangler dry-run PASS; exact tested SHA/Node version tidak tersedia; workstream PAUSED. Development runtime/deployment NOT VERIFIED.
 - Seluruh perubahan Dashboard pada branch `dev`; Production Worker `github`, domain `api.dekeku.my.id`, secrets, variables, dan data Production tidak disentuh.
 
 ## Status workstream
@@ -25,7 +25,7 @@ Tanggal pembaruan: 2026-11-23
 | ADM-005 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Pemeriksaan config.json, CNAME, assets/data dan status repository. Test inspection lulus. |
 | ADM-006 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. Test refresh lulus. |
 | ADM-007 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Quick actions, checkbox, bulk refresh, export, bulk project-type update. Test API/router lulus. |
-| ADM-008 | COMPLETED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Test suite lokal `npm test` (261 PASS, 0 FAIL) dan Wrangler dry-run berhasil. Deployment remote / secret list Cloudflare: NOT RUN (per instruksi). |
+| ADM-008 | COMPLETED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Test suite lokal `npm test` (261 PASS, 0 FAIL) dan Wrangler dry-run berhasil. Development secret inventory: OWNER-REPORTED (GITHUB_TOKEN, JWT_SECRET, ADMIN_PASSWORD_HASH PRESENT; DB_ENCRYPTION_KEY MISSING); Development runtime/deployment: NOT VERIFIED. |
 
 ## Implementasi Dashboard yang sudah diverifikasi pada branch dev
 - `src/utils/dashboard-crypto.js`
