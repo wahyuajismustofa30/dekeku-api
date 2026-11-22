@@ -1,7 +1,7 @@
 # Admin Dashboard & Project Registry — Implementation Specification
 
 Tanggal: 2026-11-23
-Status: APPROVED SCOPE / IMPLEMENTATION IN PROGRESS — TESTING DEFERRED TO ADM-008
+Status: PAUSED — implementation and local test evidence preserved; continuation requires owner instruction
 Target branch: `dev`
 Target runtime: Development Worker `dekeku-api-dev` only
 
