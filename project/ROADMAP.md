@@ -59,13 +59,13 @@ Prioritas aktif terbaru adalah **Public Data API**. Workstream Admin Dashboard d
 
 | ID | Workstream | Status |
 |---|---|---|
-| PUB-DATA-001 | API Contract | NOT STARTED |
-| PUB-DATA-002 | Resource Registry | NOT STARTED |
-| PUB-DATA-003 | Shared Storage Engine | NOT STARTED |
-| PUB-DATA-004 | Guestbook Migration | NOT STARTED |
-| PUB-DATA-005 | Legacy Compatibility | NOT STARTED |
-| PUB-DATA-006 | Security & Integration Tests | NOT STARTED |
-| PUB-DATA-007 | Documentation & Checkpoint | NOT STARTED |
+| PUB-DATA-001 | API Contract | IMPLEMENTED on dev |
+| PUB-DATA-002 | Resource Registry | IMPLEMENTED on dev |
+| PUB-DATA-003 | Shared Storage Engine | IMPLEMENTED on dev |
+| PUB-DATA-004 | Guestbook Migration | IMPLEMENTED on dev |
+| PUB-DATA-005 | Legacy Compatibility | IMPLEMENTED on dev |
+| PUB-DATA-006 | Security & Integration Tests | OWNER-REPORTED LOCAL PASS (14/14); SHA pending |
+| PUB-DATA-007 | Documentation & Checkpoint | IMPLEMENTED on dev |
 | ADM-001..ADM-008 | Centralized Admin Dashboard | PAUSED — resume only on owner instruction or after Public Data API priority is completed |
 
 Rincian dan acceptance criteria: [PUBLIC_DATA_API_PLAN.md](PUBLIC_DATA_API_PLAN.md).
