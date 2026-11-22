@@ -14,3 +14,7 @@
 - Source/config changes are IMPLEMENTED — NOT TESTED. Wrangler validation and Development runtime are NOT VERIFIED.
 - Availability of the `DB_ENCRYPTION_KEY` Development secret was NOT VERIFIED in this session.
 - Production resources were not touched; no PR, merge, or deployment was performed.
+### Verification preparation
+- Added Dashboard test suites for crypto, encrypted storage, repository discovery/inspection, refresh lifecycle, route authorization, and metadata API integration.
+- Added focused PR validation mappings and `project/ADM-008_TEST_PLAN.md`.
+- Tests and Wrangler dry-run remain NOT RUN by owner-directed sequencing; Development secret inventory/runtime remain NOT VERIFIED.
