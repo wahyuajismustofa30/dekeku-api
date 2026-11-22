@@ -42,7 +42,7 @@ Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `deke
 | ADM-005 | Inspection config.json, CNAME, assets/data | IMPLEMENTED — NOT TESTED |
 | ADM-006 | Background refresh, progress, cancel, retry, latest result | IMPLEMENTED — NOT TESTED |
 | ADM-007 | Quick actions, selection, export, bulk project type | IMPLEMENTED — NOT TESTED |
-| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | PENDING |
+| ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | READY TO EXECUTE — NOT RUN |
 
 ### Urutan kerja dan test policy
 Pemilik memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan dahulu; pengujian dilakukan setelah itu dalam ADM-008. Setiap implementasi sebelum ADM-008 wajib tetap ditandai NOT TESTED. Jangan membuat PR, merge, atau deployment sebelum verifikasi akhir dan arahan pemilik.
