@@ -144,8 +144,14 @@ PR #29 (`dev` → `main`) exists and is OPEN, but has not been merged. No merge,
 - No source code, `main`, merge, deployment, Cloudflare configuration/secrets/variables, or Production resources were changed in this documentation repair.
 
 ## Latest audit checkpoint — documentation consistency (2026-11-23)
+### Documentation repair CI result
 
-- Latest audited GitHub branch: `dev`; HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
+- Commit `70046cfcba5cefec99e8772f62aeef644bfd91a5` received PR Validation run #74 (`45082714389`) with SUCCESS.
+- The returned PR Validation job and every listed step completed successfully, including install, syntax, Wrangler dry-run, focused regression tests, and dependency audit.
+- This evidence applies to commit `70046cfc`; any later commit needs its own run check. No deployment/runtime/live-write validation is implied.
+
+
+- Pre-repair baseline GitHub branch: `dev`; HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477` (`e2bc6f4`).
 - PR #29 (`dev` → `main`) remains OPEN and unmerged at the latest state query.
 - PR-triggered workflow query for exact HEAD returned no runs. This is not a claim about all possible check sources.
 - CI run #51 SUCCESS is historical evidence for commit `98d7163add0452832afefeda1462aad5f187ac43` only; it does not validate latest HEAD or later documentation commits.
