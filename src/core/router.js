@@ -19,6 +19,13 @@ import { getTesterPage } from "../modules/tester/index.js";
 import { handleAdminUsers, handleAdminRepositories } from "../modules/rbac/admin.js";
 
 import { userDataRouter, userRepositoriesRouter } from "../modules/rbac/user-data.js";
+import {
+  handleDashboardRepositories,
+  handleDashboardMetadata,
+  handleDashboardBulkType,
+  handleDashboardExport
+} from "../modules/admin/dashboard.js";
+import { handleDashboardRefresh } from "../modules/admin/refresh.js";
 
 
 
@@ -111,6 +118,33 @@ export const router = async (request, env) => {
   }
 
 
+
+
+  // Admin Dashboard APIs (all routes require an Admin JWT).
+  if (pathname === "/api/v1/admin/dashboard/repositories") {
+    if (method !== "GET") return error("Method Not Allowed", 405);
+    return authMiddleware(request, env, async (req, e) => handleDashboardRepositories(req, e));
+  }
+  if (pathname === "/api/v1/admin/dashboard/metadata") {
+    if (method !== "POST") return error("Method Not Allowed", 405);
+    return authMiddleware(request, env, async (req, e) => handleDashboardMetadata(req, e));
+  }
+  if (pathname === "/api/v1/admin/dashboard/bulk-type") {
+    if (method !== "POST") return error("Method Not Allowed", 405);
+    return authMiddleware(request, env, async (req, e) => handleDashboardBulkType(req, e));
+  }
+  if (pathname === "/api/v1/admin/dashboard/export") {
+    if (method !== "POST") return error("Method Not Allowed", 405);
+    return authMiddleware(request, env, async (req, e) => handleDashboardExport(req, e));
+  }
+  if (pathname.startsWith("/api/v1/admin/dashboard/refresh/")) {
+    const action = pathname.slice("/api/v1/admin/dashboard/refresh/".length);
+    if (!["state", "start", "cancel", "retry"].includes(action)) return error("Not Found", 404);
+    if ((action === "state" && method !== "GET") || (action !== "state" && method !== "POST")) {
+      return error("Method Not Allowed", 405);
+    }
+    return authMiddleware(request, env, async (req, e) => handleDashboardRefresh(req, e, action));
+  }
 
   // Admin account and repository management (Admin JWT required)
 
