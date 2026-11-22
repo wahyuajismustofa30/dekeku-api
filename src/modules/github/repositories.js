@@ -211,12 +211,10 @@ const fetchCallerRepositoryConfig = async (origin) => {
   }
 };
 
-export const getRepositoryMetadata = async (request, env) => {
+export const resolveProjectRepository = async (request, env) => {
   const origin = request.headers.get("Origin");
   const trustedOrigin = getTrustedProjectOrigin(origin, env);
-  if (!trustedOrigin) {
-    throw new HttpError("Origin is not trusted for repository discovery", 403);
-  }
+  if (!trustedOrigin) throw new HttpError("Origin is not trusted for repository discovery", 403);
 
   const config = await fetchCallerRepositoryConfig(trustedOrigin);
   if (!validateRepositoryConfig(config, env.GITHUB_OWNER)) {
@@ -225,17 +223,10 @@ export const getRepositoryMetadata = async (request, env) => {
 
   const owner = config.repository.username;
   const repo = config.repository.repo;
+  const discoveryClient = new GitHubClient({ ...env, GITHUB_OWNER: owner, GITHUB_REPO: repo });
+  const data = await discoveryClient.getRepository();
 
-  const client = new GitHubClient({
-    ...env,
-    GITHUB_OWNER: owner,
-    GITHUB_REPO: repo
-  });
-  const data = await client.getRepository();
-
-  if (data.visibility !== "public") {
-    throw new HttpError("Caller repository must be public", 403);
-  }
+  if (data.visibility !== "public") throw new HttpError("Caller repository must be public", 403);
 
   const expectedFullName = `${owner}/${repo}`;
   if (
@@ -244,17 +235,33 @@ export const getRepositoryMetadata = async (request, env) => {
     typeof data.default_branch !== "string" ||
     !data.default_branch ||
     data.default_branch.length > 255 ||
-    /[\x00-\x1F\x7F]/.test(data.default_branch)
-  ) {
-    throw new HttpError("GitHub repository metadata is invalid", 502);
-  }
+    CONTROL_CHAR_PATTERN.test(data.default_branch)
+  ) throw new HttpError("GitHub repository metadata is invalid", 502);
 
+  // The branch comes only from GitHub metadata; config.json cannot override it.
+  const client = new GitHubClient({
+    ...env,
+    GITHUB_OWNER: owner,
+    GITHUB_REPO: repo,
+    GITHUB_BRANCH: data.default_branch
+  });
+
+  return {
+    client,
+    metadata: {
+      name: data.full_name,
+      description: data.description,
+      url: data.html_url,
+      default_branch: data.default_branch,
+      visibility: data.visibility
+    }
+  };
+};
+
+export const getRepositoryMetadata = async (request, env) => {
+  const { client, metadata } = await resolveProjectRepository(request, env);
   return success({
-    name: data.full_name,
-    description: data.description,
-    url: data.html_url,
-    default_branch: data.default_branch,
-    visibility: data.visibility,
+    ...metadata,
     _metadata: { github_ratelimit: client.rateLimit }
   });
 };
