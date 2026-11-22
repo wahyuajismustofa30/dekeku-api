@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { webcrypto } from "node:crypto";
 import {
   encryptDashboardDocument,
-  decryptDashboardDocument
+  decryptDashboardDocument,
+  DASHBOARD_ENCRYPTED_STORAGE_LIMITS
 } from "../src/utils/dashboard-crypto.js";
 
 globalThis.crypto ||= webcrypto;
@@ -48,4 +49,9 @@ test("unknown envelope fields, key versions, and plaintext payloads are rejected
   await assert.rejects(() => decryptDashboardDocument({ ...envelope, extra: true }, KEY, PATH));
   await assert.rejects(() => decryptDashboardDocument({ ...envelope, keyId: "v2" }, KEY, PATH));
   await assert.rejects(() => decryptDashboardDocument(document, KEY, PATH));
+});
+
+test("dashboard encryption enforces the plaintext size ceiling", async () => {
+  const oversized = { data: "x".repeat(DASHBOARD_ENCRYPTED_STORAGE_LIMITS.plaintextBytes) };
+  await assert.rejects(() => encryptDashboardDocument(oversized, KEY, PATH), /exceeds the size limit/);
 });
