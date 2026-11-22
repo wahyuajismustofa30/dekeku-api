@@ -1,3 +1,13 @@
+# Changelog
+
+## 2026-11-23 — Public Data API owner-reported Termux validation and documentation reconciliation
+
+- Owner reports `node --test test/public-submission.test.js`: 14 PASS, 0 FAIL, 0 cancelled, 0 skipped, 0 todo.
+- Owner reports `node --check` passed for 7 changed source files: router, public module/registry/validators/storage/legacy alias, and GitHub repositories resolver.
+- Evidence is local Termux evidence. Exact tested local HEAD SHA was not supplied; it is not conclusively tied to GitHub `dev` HEAD or PR #29 head.
+- No remote integration test, live project repository write, Worker runtime smoke test, full-suite rerun, or deployment is claimed.
+- PR #29 (`dev` → `main`) remains unmerged; merge/deployment not authorized. Admin Dashboard remains PAUSED; Production untouched.
+
 
 ## 2026-11-23 — Admin Dashboard implementation (ADM-001..ADM-007)
 
