@@ -33,13 +33,13 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 
 Rincian kontrak, desain, acceptance criteria, keamanan, dan batas operasional: `project/PUBLIC_DATA_API_PLAN.md`.
 
-- [ ] **PUB-DATA-001 — API Contract.** Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
-- [ ] **PUB-DATA-002 — Resource Registry.** Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
-- [ ] **PUB-DATA-003 — Shared Storage Engine.** Bounded body parsing, Origin enforcement, Project Origin resolver, repository validation, GitHub write, SHA concurrency, safe errors.
-- [ ] **PUB-DATA-004 — Guestbook Migration.** Jadikan Guestbook resource pertama dengan kompatibilitas payload dan storage berdasarkan source aktual.
-- [ ] **PUB-DATA-005 — Legacy Compatibility.** Pertahankan `POST /api/v1/public/submit` sebagai alias ke handler Guestbook yang sama.
-- [ ] **PUB-DATA-006 — Security & Integration Tests.** Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
-- [ ] **PUB-DATA-007 — Documentation & Checkpoint.** Sinkronkan seluruh dokumen teknis dan bukti.
+- [x] **PUB-DATA-001 — API Contract.** IMPLEMENTED on GitHub; Termux validation pending. Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
+- [x] **PUB-DATA-002 — Resource Registry.** IMPLEMENTED on GitHub; Termux validation pending. Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
+- [x] **PUB-DATA-003 — Shared Storage Engine.** IMPLEMENTED on GitHub; Termux validation pending. Bounded body parsing, Origin enforcement, Project Origin resolver, repository validation, GitHub write, SHA concurrency, safe errors.
+- [x] **PUB-DATA-004 — Guestbook Migration.** IMPLEMENTED on GitHub; Termux validation pending. Jadikan Guestbook resource pertama dengan kompatibilitas payload dan storage berdasarkan source aktual.
+- [x] **PUB-DATA-005 — Legacy Compatibility.** IMPLEMENTED on GitHub; Termux validation pending. Pertahankan `POST /api/v1/public/submit` sebagai alias ke handler Guestbook yang sama.
+- [ ] **PUB-DATA-006 — Security & Integration Tests.** Test cases updated; NOT RUN, pending Termux. Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
+- [x] **PUB-DATA-007 — Documentation & Checkpoint.** IMPLEMENTED on GitHub; Termux validation pending. Sinkronkan seluruh dokumen teknis dan bukti.
 
 Semua item PUB-DATA berstatus NOT STARTED sampai implementasi/test aktual dibuktikan.
 Tidak ada GET API publik baru pada fase awal; website membaca file langsung dari repository publik/CDN.
@@ -70,3 +70,8 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 
 ### ADM status update — 2026-11-23
 The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 failures, 0 skipped across 44 suites. `npm ci` also completed with 0 vulnerabilities. This does not close the remaining Cloudflare configuration/secret/runtime checks. Do not create PR, merge, write secrets, or deploy without the required owner approval.
+
+
+### PUB-DATA implementation status — 2026-11-23
+
+PUB-DATA-001..005 and PUB-DATA-007 are implemented on GitHub branch `dev`. PUB-DATA-006 test cases are authored/updated but have NOT RUN. All work remains unverified until local Termux validation. Do not create a PR or deploy from this checkpoint. The Admin Dashboard remains paused.
