@@ -53,3 +53,12 @@
 - Static syntax checks using V8 parsing passed for changed Worker modules after removing module import/export declarations, both Tester inline scripts, and both new test modules after module-only syntax adaptation. These are preliminary parse checks, not a substitute for node --check or test execution in the repository runtime.
 - Both Tester HTML copies were compared after extracting the generated HTML template and are byte-for-byte identical (46,350 characters).
 - Automated Node tests remain NOT RUN. Next action is owner-side focused test execution after pulling latest dev.
+
+
+## PUB-005 Latest Test Feedback and Fix (2026-11-22)
+- Owner-reported focused test result: 62 total, 60 pass, 2 fail; failures were dashboard generated-script parsing and file-manager generated-script parsing. Both pointed to the same invalid generated line around fileJsonEditor initialization.
+- Root cause: src/modules/tester/index.js is an HTML template literal. A single backslash-n in the embedded JavaScript string was interpreted by the outer template literal as an actual newline, breaking the generated page's single-quoted JavaScript string. public/tester.html already had the correct escaped representation.
+- Fixed src/modules/tester/index.js by doubling the backslash escapes. Change commit: 6ff742b59665eaf1b820e708ff814c80f792656d.
+- Static inspection confirms the source template now has two backslashes while the static HTML has one, so generated output should contain the same escaped JavaScript string as the static copy.
+- Retest required: rerun the same seven-file node --test command supplied by the owner, then git diff --check. Do not run npm test.
+- PUB-005 remains IN PROGRESS / NOT VERIFIED until rerun passes.
