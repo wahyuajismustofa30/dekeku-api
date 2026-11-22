@@ -37,7 +37,7 @@ Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `deke
 |---|---|---|
 | ADM-001 | Durable Object, lifecycle job, AES-GCM encrypted storage foundation, Development binding | IMPLEMENTED — NOT TESTED |
 | ADM-002 | Paginated public repository discovery dan normalized registry | IMPLEMENTED — NOT TESTED |
-| ADM-003 | Encrypted private metadata read/write dan bulk type update | IMPLEMENTED — NOT TESTED |
+| ADM-003 | Encrypted private metadata read/write/upsert dan bulk type update | IMPLEMENTED — NOT TESTED |
 | ADM-004 | Admin Dashboard UI: table/card, search, filter, sort, detail, navigation | IMPLEMENTED — NOT TESTED |
 | ADM-005 | Inspection config.json, CNAME, assets/data | IMPLEMENTED — NOT TESTED |
 | ADM-006 | Background refresh, progress, cancel, retry, latest result | IMPLEMENTED — NOT TESTED |
