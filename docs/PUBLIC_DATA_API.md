@@ -9,6 +9,7 @@ Status on `dev`: IMPLEMENTED — AWAITING TERMUX VALIDATION.
 - Public route; no Admin JWT.
 - `Content-Type: application/json` required.
 - Browser Origin must be a canonical HTTPS origin trusted by `ALLOWED_ORIGINS`.
+- Public submissions explicitly ignore `X-DEKEKU-Project-Origin`; that selector remains reserved for the authenticated File Manager workflow. The public route is bound to the request's actual `Origin` header.
 - Resource names are matched against the server-side registry. Unknown or disabled resources return 404; methods other than the registered method return 405.
 - The client cannot select repository owner, repository, branch, storage path, schema, or size limits.
 
