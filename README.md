@@ -71,15 +71,19 @@ dekeku-api/
 │   ├── BACKLOG.md             # Pending work
 │   ├── DECISIONS.md           # Architecture decisions
 │   ├── CHECKPOINT.md          # Operational checkpoint
-│   └── CHANGELOG.md           # History of changes
+│   ├── CHANGELOG.md           # History of changes
+│   ├── EVIDENCE.md            # Test and audit evidence
+│   ├── PUBLIC_DATA_API_PLAN.md # Public Data API plan
+│   └── RECOMMENDATIONS.md     # Current recommendations
 ├── docs/
 │   ├── architecture.md        # Architecture documentation
+│   ├── PUBLIC_DATA_API.md     # Public Data API reference
+│   ├── GUESTBOOK_INTEGRATION.md # Guestbook integration guide
 │   └── USAGE.md               # Usage guide
 ├── package.json               # Dependencies & scripts
 ├── wrangler.jsonc             # Cloudflare Workers config
 ├── AGENTS.md                  # Git workflow (dev + PR)
 ├── README.md                  # This file
-└── CLAUDE_PROJECT_CONTEXT.md  # Context for AI reviewers
 \`\`\`
 
 ## Endpoint
@@ -184,7 +188,13 @@ For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) a
 - **Roadmap**: [project/ROADMAP.md](project/ROADMAP.md)
 - **Decisions**: [project/DECISIONS.md](project/DECISIONS.md)
 - **Change History**: [project/CHANGELOG.md](project/CHANGELOG.md)
-- **Reviewer Context**: [project/CLAUDE_PROJECT_CONTEXT.md](project/CLAUDE_PROJECT_CONTEXT.md)
+- **Backlog**: [project/BACKLOG.md](project/BACKLOG.md)
+- **Checkpoint**: [project/CHECKPOINT.md](project/CHECKPOINT.md)
+- **Evidence**: [project/EVIDENCE.md](project/EVIDENCE.md)
+- **Public Data API Plan**: [project/PUBLIC_DATA_API_PLAN.md](project/PUBLIC_DATA_API_PLAN.md)
+- **Recommendations**: [project/RECOMMENDATIONS.md](project/RECOMMENDATIONS.md)
+- **Public Data API Reference**: [docs/PUBLIC_DATA_API.md](docs/PUBLIC_DATA_API.md)
+- **Guestbook Integration**: [docs/GUESTBOOK_INTEGRATION.md](docs/GUESTBOOK_INTEGRATION.md)
 
 ## License
 
