@@ -24,11 +24,12 @@ test("dashboard mutation routes reject unauthenticated requests", async () => {
     ["/api/v1/admin/dashboard/refresh/cancel", "POST"],
     ["/api/v1/admin/dashboard/refresh/retry", "POST"]
   ]) {
-    const response = await router(new Request("https://api.example.test" + path, {
+    const init = {
       method,
-      headers: { "Content-Type": "application/json" },
-      body: "{}"
-    }), {});
+      headers: { "Content-Type": "application/json" }
+    };
+    if (method !== "GET" && method !== "HEAD") init.body = "{}";
+    const response = await router(new Request("https://api.example.test" + path, init), {});
     assert.equal(response.status, 401, path);
   }
 });
