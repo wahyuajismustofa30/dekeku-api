@@ -1,64 +1,50 @@
 # Execution Policy & Current Work Queue
 
-Updated: 2026-11-22 (owner scope: public repository management)
+Updated: 2026-11-22
 Target branch: `dev`
 Repository: `wahyuajismustofa30/dekeku-api`
+Current status authority: `project/PROGRESS.md`.
 
-## Authority Hierarchy
-1. **Wahyu — Project Owner (highest authority):** latest explicit instruction, approval, and decision prevails over every project document, historical decision, implementation choice, and assistant instruction.
-2. **ChatGPT — Lead Development Assistant (second):** analyzes, plans, coordinates, delegates technical work, and reviews Codex output under Wahyu's authority.
-3. **Codex in Termux — Execution Assistant (third):** performs repository/environment tasks delegated by ChatGPT and/or explicitly instructed by Wahyu; cannot independently change goals, architecture, scope, or operational approvals.
+## Authority hierarchy
+1. Wahyu is the project owner and final decision-maker. The latest explicit instruction prevails.
+2. ChatGPT is the lead development assistant for analysis, planning, delegation, and review under the owner's authority.
+3. Codex in Termux is the execution assistant and must follow the owner's latest instruction and delegated scope.
 
-### Conflict protocol
-- If a document, earlier decision, implementation, or assistant direction conflicts with Wahyu's latest explicit instruction, stop the affected action and report the exact conflict and impact.
-- Offer clear options or request the specific approval required. Do not silently decide conflicts involving scope, security, credentials, data, deployment, or Production.
-- If Wahyu's instruction is clear and safe, reconcile conflicting documentation while preserving historical context. Technical evidence describes actual behavior; it does not supersede owner authority.
-- Codex must stop and report if a delegated instruction is unsafe, contradictory, or technically impossible. A newer explicit instruction from Wahyu always overrides an older ChatGPT delegation.
+If instructions or documents conflict with the owner's latest instruction, stop the affected action and report the conflict. Reconcile documentation when the instruction is clear, preserving historical facts.
 
-## Authority
-- `project/PROGRESS.md` is the single source of truth for current project status.
-- This file defines the required execution sequence and hard constraints.
-- `project/BACKLOG.md` is the detailed task checklist and must agree with PROGRESS.
-- `project/RBAC_PLAN.md` is a historical reference only; private-repository/RBAC work is archived in `project/TASK_ARCHIVE.md` (A-003) and is not active.
-- Historical checkpoints and stage notes must not override the latest checkpoint.
+## Active scope and ordered work queue
+Active scope: public data management in each project's own public GitHub repository. Private repository `dekeku-db`, private account storage, mappings, and RBAC expansion remain archived under A-003.
+
+1. [x] **PUB-001 — Public repository config contract v1.** Specification and JSON Schema available.
+2. [x] **PUB-002 — Schema and trusted Origin enforcement.** Implemented; focused tests reported PASS; Development runtime NOT VERIFIED.
+3. [x] **PUB-003 — Shared resolver for Admin SHA and CRUD.** Implemented; regression coverage reported PASS.
+4. [x] **PUB-004 / PUB-004-FIX — Safe public repository browsing.** Git Trees traversal and fail-closed filtering implemented; focused suite reported 47/47 PASS.
+5. [x] **PUB-005 — Tester File Manager implementation.** Both Tester copies, project selector, Admin JSON reader, browse, pagination, JSON CRUD, fresh SHA handling implemented; focused regression command reported 66/66 PASS. Browser E2E and Development runtime remain NOT VERIFIED.
+6. [ ] **PUB-006 — Development E2E verification (ACTIVE NEXT).** Verify at least two public repositories, authentication, project selection, browse/read/CRUD, SHA conflict, Origin/wildcard boundaries, and upstream failures using approved safe fixtures.
+
+CI/CD follow-up is tracked in `project/BACKLOG.md`: PR validation workflow exists and PR #26 was merged after CI remediation; verify required check behavior and existing Cloudflare Git integration/deployed Development version. Do not create a duplicate deployment workflow before auditing the existing integration.
+
+## Git and PR policy
+- Work on `dev`; `main` is the protected integration branch.
+- The remote `main` and `dev` branches were verified identical at `c7cdd582003d7162a3842fd9ec612224fc733921` on 2026-11-22. The owner's last reported local checkout was clean on `dev` at `8e43d104`, one merge commit behind `origin/main`; local synchronization has not been confirmed.
+- Do not commit/push directly to `main`, force-push, delete branches, create extra branches, or merge PRs independently.
+- After work is stable, tested, documented, and reviewed, changes may be committed/pushed to `dev` and proposed through PR `dev` → `main` in accordance with owner approval and repository policy.
+- `.github/workflows/pr-validation.yml` validates PRs; it does not deploy.
 
 ## Non-negotiable constraints
 - `npm test`: NOT RUN unless the owner explicitly changes this instruction.
-- Work only on `dev`; never commit/push to `main`.
-- Never deploy or modify Production Worker `github`, Production domain `api.dekeku.my.id`, Production secrets, variables, or data.
-- Do not change Wrangler configuration, Cloudflare settings, secrets, credentials, real accounts, repository mappings, or website data without explicit authorization.
-- If a required dashboard, runtime, credential, or safe fixture is unavailable, record `NOT VERIFIED` with the exact blocker. Do not infer success from source code or documentation.
-- Keep implementation, syntax/static validation, automated tests, Development runtime, WAF, and CDN verification as separate evidence categories.
+- Never deploy or modify Production Worker `github`, domain `api.dekeku.my.id`, Production secrets, variables, or data.
+- Do not change Wrangler config, Cloudflare settings, secrets, credentials, accounts, repository mappings, or real website data without explicit authorization.
+- Do not run destructive/mutative E2E against real project data; use approved disposable fixtures.
+- Separate source review, syntax checks, automated tests, Development runtime/browser E2E, deployment evidence, WAF, and CDN verification.
+- If evidence is unavailable, record NOT VERIFIED. Do not infer success from code, docs, or a PR merge.
 
-## Ordered current work queue
+## Evidence vocabulary
+- VERIFIED: sufficient current evidence exists.
+- FAILED: the check ran and failed.
+- NOT VERIFIED: evidence is unavailable or incomplete.
+- NEEDS INVESTIGATION: a concrete indication requires further inspection.
+- NOT RUN: the check was not executed.
 
-Current owner-approved focus: public data management in each project's own public GitHub repository. Private repository setup and RBAC expansion are archived (A-003).
-
-1. [x] **PUB-001 — Define public project repository contract.** SPEC COMPLETE: `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`; runtime enforcement is not included.
-2. [x] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Owner-reported syntax checks PASS and `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP). Development runtime NOT VERIFIED.
-3. [x] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** Shared resolver wired into all four Admin handlers; regression tests verified (54/54 PASS across combined suites).
-4. [x] **PUB-004 — Implement safe public repository browsing (PUB-004-FIX Security Audit Complete).** Endpoint `GET /api/v1/admin/browse` remediated with Admin JWT, path validation (`public/` only), child path exact matching, hidden/sensitive file filtering, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), upstream truncation detection (Contents API >= 1000 & Git Trees API `truncated`), pagination, and metadata-only output. Verified via `node --test` (22/22 PASS in browse suite, 54/54 PASS total).
-5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager (IN PROGRESS).** Project Origin selector, folder browser, JSON editor, and SHA-safe CRUD implementation added; focused tests pending.
-6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
-
-Execution remains on `dev`; PR to `main` only after stable and owner review. No Production changes, private repository setup, secrets changes, or writes to real website data without separate explicit approval.
-
-
-## PUB-004-FIX Follow-up Gate (2026-11-22)
-- The prior PUB-004-FIX completion claim is superseded by the follow-up audit finding that the Git Trees API was not invoked at runtime.
-- Actual Git Trees traversal has now been added on `dev`, with a new focused integration-style test file. This change is NOT VERIFIED because tests were not run. `test/browse-router.test.js` has now been migrated to branch/tree fixtures; execute the migrated focused suite locally before acceptance.
-- PUB-004-FIX remains open until the migrated focused regression suite passes with evidence. PUB-005 is blocked until the owner accepts PUB-004-FIX.
-
-
-## Latest Evidence Update — PUB-004-FIX (2026-11-22)
-- Owner's local branch is `dev`, working tree clean, HEAD `4f9747a`; remote `origin/dev` independently confirmed at matching SHA `4f9747a3cb0fcddfb50cc9ef9ee595d30a427a86`.
-- Focused command `node --test test/browse-router.test.js test/browse-git-tree.test.js test/repository-metadata.test.js test/write-router.test.js`: **47 PASS, 0 FAIL, 0 SKIP (8 suites)**.
-- `git diff --check`: no output; recorded PASS from owner report.
-- This evidence supersedes the earlier statement that migrated tests had not been run. PUB-004-FIX focused test set is VERIFIED LOCALLY; Development runtime remains NOT VERIFIED.
-- PUB-005 remains blocked pending explicit owner acceptance and authorization. No PR or deployment is authorized by this test result alone.
-
-
-## PUB-005 Current Gate Update (2026-11-22)
-- PUB-004-FIX was accepted by the owner. PUB-005 is authorized and IN PROGRESS.
-- Implementation and new tests are present on dev. Local Node test execution is still pending; do not mark PUB-005 verified until the owner runs the focused command recorded in project/CHECKPOINT.md.
-- Keep all work on dev. No PR, merge, or deployment is authorized by this task.
+## Reporting requirements
+Record command, branch/commit, environment, exit code, PASS/FAIL/SKIP, and concise output evidence for tests. Redact all secrets, tokens, passwords, JWTs, and hashes. Report changed files, test evidence, risks, deployment status, and Production boundary.
