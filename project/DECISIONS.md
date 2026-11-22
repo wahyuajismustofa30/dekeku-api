@@ -116,3 +116,18 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - Selama masa implementasi, source pada `dev` wajib ditandai `IMPLEMENTED — NOT TESTED`. Tidak boleh menyatakan VERIFIED sebelum bukti test aktual tersedia.
 - Tidak boleh membuat PR ke `main`, merge, atau deploy sebelum ADM-008 selesai dan pemilik memberi instruksi.
 - Status saat keputusan dicatat: source ADM-001..ADM-007 telah ditambahkan ke `dev`; seluruhnya NOT TESTED; secret Development dan runtime belum diverifikasi; Production tidak disentuh.
+
+## D-030 — Extensible Public Data API & Workstream Priority Override (2026-11-23)
+
+- **Status:** DISETUJUI MELALUI INSTRUKSI EKSPLISIT PEMILIK.
+- Public Data API menjadi prioritas aktif dan didahulukan; Admin Dashboard ADM-001..ADM-008 dijeda sementara. Implementasi dan bukti Dashboard yang sudah ada tetap dipertahankan, bukan dihapus atau dirombak.
+- Endpoint standar: `POST /api/v1/public/data/{resource}`.
+- Resource dikelola melalui server-side Resource Registry. Setiap resource memiliki validator/schema, status enablement, storage path tetap, bentuk dokumen, dan batas ukuran yang ditentukan server.
+- Project Repository Resolver bersama menggunakan Project Origin dan kontrak `config.json` yang digunakan File Manager. Sebelum migrasi, implementasi resolver Guestbook lama dan resolver File Manager harus dibandingkan dari source aktual; jangan mengasumsikan keduanya identik.
+- Storage Engine bersama menangani parsing body terbatas, validasi Origin, resolver, pemeriksaan repository publik, validasi dokumen, GitHub write, SHA concurrency, dan error aman.
+- Guestbook menjadi resource pertama. `POST /api/v1/public/submit` dipertahankan sementara sebagai alias ke handler Guestbook yang sama.
+- Website membaca public data langsung dari repository publik/CDN. GET API baru tidak termasuk fase awal.
+- Tidak boleh menerima owner/repository/branch/path arbitrer dari klien. Origin bukan autentikasi. Data lama tidak boleh dihapus atau dimigrasikan otomatis.
+- Rencana dan acceptance criteria: `project/PUBLIC_DATA_API_PLAN.md`; backlog PUB-DATA-001..007.
+- Pelaksanaan hanya pada `dev`; keputusan ini tidak mengizinkan commit/push yang belum matang, PR, merge, deployment, perubahan Cloudflare config/secrets/variables, atau perubahan Production.
+- Status saat keputusan dicatat: desain disetujui; PUB-DATA-001..007 NOT STARTED; tidak ada implementasi/test/deployment yang diklaim.
