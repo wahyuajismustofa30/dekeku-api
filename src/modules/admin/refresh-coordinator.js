@@ -66,6 +66,7 @@ export class DashboardRefreshCoordinator {
         succeeded: 0,
         failed: 0,
         remaining: targets.length,
+        currentRepository: null,
         cancelRequested: false,
         pending: targets.map(repo => ({ owner: repo.owner, name: repo.name, defaultBranch: repo.defaultBranch, archived: repo.archived })),
         results: []
@@ -113,6 +114,7 @@ export class DashboardRefreshCoordinator {
         succeeded: 0,
         failed: 0,
         remaining: targets.length,
+        currentRepository: null,
         cancelRequested: false,
         pending: targets.map(repo => ({ owner: repo.owner, name: repo.name, defaultBranch: repo.defaultBranch, archived: repo.archived })),
         results: []
@@ -145,6 +147,7 @@ export class DashboardRefreshCoordinator {
       if (current.cancelRequested) {
         current.status = "cancelled";
         current.completedAt = new Date().toISOString();
+        current.currentRepository = null;
         current.remaining = current.pending.length;
         await transaction.put("latest-job", current);
         return { terminal: true };
@@ -158,10 +161,12 @@ export class DashboardRefreshCoordinator {
         current.status = current.failed ? "completed_with_errors" : "completed";
         current.completedAt = new Date().toISOString();
         current.remaining = 0;
+        current.currentRepository = null;
         await transaction.put("latest-job", current);
         return { terminal: true };
       }
       current.remaining = current.pending.length;
+      current.currentRepository = target.name;
       await transaction.put("latest-job", current);
       return { job: current, target };
     });
@@ -192,6 +197,7 @@ export class DashboardRefreshCoordinator {
       if (itemResult.success) latest.succeeded += 1;
       else latest.failed += 1;
       latest.remaining = latest.pending.length;
+      latest.currentRepository = null;
       if (latest.cancelRequested) {
         latest.status = "cancelled";
         latest.completedAt = new Date().toISOString();
