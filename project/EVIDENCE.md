@@ -53,3 +53,16 @@ Instruksi pemilik: testing ditunda sampai seluruh implementasi ADM-001..ADM-007 
 | Development encryption secret | `DB_ENCRYPTION_KEY` | NOT VERIFIED from this session |
 
 Final execution plan: `project/ADM-008_TEST_PLAN.md` (READY / NOT RUN). Test files prepared: `test/dashboard-crypto.test.js`, `test/dashboard-storage.test.js`, `test/dashboard-registry.test.js`, `test/dashboard-refresh.test.js`, `test/dashboard-router.test.js`, and `test/dashboard-api.test.js`; included in `npm test` and focused PR validation mapping. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on Development is also NOT VERIFIED from this session. No test command was run for this workstream. No test counts are claimed. Cloudflare Development deployment/runtime was not changed or verified. Production was not touched.
+
+## 5. ADM-008 Full Automated Test Rerun — Owner-Reported PASS (2026-11-23)
+- **Test ID / Nama Tes**: ADM-008 full `npm test` regression suite.
+- **Commit / Branch**: `dev`; exact tested HEAD SHA NOT VERIFIED (not included in terminal output).
+- **Environment**: Ubuntu proot under Termux; Node.js version NOT VERIFIED from supplied output.
+- **Commands**: `npm ci`; `npm test`.
+- **Exit Code**: Install succeeded; test process reported complete TAP summary and returned to shell prompt (numeric exit code not explicitly echoed).
+- **PASS / FAIL / SKIP**: 261 / 0 / 0; 44 suites.
+- **Duration**: 10,819.445539 ms.
+- **Dependency audit**: 0 vulnerabilities.
+- **Output Evidence**: full owner-supplied output ends with `ℹ tests 261`, `ℹ pass 261`, `ℹ fail 0`, `ℹ cancelled 0`, `ℹ skipped 0`, `ℹ todo 0`.
+- **Result**: OWNER-REPORTED PASS. Not independently reproduced in this session; does not verify Wrangler target/migration, Cloudflare secrets, Durable Object runtime, or live Development behavior.
+- **Next gate**: confirm complete Wrangler dry-run output and list Development secret names only. Runtime verification requires separate deployment approval. Production NOT TOUCHED.
