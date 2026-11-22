@@ -93,11 +93,18 @@ const readRepoPath = async (env, repository, path) => {
 const validatePublicConfig = (config, owner, repo) => {
   if (!config || typeof config !== "object" || Array.isArray(config) ||
       config.schema_version !== 1 || Object.keys(config).sort().join(",") !== "project,repository,schema_version") return false;
-  if (!config.project || Object.keys(config.project).length !== 1 ||
-      typeof config.project.id !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(config.project.id)) return false;
-  if (!config.repository || Object.keys(config.repository).length !== 2 ||
-      config.repository.username?.toLowerCase() !== owner.toLowerCase() ||
-      config.repository.repo?.toLowerCase() !== repo.toLowerCase()) return false;
+  if (!config.project || typeof config.project !== "object" || Array.isArray(config.project) ||
+      Object.keys(config.project).length !== 1 ||
+      typeof config.project.id !== "string" || config.project.id.length < 2 ||
+      config.project.id.length > 48 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(config.project.id)) return false;
+  if (!config.repository || typeof config.repository !== "object" || Array.isArray(config.repository) ||
+      Object.keys(config.repository).length !== 2 ||
+      typeof config.repository.username !== "string" ||
+      typeof config.repository.repo !== "string" ||
+      !OWNER_PATTERN.test(config.repository.username) ||
+      !REPO_PATTERN.test(config.repository.repo) ||
+      config.repository.username.toLowerCase() !== owner.toLowerCase() ||
+      config.repository.repo.toLowerCase() !== repo.toLowerCase()) return false;
   return true;
 };
 
@@ -115,7 +122,13 @@ const inspectFile = async (env, repository, path) => {
         return { exists: true, valid: false, error: "Invalid JSON" };
       }
     }
-    return { exists: true, valid: true, content: path === "CNAME" ? raw.trim().slice(0, 253) : undefined };
+    if (path === "CNAME") {
+      const domain = raw.trim();
+      const valid = domain.length <= 253 &&
+        /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$/i.test(domain);
+      return { exists: true, valid, content: domain.slice(0, 253), ...(valid ? {} : { error: "Invalid CNAME domain" }) };
+    }
+    return { exists: true, valid: true };
   } catch (error) {
     if (error instanceof HttpError && error.status === 404) return { exists: false, valid: false };
     throw error;
