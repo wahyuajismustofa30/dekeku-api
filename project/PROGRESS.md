@@ -79,3 +79,15 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - No remote integration, live repository write, Worker runtime smoke test, or deployment is claimed.
 - PR #29 remains open and unmerged. Before merge, confirm tested SHA equals PR head or rerun tests against the candidate.
 - Admin Dashboard remains PAUSED. Production Worker/domain/config/secrets/data remain untouched.
+
+
+## Documentation reconciliation — CI evidence and current priorities (2026-11-23)
+
+This section is the current status authority and supersedes earlier statements in this file where they conflict.
+
+- **Public Data API:** implementation and documentation remain on `dev`; owner-reported Termux focused suite passed 14/14 and seven changed-source syntax checks passed. The exact local tested SHA was not supplied.
+- **PR validation CI:** GitHub Actions run #51 (ID `45080601189`) on commit `98d7163add0452832afefeda1462aad5f187ac43` completed SUCCESS: 139 tests PASS, 0 FAIL, 0 skipped across 19 suites; `npm ci` PASS; syntax checks on 64 JavaScript files PASS; Wrangler dry-run PASS; `npm audit` reported 0 vulnerabilities. This is CI evidence for that commit, not a fresh run on later documentation-only commits.
+- **Validation boundaries:** CI and owner-reported local tests do not establish a live Public Data API repository write, Worker runtime smoke test, or deployment. Those remain NOT VERIFIED unless separately evidenced.
+- **Admin Dashboard ADM-001..ADM-008:** PAUSED. Preserve implementation and owner-reported local evidence (261/261 tests; Wrangler dry-run PASS); do not resume without owner instruction. Development secret/runtime concerns remain separate and unresolved as documented.
+- **PR #29:** OPEN and unmerged at the latest PR-state check. No merge or deployment was performed or authorized.
+- **Production:** Worker `github`, `api.dekeku.my.id`, Production configuration/secrets/data remain untouched.
