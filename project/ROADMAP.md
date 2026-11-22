@@ -23,10 +23,11 @@
 - Automatic SHA lookup endpoint and Tester integration implemented on `dev`.
 - Regression tests added; syntax checks, automated test execution, and Development runtime verification remain NOT RUN / NOT VERIFIED.
 
-## Phase 2.3: Public Submission & Guestbook
+## Phase 2.3: Public Submission & Guestbook (historical milestone)
 - **Tujuan**: Memungkinkan pengumpulan pesan/guestbook publik dengan validasi aman tanpa auth admin.
-- **Ruang Lingkup**: Endpoint `POST /api/v1/public/submit`, validasi payload (name, message), penyimpanan concurrent-safe ke `public/data/guestbook/`, CORS wildcard (`*.artoprintingpbg.com`, `*.dekeku.my.id`).
-- **Status**: COMPLETED menurut implementasi terdokumentasi. Hasil pengujian lokal terbaru yang dilaporkan pengguna adalah 149 PASS, 0 FAIL, 0 SKIP pada commit `a6a089d`; runtime/deployment Development tetap NOT VERIFIED.
+- **Ruang Lingkup awal**: Endpoint `POST /api/v1/public/submit` dan penyimpanan Guestbook awal di `public/data/guestbook/`.
+- **Status implementasi**: milestone awal tercatat selesai. Alur Guestbook terbaru untuk RBAC-07 menggunakan mapping Origin dan target `assets/data/bukutamu.json` pada repository website; jangan menganggap path awal sebagai target saat ini.
+- **Verifikasi**: laporan suite lokal 149 PASS, 0 FAIL, 0 SKIP pada commit `a6a089d` adalah bukti historis; Development runtime/deployment tetap NOT VERIFIED.
 
 ## Security Review Follow-up (2026-11-21)
 - R-001 s/d R-005: implementasi remediation Dashboard, CORS, dan test isolation selesai.
@@ -34,6 +35,11 @@
 - R-006 WAF Development: NOT VERIFIED.
 - R-007 failed-login audit logging: menunggu keputusan retensi, akses, dan metadata.
 - R-008 sinkronisasi dokumentasi: COMPLETED.
+
+## Current Workstream Selection
+- Dokumentasi telah direkonsiliasi setelah owner memilih opsi C.
+- Tidak ada prioritas teknis berikutnya yang dipilih. Tunggu keputusan owner antara RBAC Development runtime verification (deployment memerlukan persetujuan eksplisit) dan Development CI/CD (dimulai dengan audit read-only).
+- Lihat `PROGRESS.md` untuk status dan `EXECUTION_POLICY.md` untuk antrean tunggal.
 
 ## Phase 3: Monitoring & Optimization (Future)
 - Monitoring logs & error tracking.
@@ -178,3 +184,34 @@
 - Development runtime/deployment remains NOT VERIFIED; do not infer runtime behavior from local tests.
 - WAF remains DEFERRED; Guestbook CDN/cache behavior remains NOT VERIFIED; Production untouched.
 - The test results are owner-reported and were not independently re-executed in this session.
+
+
+## Development CI/CD Track — Approved, Not Started (2026-11-21)
+
+- Branch workflow: develop on `dev`; submit stable changes through PR to `main`.
+- PR validation is required; PR events must not deploy.
+- Updates to `main` are intended to trigger deployment to Development Worker `dekeku-api-dev` only.
+- Track tasks CICD-001..CICD-010 in [BACKLOG.md](BACKLOG.md).
+- This track is PLANNED / NOT STARTED. Production deployment is not authorized.
+
+
+## Development CI/CD Track — Current Status (2026-11-21)
+- Owner selected the Development CI/CD workstream after documentation reconciliation.
+- CICD-001 read-only audit: COMPLETE. No workflow files exist at audited dev HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`; Wrangler names `dekeku-api-dev` but has no named environment; package scripts define no deployment command.
+- CICD-002 branch-policy reconciliation: COMPLETE. Work on `dev`, PR to `main`, no direct commits/pushes to `main`. Branch protection is currently reported inactive by GitHub branch metadata and remains a separate operational gap.
+- Next: CICD-003 define PR validation contract. Workflow implementation and deployment remain pending.
+- GitHub Actions secrets/environments/settings are NOT VERIFIED. Production remains out of scope.
+
+
+## CICD-003 — PR Validation Contract (2026-11-21)
+- Status: COMPLETE — DEFINED. See `CICD_VALIDATION_CONTRACT.md` for required checks, warning checks, failure behavior, and safety boundaries.
+- Next: CICD-004 implements PR validation only; no deployment on PR events.
+- `npm test` remains NOT RUN; remote tests are excluded from PR CI.
+
+
+## CICD-004 — PR Validation Workflow (2026-11-21)
+- Status: IMPLEMENTED on `dev` at `.github/workflows/pr-validation.yml`.
+- PR-only for `dev` → `main`; no deployment; minimal permissions; pinned actions; per-PR concurrency.
+- Includes dependency install, full JS syntax scan, explicit Development Worker guard + Wrangler dry-run, mapped focused tests, and warning-only dependency audit.
+- Actual workflow run remains NOT VERIFIED until a PR triggers GitHub Actions. `npm test` and remote tests remain excluded.
+- Next: CICD-006 Development credentials isolation and CICD-007 deployment safeguards before CICD-005.

@@ -327,3 +327,74 @@
 - Added mandatory conflict handling: stop affected work, report discrepancies with impact, and offer options or request approval when documentation or prior instructions conflict with the owner's latest explicit instruction.
 - Updated AGENTS.md, MASTER.md, DECISIONS.md (D-024), EXECUTION_POLICY.md, PROGRESS.md, and CHECKPOINT.md.
 - Documentation-only change; no source code, tests, deployment, Cloudflare configuration, secrets, account records, mappings, website data, or Production resources changed.
+
+
+## [Unreleased] — Development CI/CD Policy & Task Queue (2026-11-21)
+
+### Added
+- Recorded owner-approved branch/PR flow: develop on `dev`, submit stable changes to `main` through PR.
+- Recorded intended CI/CD behavior: validate PRs without deployment; updates to `main` deploy only to Development Worker `dekeku-api-dev`.
+- Added D-025 and CICD-001..CICD-010 tasks covering target audit, validation, Development credential isolation, deployment safeguards, verification, and documentation.
+
+### Verification / Scope
+- Documentation-only update on branch `dev`.
+- CI/CD workflows: NOT IMPLEMENTED / NOT VERIFIED.
+- No source code, Wrangler configuration, GitHub Actions workflow, Cloudflare settings, secrets, deployment, or Production resources changed.
+
+
+## [2026-11-21] — Documentation Conflict Reconciliation (Owner Poll: C)
+### Changed
+- Reconciled D-023 wording with the later R-013 implementation record and owner-reported Termux verification (`node --check` PASS; focused test 6 PASS, 0 FAIL).
+- Clarified that integrated RBAC and Development runtime verification remain NOT VERIFIED; `npm test` remains NOT RUN.
+- Marked stale phase/stage `Next` statements and old backlog priority lists as historical/superseded, preserving them as history rather than deleting the record.
+- Updated WAF and Guestbook CDN/cache follow-up references to respect owner deferral/archive status.
+- Clarified that CICD-001..CICD-010 remain planned, not active, and that no next technical workstream has been selected.
+- Updated PROGRESS, EXECUTION_POLICY, BACKLOG, CHECKPOINT, ROADMAP, DECISIONS, RBAC_PLAN, and RECOMMENDATIONS for consistent authority and status.
+### Verification / Scope
+- Documentation-only updates on branch `dev`.
+- `npm test`: NOT RUN. No source code, test files, Wrangler configuration, GitHub Actions workflows, Cloudflare settings, secrets, credentials, accounts, mappings, website data, deployment, or Production resources changed.
+- Next technical workstream: awaiting a separate owner decision.
+
+
+## [2026-11-21] — CICD-001 Audit and CICD-002 Branch Policy Reconciliation
+### Changed
+- Recorded owner selection of Development CI/CD as the active workstream.
+- Completed read-only audit of the dev branch at `09df42e24ab911efa5ed2541f7e80ddb665c20b7`: no GitHub Actions workflow files, Worker target `dekeku-api-dev`, no named Wrangler environment, and no deploy script in package.json.
+- Recorded that GitHub branch metadata reports dev/main as unprotected; Actions secrets/settings and full protection details remain NOT VERIFIED.
+- Reconciled the active queue: CICD-001 and CICD-002 complete; CICD-003 is next.
+### Verification / Scope
+- Documentation-only update on branch `dev`.
+- `npm test`: NOT RUN. No source code, Wrangler config, GitHub Actions workflow, Cloudflare settings, secrets, deployment, or Production resources changed.
+
+
+## [2026-11-21] — CICD-003 PR Validation Contract
+### Changed
+- Added `project/CICD_VALIDATION_CONTRACT.md` defining PR-only validation, required/blocking checks, initial warning checks, focused test mapping, and deployment/security boundaries.
+- Marked CICD-003 complete and CICD-004 as the next active task in progress, backlog, execution policy, roadmap, and checkpoint.
+- Recorded README's stale `npm test` guidance as a documentation mismatch; owner restriction remains authoritative.
+### Verification / Scope
+- Documentation-only changes on `dev`; no workflow, source code, package scripts, Wrangler configuration, GitHub settings/secrets, Cloudflare resource, or deployment changed.
+- No test commands were run. `npm test`: NOT RUN. Remote tests: NOT RUN.
+
+
+## [2026-11-21] — CICD-004 PR Validation Workflow
+### Changed
+- Added `.github/workflows/pr-validation.yml`, scoped to PRs targeting `main` and guarded to head branch `dev`.
+- Added clean dependency install, syntax scan, Development Worker target assertion and Wrangler dry-run, explicit focused-test mapping, and warning-only npm audit.
+- Pinned checkout/setup-node actions to immutable commit SHAs, restricted permissions to read-only contents, disabled checkout credential persistence, and added per-PR concurrency cancellation.
+- Updated CICD status: implementation complete; actual PR workflow run remains NOT VERIFIED. CICD-006 is next active task.
+### Verification / Scope
+- Workflow file fetched back from GitHub and inspected. No GitHub Actions run has occurred; YAML runtime and CI results NOT VERIFIED.
+- `npm test` and remote tests NOT RUN. No PR created, branch protection changed, secrets read/changed, Cloudflare config changed, Worker deployed, or Production resource touched.
+
+- Follow-up hardening: job guard also requires the PR head repository to equal the base repository, preventing same-named `dev` branches from forks from running this trusted-branch workflow.
+
+
+## [Unreleased] — Branch Synchronization Checkpoint (2026-11-22)
+### Changed
+- Fast-forwarded `dev` to the current `main` commit after confirming `dev` was strictly behind and had no unique commits.
+- Verified `main` and `dev` point to the same commit; repository branch inventory contains only these two branches.
+### Verification / Scope
+- GitHub compare result after synchronization: `identical`, 0 commits ahead/behind.
+- Documentation-only checkpoint; no application source, tests, Wrangler configuration, secrets, Cloudflare settings, deployment, or Production resources changed.
+- `npm test`: NOT RUN per owner instruction.

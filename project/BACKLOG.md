@@ -2,6 +2,8 @@
 
 *Catatan Acuan*: Rincian progres fitur ada di [PROGRESS.md](PROGRESS.md). Rekomendasi teknis dan kriteria penerimaan ada di [RECOMMENDATIONS.md](RECOMMENDATIONS.md).
 
+> **Penting:** bagian prioritas dan checklist historis di bawah bukan antrean kerja aktif. Status tunggal ada di `PROGRESS.md`; satu-satunya urutan kerja aktif ada di `EXECUTION_POLICY.md`. Item yang tidak aktif atau diarsipkan tidak boleh dilanjutkan otomatis.
+
 ## High Priority (Security & Reliability)
 - [x] Perbaikan Temuan Kode Write Engine (F-01 s/d F-04) - COMPLETED & VERIFIED.
 - [x] Penyesuaian Tes Legacy Core (18/18 PASS in `test/github-core.test.js`) - COMPLETED & VERIFIED.
@@ -177,16 +179,14 @@ See [RBAC_PLAN.md](RBAC_PLAN.md) for approved architecture, endpoint inventory, 
 
 
 ## Authoritative Current Queue (2026-11-21)
-The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PROGRESS.md is the single source of current status.
-- [x] Execution policy recorded in project documentation.
-- [x] Reconcile remaining status documents to PROGRESS and EXECUTION_POLICY, including approved R-013 decision D-023.
-- [ ] Native node --check for every RBAC source and test file; limited V8 parser check PASS 13/13 after stripping module declarations. Do not run `npm test`.
-- [DEFERRED] Development WAF setup/verification (do not resume until owner requests).
-- [ ] Ensure `assets` fetch URLs append a changing timestamp query parameter (e.g. `?t=<timestamp>`); verify CDN cache-key/query behavior so fresh data is actually returned.
-- [x] R-013 decision resolved: immediate User JWT revocation after password reset APPROVED (D-023).
-- [x] Add R-013 token/session version source implementation and focused regression tests on dev.
-- [ ] Run native node --check and the focused regression test only; limited V8 parser check PASS 13/13. Do not run npm test.
-- `npm test`: NOT RUN. Development runtime: NOT VERIFIED. WAF: DEFERRED. CDN cache-busting behavior: NOT VERIFIED.
+The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); `PROGRESS.md` is the single source of current status.
+- [x] Documentation reconciliation to the owner-approved R-013 decision and latest owner-reported verification status.
+- [x] R-013 source implementation and focused regression coverage are present on `dev`.
+- [x] Owner-reported Termux verification: native `node --check` PASS for all RBAC source/test files; focused `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
+- [x] `npm test` remains NOT RUN as explicitly instructed.
+- [DEFERRED / ARCHIVED] WAF and CDN/cache follow-ups are not active; do not resume archived work without explicit owner direction.
+- [x] Owner selected Development CI/CD after documentation reconciliation; CICD-001 and CICD-002 are complete. See the current queue in `EXECUTION_POLICY.md`.
+- Development runtime/deployment: NOT VERIFIED. Production untouched.
 
 
 ## Owner Decision — WAF / Assets Cache Strategy (2026-11-21)
@@ -197,11 +197,11 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 
 ## R-013 — Immediate User JWT Revocation (Decision Approved 2026-11-21)
 - [x] Owner approved immediate invalidation of every User JWT issued before a successful password reset.
-- [ ] Add a backward-compatible per-user token/session version field to private account storage.
-- [ ] Include version in new User JWTs and compare with the authoritative account record on every authenticated User request.
-- [ ] Increment version as part of successful password reset using SHA-safe write/concurrency handling.
-- [ ] Add focused regression coverage: old token rejected immediately, new login works, legacy records remain compatible, conflict handling is safe, Admin JWTs unaffected.
-- **Status**: SOURCE IMPLEMENTED on dev; syntax/static checks and focused test NOT RUN. No Development deployment; currently deployed Worker may still permit old tokens until their remaining expiry (up to 30 minutes).
+- [x] Add a backward-compatible per-user token/session version field to private account storage.
+- [x] Include version in new User JWTs and compare with the authoritative account record on every authenticated User request.
+- [x] Increment version as part of successful password reset using SHA-safe write/concurrency handling.
+- [x] Add focused regression coverage: old token rejected immediately, new login works, legacy records remain compatible, conflict handling is safe, Admin JWTs unaffected.
+- **Status saat ini**: SOURCE IMPLEMENTED on dev; owner-reported `node --check` PASS and focused test PASS (6 PASS, 0 FAIL). Development runtime/deployment NOT VERIFIED. The deployed Worker has not been verified as updated; do not assume immediate revocation is active in the deployed runtime.
 - **Constraints**: work on dev only; npm test remains NOT RUN; no Production changes or deployment without explicit approval.
 
 
@@ -211,8 +211,8 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [x] User auth and repository ownership middleware enforce current version from private storage.
 - [x] Admin password reset increments version in the same SHA-guarded account write as the new password hash.
 - [x] Focused regression tests added and registered in package.json.
-- [ ] Native node --check and focused test execution; limited V8 parser check PASS 13/13 after stripping module declarations. npm test remains NOT RUN.
-- Status: IMPLEMENTATION ADDED — NOT VERIFIED; Development runtime/deployment not performed; Production untouched.
+- [x] Owner-reported native `node --check` and focused test execution PASS (6 PASS, 0 FAIL); do not run `npm test`.
+- Status: SOURCE IMPLEMENTED; focused verification PASS by owner report; integrated RBAC and Development runtime remain NOT VERIFIED; Production untouched.
 
 
 ## R-013 Verification Update (2026-11-21) — Current
@@ -223,3 +223,23 @@ The ordered execution queue is in [EXECUTION_POLICY.md](EXECUTION_POLICY.md); PR
 - [ ] Guestbook CDN/cache freshness verification remains pending.
 - [DEFERRED] Development WAF verification remains deferred by owner.
 - Evidence qualification: test results are recorded from the owner's report; they were not independently re-executed in this session.
+
+
+## CI/CD Development Automation — Owner-Approved Tasks (2026-11-21)
+
+**Target workflow:** local/repository development on `dev` → Pull Request to `main` after stable → PR validation → merge/update `main` → automatic deployment to Development Worker `dekeku-api-dev` only.
+
+- [x] **CICD-001 — Audit deployment target and Wrangler configuration (CRITICAL).** READ-ONLY audit complete at dev HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`: no workflow files; Worker `dekeku-api-dev`; no named Wrangler environment or deploy script; Actions secrets/settings NOT VERIFIED; branch metadata says dev/main `protected=false`. Read-only audit of `wrangler.jsonc`, Worker name/environment, deployment command, and current GitHub Actions state. Confirm the exact Development target; do not modify Cloudflare or Production.
+- [x] **CICD-002 — Reconcile branch policy (HIGH).** Reviewed AGENTS.md, MASTER.md, README.md, D-025, and GitHub branch metadata. Policy consistent: work on `dev`, PR to `main`, no direct commits/pushes to `main`. Branch protection is not active per branch metadata; no settings changed. Ensure all current instructions consistently state that development occurs on `dev`, PR target is `main`, and direct commits/pushes to `main` are prohibited.
+- [x] **CICD-003 — Define PR validation contract (HIGH).** COMPLETE — DEFINED. Normative contract: `project/CICD_VALIDATION_CONTRACT.md`. Required/blocking: `npm ci`, syntax checks for relevant JS under `src/` and `test/`, Wrangler `deploy --dry-run`, and mapped focused tests for changed code. Initial warnings: `npm audit --audit-level=high` and unmapped test coverage. `npm test` and remote tests remain excluded.
+- [x] **CICD-004 — Add PR validation workflow (HIGH).** Implemented `.github/workflows/pr-validation.yml` on `dev`: PR `dev` → `main` only, no deployment, read-only permissions, pinned actions, dependency install, JS syntax, Development-target Wrangler dry-run, mapped focused tests, warning-only npm audit. Actual PR run NOT VERIFIED; no PR created and no branch protection changes.
+- [ ] **CICD-005 — Add main-to-Development deployment workflow (CRITICAL).** On updates to `main`, deploy only to `dekeku-api-dev` using an explicit Development target. Do not deploy Production.
+- [ ] **CICD-006 — Isolate Development credentials (CRITICAL).** Use dedicated GitHub Actions secrets/variables for Development only. Never reuse or expose Production credentials. Confirm required values without printing secret contents.
+- [ ] **CICD-007 — Add deployment safety controls (HIGH).** Serialize/cancel overlapping deployments safely, restrict workflow permissions, verify target identity, record commit SHA and deployment result, and fail closed on ambiguity.
+- [ ] **CICD-008 — Validate workflow behavior (HIGH).** Verify PR validation pass/fail behavior, main deployment success/failure handling, missing Development credentials, wrong-target rejection, and concurrency behavior using safe CI evidence.
+- [ ] **CICD-009 — Verify Development deployment (HIGH).** Confirm the deployed version and Development URL/health response after CI deployment. Do not probe or modify Production.
+- [ ] **CICD-010 — Close documentation and checkpoint (MEDIUM).** Update policy, workflow instructions, progress, checkpoint, and changelog using actual CI evidence.
+
+**Execution order:** CICD-001 → CICD-002 → CICD-003 → CICD-004/CICD-006/CICD-007 → CICD-005 → CICD-008 → CICD-009 → CICD-010.
+
+**Current status:** CICD-001 through CICD-004 implementation COMPLETE; CICD-004 CI run NOT VERIFIED. CICD-006 is next active task, followed by CICD-007 safeguards; CICD-005 deployment workflow remains gated on those tasks. CICD-005..010 remain PLANNED / NOT STARTED. This task list does not authorize Production changes or deployment before the Development-only workflow is implemented and verified.

@@ -40,7 +40,7 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - D-021 remains in force: legacy D-015 files are preserved and are not migrated/deleted automatically.
 
 
-| **D-023** | Immediate User JWT Revocation | Respons setelah Admin melakukan reset password User. | SETUJU: semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Terapkan mekanisme token/session version server-side pada record User; versi dimasukkan ke JWT baru dan diverifikasi pada setiap request User terautentikasi. Reset password menaikkan versi secara aman menggunakan SHA concurrency. JWT Admin tidak terpengaruh. Keputusan desain disetujui 2026-11-21; implementasi dan verifikasi belum dilakukan. |
+| **D-023** | Immediate User JWT Revocation | Respons setelah Admin melakukan reset password User. | SETUJU: semua JWT User yang diterbitkan sebelum reset password harus langsung ditolak. Terapkan mekanisme token/session version server-side pada record User; versi dimasukkan ke JWT baru dan diverifikasi pada setiap request User terautentikasi. Reset password menaikkan versi secara aman menggunakan SHA concurrency. JWT Admin tidak terpengaruh. Keputusan disetujui 2026-11-21; source implementation tersedia di dev; syntax check dan focused test PASS berdasarkan laporan pemilik dari Termux; Development runtime NOT VERIFIED. |
 
 
 ## D-023 Verification Status Update (2026-11-21)
@@ -60,3 +60,14 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - Jika perintah Wahyu jelas dan aman, dokumentasi yang bertentangan diperbarui; catatan historis tidak boleh dipalsukan.
 - Bukti kode/runtime menentukan fakta teknis aktual, tetapi tidak mengalahkan otoritas keputusan Wahyu.
 - Rujukan pelaksanaan: `AGENTS.md` dan bagian 8 `project/MASTER.md`.
+
+
+## D-025 — Branch, PR Validation, and Development CI/CD (2026-11-21)
+
+- **Status:** DISETUJUI PEMILIK PROYEK.
+- Seluruh pengembangan dilakukan pada branch `dev`; perubahan yang sudah stabil diajukan melalui Pull Request dari `dev` ke `main`. Commit/push langsung ke `main` dilarang.
+- PR wajib menjalankan validasi yang disepakati. Kegagalan pemeriksaan kritis memblokir penggabungan; pemeriksaan non-kritis dapat menjadi peringatan pada tahap awal. PR tidak melakukan deployment.
+- Setelah perubahan masuk ke `main`, GitHub Actions ditujukan untuk melakukan deployment otomatis hanya ke Development Worker `dekeku-api-dev`.
+- Deployment menggunakan kredensial khusus Development, verifikasi target, kontrol concurrency, dan pencatatan commit/deployment. Tidak boleh ada fallback ke Production.
+- Production Worker `github`, domain `api.dekeku.my.id`, kredensial, konfigurasi, dan data Production tetap di luar cakupan serta tidak boleh diubah tanpa persetujuan eksplisit.
+- **Status implementasi:** kebijakan target disetujui; workflow belum dibuat atau diverifikasi. Lihat CICD-001 s/d CICD-010 di `BACKLOG.md`.
