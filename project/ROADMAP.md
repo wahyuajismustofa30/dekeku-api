@@ -73,7 +73,7 @@ Rincian dan acceptance criteria: [PUBLIC_DATA_API_PLAN.md](PUBLIC_DATA_API_PLAN.
 ### Arsitektur Public Data API yang disetujui
 - Generic endpoint: `POST /api/v1/public/data/{resource}`.
 - Server-side Resource Registry dan validator khusus per resource.
-- Shared Project Origin resolver berbasis kontrak `config.json` File Manager; resolver Guestbook lama wajib dibandingkan dengan source aktual sebelum migrasi.
+- Shared Project Origin resolver berbasis kontrak `config.json` File Manager; migrasi Guestbook telah selesai dan source pada `dev` menggunakan `resolveProjectRepository()`. Perbandingan resolver lama adalah langkah historis yang sudah ditutup, bukan TODO.
 - Storage path dan repository coordinates ditetapkan server-side.
 - Guestbook menjadi resource pertama; route lama `POST /api/v1/public/submit` dipertahankan sementara sebagai alias.
 - Website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
@@ -87,6 +87,6 @@ The approved Public Data API implementation is now present on GitHub branch `dev
 - PUB-DATA-001..005: IMPLEMENTED on `dev`.
 - PUB-DATA-006: owner-reported Termux focused tests 14/14 PASS; 7 changed-source syntax checks PASS. Exact tested local SHA is unknown.
 - PUB-DATA-007: IMPLEMENTED on `dev`.
-- PR #29 (`dev` → `main`) exists and remains unmerged.
+- PR #29 (`dev` → `main`) berstatus OPEN dan belum merged pada audit 2026-11-23.
 
 Next: confirm tested SHA matches PR #29 head, or rerun focused tests against that exact candidate. Full suite, remote integration, live repository write, Worker runtime, and deployment remain NOT VERIFIED. No merge, deployment, Cloudflare configuration/secret changes, or Production access is authorized. Admin Dashboard remains paused.
