@@ -41,4 +41,4 @@ Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PU
 
 
 ### PUB-004-FIX Follow-up Status (2026-11-22)
-Actual Git Trees branch/tree traversal has been implemented in `src/modules/github/browse.js`, branch-name encoding fixed in `src/core/github.js`, and focused integration-style tests added in `test/browse-git-tree.test.js`. This is NOT VERIFIED: tests were not run, and the existing browse-router test mocks still require migration from Contents API responses to Git Trees API responses. PUB-005 remains blocked.
+Actual Git Trees branch/tree traversal has been implemented in `src/modules/github/browse.js`, branch-name encoding fixed in `src/core/github.js`, and focused integration-style tests added in `test/browse-git-tree.test.js`. This is NOT VERIFIED: tests were not run, and `test/browse-router.test.js` has now been migrated to Git Trees fixtures; execution remains NOT VERIFIED. PUB-005 remains blocked.
