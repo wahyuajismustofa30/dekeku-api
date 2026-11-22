@@ -14,7 +14,7 @@ const PROJECT_TYPES = new Set(["website", "invitation", "repository", "other"]);
 const now = () => new Date().toISOString();
 const decodeUtf8Base64 = value => {
   try {
-    const binary = atob(String(value || "").replace(/\\s/g, ""));
+    const binary = atob(String(value || "").replace(/\s/g, ""));
     const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
     return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   } catch { return null; }
