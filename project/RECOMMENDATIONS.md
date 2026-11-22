@@ -36,7 +36,7 @@ Rekomendasi ini adalah daftar review, bukan klaim bahwa seluruh kontrol tersebut
 ## Prioritas 4 — Rekonsiliasi branch dan PR
 
 - PR #29 adalah jalur review `dev` → `main`; jangan merge otomatis.
-- Branch saat audit terakhir berstatus diverged: `dev` lebih maju tetapi juga tertinggal dari `main`. Jumlah commit berubah setelah setiap pembaruan dokumentasi; periksa compare aktual sebelum rencana sinkronisasi. Jangan menyinkronkan atau merge `main` ke `dev` tanpa audit konflik dan instruksi yang sesuai.
+- Snapshot branch compare 2026-11-23: `dev` diverged, 74 commits ahead dan 2 behind `main`; `dev` HEAD `9d010b4f10159975d378df10b2b505d584d535a6`, `main` HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477`. Angka ini bukan status permanen. Jangan sinkronkan/merge `main` ke `dev` tanpa audit konflik dan instruksi yang sesuai.
 - Pastikan tested SHA cocok dengan PR head sebelum meminta review final.
 - Jangan melakukan force-push atau commit langsung ke `main`.
 
