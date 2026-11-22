@@ -104,9 +104,9 @@ describe("Caller repository metadata", () => {
       { ...validConfig, schema_version: 2 },
       { project: validConfig.project, repository: validConfig.repository },
       { ...validConfig, project: { id: "Invalid Project" } },
-      { ...validConfig, project: { id: "demo\\n" } },
-      { ...validConfig, repository: { ...validConfig.repository, username: "wahyuajismustofa30\\n" } },
-      { ...validConfig, repository: { ...validConfig.repository, repo: "demo\\n" } },
+      { ...validConfig, project: { id: "demo\n" } },
+      { ...validConfig, repository: { ...validConfig.repository, username: "wahyuajismustofa30\n" } },
+      { ...validConfig, repository: { ...validConfig.repository, repo: "demo\n" } },
       { ...validConfig, extra: true },
       { ...validConfig, repository: { ...validConfig.repository, extra: true } }
     ];
