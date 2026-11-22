@@ -7,6 +7,7 @@ export const PUBLIC_RESOURCE_REGISTRY = Object.freeze({
     validate: validateGuestbookPayload,
     storagePath: "assets/data/bukutamu.json",
     documentType: "array",
+    buildDocument: (current, entry) => [...current, entry],
     maxBodyBytes: 15360,
     maxFileBytes: 1024 * 1024,
     commitMessage: "Append public guestbook entry"
