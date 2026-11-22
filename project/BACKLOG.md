@@ -51,7 +51,7 @@
 Private-repository setup, private account storage, User repository mapping, and related RBAC expansion are OUT OF CURRENT SCOPE and archived. Do not continue those tasks unless the owner explicitly reactivates them. Existing source code and historical records are preserved; this scope change does not delete or disable implemented functionality.
 
 ### Public repository management tasks
-- [ ] **PUB-001 — Define public project repository contract.** Finalize the config.json schema and trusted Origin-to-public-repository resolution rules.
+- [x] **PUB-001 — Define public project repository contract.** COMPLETE (specification only): `project/PUBLIC_REPOSITORY_CONTRACT.md` and `docs/schemas/public-repository-config.schema.json`. Runtime enforcement is PUB-002.
 - [ ] **PUB-002 — Resolve the target public repository server-side.** Validate repository owner, name, visibility, and default branch; do not accept arbitrary client-supplied repository coordinates.
 - [ ] **PUB-003 — Route Admin file operations to the selected public repository.** Ensure SHA lookup and CREATE/UPDATE/DELETE use the same validated project repository context.
 - [ ] **PUB-004 — Add public repository file browsing.** List directories/files with safe path validation, pagination, and bounded responses.
