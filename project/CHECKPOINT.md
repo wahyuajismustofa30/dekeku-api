@@ -130,3 +130,15 @@ Historical instruction at the time of the Dashboard checkpoint: continue ADM-001
 
 ### Safety
 PR #29 (`dev` → `main`) exists and is OPEN, but has not been merged. No merge, deployment, Cloudflare config/bindings/secrets/variables change, or Production access was performed or authorized. Do not proceed without explicit owner instruction.
+
+
+## Current checkpoint — documentation reconciliation (2026-11-23)
+
+- Branch: `dev`; changes in this repair are documentation-only.
+- PR #29 (`dev` → `main`) was OPEN and unmerged at the latest state check. No merge or deployment.
+- PR validation run #51 on commit `98d7163add0452832afefeda1462aad5f187ac43`: SUCCESS; 139 tests PASS, 0 FAIL, 0 skipped, 19 suites; `npm ci`, syntax checks (64 JS files), Wrangler dry-run, and npm audit (0 vulnerabilities) all reported PASS.
+- This CI result is tied to that commit. It does not certify later documentation-only commits, live repository writes, current Worker runtime, or deployment.
+- Owner-reported local Public Data API test remains 14/14 PASS with seven syntax checks PASS; exact tested local SHA is unknown. The CI run provides separate candidate evidence at the recorded commit; preserve the provenance distinction.
+- Public Data API is the current active priority. Admin Dashboard ADM-001..ADM-008 remains PAUSED.
+- PUB-006 is COMPLETE & VERIFIED; it is not the next verification gate.
+- No source code, `main`, merge, deployment, Cloudflare configuration/secrets/variables, or Production resources were changed in this documentation repair.
