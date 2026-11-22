@@ -203,7 +203,7 @@ export class GitHubClient {
     }
 
     const encodedPath = segments.map(encodeURIComponent).join("/");
-    return this.request(`/contents/${encodedPath}?ref=${this.branch}`, { method: "GET" });
+    return this.request(`/contents/${encodedPath}?ref=${encodeURIComponent(this.branch)}`, { method: "GET" });
   }
 
   async createFile(path, content, message) {
