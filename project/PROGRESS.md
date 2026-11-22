@@ -53,7 +53,7 @@ Menunggu review pemilik dan instruksi lebih lanjut. Jangan membuat PR, merge, at
 - Arsitektur Public Data API disetujui: `POST /api/v1/public/data/{resource}`, server-side Resource Registry, validator per resource, Project Origin/config.json resolver, shared storage engine, Guestbook sebagai resource pertama, dan legacy `/api/v1/public/submit` sebagai alias sementara.
 - Public website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
 - Historical status at the time of D-030 approval: PUB-DATA-001..007 NOT STARTED. Superseded by the implementation and validation updates below.
-- Batas: branch `dev` saja; tidak ada PR, merge, deployment, perubahan Cloudflare config/secrets/variables, atau akses Production.
+- Batas pada saat keputusan D-030 dibuat (historis): pekerjaan dibatasi ke branch `dev`, tanpa PR/merge/deployment/Cloudflare/Production. PR #29 kemudian dibuat dan kini OPEN; merge, deployment, Cloudflare changes, dan Production access tetap tidak diizinkan.
 
 
 ## Latest implementation checkpoint — Public Data API (2026-11-23)
@@ -66,7 +66,7 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - **PUB-DATA-006:** owner-reported local Termux focused test PASS (14/14; 0 failures); see `project/EVIDENCE.md` evidence `PUBDATA-TERMUX-02`.
 - **PUB-DATA-007:** API reference, Usage, Guestbook integration, plan, and project status documents updated.
 - **Validation:** focused Guestbook test 14/14 PASS and 7 source syntax checks PASS (owner-reported local Termux evidence). Exact tested SHA unknown. Full suite, Wrangler dry-run for this candidate, remote integration, live write, and Worker runtime remain NOT RUN / NOT VERIFIED.
-- **Next required action:** obtain the exact tested local SHA and compare it with PR #29 head `9d010b4f10159975d378df10b2b505d584d535a6`; if they differ, rerun the focused tests on that exact candidate. Do not run `test:remote`; it may write to live project data. Do not run the full suite unless separately approved.
+- **Next required action:** obtain the exact tested local SHA and compare it with the current PR #29 head (fetch the live PR metadata; do not rely on a SHA copied into documentation). If they differ, rerun the focused tests on that exact candidate. Do not run `test:remote`; it may write to live project data. Do not run the full suite unless separately approved.
 - **Operational boundary:** PR #29 (`dev` → `main`) exists and remains unmerged. No merge, deployment, Cloudflare config/secret/variable change, or Production access is authorized. Admin Dashboard remains PAUSED.
 
 
