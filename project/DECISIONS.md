@@ -108,7 +108,7 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 
 - **Status:** DISETUJUI MELALUI INSTRUKSI EKSPLISIT PEMILIK.
 - Instruksi terbaru pemilik mengaktifkan kembali pengelolaan metadata privat `dekeku-db` untuk Admin Dashboard terpusat. D-027/A-003 tetap menjadi catatan historis untuk workstream RBAC/private account terdahulu, tetapi tidak melarang metadata Dashboard yang secara khusus disetujui dalam spesifikasi `ADMIN_DASHBOARD_SPEC.md`.
-- Data publik file proyek tetap berada di repository publik masing-masing proyek. Dashboard hanya menyimpan metadata internal dan hasil pemeriksaan terbaru dalam dokumen privat terenkripsi.
+- Data publik file proyek tetap berada di repository publik masing-masing proyek. Metadata internal (jenis proyek, domain, catatan) disimpan terenkripsi pada `dekeku-db`; snapshot pemeriksaan terbaru per repository disimpan pada Durable Object storage. Histori refresh tidak disimpan.
 - Penyimpanan Dashboard menggunakan AES-256-GCM dengan nonce acak 96-bit, authentication tag 128-bit, AAD terikat path dokumen, envelope berversi, dan fail-closed tanpa plaintext fallback.
 - Durable Object hanya digunakan untuk koordinasi refresh manual, progress, cancellation, retry item gagal, serta snapshot job terbaru; tidak ada refresh berkala atau histori job.
 - Binding/migration Durable Object dan secret `DB_ENCRYPTION_KEY` hanya disetujui untuk Development Worker `dekeku-api-dev`. Persetujuan ini tidak mencakup Production.
