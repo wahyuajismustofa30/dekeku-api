@@ -18,6 +18,17 @@ async function getScripts() {
 }
 
 describe("Tester Dashboard security and request contract", () => {
+  test("both dashboard copies expose workspace navigation and API panels", async () => {
+    for (const { html } of await getScripts()) {
+      for (const id of ["panel-public", "panel-guestbook", "panel-admin", "panel-user", "panel-write", "panel-response"]) {
+        assert.ok(html.includes('id="' + id + '"'), id + " panel must exist");
+      }
+      assert.match(html, /class="sidebar"/);
+      assert.match(html, /Response console/);
+      assert.match(html, /Same-origin connection/);
+    }
+  });
+
   test("both dashboard scripts parse as valid JavaScript", async () => {
     for (const item of await getScripts()) {
       assert.doesNotThrow(() => new vm.Script(item.script), item.name);
