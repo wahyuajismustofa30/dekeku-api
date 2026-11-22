@@ -42,14 +42,7 @@ button{border:1px solid var(--blue);background:var(--blue);color:#fff;padding:8p
         let userAccessToken = '';
         const USER_SESSION_KEY = 'dekeku_user_access_token';
         let guestbookSubmitting = false;
-        let selectedProjectOrigin = '';
-        let selectedProjectMetadata = null;
-        let fileBrowserPath = 'public/data';
-        let fileBrowserPage = 1;
-        let fileBrowserTotalPages = 1;
-        let managedFileMode = 'create';
-        let managedFilePath = '';
-        const PROJECT_ORIGIN_KEY = 'dekeku_tester_project_origin';
+
 
         function loadUserToken() {
             try {
@@ -318,7 +311,7 @@ button{border:1px solid var(--blue);background:var(--blue);color:#fff;padding:8p
         const PROJECT_ORIGIN_KEY = 'dekeku_tester_project_origin';
         let selectedProjectOrigin = '';
         let selectedProjectMetadata = null;
-        let fileBrowserPath = 'public/data';
+        let fileBrowserPath = 'public';
         let fileBrowserPage = 1;
         let fileBrowserTotalPages = 1;
         let managedFileMode = 'create';
@@ -371,7 +364,7 @@ button{border:1px solid var(--blue);background:var(--blue);color:#fff;padding:8p
                 default_branch: result.data.default_branch
             };
             try { window.sessionStorage.setItem(PROJECT_ORIGIN_KEY, origin); } catch {}
-            fileBrowserPath = 'public/data';
+            fileBrowserPath = 'public';
             fileBrowserPage = 1;
             updateProjectConnectionUI();
             log({ success: true, project: selectedProjectMetadata.name, default_branch: selectedProjectMetadata.default_branch },
