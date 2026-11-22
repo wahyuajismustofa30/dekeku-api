@@ -117,3 +117,12 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - Checks: `npm ci`, syntax checks for JS under `src/` and `test/`, explicit Development Worker name guard plus Wrangler dry-run, focused mapped `node --test` suites, and warning-only `npm audit`.
 - `npm test` and remote tests remain prohibited. Workflow run and YAML execution are NOT VERIFIED until an actual PR triggers it.
 - Next active task: CICD-006 Development credential isolation review; do not create the deployment workflow before CICD-006/007 safeguards are established.
+
+## Current Owner Update — 2026-11-22 (Supersedes stale queue statements above)
+
+- Exactly two repository branches are allowed: `main` and `dev`. Do not create additional branches. Both are synchronized at commit `1649701419f6d1b03b5f659c76f02d02b4355ad8`; `dev` was fast-forwarded without force-push.
+- Owner reports Cloudflare Workers auto-deployment from GitHub is configured and a GitHub deployment succeeded. This is owner-reported, not independently verified. Verify the Cloudflare dashboard integration, branch mapping, Worker target, deployed version and health before treating it as verified.
+- `.github/workflows/pr-validation.yml` is a PR validation workflow only; it contains no deployment step. Do not create a duplicate deployment mechanism before auditing the existing Cloudflare Git integration.
+- Next active task: documentation-only PR `dev` → `main` to trigger the existing validation workflow, then inspect actual CI results. Do not merge independently.
+- Reassess CICD-005..010 after verifying the existing Cloudflare deployment integration; preserve Development-only scope (`dekeku-api-dev`).
+- `npm test` remains NOT RUN. Remote tests remain prohibited. Production remains untouched.
