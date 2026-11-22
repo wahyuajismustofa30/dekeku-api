@@ -56,13 +56,15 @@ Periksa nama secret tanpa membaca atau mencetak nilainya:
 npx wrangler secret list
 ```
 
-Pastikan Development memiliki:
-- `GITHUB_TOKEN`
-- `JWT_SECRET`
-- `ADMIN_PASSWORD_HASH`
-- `DB_ENCRYPTION_KEY`
+Owner-run `npx wrangler secret list --name dekeku-api-dev` pada 2026-11-23 menunjukkan:
+- `GITHUB_TOKEN` — PRESENT (`secret_text`)
+- `JWT_SECRET` — PRESENT (`secret_text`)
+- `ADMIN_PASSWORD_HASH` — PRESENT (`secret_text`)
+- `DB_ENCRYPTION_KEY` — MISSING
 
-Jangan mengasumsikan secret tersedia hanya karena namanya tercantum di dokumen. Jika `DB_ENCRYPTION_KEY` belum ada, buat secret acak 32-byte base64url langsung melalui pipeline CLI, tanpa mencetak nilainya:
+Do not create a replacement key until the existence/readability of `dekeku-db/private/dashboard/projects.json` and any prior encryption-key provenance are established. GitHub connector lookup for that exact path returned HTTP 404, which is inconclusive because inaccessible private resources may also return 404. Never overwrite or rotate an encryption key used by existing ciphertext.
+
+Jangan mengasumsikan secret tersedia hanya karena namanya tercantum di dokumen. If the private encrypted metadata file is confirmed absent and the owner authorizes provisioning, create a new random 32-byte base64url Development secret via CLI without printing its value:
 
 ```bash
 node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("base64url"))' | npx wrangler secret put DB_ENCRYPTION_KEY
@@ -120,3 +122,8 @@ Untuk setiap kelompok test/verification, catat:
 - **Result**: OWNER-REPORTED PASS. Full source-to-commit association and independent reproduction NOT VERIFIED.
 
 Next: inspect full Wrangler dry-run output for target and migration; run Development-only `npx wrangler secret list` and verify required secret names without exposing values. Do not write/rotate secrets, deploy, create PR, merge, or touch Production without the applicable owner approval.
+
+
+## 9. Development secret inventory — 2026-11-23
+
+Owner-run `npx wrangler secret list --name dekeku-api-dev` output confirms `ADMIN_PASSWORD_HASH`, `GITHUB_TOKEN`, and `JWT_SECRET` are present as `secret_text`; `DB_ENCRYPTION_KEY` is missing. Exact secret values were not requested or exposed. GitHub lookup for `dekeku-db/private/dashboard/projects.json` returned 404; this is inconclusive for private-resource existence/access. Provisioning a new key is held until the encrypted metadata file and key provenance are confirmed. No secret was written or rotated.
