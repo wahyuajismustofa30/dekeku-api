@@ -48,8 +48,11 @@ export const encryptDashboardDocument = async (document, secret, path, keyId = C
   validatePath(path);
   if (keyId !== CURRENT_KEY_ID) throw new HttpError("Invalid encryption key identifier", 500);
   let plaintext;
-  try { plaintext = new TextEncoder().encode(JSON.stringify(document)); }
-  catch { throw new HttpError("Dashboard document cannot be serialized", 422); }
+  try {
+    const serialized = JSON.stringify(document);
+    if (typeof serialized !== "string") throw new Error("not serializable");
+    plaintext = new TextEncoder().encode(serialized);
+  } catch { throw new HttpError("Dashboard document cannot be serialized", 422); }
   if (plaintext.byteLength > MAX_PLAINTEXT_BYTES) throw new HttpError("Dashboard metadata exceeds the size limit", 413);
 
   const key = await getKey(secret);
