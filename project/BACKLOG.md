@@ -1,6 +1,6 @@
 # TASK BACKLOG — DEKEKU API Gateway
 
-Tanggal pembaruan: 2026-11-22
+Tanggal pembaruan: 2026-11-23
 Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `project/PROGRESS.md`.
 
 ## Batas scope
@@ -15,19 +15,19 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 - [x] **PUB-003 — Shared resolver for Admin SHA/CRUD.** Resolver bersama dipakai oleh SHA lookup dan CREATE/UPDATE/DELETE.
 - [x] **PUB-004 — Safe public repository browse.** `GET /api/v1/admin/browse`; Admin JWT, path `public/`, hidden/sensitive filtering, symlink/submodule fail-closed, pagination, truncation, metadata-only response.
 - [x] **PUB-004-FIX — Git Trees traversal and security remediation.** Focused regression suite dilaporkan 47/47 PASS; runtime Development belum diverifikasi.
-- [x] **PUB-005 — Tester File Manager implementation and focused regression.** Project Origin selector, Admin JSON reader, browse/navigation/pagination, JSON editor, CREATE/UPDATE/DELETE with fresh SHA and delete confirmation. Seven-suite command dilaporkan 66 PASS, 0 FAIL, 0 skipped (9 suites). Status ini tidak berarti browser E2E telah lulus.
-- [x] **PUB-006 — Development end-to-end verification.** Complete & Verified via live Development Worker testing. Minimal dua repository publik; verifikasi auth, project selector, browse/read/CRUD, SHA conflict, invalid Origin/wildcard, dan error handling menggunakan fixture aman. No Production writes.
+- [x] **PUB-005 — Tester File Manager implementation and focused regression.** Project Origin selector, Admin JSON reader, browse/navigation/pagination, JSON editor, CREATE/UPDATE/DELETE with fresh SHA and delete confirmation.
+- [x] **PUB-006 — Development end-to-end verification & Investigation.** **COMPLETE & VERIFIED** via live Development Worker testing (`wahyuajismustofa30/demo` fixture CRUD lifecycle with 200/409/404 evidence) and Arto Printing read-only 502 investigation (missing `config.json`). No Production writes.
 
 ## Workstream CI/CD
 
 - [x] **CICD-001 — Repository CI/CD audit.** Workflow PR validation telah diperiksa.
 - [x] **CICD-002 — Trigger boundary policy.** PR hanya validasi; target deployment yang disetujui adalah Development setelah perubahan masuk `main` melalui integrasi yang sudah ada.
 - [x] **CICD-003 — PR validation matrix.** Didefinisikan di `project/CICD_VALIDATION_CONTRACT.md`.
-- [x] **CICD-004 — PR validation workflow.** `.github/workflows/pr-validation.yml` tersedia; PR #26 telah melewati validasi setelah perbaikan CI menurut bukti audit sebelumnya.
-- [ ] **CICD-005 — Verify status reporting and required checks.** Pastikan hasil workflow tampil sebagai check yang diwajibkan sebelum PR merge; tidak perlu membuat sistem status duplikat jika GitHub sudah menyediakan check run.
-- [ ] **CICD-006 — Verify existing Cloudflare Git integration.** Periksa dashboard/konfigurasi yang sudah ada: branch pemicu, target `dekeku-api-dev`, commit/version yang terdeploy, dan health. Owner reports integration active; independent verification pending.
-- [ ] **CICD-007 — Post-merge Development deployment evidence.** Verifikasi bahwa merge ke `main` benar-benar menghasilkan deployment Development. Jangan buat workflow deployment baru sebelum CICD-006 selesai.
-- [ ] **CICD-008 — Development smoke test evidence.** Verifikasi health dan `/tester` pada deployment yang terbukti aktif; automation dapat dipertimbangkan setelah mekanisme existing diketahui.
+- [x] **CICD-004 — PR validation workflow.** `.github/workflows/pr-validation.yml` tersedia.
+- [ ] **CICD-005 — Verify status reporting and required checks.** Pastikan hasil workflow tampil sebagai check yang diwajibkan sebelum PR merge.
+- [ ] **CICD-006 — Verify existing Cloudflare Git integration.** Periksa dashboard/konfigurasi yang sudah ada.
+- [ ] **CICD-007 — Post-merge Development deployment evidence.** Verifikasi bahwa merge ke `main` menghasilkan deployment Development.
+- [ ] **CICD-008 — Development smoke test evidence.** Verifikasi health dan `/tester` pada deployment aktif.
 
 ## Aturan verifikasi
 - `npm test` dilarang dijalankan kecuali pemilik mengubah instruksi.
