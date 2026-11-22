@@ -51,3 +51,31 @@ Semua binding, migration, secret, deployment, dan runtime yang berkaitan dengan 
 
 ### ADM-008 update — 2026-11-23
 Owner reports `npm ci` completed with 0 vulnerabilities and full `npm test` passed 261/261 (44 suites, 0 skipped). This confirms automated test coverage only; exact tested commit SHA/Node version, complete Wrangler target/migration output, Development secret inventory, and live runtime remain NOT VERIFIED. No PR/merge/deployment is authorized by this test result.
+
+
+## Owner priority override — Public Data API (2026-11-23)
+
+Prioritas aktif terbaru adalah **Public Data API**. Workstream Admin Dashboard dijeda sementara; pekerjaan Dashboard yang sudah ada tetap dipertahankan.
+
+| ID | Workstream | Status |
+|---|---|---|
+| PUB-DATA-001 | API Contract | NOT STARTED |
+| PUB-DATA-002 | Resource Registry | NOT STARTED |
+| PUB-DATA-003 | Shared Storage Engine | NOT STARTED |
+| PUB-DATA-004 | Guestbook Migration | NOT STARTED |
+| PUB-DATA-005 | Legacy Compatibility | NOT STARTED |
+| PUB-DATA-006 | Security & Integration Tests | NOT STARTED |
+| PUB-DATA-007 | Documentation & Checkpoint | NOT STARTED |
+| ADM-001..ADM-008 | Centralized Admin Dashboard | PAUSED — resume only on owner instruction or after Public Data API priority is completed |
+
+Rincian dan acceptance criteria: [PUBLIC_DATA_API_PLAN.md](PUBLIC_DATA_API_PLAN.md).
+
+### Arsitektur Public Data API yang disetujui
+- Generic endpoint: `POST /api/v1/public/data/{resource}`.
+- Server-side Resource Registry dan validator khusus per resource.
+- Shared Project Origin resolver berbasis kontrak `config.json` File Manager; resolver Guestbook lama wajib dibandingkan dengan source aktual sebelum migrasi.
+- Storage path dan repository coordinates ditetapkan server-side.
+- Guestbook menjadi resource pertama; route lama `POST /api/v1/public/submit` dipertahankan sementara sebagai alias.
+- Website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
+
+Tidak ada izin deployment, perubahan Cloudflare, atau akses Production dari perubahan prioritas ini.
