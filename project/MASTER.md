@@ -102,7 +102,7 @@ Bagian ini menjadi acuan otoritas terbaru dan memperjelas/menggantikan rumusan p
 
 ## 9. Admin Dashboard — approved extension (2026-11-23)
 
-Instruksi terbaru pemilik menyetujui Dashboard Admin terpusat untuk discovery dan pengelolaan repository publik. Repository proyek tetap menjadi sumber file publik. Metadata internal dan hasil pemeriksaan terbaru disimpan pada private repository `dekeku-db` dalam bentuk AES-256-GCM authenticated encryption; tidak ada plaintext fallback.
+Instruksi terbaru pemilik menyetujui Dashboard Admin terpusat untuk discovery dan pengelolaan repository publik. Repository proyek tetap menjadi sumber file publik. Metadata internal (jenis proyek, domain, catatan) disimpan pada private repository `dekeku-db` dalam bentuk AES-256-GCM authenticated encryption; snapshot pemeriksaan terbaru per repository disimpan pada Durable Object storage tanpa histori refresh. Tidak ada plaintext fallback.
 
 Durable Object digunakan hanya untuk koordinasi refresh manual, progress, cancellation, dan retry item gagal. Dashboard berjalan melalui `/admin`; seluruh endpoint data Dashboard dilindungi Admin JWT. Binding/migration dan `DB_ENCRYPTION_KEY` hanya untuk Development Worker `dekeku-api-dev`. Production tetap di luar cakupan tanpa persetujuan eksplisit.
 
