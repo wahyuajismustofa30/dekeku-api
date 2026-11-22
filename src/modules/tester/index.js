@@ -491,7 +491,7 @@ button{border:1px solid var(--blue);background:var(--blue);color:#fff;padding:8p
             document.getElementById('fileEditorMeta').textContent = 'New file · public/data/';
             document.getElementById('newFileNameGroup').hidden = false;
             document.getElementById('newFileName').value = '';
-            document.getElementById('fileJsonEditor').value = '{\n  \n}';
+            document.getElementById('fileJsonEditor').value = '{\\n  \\n}';
             document.getElementById('deleteFileButton').hidden = true;
             document.getElementById('fileEditor').hidden = false;
             document.getElementById('newFileName').focus();
