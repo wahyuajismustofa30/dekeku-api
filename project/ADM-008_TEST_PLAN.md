@@ -7,7 +7,7 @@ Target runtime: Development Worker `dekeku-api-dev` only
 
 ## 1. Owner-directed sequence
 
-Wahyu memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan terlebih dahulu. Source dan test suite sudah disiapkan pada `dev`; pengujian belum dijalankan. Dokumen ini menjadi urutan pelaksanaan tahap akhir ADM-008.
+Wahyu memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan terlebih dahulu. Implementasi dan test suite telah disiapkan pada `dev`; pemilik telah menjalankan full `npm test` dan melaporkan 261 PASS, 0 FAIL, 0 SKIP. Dokumen ini menjadi urutan verifikasi sisa ADM-008 (Wrangler target/migration, secret inventory, dan Development runtime).
 
 Jangan membuat PR, merge ke `main`, atau melakukan deployment sebelum hasil pengujian ditinjau dan pemilik memberi instruksi.
 
