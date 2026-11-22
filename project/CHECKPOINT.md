@@ -1,3 +1,13 @@
+## Latest Technical Checkpoint — PUB-002 In Progress (2026-11-22)
+
+- Source change on `dev`: `src/modules/github/repositories.js` now validates the public repository config v1 schema (exact top-level/nested keys, version, project ID, owner and repository name).
+- Repository discovery requires a canonical HTTPS Origin that exactly matches an entry in `ALLOWED_ORIGINS`. Wildcard entries remain available for CORS but cannot select a repository.
+- GitHub repository metadata is checked for matching `full_name`, `visibility: public`, and a valid non-empty `default_branch`.
+- Regression tests updated in `test/repository-metadata.test.js`: valid schema fixture; wildcard-only Origin; unsupported/missing schema fields; invalid project ID; unknown properties; owner mismatch; invalid repo name; GitHub identity mismatch; missing default branch; private repository.
+- Tests and syntax checks have NOT RUN in this session. `npm test` remains prohibited; focused `node --test test/repository-metadata.test.js` is permitted but awaits execution in the user's local Termux/Ubuntu checkout.
+- Development runtime NOT VERIFIED. No Wrangler config, Cloudflare settings, secrets, deployment, real data, or Production resources changed.
+- PUB-002 remains IN PROGRESS pending focused test execution and review. Next after passing verification: PUB-003 Admin SHA/CRUD routing through the validated repository context.
+
 ## Latest Technical Checkpoint — PUB-001 (2026-11-22)
 
 - Owner instructed to begin work; active scope remains public repository management only.
