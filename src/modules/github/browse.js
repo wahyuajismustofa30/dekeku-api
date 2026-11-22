@@ -207,11 +207,12 @@ export const handleBrowse = async (request, env) => {
       name = itemPath.split("/").pop() || "";
     }
 
-    if (!name) continue;
+    if (!name || name.includes("/")) continue;
 
     if (name.startsWith(".")) continue;
 
     if (name.includes("\\") || /[\x00-\x1F\x7F]/.test(name)) continue;
+    if (typeof item.sha !== "string" || !/^[0-9a-f]{40}$/i.test(item.sha)) continue;
 
     const lowerName = name.toLowerCase();
     if (SENSITIVE_FILENAMES.has(lowerName)) continue;
