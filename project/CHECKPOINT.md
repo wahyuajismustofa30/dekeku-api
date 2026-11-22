@@ -16,6 +16,6 @@
 - Commits created on `dev`: `beced37` (browse now traverses actual Git Trees API), `6a2afe8` (integration-style Git Trees tests), `661a916` (encode branch names in branch metadata lookup).
 - `handleBrowse()` now gets branch root tree SHA via GitHub Branches API, traverses each validated directory segment using non-recursive Git Trees requests, and uses actual Git `mode` / `type` metadata to filter children. Missing mode is rejected. Upstream truncation is propagated.
 - Added `test/browse-git-tree.test.js` to verify the real Git Trees request path, symlink/submodule rejection, and truncation.
-- IMPORTANT: NOT VERIFIED. No test command was executed. Existing `test/browse-router.test.js` still has Contents-only mocks and needs migration to the new branch/tree request flow; previous 54/54 test evidence predates this code change and cannot be carried forward.
+- IMPORTANT: NOT VERIFIED. No test command was executed. `test/browse-router.test.js` has now been migrated to branch/tree fixtures. Previous 54/54 test evidence predates this code change and cannot be carried forward; the migrated suite still needs to be run.
 - Next: update legacy browse test fixtures, run focused tests locally (`node --test` only; never `npm test`), inspect diff, and update this checkpoint with actual results. PUB-005 must not start before PUB-004-FIX is accepted.
 - No deployment, Cloudflare settings, secrets, Production Worker/domain, or Production data changed.
