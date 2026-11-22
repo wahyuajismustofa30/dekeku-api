@@ -39,3 +39,18 @@
 - Public Data API PUB-DATA-001..007 is now the active priority.
 - Admin Dashboard ADM-001..ADM-008 is paused temporarily; existing implementation and records are preserved.
 - Planning/documentation only. No Public Data API implementation, tests, PR, merge, deployment, Cloudflare configuration, or Production changes are claimed.
+
+
+## 2026-11-23 — Public Data API implementation on dev
+
+### Added
+- Server-side Public Resource Registry and Guestbook payload validator.
+- Shared public storage engine with bounded UTF-8/JSON body parsing, Project Origin resolver, public repository validation, fixed storage path, SHA concurrency, and bounded retry.
+- Generic route `POST /api/v1/public/data/{resource}`.
+- Legacy `POST /api/v1/public/submit` now delegates to the same Guestbook handler.
+- Updated Public Data API, Usage, and Guestbook integration documentation.
+
+### Validation boundary
+- Updated focused Guestbook/Public Data API test cases; **NOT RUN** in this GitHub-only phase.
+- Syntax/build, full local test suite, Wrangler dry-run, and runtime are NOT VERIFIED for these changes.
+- Next required step: local Termux validation. No PR, merge, deployment, Cloudflare configuration/secret change, or Production access.
