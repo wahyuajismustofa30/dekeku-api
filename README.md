@@ -6,18 +6,18 @@ Cloudflare Workers-based API gateway for securely managing public project data s
 
 DEKEKU API Gateway adalah layanan backend untuk website/app. Fokus pengembangan saat ini adalah pengelolaan file publik pada repository masing-masing proyek. Website membaca data publik langsung dari GitHub Raw/CDN; operasi administratif diarahkan melalui Gateway.
 
-Layanan saat ini masih memiliki konfigurasi repository tetap pada Worker; pemetaan dinamis ke beberapa repository publik sedang menjadi pekerjaan berikutnya.
+Public Data API kini menggunakan Project Origin dan kontrak schema-v1 `config.json` untuk menentukan repository proyek secara server-side. Client tidak dapat menentukan owner, repository, branch, atau storage path secara arbitrer.
 
 Fitur yang tersedia:
 - **Membaca** data JSON di direktori `public/` - Gratis (no API key).
 - **Menulis** data JSON di direktori `public/data/` - Wajib login admin (JWT).
-- **Mengirim** guestbook publik via `POST /api/v1/public/submit` - Tanpa auth admin, concurrent-safe.
+- **Mengirim** data publik melalui `POST /api/v1/public/data/{resource}` (resource pertama: `guestbook`), tanpa JWT admin.
 - **Mengelola** file melalui GitHub Contents API pada repository yang dikonfigurasi.
 
 ## Fitur
 
 - ✅ Public read access: GET data tanpa authenticated request.
-- ✅ Public guestbook submission: POST pesan guestbook publik ke `public/data/guestbook/`.
+- ✅ Public Data API: Guestbook disimpan sebagai array JSON pada `assets/data/bukutamu.json` di repository publik proyek yang tervalidasi.
 - ✅ Admin write access: POST/PUT/DELETE data via JWT auth.
 - ✅ GitHub integration: Operasi performed through GitHub Contents API.
 - ✅ Optimistic concurrency: SHA-based conflict control on write operations.
@@ -63,6 +63,8 @@ dekeku-api/
 │   ├── cors-policy.test.js
 │   └── live-remote.test.js     # Explicit remote test; may write Guestbook data
 ├── project/                    # Project documentation
+│   ├── EVIDENCE.md             # Verification evidence index
+│   ├── PUBLIC_DATA_API_PLAN.md # Active Public Data API plan
 │   ├── MASTER.md              # Core rules & authority
 │   ├── PROGRESS.md            # Feature status (authoritative)
 │   ├── ROADMAP.md             # Phase planning
@@ -90,7 +92,8 @@ dekeku-api/
 | GET | `/api/v1/github/repository` | Repository metadata |
 | GET | `/api/v1/github/branch` | Branch metadata |
 | GET | `/api/v1/github/file?path=...` | Read JSON file from public/ |
-| POST | `/api/v1/public/submit` | Submit public guestbook entry |
+| POST | `/api/v1/public/data/guestbook` | Submit public Guestbook entry (generic resource API) |
+| POST | `/api/v1/public/submit` | Legacy Guestbook compatibility alias |
 
 ### Admin Write (Require Admin JWT)
 
@@ -141,7 +144,7 @@ npm run build
 
 ## Testing
 
-Hasil terbaru yang dilaporkan pengguna pada 2026-11-21 untuk branch `dev`, commit `a6a089d`: `npm run check` PASS dan `npm test` 149 PASS, 0 FAIL, 0 SKIP. Hasil ini merupakan laporan pengguna, bukan verifikasi independen pada sesi dokumentasi ini. Remote test dan runtime/deployment Development tidak termasuk dalam hasil tersebut.
+Validasi Public Data API terbaru yang dilaporkan pemilik (2026-11-23): `node --test test/public-submission.test.js` menghasilkan 14 PASS, 0 FAIL; `node --check` berhasil pada 7 file sumber terkait. Ini adalah bukti lokal yang dilaporkan pemilik. SHA checkout yang diuji belum disediakan sehingga hasil belum dapat dipastikan cocok dengan HEAD `dev`/PR #29. Full test suite, remote integration, live repository write, Worker runtime, dan deployment tidak termasuk hasil ini.
 
 
 \`\`\`bash
