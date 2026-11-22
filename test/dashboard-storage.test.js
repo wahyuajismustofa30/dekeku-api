@@ -81,3 +81,19 @@ test("missing encryption key fails closed without reading plaintext", async () =
   const github = { branch: "main", async request() { throw new Error("should not be called"); } };
   await assert.rejects(() => readDashboardDocument(github, {}), /Encrypted dashboard storage is unavailable/);
 });
+
+test("plaintext legacy documents are never accepted as dashboard storage", async () => {
+  const plain = JSON.stringify({ version: 1, projects: [] });
+  const github = {
+    branch: "main",
+    async request() {
+      return {
+        type: "file",
+        sha: "d".repeat(40),
+        size: Buffer.byteLength(plain),
+        content: toBase64(plain)
+      };
+    }
+  };
+  await assert.rejects(() => readDashboardDocument(github, { DB_ENCRYPTION_KEY: KEY }), /Encrypted dashboard metadata is invalid/);
+});
