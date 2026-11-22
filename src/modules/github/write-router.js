@@ -60,10 +60,6 @@ export const handleGetFile = async (request, env) => {
  * GET current GitHub Blob SHA for an existing writable JSON file.
  * GET /api/v1/admin/write/sha?path=public/data/file.json
  */
-export const handleGetSha = async (request, env) => {/**
- * GET current GitHub Blob SHA for an existing writable JSON file.
- * GET /api/v1/admin/write/sha?path=public/data/file.json
- */
 export const handleGetSha = async (request, env) => {
   const path = new URL(request.url).searchParams.get("path");
   if (!path || typeof path !== "string") {
