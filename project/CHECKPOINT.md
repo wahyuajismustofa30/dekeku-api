@@ -62,3 +62,45 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 - **Work status:** PUB-DATA-001..007 NOT STARTED. This checkpoint records planning only, not implementation or test evidence.
 - **Resume:** start by reading AGENTS and all canonical docs, inspect actual local `dev` repository/source and specifically compare Guestbook resolver with File Manager resolver. Then begin PUB-DATA-001. Do not assume GitHub is local source of truth.
 - **Safety:** no PR, merge, deployment, Cloudflare config/secrets/variables changes, or Production access. Do not modify Admin Dashboard during this priority window.
+
+
+## Latest checkpoint — Public Data API implementation on GitHub (2026-11-23)
+
+### Branch and scope
+- Repository: `wahyuajismustofa30/dekeku-api`.
+- Target branch: `dev`.
+- Public Data API is the active owner-approved workstream.
+- Admin Dashboard ADM-001..ADM-008 remains PAUSED; preserve existing implementation and evidence.
+
+### Implemented files
+- `src/modules/public/resource-registry.js`
+- `src/modules/public/resource-validators.js`
+- `src/modules/public/storage-engine.js`
+- `src/modules/public/index.js`
+- `src/modules/public/submit.js` (legacy alias)
+- `src/core/router.js`
+- `test/public-submission.test.js`
+- `docs/PUBLIC_DATA_API.md`
+- `docs/GUESTBOOK_INTEGRATION.md`
+- `docs/USAGE.md`
+
+### Current status
+- PUB-DATA-001..005: IMPLEMENTED on GitHub.
+- PUB-DATA-006: tests authored/updated; NOT RUN.
+- PUB-DATA-007: documentation/checkpoint updated.
+- All new code is **NOT TESTED / NOT VERIFIED** until the local Termux validation gate is complete.
+- Resolver comparison: legacy Guestbook used private central users/mappings; File Manager uses `resolveProjectRepository()` with trusted HTTPS Origin, schema-v1 `config.json`, trusted owner, public repository verification, and GitHub default branch. Guestbook now uses the File Manager resolver.
+- Legacy `POST /api/v1/public/submit` delegates to the same `guestbook` registry handler.
+- Storage path remains `assets/data/bukutamu.json`; no existing data was moved or deleted.
+
+### Required Termux validation
+1. Confirm local repository path, branch `dev`, and working tree before synchronizing. Do not overwrite unknown local changes.
+2. Fetch/pull the updated `origin/dev` only after preserving any local work.
+3. Run `node --test test/public-submission.test.js`.
+4. Run syntax/build checks and the approved full local test suite; record actual exit codes and totals.
+5. Review `git diff` and confirm no unrelated files or secrets.
+6. Do not run `npm run test:remote`; it can write to active project repositories.
+7. Report test evidence and stop for owner review.
+
+### Safety
+No PR, merge, deployment, Cloudflare config/bindings/secrets/variables change, or Production access was performed or authorized. Do not proceed to these actions without explicit owner instruction.
