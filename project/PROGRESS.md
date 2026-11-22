@@ -37,14 +37,14 @@ Tanggal pembaruan: 2026-11-23 (post owner-run ADM-008 test)
 - Dokumen desain/spesifikasi dan instruksi kerja diperbarui.
 
 ## Blocker dan verifikasi
-- `DB_ENCRYPTION_KEY` pada Development: NOT VERIFIED dari sesi ini. Ketersediaan `GITHUB_TOKEN`, `JWT_SECRET`, dan `ADMIN_PASSWORD_HASH` pada Worker Development juga NOT VERIFIED dari sesi ini. Nilai secret tidak boleh disimpan di GitHub.
+- Owner-run inventory `npx wrangler secret list --name dekeku-api-dev` confirms `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` PRESENT; `DB_ENCRYPTION_KEY` MISSING. Values were not exposed. GitHub lookup for `dekeku-db/private/dashboard/projects.json` returned 404 but is inconclusive for private-resource existence/access. Do not create a replacement key until metadata-file existence and prior key provenance are established.
 - Wrangler dry-run: OWNER-REPORTED PASS (exit code 0); output menunjukkan Durable Object binding dan vars Development. Full output/target/migration belum diverifikasi independen.
 - Test suite Dashboard pada `package.json` dan PR validation mapping (`dashboard-crypto`, `dashboard-storage`, `dashboard-registry`, `dashboard-refresh`, `dashboard-router`, `dashboard-api`) telah dijalankan pemilik sebagai bagian `npm test`; hasil keseluruhan 261 PASS, 0 FAIL, 0 SKIP (OWNER-REPORTED PASS).
 - Deployment dan runtime Development: NOT VERIFIED; tidak dilakukan dari sesi ini.
 - Production: NOT TOUCHED.
 
 ## Langkah berikutnya
-Automated test suite ADM-008 lulus berdasarkan output yang dilaporkan pemilik (261/261). Langkah berikutnya: verifikasi target/migration dari full Wrangler dry-run dan inventaris nama secret Development (`npx wrangler secret list`, tanpa menampilkan nilai). Setelah bukti tersebut ditinjau, hentikan untuk review dan instruksi pemilik. Jangan buat PR, merge, menulis secret, atau deploy tanpa persetujuan yang diperlukan.
+Automated test suite ADM-008 lulus berdasarkan output yang dilaporkan pemilik (261/261). Langkah berikutnya: verifikasi target/migration dari full Wrangler dry-run sudah tetap pending; secret inventory now confirms three required secrets present and `DB_ENCRYPTION_KEY` missing. Resolve metadata/key provenance before provisioning. Runtime Development remains unverified; stop before deployment. Jangan buat PR, merge, menulis secret, atau deploy tanpa persetujuan yang diperlukan.
 
 ## Latest test evidence (2026-11-23)
 - Owner-run `npm ci`: completed; npm audit reports 0 vulnerabilities.
