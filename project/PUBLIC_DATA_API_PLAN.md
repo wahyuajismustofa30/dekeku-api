@@ -32,10 +32,10 @@ Resource pertama adalah `guestbook`. Penambahan resource berikutnya dilakukan me
 | PUB-DATA-003 — Shared Storage Engine | Bounded parsing, resolver, public repo check, fixed-path write, SHA retry | IMPLEMENTED |
 | PUB-DATA-004 — Guestbook Migration | Guestbook memakai resolver config.json dan storage engine bersama | IMPLEMENTED |
 | PUB-DATA-005 — Legacy Compatibility | Route lama menjadi alias ke handler yang sama | IMPLEMENTED |
-| PUB-DATA-006 — Security & Integration Tests | Test cases mock/fixture diperbarui untuk endpoint baru dan alias | TESTS WRITTEN — NOT RUN |
+| PUB-DATA-006 — Security & Integration Tests | Test cases mock/fixture; owner-reported Termux focused test 14/14 PASS; exact tested SHA pending confirmation | OWNER-REPORTED PASS — SHA MATCH PENDING |
 | PUB-DATA-007 — Documentation & Checkpoint | API reference, usage, integration, roadmap, progress, backlog, checkpoint, changelog diperbarui | IMPLEMENTED |
 
-**Status keseluruhan:** IMPLEMENTED ON GITHUB `dev` — AWAITING TERMUX VALIDATION. Belum ada klaim PASS/FAIL untuk test baru. Belum diverifikasi dengan Node test runner, Wrangler dry-run, atau runtime Worker.
+**Status keseluruhan:** IMPLEMENTED ON GITHUB `dev`; focused Termux test owner-reported PASS (14/14) and 7 syntax checks PASS. Exact tested local HEAD SHA unknown, so PR #29 candidate test provenance remains NOT VERIFIED until SHA match or rerun. Full suite, remote integration, live repository write, Wrangler candidate dry-run, and Worker runtime remain NOT VERIFIED.
 
 ## 4. File implementasi
 
