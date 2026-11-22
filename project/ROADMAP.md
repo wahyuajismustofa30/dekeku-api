@@ -79,3 +79,14 @@ Rincian dan acceptance criteria: [PUBLIC_DATA_API_PLAN.md](PUBLIC_DATA_API_PLAN.
 - Website membaca data langsung dari repository publik/CDN; GET API baru tidak termasuk tahap awal.
 
 Tidak ada izin deployment, perubahan Cloudflare, atau akses Production dari perubahan prioritas ini.
+
+
+## Public Data API implementation update — 2026-11-23
+
+The approved Public Data API implementation is now present on GitHub branch `dev`:
+- PUB-DATA-001..005: IMPLEMENTED.
+- PUB-DATA-006: test cases authored/updated, NOT RUN.
+- PUB-DATA-007: IMPLEMENTED (API reference, Usage, Guestbook integration, and project checkpoint docs).
+- Overall: AWAITING TERMUX VALIDATION; not yet verified.
+
+Next: validate the local `dev` checkout in Termux. Do not run remote mutative tests. No PR, merge, deployment, Cloudflare configuration/secret changes, or Production access is authorized. Admin Dashboard remains paused.
