@@ -61,7 +61,7 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 - [x] **ADM-005 — Repository inspection pipeline.** `config.json`, `CNAME`, `assets/data`, GitHub archive/visibility facts. Automated suite OWNER-REPORTED PASS (261/261 overall).
 - [x] **ADM-006 — Background refresh.** Durable Object, latest-only state, progress, cancellation, failed-only retry. Automated suite OWNER-REPORTED PASS (261/261 overall).
 - [x] **ADM-007 — Quick/bulk actions.** Three-dot actions, selection, refresh selected/all, JSON export, bulk project type. Automated suite OWNER-REPORTED PASS (261/261 overall).
-- [ ] **ADM-008 — Final verification (PARTIALLY VERIFIED).** Owner-run `npm ci` and `npm test` PASS (261/261, 0 fail, 0 skip; npm audit 0 vulnerabilities). Remaining: verify complete Wrangler target/migration output, Development secret inventory, and runtime (runtime requires separate deployment approval). Execution plan: `project/ADM-008_TEST_PLAN.md`.
+- [x] **ADM-008 — Local automated verification completed; workstream PAUSED.** Owner-reported `npm ci` and `npm test` PASS (261/261, 0 fail, 0 skip across 44 suites); Wrangler dry-run PASS; npm audit 0 vulnerabilities. Development secret/runtime verification remains incomplete (see `project/EVIDENCE.md` and `project/CHECKPOINT.md`). This does not mean Dashboard is active or approved for deployment.
 
 ### Catatan operasional (historical ADM-008 checkpoint)
 - `DB_ENCRYPTION_KEY` harus dibuat sebagai Development Worker Secret melalui Cloudflare/Wrangler; jangan pernah commit nilainya.
@@ -75,3 +75,7 @@ The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 fail
 ### PUB-DATA implementation status — 2026-11-23
 
 PUB-DATA-001..005 and PUB-DATA-007 are implemented on GitHub branch `dev`. PUB-DATA-006 focused tests are owner-reported PASS (14/14) from Termux; 7 source syntax checks also passed. Exact tested local SHA is unknown and must be matched against PR #29 head before treating that PR candidate as test-verified. Full suite, remote integration, live write, Worker runtime, and deployment remain NOT VERIFIED. PR #29 exists and remains unmerged. Admin Dashboard remains paused.
+
+
+### Status reconciliation — 2026-11-23
+ADM-008's local automated test and dry-run checks are complete according to owner-reported evidence; the Dashboard workstream as a whole remains PAUSED. Do not label it actively in progress or infer Cloudflare runtime/deployment verification. PUB-006 is complete; current Public Data API evidence and CI run #51 are recorded in `project/EVIDENCE.md`.
