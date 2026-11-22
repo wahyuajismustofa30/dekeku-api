@@ -232,7 +232,7 @@ const readLatestChecks = async env => {
   const response = await stub.fetch("https://dashboard-refresh.internal/checks");
   if (!response.ok) throw new HttpError("Latest repository checks are unavailable", 503);
   const payload = await response.json();
-  return payload && payload.success && payload.checks && typeof payload.checks === "object" ? payload.checks : {};
+  return payload && payload.success && payload.checks && typeof payload.checks === "object" && !Array.isArray(payload.checks) ? payload.checks : {};
 };
 
 export const handleDashboardRepositories = async (request, env) => {
@@ -340,22 +340,27 @@ export const handleDashboardExport = async (request, env) => {
       body.repositories.some(repo => typeof repo !== "string" || !REPO_PATTERN.test(repo))) {
     throw new HttpError("Invalid export selection", 422);
   }
-  const [repositories, stored] = await Promise.all([
+  const [repositories, stored, checks] = await Promise.all([
     discoverPublicRepositories(env),
-    readDashboardDocument(new GitHubClient(env), env)
+    readDashboardDocument(new GitHubClient(env), env),
+    readLatestChecks(env)
   ]);
   const selected = new Set(body.repositories.map(repo => repo.toLowerCase()));
   const metadata = new Map(stored.document.projects.map(project => [project.repo.toLowerCase(), project]));
-  const items = repositories.filter(repo => selected.has(repo.name.toLowerCase())).map(repo => ({
-    name: repo.name,
-    fullName: repo.fullName,
-    url: repo.url,
-    visibility: repo.visibility,
-    archived: repo.archived,
-    defaultBranch: repo.defaultBranch,
-    updatedAt: repo.updatedAt,
-    projectType: metadata.get(repo.name.toLowerCase())?.projectType || "other",
-    domain: metadata.get(repo.name.toLowerCase())?.domain || null
-  }));
+  const items = repositories.filter(repo => selected.has(repo.name.toLowerCase())).map(repo => {
+    const project = metadata.get(repo.name.toLowerCase());
+    const check = checks[repo.fullName.toLowerCase()];
+    return {
+      name: repo.name,
+      fullName: repo.fullName,
+      url: repo.url,
+      visibility: repo.visibility,
+      archived: repo.archived,
+      defaultBranch: repo.defaultBranch,
+      updatedAt: repo.updatedAt,
+      projectType: project?.projectType || "other",
+      domain: project?.domain || check?.cname?.domain || null
+    };
+  });
   return success({ items, exportedAt: now() }, 200, { "Cache-Control": "no-store" });
 };
