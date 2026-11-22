@@ -100,6 +100,12 @@ No live project repository data was written or deleted by this GitHub source/doc
 - **Test mapping note:** CI reported four Public Data API source files without individual test mapping; the changed focused test file `test/public-submission.test.js` was run. Do not infer per-file coverage beyond the actual workflow output.
 
 ## 7. Current branch / CI provenance reconciliation — 2026-11-23
+### Subsequent documentation-only validation — run #79 and final correction
+
+- **Run #79:** ID `45082860459`, SUCCESS on commit `f951f1a257584bf7b61061e60ea625f3e2e60d07`; all returned PR Validation steps completed successfully.
+- **Final documentation correction:** commit `86bd6807d743067558f2621172bfa9675df3e951` updates only `project/PROGRESS.md` status wording. The PR-triggered workflow query returned no run for this exact final SHA at check time; combined commit status returned no statuses.
+- Therefore run #79 validates the preceding documentation state, not the final `86bd680` commit. No application source or test code changed in the final correction.
+
 
 ### Documentation repair CI — run #74 (2026-11-23)
 
