@@ -11,7 +11,7 @@
 - PUB-001 through PUB-006: COMPLETE & VERIFIED (historical evidence in `project/EVIDENCE.md`).
 - CICD-001 through CICD-008: COMPLETE (owner-confirmed status).
 - ADM-001 through ADM-007: source/config implementation present on `dev`; all are IMPLEMENTED — NOT TESTED.
-- ADM-008: pending final security review, tests, Wrangler validation, Development secret/runtime verification, and evidence.
+- ADM-008: READY TO EXECUTE but NOT RUN; full procedure is in `project/ADM-008_TEST_PLAN.md`.
 - Owner explicitly instructed: finish all implementation first; run tests only after ADM-001..ADM-007 are complete.
 
 ### Dashboard files added/changed
