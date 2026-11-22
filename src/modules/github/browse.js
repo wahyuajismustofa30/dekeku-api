@@ -159,7 +159,9 @@ export const handleBrowse = async (request, env) => {
   for (const item of rawItems) {
     if (!item || typeof item !== "object") continue;
 
-    const mode = typeof item.mode === "string" ? item.mode : "";\n    // Git Trees metadata is mandatory: fail closed for entries without a known mode.\n    if (!mode) continue;
+    const mode = typeof item.mode === "string" ? item.mode : "";
+    // Git Trees metadata is mandatory: fail closed for entries without a known mode.
+    if (!mode) continue;
     if (mode === "120000" || mode === "160000") {
       continue;
     }
