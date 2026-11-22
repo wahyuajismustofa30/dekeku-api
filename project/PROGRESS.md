@@ -19,12 +19,12 @@ Tanggal pembaruan: 2026-11-23
 | PUB-001 s.d. PUB-006 | COMPLETE & VERIFIED | Kontrak, trusted Origin, resolver, browse, file manager, dan E2E CRUD historis. |
 | CICD-001 s.d. CICD-008 | COMPLETE (Owner Confirmed) | Validasi PR dan integrasi/deployment Development berdasarkan catatan pemilik. |
 | ADM-001 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Durable Object coordinator, AES-256-GCM utility, encrypted metadata adapter, Development binding/migration. Test round-trip dan enkripsi lulus. |
-| ADM-002 | IMPLEMENTED & VERIFIED (Local) | Paginated discovery repository publik berdasarkan configured owner. Test discovery lulus. |
-| ADM-003 | IMPLEMENTED & VERIFIED (Local) | Metadata read/write/upsert dan bulk update pada `dekeku-db`, encrypted at rest. Test storage lulus. |
-| ADM-004 | IMPLEMENTED & VERIFIED (Local) | UI `/admin`, login Admin, tabel/kartu, search, filter, detail, navigasi. Test router/API lulus. |
-| ADM-005 | IMPLEMENTED & VERIFIED (Local) | Pemeriksaan config.json, CNAME, assets/data dan status repository. Test inspection lulus. |
-| ADM-006 | IMPLEMENTED & VERIFIED (Local) | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. Test refresh lulus. |
-| ADM-007 | IMPLEMENTED & VERIFIED (Local) | Quick actions, checkbox, bulk refresh, export, bulk project-type update. Test API/router lulus. |
+| ADM-002 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Paginated discovery repository publik berdasarkan configured owner. Test discovery lulus. |
+| ADM-003 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Metadata read/write/upsert dan bulk update pada `dekeku-db`, encrypted at rest. Test storage lulus. |
+| ADM-004 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | UI `/admin`, login Admin, tabel/kartu, search, filter, detail, navigasi. Test router/API lulus. |
+| ADM-005 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Pemeriksaan config.json, CNAME, assets/data dan status repository. Test inspection lulus. |
+| ADM-006 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. Test refresh lulus. |
+| ADM-007 | IMPLEMENTED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Quick actions, checkbox, bulk refresh, export, bulk project-type update. Test API/router lulus. |
 | ADM-008 | COMPLETED — OWNER-REPORTED LOCAL TEST PASS; PAUSED | Test suite lokal `npm test` (261 PASS, 0 FAIL) dan Wrangler dry-run berhasil. Deployment remote / secret list Cloudflare: NOT RUN (per instruksi). |
 
 ## Implementasi Dashboard yang sudah diverifikasi pada branch dev
