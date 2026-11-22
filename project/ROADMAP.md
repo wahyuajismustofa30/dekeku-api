@@ -44,8 +44,8 @@ Instruksi pemilik terbaru mengaktifkan Dashboard Admin dan metadata privat `deke
 | ADM-007 | Quick actions, selection, export, bulk project type | AUTOMATED TEST SUITE PASS (OWNER-REPORTED) |
 | ADM-008 | Security review, test suite, Wrangler validation, Development runtime, evidence | AUTOMATED TESTS PASS (OWNER-REPORTED); CONFIG/SECRET/RUNTIME PENDING |
 
-### Urutan kerja dan test policy
-Pemilik memerintahkan seluruh implementasi ADM-001..ADM-007 diselesaikan dahulu; pengujian dilakukan setelah itu dalam ADM-008. Urutan tersebut telah dipenuhi dan full automated test suite dilaporkan PASS (261/261). Secret inventory dan runtime Development masih menunggu verifikasi. Jangan membuat PR, merge, atau deployment sebelum seluruh verifikasi akhir dan arahan pemilik.
+### Urutan kerja dan test policy (historical Admin Dashboard instruction)
+Historical instruction for the Admin Dashboard checkpoint: the owner required ADM-001..ADM-007 implementation before ADM-008 testing. Urutan tersebut telah dipenuhi dan full automated test suite dilaporkan PASS (261/261). Secret inventory dan runtime Development masih menunggu verifikasi. That instruction applied to the Dashboard phase at that time; Public Data API PR #29 has since been opened. Merge and deployment still require explicit owner approval.
 
 Semua binding, migration, secret, deployment, dan runtime yang berkaitan dengan Dashboard hanya untuk Development Worker `dekeku-api-dev`. Production tetap dilarang disentuh.
 
