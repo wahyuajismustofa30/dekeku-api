@@ -77,6 +77,7 @@ dekeku-api/
 │   ├── architecture.md        # Architecture documentation
 │   ├── PUBLIC_DATA_API.md     # Public Data API reference
 │   ├── GUESTBOOK_INTEGRATION.md # Guestbook integration guide
+│   ├── guestbook-storage.md     # Current Guestbook storage contract and legacy path note
 │   └── USAGE.md               # Usage guide
 ├── package.json               # Dependencies & scripts
 ├── wrangler.jsonc             # Cloudflare Workers config
@@ -194,6 +195,7 @@ For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) a
 - **Recommendations**: [project/RECOMMENDATIONS.md](project/RECOMMENDATIONS.md)
 - **Public Data API Reference**: [docs/PUBLIC_DATA_API.md](docs/PUBLIC_DATA_API.md)
 - **Guestbook Integration**: [docs/GUESTBOOK_INTEGRATION.md](docs/GUESTBOOK_INTEGRATION.md)
+- **Guestbook Storage Contract**: [docs/guestbook-storage.md](docs/guestbook-storage.md)
 - **Change History**: [project/CHANGELOG.md](project/CHANGELOG.md)
 
 ## License
