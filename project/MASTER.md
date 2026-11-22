@@ -100,7 +100,9 @@ Terdapat tiga pihak dalam pengembangan DEKEKU API dengan urutan otoritas berikut
 Bagian ini menjadi acuan otoritas terbaru dan memperjelas/menggantikan rumusan pembagian peran yang lebih lama pada dokumen ini.
 
 
-## 9. Admin Dashboard — approved extension (2026-11-23)
+## 9. Admin Dashboard — historical approved extension; CURRENT STATUS: PAUSED (2026-11-23)
+
+Bagian ini mencatat scope yang pernah disetujui, bukan prioritas aktif saat ini. Sesuai keputusan prioritas D-030 dan bagian 10 dokumen ini, seluruh workstream ADM-001..ADM-008 sekarang **PAUSED**. Implementasi, test, spesifikasi, dan evidence dipertahankan; jangan melanjutkan Dashboard sampai pemilik menginstruksikan reaktivasi.
 
 Instruksi terbaru pemilik menyetujui Dashboard Admin terpusat untuk discovery dan pengelolaan repository publik. Repository proyek tetap menjadi sumber file publik. Metadata internal (jenis proyek, domain, catatan) disimpan pada private repository `dekeku-db` dalam bentuk AES-256-GCM authenticated encryption; snapshot pemeriksaan terbaru per repository disimpan pada Durable Object storage tanpa histori refresh. Tidak ada plaintext fallback.
 
