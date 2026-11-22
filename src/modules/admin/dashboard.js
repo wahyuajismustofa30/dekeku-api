@@ -66,18 +66,23 @@ export const discoverPublicRepositories = async env => {
     if (!Array.isArray(batch)) throw new HttpError("GitHub repository listing is invalid", 502);
     for (const item of batch) {
       if (item.owner?.login?.toLowerCase() !== owner.toLowerCase() || item.private !== false) continue;
-      if (typeof item.name !== "string" || !REPO_PATTERN.test(item.name) ||
-          typeof item.default_branch !== "string" || !item.default_branch) continue;
+      if (typeof item.name !== "string" || !REPO_PATTERN.test(item.name)) continue;
+      const expectedFullName = `${owner}/${item.name}`;
+      if (typeof item.full_name !== "string" || item.full_name.toLowerCase() !== expectedFullName.toLowerCase()) continue;
+      if (typeof item.default_branch !== "string" || !item.default_branch ||
+          item.default_branch.length > 255 || /[\\x00-\\x1f\\x7f]/.test(item.default_branch)) continue;
+      const updatedAt = typeof item.updated_at === "string" && Number.isFinite(Date.parse(item.updated_at))
+        ? item.updated_at : null;
       repositories.push({
         id: item.id,
         name: item.name,
-        fullName: item.full_name,
-        owner: item.owner.login,
-        url: item.html_url,
-        visibility: item.visibility || "public",
+        fullName: expectedFullName,
+        owner,
+        url: `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(item.name)}`,
+        visibility: "public",
         archived: Boolean(item.archived),
         defaultBranch: item.default_branch,
-        updatedAt: item.updated_at || null,
+        updatedAt,
         description: typeof item.description === "string" ? item.description.slice(0, 500) : null
       });
     }
