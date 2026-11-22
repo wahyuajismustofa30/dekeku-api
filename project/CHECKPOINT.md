@@ -97,7 +97,7 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 1. Confirm local repository path, branch `dev`, and working tree before synchronizing. Do not overwrite unknown local changes.
 2. Fetch/pull the updated `origin/dev` only after preserving any local work.
 3. Run `node --test test/public-submission.test.js`.
-4. Run syntax/build checks and the approved full local test suite; record actual exit codes and totals.
+4. Run `node --test test/public-submission.test.js` and `node --check` on changed source files; record actual exit codes and output. `docs/USAGE.md` records the owner's restriction on `npm test`; do not run it without renewed approval.
 5. Review `git diff` and confirm no unrelated files or secrets.
 6. Do not run `npm run test:remote`; it can write to active project repositories.
 7. Report test evidence and stop for owner review.
