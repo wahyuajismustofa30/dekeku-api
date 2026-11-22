@@ -16,7 +16,7 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 - [x] **PUB-004 — Safe public repository browse.** `GET /api/v1/admin/browse`; Admin JWT, path `public/`, hidden/sensitive filtering, symlink/submodule fail-closed, pagination, truncation, metadata-only response.
 - [x] **PUB-004-FIX — Git Trees traversal and security remediation.** Focused regression suite dilaporkan 47/47 PASS; runtime Development belum diverifikasi.
 - [x] **PUB-005 — Tester File Manager implementation and focused regression.** Project Origin selector, Admin JSON reader, browse/navigation/pagination, JSON editor, CREATE/UPDATE/DELETE with fresh SHA and delete confirmation. Seven-suite command dilaporkan 66 PASS, 0 FAIL, 0 skipped (9 suites). Status ini tidak berarti browser E2E telah lulus.
-- [ ] **PUB-006 — Development end-to-end verification (ACTIVE NEXT).** Minimal dua repository publik; verifikasi auth, project selector, browse/read/CRUD, SHA conflict, invalid Origin/wildcard, dan error handling menggunakan fixture aman. No Production writes.
+- [x] **PUB-006 — Development end-to-end verification.** Complete & Verified via live Development Worker testing. Minimal dua repository publik; verifikasi auth, project selector, browse/read/CRUD, SHA conflict, invalid Origin/wildcard, dan error handling menggunakan fixture aman. No Production writes.
 
 ## Workstream CI/CD
 
