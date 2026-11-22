@@ -43,9 +43,10 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 
 Current owner-approved focus: public data management in each project's own public GitHub repository. Private repository setup and RBAC expansion are archived (A-003).
 
-1. [ ] **PUB-001 — Define public project repository contract.** Specify config.json fields, trusted Origin resolution, owner restrictions, and branch selection.
-2. [ ] **PUB-002 — Resolve and validate the target public repository server-side.** Confirm repository identity, visibility, and default branch; reject client-supplied arbitrary coordinates.
-3. [ ] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** All operations for one request must use the same validated repository context.
+1. [x] **PUB-001 — Define public project repository contract.** SPEC COMPLETE: `project/PUBLIC_REPOSITORY_CONTRACT.md` + `docs/schemas/public-repository-config.schema.json`; runtime enforcement is not included.
+2. [ ] **PUB-002 — Enforce config schema and trusted Origin mapping server-side.** Reject unsupported schema, untrusted/wildcard-only Origin mappings, owner mismatch, and non-public repositories.
+3. [ ] **PUB-003 — Resolve target public repository and route Admin SHA/CREATE/UPDATE/DELETE to it.** All operations for one request must use the same validated repository context and GitHub-reported default branch.
+
 4. [ ] **PUB-004 — Implement safe public repository browsing.** Directory/file listing, path allowlist, pagination, bounded responses, and error mapping.
 5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.
 6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.
