@@ -184,3 +184,8 @@ Authorization: Bearer <JWT_TOKEN>
 
 - **CORS**: Gateway menerapkan pembatasan origin ketat berdasarkan variabel lingkungan `ALLOWED_ORIGINS`, mendukung domain eksak serta wildcard subdomain (`*.dekeku.my.id`, `*.artoprintingpbg.com`).
 - **Secret Protection**: Token (`GITHUB_TOKEN`), kunci JWT (`JWT_SECRET`), dan hash password (`ADMIN_PASSWORD_HASH`) disimpan sebagai rahasia Cloudflare Worker dan tidak pernah diekspos dalam respons error maupun log.
+
+
+## Latest Public Data API verification (2026-11-23)
+
+Owner-reported local Termux validation: `node --test test/public-submission.test.js` passed 14/14 tests; `node --check` passed for all 7 changed source files. The exact local tested HEAD SHA was not supplied, so this result is not conclusively tied to the current GitHub `dev` / PR #29 head. It does not establish full-suite status, remote integration, a live repository write, Worker runtime success, or deployment. Do not run `npm run test:remote` without explicit approval because it may write to active project data.
