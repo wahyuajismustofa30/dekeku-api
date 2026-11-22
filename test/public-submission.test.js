@@ -266,10 +266,7 @@ describe("Public Data API and Guestbook legacy alias", () => {
       }
       if (target.includes("/contents/assets/data/bukutamu.json?ref=main")) {
         if (options.method === "GET") {
-          return githubResponse(200, {
-            type: "file", size: 2, content: btoa(JSON.stringify({ not: "an array" })),
-            sha: "f".repeat(40)
-          });
+          return githubResponse(200, fileResponse({ not: "an array" }, "f".repeat(40)));
         }
         writes += 1;
       }
