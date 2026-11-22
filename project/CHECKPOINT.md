@@ -76,6 +76,7 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 - `src/modules/public/resource-registry.js`
 - `src/modules/public/resource-validators.js`
 - `src/modules/public/storage-engine.js`
+- `src/modules/github/repositories.js` (Public Data API forces actual request Origin; File Manager selector header remains separate)
 - `src/modules/public/index.js`
 - `src/modules/public/submit.js` (legacy alias)
 - `src/core/router.js`
@@ -86,7 +87,7 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 
 ### Current status
 - PUB-DATA-001..005: IMPLEMENTED on GitHub.
-- PUB-DATA-006: tests authored/updated; NOT RUN.
+- PUB-DATA-006: 14 focused mock/fixture test cases authored/updated; NOT RUN.
 - PUB-DATA-007: documentation/checkpoint updated.
 - All new code is **NOT TESTED / NOT VERIFIED** until the local Termux validation gate is complete.
 - Resolver comparison: legacy Guestbook used private central users/mappings; File Manager uses `resolveProjectRepository()` with trusted HTTPS Origin, schema-v1 `config.json`, trusted owner, public repository verification, and GitHub default branch. Guestbook now uses the File Manager resolver.
