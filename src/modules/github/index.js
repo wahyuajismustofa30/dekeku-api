@@ -1,6 +1,6 @@
 import { getRepositoryMetadata, getBranchMetadata } from "./repositories.js";
 import { getFileContent } from "./files.js";
-import { handleCreate, handleUpdate, handleDelete, handleGetSha } from "./write-router.js";
+import { handleCreate, handleUpdate, handleDelete, handleGetSha, handleGetFile } from "./write-router.js";
 import { error } from "../../utils/response.js";
 
 export const githubRouter = async (request, env) => {
@@ -10,6 +10,7 @@ export const githubRouter = async (request, env) => {
   // GET endpoints: public routes plus admin routes protected by the outer auth middleware
   if (method === "GET") {
     if (pathname === "/api/v1/admin/write/sha") return handleGetSha(request, env);
+    if (pathname === "/api/v1/admin/write/file") return handleGetFile(request, env);
     if (pathname === "/api/v1/github/repository") return getRepositoryMetadata(request, env);
     if (pathname === "/api/v1/github/branch") return getBranchMetadata(request, env);
     if (pathname === "/api/v1/github/file") return getFileContent(request, env);
