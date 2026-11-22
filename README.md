@@ -172,6 +172,8 @@ For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) a
 
 ## Operational Checkout
 
+- **Current review state (2026-11-23):** PR #29 (`dev` → `main`) is OPEN and unmerged. The owner-reported focused 14/14 test result has no supplied local tested SHA, so it is not yet proven against the current PR head. Do not treat this as full-suite, remote, live-write, runtime, or deployment verification.
+
 - Branch kesesuaian: `dev`
 - Jalur integrasi: Pull Request `dev` → `main`
 - Development Worker: `dekeku-api-dev` (deploy via Wrangler)
@@ -193,13 +195,6 @@ For detailed workflow and policies, see [project/MASTER.md](project/MASTER.md) a
 - **Public Data API Reference**: [docs/PUBLIC_DATA_API.md](docs/PUBLIC_DATA_API.md)
 - **Guestbook Integration**: [docs/GUESTBOOK_INTEGRATION.md](docs/GUESTBOOK_INTEGRATION.md)
 - **Change History**: [project/CHANGELOG.md](project/CHANGELOG.md)
-- **Backlog**: [project/BACKLOG.md](project/BACKLOG.md)
-- **Checkpoint**: [project/CHECKPOINT.md](project/CHECKPOINT.md)
-- **Evidence**: [project/EVIDENCE.md](project/EVIDENCE.md)
-- **Public Data API Plan**: [project/PUBLIC_DATA_API_PLAN.md](project/PUBLIC_DATA_API_PLAN.md)
-- **Recommendations**: [project/RECOMMENDATIONS.md](project/RECOMMENDATIONS.md)
-- **Public Data API Reference**: [docs/PUBLIC_DATA_API.md](docs/PUBLIC_DATA_API.md)
-- **Guestbook Integration**: [docs/GUESTBOOK_INTEGRATION.md](docs/GUESTBOOK_INTEGRATION.md)
 
 ## License
 
