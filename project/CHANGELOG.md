@@ -1,4 +1,14 @@
-## [Unreleased] — PUB-003 Admin Public Repository Routing (2026-11-22)\n### Changed\n- Added shared `resolveProjectRepository(request, env)` to validate the requesting Origin's project config, GitHub repository identity/public visibility, and authoritative default branch.\n- Routed authenticated Admin SHA lookup and CREATE/UPDATE/DELETE handlers through the shared resolver; all file operations use the selected repository and GitHub-reported default branch instead of static Worker repository/branch bindings.\n- Updated `test/write-router.test.js` fixtures and assertions for the discovery flow and GitHub-reported `data-release` branch.\n### Verification / Scope\n- PUB-002 owner-reported verification: syntax checks PASS; metadata tests 12 PASS, 0 FAIL, 0 SKIP.\n- PUB-003 syntax checks and focused tests: NOT RUN. Development runtime: NOT VERIFIED.\n- No real project data, Worker deployment, Wrangler/Cloudflare settings, secrets, or Production resources changed.\n\n## [Unreleased] — PUB-002 Public Repository Validation (2026-11-22)
+## [Unreleased] — PUB-003 Admin Public Repository Routing (2026-11-22)
+### Changed
+- Added shared `resolveProjectRepository(request, env)` to validate the requesting Origin's project config, GitHub repository identity/public visibility, and authoritative default branch.
+- Routed authenticated Admin SHA lookup and CREATE/UPDATE/DELETE handlers through the shared resolver; all file operations use the selected repository and GitHub-reported default branch instead of static Worker repository/branch bindings.
+- Updated `test/write-router.test.js` fixtures and assertions for the discovery flow and GitHub-reported `data-release` branch.
+### Verification / Scope
+- PUB-002 owner-reported verification: syntax checks PASS; metadata tests 12 PASS, 0 FAIL, 0 SKIP.
+- PUB-003 syntax checks and focused tests: NOT RUN. Development runtime: NOT VERIFIED.
+- No real project data, Worker deployment, Wrangler/Cloudflare settings, secrets, or Production resources changed.
+
+## [Unreleased] — PUB-002 Public Repository Validation (2026-11-22)
 ### Changed
 - Enforced schema-v1 config shape in `src/modules/github/repositories.js`: exact keys, supported version, project ID, repository owner/name, control-character rejection, and dot-segment repository-name rejection.
 - Restricted repository discovery to exact canonical HTTPS origins explicitly listed in `ALLOWED_ORIGINS`; wildcard CORS entries no longer establish repository trust.
