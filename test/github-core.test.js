@@ -20,7 +20,11 @@ const mockFetch = (status, body, headers = {}) => {
   if (typeof body === "object" && body !== null && !body.visibility) { body.visibility = "public"; }
   return async (url) => {
     if (String(url).endsWith("/config.json")) {
-      return new Response(JSON.stringify({ repository: { username: "mock-owner", repo: "mock-repo" } }), {
+      return new Response(JSON.stringify({
+        schema_version: 1,
+        project: { id: "mock-project" },
+        repository: { username: "mock-owner", repo: "mock-repo" }
+      }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
       });
@@ -97,7 +101,7 @@ describe("DEKEKU API Gateway - Public Access Policy", () => {
   });
 
   test("Regression: Metadata endpoints remain accessible", async () => {
-    global.fetch = mockFetch(200, { full_name: "repo", name: "main", commit: { sha: "abc" } });
+    global.fetch = mockFetch(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", default_branch: "main", visibility: "public", commit: { sha: "abc" } });
 
     const repoRes = await worker.fetch(new Request("http://api/api/v1/github/repository", { headers: { Origin: "https://dekeku.my.id" } }), env);
     assert.strictEqual(repoRes.status, 200);
