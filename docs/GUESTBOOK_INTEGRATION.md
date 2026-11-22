@@ -164,3 +164,8 @@ HTTP `201 Created`:
 - Jangan menampilkan input pengguna sebagai HTML mentah.
 - Pengujian remote terhadap Worker aktif dapat menulis ke repository proyek; jangan jalankan tanpa izin dan target data yang terverifikasi.
 - Data Guestbook lama tidak dipindah atau dihapus otomatis oleh perubahan ini.
+
+
+## Verification status — 2026-11-23
+
+Owner-reported local Termux validation: `node --test test/public-submission.test.js` passed 14/14 focused tests; `node --check` passed for all 7 changed source files. The exact tested local HEAD SHA was not supplied, so this evidence is not conclusively tied to the current GitHub `dev` / PR #29 head. No remote integration test, live project repository write, Worker runtime smoke test, full-suite rerun, or deployment is claimed. PR #29 remains unmerged; production resources remain untouched.
