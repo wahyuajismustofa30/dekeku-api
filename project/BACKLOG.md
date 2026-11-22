@@ -34,10 +34,10 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 Rincian kontrak, desain, acceptance criteria, keamanan, dan batas operasional: `project/PUBLIC_DATA_API_PLAN.md`.
 
 - [x] **PUB-DATA-001 — API Contract.** IMPLEMENTED on GitHub; implementation present on dev. Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
-- [x] **PUB-DATA-002 — Resource Registry.** IMPLEMENTED on GitHub; focused Termux validation owner-reported PASS (14/14); tested SHA pending confirmation. Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
-- [x] **PUB-DATA-003 — Shared Storage Engine.** IMPLEMENTED on GitHub; Termux validation pending. Bounded body parsing, Origin enforcement, Project Origin resolver, repository validation, GitHub write, SHA concurrency, safe errors.
-- [x] **PUB-DATA-004 — Guestbook Migration.** IMPLEMENTED on GitHub; Termux validation pending. Jadikan Guestbook resource pertama dengan kompatibilitas payload dan storage berdasarkan source aktual.
-- [x] **PUB-DATA-005 — Legacy Compatibility.** IMPLEMENTED on GitHub; Termux validation pending. Pertahankan `POST /api/v1/public/submit` sebagai alias ke handler Guestbook yang sama.
+- [x] **PUB-DATA-002 — Resource Registry.** IMPLEMENTED on `dev`; covered by the owner-reported 14/14 focused suite as a whole (not a per-task test count). Tested checkout SHA was not supplied.
+- [x] **PUB-DATA-003 — Shared Storage Engine.** IMPLEMENTED on `dev`; covered by the owner-reported 14/14 focused suite as a whole. Tested checkout SHA was not supplied.
+- [x] **PUB-DATA-004 — Guestbook Migration.** IMPLEMENTED on `dev`; covered by the owner-reported 14/14 focused suite as a whole. Tested checkout SHA was not supplied.
+- [x] **PUB-DATA-005 — Legacy Compatibility.** IMPLEMENTED on `dev`; covered by the owner-reported 14/14 focused suite as a whole. Tested checkout SHA was not supplied.
 - [x] **PUB-DATA-006 — Security & Integration Tests.** OWNER-REPORTED Termux PASS: 14/14 focused tests; exact tested SHA not supplied, so PR candidate validation gate remains pending. Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
 - [x] **PUB-DATA-007 — Documentation & Checkpoint.** IMPLEMENTED on GitHub. Documentation synchronized; owner-reported focused validation recorded.
 
@@ -63,10 +63,10 @@ Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jal
 - [x] **ADM-007 — Quick/bulk actions.** Three-dot actions, selection, refresh selected/all, JSON export, bulk project type. Automated suite OWNER-REPORTED PASS (261/261 overall).
 - [ ] **ADM-008 — Final verification (PARTIALLY VERIFIED).** Owner-run `npm ci` and `npm test` PASS (261/261, 0 fail, 0 skip; npm audit 0 vulnerabilities). Remaining: verify complete Wrangler target/migration output, Development secret inventory, and runtime (runtime requires separate deployment approval). Execution plan: `project/ADM-008_TEST_PLAN.md`.
 
-### Catatan operasional
+### Catatan operasional (historical ADM-008 checkpoint)
 - `DB_ENCRYPTION_KEY` harus dibuat sebagai Development Worker Secret melalui Cloudflare/Wrangler; jangan pernah commit nilainya.
-- Automated test suite has been run by owner and reports 261/261 PASS. Wrangler dry-run was previously owner-reported PASS. Development secret inventory/runtime remain NOT VERIFIED; no deployment performed.
-- Jangan merge ke `main`, jangan membuat PR, dan jangan deploy sampai ADM-008 selesai dan pemilik memberi instruksi.
+- Automated test suite 261/261 PASS dan Wrangler dry-run adalah bukti owner-reported untuk workstream Dashboard pada checkpoint ADM-008, bukan validasi Public Data API.
+- Dashboard sekarang PAUSED. Instruksi lama untuk tidak membuat PR berlaku pada fase ADM-008 saat itu dan telah disupersede: PR #29 untuk Public Data API kini sudah ada dan OPEN. Jangan merge/deploy tanpa instruksi pemilik.
 
 ### ADM status update — 2026-11-23
 The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 failures, 0 skipped across 44 suites. `npm ci` also completed with 0 vulnerabilities. This does not close the remaining Cloudflare configuration/secret/runtime checks. Do not create PR, merge, write secrets, or deploy without the required owner approval.
