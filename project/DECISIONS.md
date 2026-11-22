@@ -102,3 +102,17 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - PR #26 is merged. Remote `main` and `dev` were compared and found identical at `c7cdd582003d7162a3842fd9ec612224fc733921`. The latest local checkout reported by the owner had not yet been confirmed synchronized.
 - `.github/workflows/pr-validation.yml` is PR validation only. Cloudflare GitHub auto-deployment is owner-reported; branch trigger, active Development Worker version, and post-merge health remain NOT VERIFIED independently.
 - This decision does not authorize Production changes, secret/variable changes, Cloudflare configuration changes, or mutative testing against real project data.
+
+
+## D-029 — Reactivation of Admin Dashboard & Deferred Final Testing (2026-11-23)
+
+- **Status:** DISETUJUI MELALUI INSTRUKSI EKSPLISIT PEMILIK.
+- Instruksi terbaru pemilik mengaktifkan kembali pengelolaan metadata privat `dekeku-db` untuk Admin Dashboard terpusat. D-027/A-003 tetap menjadi catatan historis untuk workstream RBAC/private account terdahulu, tetapi tidak melarang metadata Dashboard yang secara khusus disetujui dalam spesifikasi `ADMIN_DASHBOARD_SPEC.md`.
+- Data publik file proyek tetap berada di repository publik masing-masing proyek. Dashboard hanya menyimpan metadata internal dan hasil pemeriksaan terbaru dalam dokumen privat terenkripsi.
+- Penyimpanan Dashboard menggunakan AES-256-GCM dengan nonce acak 96-bit, authentication tag 128-bit, AAD terikat path dokumen, envelope berversi, dan fail-closed tanpa plaintext fallback.
+- Durable Object hanya digunakan untuk koordinasi refresh manual, progress, cancellation, retry item gagal, serta snapshot job terbaru; tidak ada refresh berkala atau histori job.
+- Binding/migration Durable Object dan secret `DB_ENCRYPTION_KEY` hanya disetujui untuk Development Worker `dekeku-api-dev`. Persetujuan ini tidak mencakup Production.
+- **Urutan pengujian:** pemilik memerintahkan implementasi ADM-001 sampai ADM-007 diselesaikan terlebih dahulu; seluruh unit/integration/regression tests, Wrangler validation, dan Development runtime verification dilakukan kemudian pada ADM-008.
+- Selama masa implementasi, source pada `dev` wajib ditandai `IMPLEMENTED — NOT TESTED`. Tidak boleh menyatakan VERIFIED sebelum bukti test aktual tersedia.
+- Tidak boleh membuat PR ke `main`, merge, atau deploy sebelum ADM-008 selesai dan pemilik memberi instruksi.
+- Status saat keputusan dicatat: source ADM-001..ADM-007 telah ditambahkan ke `dev`; seluruhnya NOT TESTED; secret Development dan runtime belum diverifikasi; Production tidak disentuh.
