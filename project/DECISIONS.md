@@ -91,3 +91,14 @@ Status keputusan D-016 s/d D-021: APPROVED DESIGN; implementation recorded in RB
 - Pengaturan repository privat `dekeku-db`, private account storage, repository mapping, dan perluasan RBAC dipindahkan ke arsip dan tidak menjadi antrean aktif sampai pemilik meminta reaktivasi.
 - Kode, test, dan keputusan historis terkait repository privat tidak dihapus oleh perubahan ruang lingkup ini.
 - Implementasi harus memvalidasi Origin dan identitas repository di sisi server; jangan menerima owner/repository/branch arbitrer dari klien. Production tetap di luar cakupan tanpa persetujuan eksplisit.
+
+
+## D-028 — Current Public Repository Manager Status and Verification Gate (2026-11-22)
+
+- **Status:** Ditetapkan dari instruksi pemilik dan bukti repository saat ini.
+- PUB-005 File Manager implementation and focused regression tests are complete; owner-reported seven-file test command passed 66/66 (9 suites).
+- This focused test result does not establish browser E2E or active Development Worker runtime success. PUB-006 remains the required next verification gate.
+- Project Origin trust accepts exact canonical HTTPS entries and configured wildcard subdomains. Wildcards include nested subdomains but not apex domains; Origin is never authentication.
+- PR #26 is merged. Remote `main` and `dev` were compared and found identical at `c7cdd582003d7162a3842fd9ec612224fc733921`. The latest local checkout reported by the owner had not yet been confirmed synchronized.
+- `.github/workflows/pr-validation.yml` is PR validation only. Cloudflare GitHub auto-deployment is owner-reported; branch trigger, active Development Worker version, and post-merge health remain NOT VERIFIED independently.
+- This decision does not authorize Production changes, secret/variable changes, Cloudflare configuration changes, or mutative testing against real project data.
