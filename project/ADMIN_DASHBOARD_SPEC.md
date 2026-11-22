@@ -1,7 +1,7 @@
 # Admin Dashboard & Project Registry — Implementation Specification
 
 Tanggal: 2026-11-23
-Status: APPROVED SCOPE / IMPLEMENTATION NOT STARTED
+Status: APPROVED SCOPE / IMPLEMENTATION IN PROGRESS — TESTING DEFERRED TO ADM-008
 Target branch: `dev`
 Target runtime: Development Worker `dekeku-api-dev` only
 
@@ -119,8 +119,10 @@ Pemeriksaan konfigurasi harus mengikuti kontrak repository publik yang sudah ada
 
 - Scope dari polling 57–78: RECORDED.
 - Approval Durable Object + `DB_ENCRYPTION_KEY` Development-only: RECORDED.
-- Source implementation: NOT STARTED.
-- Unit/integration tests: NOT RUN.
-- Cloudflare Development bindings/secrets: NOT VERIFIED.
+- Source implementation: PRESENT on `dev` for ADM-001 through ADM-007; NOT TESTED.
+- Unit/integration tests: DEFERRED by explicit owner instruction until all ADM-001 through ADM-007 implementation work is complete.
+- Durable Object binding/migration: PRESENT in `wrangler.jsonc` on `dev`; not validated by Wrangler.
+- `DB_ENCRYPTION_KEY` Development secret: NOT CONFIGURED / NOT VERIFIED from this session.
+- Cloudflare Development deployment/runtime: NOT VERIFIED.
 - Development deployment/runtime: NOT VERIFIED.
 - Production: NOT TOUCHED.
