@@ -26,7 +26,8 @@
 
 ### Outstanding blockers / limitations
 - Development secret `DB_ENCRYPTION_KEY` has NOT been configured or verified in this session. It must be added as a Cloudflare Worker Secret, never committed to Git.
-- Wrangler dry-run/build and all tests are NOT RUN by explicit owner instruction; defer until ADM-008.
+- Test suites for crypto, encrypted storage, discovery/inspection, refresh lifecycle, and route authorization have been added to `test/`, `npm test`, and PR validation mapping. They remain NOT RUN by explicit owner instruction; defer execution until ADM-008.
+- Wrangler dry-run/build is also NOT RUN; defer until ADM-008.
 - Development deployment/runtime NOT VERIFIED and not attempted.
 - GitHub connector commits files immediately; source checkpoints are interim and untested. No PR has been created, no merge has occurred, and no deployment has been triggered by this work.
 - Production Worker `github`, `api.dekeku.my.id`, secrets, variables, and data: NOT TOUCHED.
