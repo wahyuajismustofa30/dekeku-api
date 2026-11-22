@@ -7,7 +7,7 @@ Tanggal pembaruan: 2026-11-23 (post owner-run ADM-008 test)
 - CICD-001 s.d. CICD-008: COMPLETE (sebagian berdasarkan konfirmasi pemilik).
 - Workstream aktif terbaru: Admin Dashboard terpusat (ADM-001 s.d. ADM-008), sesuai instruksi eksplisit pemilik 2026-11-23.
 - Seluruh perubahan Dashboard hanya pada branch `dev`; Production Worker `github`, domain `api.dekeku.my.id`, secrets, variables, dan data Production tidak disentuh.
-- Pemilik memerintahkan pengujian ditunda sampai implementasi ADM-001 s.d. ADM-007 selesai. Karena itu seluruh kode Dashboard berstatus IMPLEMENTED — NOT TESTED, bukan VERIFIED.
+- Pemilik memerintahkan pengujian setelah implementasi ADM-001 s.d. ADM-007 selesai. Instruksi tersebut telah dipenuhi; full `npm test` kini OWNER-REPORTED PASS (261/261). Cloudflare secrets dan live Development runtime tetap NOT VERIFIED.
 
 ## Status workstream
 
