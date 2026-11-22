@@ -150,3 +150,15 @@ Setiap pengujian yang dijalankan wajib mencatat format berikut:
 - Owner reports Cloudflare Workers automatic deployment from GitHub has been configured and a deployment from GitHub succeeded. This is owner-reported evidence; Cloudflare dashboard settings and deployed version were not independently inspected in this audit.
 - The repository contains a PR validation workflow only. Do not confuse `.github/workflows/pr-validation.yml` with Cloudflare's separately configured Git integration/deployment. The PR workflow itself does not deploy.
 - Deployment scope remains Development only (`dekeku-api-dev`). Production Worker `github`, `api.dekeku.my.id`, Production credentials/configuration/data must remain untouched.
+
+
+## Current Repository State — Owner Update (2026-11-22)
+
+- Current active scope is PUB public-repository management. PUB-005 File Manager is implemented and its focused regression set was reported by the owner as 66 PASS, 0 FAIL, 0 skipped (9 suites). Do not describe PUB-005 as pending implementation.
+- PUB-006 Development/browser end-to-end verification is the next active task. Focused local tests do not prove Worker deployment or browser runtime.
+- PR #26 was merged. Remote `main` and `dev` were compared and found identical at merge commit `c7cdd582003d7162a3842fd9ec612224fc733921`.
+- The owner's last reported local checkout was clean on `dev` at `8e43d104`, while remote `main` was at `c7cdd58`; local synchronization was not confirmed. Before local implementation, inspect local status and refs once.
+- `.github/workflows/pr-validation.yml` validates PRs only; it does not deploy. The owner reports a separate Cloudflare GitHub auto-deployment integration. Do not build a duplicate deployment workflow until the existing integration's branch trigger, Worker target, deployed version, and health are verified.
+- Deployment target remains Development Worker `dekeku-api-dev` only. Production Worker `github`, `api.dekeku.my.id`, Production secrets, variables, and data are strictly out of scope without explicit approval.
+- Earlier domain observations (`www.dekeku.my.id/config.json` legacy schema; `www.artoprintingpbg.com/config.json` HTTP 404; demo config v1 created but domain not verified) are historical and require recheck. Do not claim current domain status without fresh evidence.
+- Keep `project/PROGRESS.md`, `ROADMAP.md`, `BACKLOG.md`, `CHECKPOINT.md`, and `EXECUTION_POLICY.md` aligned. `PROGRESS.md` is the current status authority; historical checkpoints must not override its latest section.
