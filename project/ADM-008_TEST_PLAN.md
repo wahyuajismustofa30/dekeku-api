@@ -33,7 +33,7 @@ Test Dashboard mencakup:
 - Encrypted storage, SHA concurrency, missing private repository, serta penolakan plaintext fallback.
 - Repository pagination, filter owner/public, validasi config/CNAME, dan kelengkapan assets/data.
 - Durable Object job start, concurrency guard, progress persistence, cancellation, retry hanya untuk item gagal, dan latest-check snapshot.
-- Admin JWT boundary untuk seluruh endpoint Dashboard.
+- Admin JWT boundary untuk protected Dashboard routes (list, metadata, bulk, export, dan refresh state/actions).
 - Metadata upsert, bulk project-type update, list, export, serta validasi target sebelum write.
 
 Catat hasil aktual PASS/FAIL/SKIP dan exit code. Jangan mengubah status menjadi VERIFIED bila ada test yang belum dijalankan.
