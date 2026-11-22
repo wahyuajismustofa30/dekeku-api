@@ -113,7 +113,7 @@ export const writePublicResource = async (request, env, resourceName, resource) 
 
   // Origin is a trust selector only; repository identity and branch come from
   // the validated config.json + GitHub repository metadata, never the client.
-  const { client } = await resolveProjectRepository(request, env);
+  const { client } = await resolveProjectRepository(request, env, { allowProjectOriginHeader: false });
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
     let document = resource.documentType === "array" ? [] : {};
