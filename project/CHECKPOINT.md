@@ -114,7 +114,7 @@ Continue code review and any remaining implementation gaps in ADM-001..ADM-007 o
 - PUB-DATA-001..005: IMPLEMENTED on GitHub.
 - PUB-DATA-006: 14 focused mock/fixture test cases authored/updated; NOT RUN.
 - PUB-DATA-007: documentation/checkpoint updated.
-- All new code is **NOT TESTED / NOT VERIFIED** until the local Termux validation gate is complete.
+- Historical status before owner-run Termux validation. Superseded by the opening validation update: focused test 14/14 PASS and 7 syntax checks PASS (owner-reported).
 - Resolver comparison: legacy Guestbook used private central users/mappings; File Manager uses `resolveProjectRepository()` with trusted HTTPS Origin, schema-v1 `config.json`, trusted owner, public repository verification, and GitHub default branch. Guestbook now uses the File Manager resolver.
 - Legacy `POST /api/v1/public/submit` delegates to the same `guestbook` registry handler.
 - Storage path remains `assets/data/bukutamu.json`; no existing data was moved or deleted.
