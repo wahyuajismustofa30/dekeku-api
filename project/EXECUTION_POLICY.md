@@ -1,6 +1,6 @@
 # Execution Policy & Current Work Queue
 
-Updated: 2026-11-21 (CICD-001 audit and owner-selected CI/CD track)
+Updated: 2026-11-22 (owner scope: public repository management)
 Target branch: `dev`
 Repository: `wahyuajismustofa30/dekeku-api`
 Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0018308882be2333b698f7a`
@@ -20,7 +20,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - `project/PROGRESS.md` is the single source of truth for current project status.
 - This file defines the required execution sequence and hard constraints.
 - `project/BACKLOG.md` is the detailed task checklist and must agree with PROGRESS.
-- `project/RBAC_PLAN.md` retains RBAC architecture, endpoint inventory, acceptance criteria, and implementation records; its current status must agree with PROGRESS and BACKLOG.
+- `project/RBAC_PLAN.md` is a historical reference only; private-repository/RBAC work is archived in `project/TASK_ARCHIVE.md` (A-003) and is not active.
 - Historical checkpoints and stage notes must not override the latest checkpoint.
 
 ## Mandatory execution instructions
@@ -39,21 +39,7 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - If a required dashboard, runtime, credential, or safe fixture is unavailable, record `NOT VERIFIED` with the exact blocker. Do not infer success from source code or documentation.
 - Keep implementation, syntax/static validation, automated tests, Development runtime, WAF, and CDN verification as separate evidence categories.
 
-## Ordered current work queue
-
-1. [x] Reconcile project documentation to the approved R-013 decision and owner-reported verification status.
-2. [x] R-013 source implementation and focused regression coverage are present on `dev`.
-3. [x] Owner-reported Termux verification: native `node --check` PASS for all RBAC source/test files; `node --test test/rbac-token-version.test.js` PASS (6 PASS, 0 FAIL).
-4. [x] `npm test` remains NOT RUN as explicitly instructed.
-5. [x] **CICD-001 — Read-only deployment target and Wrangler audit.** Completed against branch `dev`, HEAD `09df42e24ab911efa5ed2541f7e80ddb665c20b7`; findings recorded below and in PROGRESS.
-6. [x] **CICD-002 — Reconcile branch policy.** Documentation reviewed; development on `dev`, PR target `main`, and direct commits/pushes to `main` prohibited. No conflicting current instruction found.
-7. [ ] **CICD-003 — Define PR validation contract.** NEXT ACTIVE TASK. Define required and optional checks, without creating or running workflows.
-8. [ ] CICD-004 / CICD-006 / CICD-007 — PR validation workflow, Development-only credentials, and deployment safeguards; only after the contract and required approvals.
-9. [ ] CICD-005 — Main-to-Development deployment workflow; only after Development target and credential safeguards are verified and explicit implementation approval is obtained.
-10. [ ] CICD-008 / CICD-009 / CICD-010 — Workflow evidence, Development runtime verification, and final documentation.
-11. [DEFERRED / ARCHIVED] WAF and CDN/cache follow-ups are not active; do not resume archived items automatically. Consult `project/TASK_ARCHIVE.md` only when the owner explicitly requests or reactivates an archived item.
-
-## Baseline evidence
+## Ordered current work queue,,Current owner-approved focus: public data management in each project's own public GitHub repository. Private repository setup and RBAC expansion are archived (A-003).,,1. [ ] **PUB-001 — Define public project repository contract.** Specify config.json fields, trusted Origin resolution, owner restrictions, and branch selection.,2. [ ] **PUB-002 — Resolve and validate the target public repository server-side.** Confirm repository identity, visibility, and default branch; reject client-supplied arbitrary coordinates.,3. [ ] **PUB-003 — Route Admin SHA/CREATE/UPDATE/DELETE to the selected public repository.** All operations for one request must use the same validated repository context.,4. [ ] **PUB-004 — Implement safe public repository browsing.** Directory/file listing, path allowlist, pagination, bounded responses, and error mapping.,5. [ ] **PUB-005 — Complete the phpMyAdmin-like Tester file manager.** Project selection, folder tree, JSON table/editor, and safe CRUD interactions.,6. [ ] **PUB-006 — Verify on Development.** Test at least two public project repositories, auth boundaries, SHA conflicts, and failure paths.,,Execution remains on `dev`; PR to `main` only after stable and owner review. No Production changes, private repository setup, secrets changes, or writes to real website data without separate explicit approval.,## Baseline evidence
 
 - Target branch: `dev`; work is restricted to this branch.
 - R-013 implementation and focused regression test are present in the repository.
@@ -133,3 +119,11 @@ Baseline inspected before this documentation reconciliation: `447aecad00eee7dfb0
 - Head `dev`: `49a0b92dbe8a8530907c0c50879a07c7026a7abf`; base `main`: `1649701419f6d1b03b5f659c76f02d02b4355ad8`.
 - It contains documentation changes only. CI was expected to trigger, but workflow-runs lookup and combined commit status returned no runs/statuses; therefore CI is NOT VERIFIED.
 - Do not merge independently. Review actual CI evidence before recommending merge.
+
+
+## Owner Scope Update — 2026-11-22 (Latest)
+
+- Current focus is public repository management per project, as recorded in D-027.
+- Private repository setup, `dekeku-db` account/mapping storage, User RBAC expansion, and associated verification are archived under A-003. Do not resume automatically.
+- Existing source code and historical decision records remain intact. No code, Worker configuration, Cloudflare setting, secret, data, or deployment was changed by this scope update.
+- The current public repository implementation is not complete: repository resolution and Admin write routing still need to be aligned; see PUB-001..PUB-006.
