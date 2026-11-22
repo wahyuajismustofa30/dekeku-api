@@ -3,7 +3,7 @@
 | ID | Judul | Konteks | Keputusan |
 | :--- | :--- | :--- | :--- |
 | **D-001** | Public GET Access | Akses data untuk website statis. | Endpoint GET bersifat publik tanpa autentikasi klien. |
-| **D-002** | GitHub Privacy | Keamanan data dan file. | Repository GitHub tetap privat; akses melalui server-side token. |
+| **D-002** | GitHub Privacy (historical scope) | Perlindungan data dan kredensial. | Kredensial dan data internal harus tetap privat serta diakses server-side. Untuk data publik proyek, D-027 menetapkan repository publik masing-masing proyek sebagai storage; D-027 supersedes the blanket-private-repository assumption for public project data. |
 | **D-003** | Token Management | Penyimpanan kredensial. | GITHUB_TOKEN disimpan sebagai Cloudflare Worker Secret. |
 | **D-004** | Restricted Public Path | Pencegahan kebocoran kode/config. | Pembacaan file publik dibatasi pada direktori public/. |
 | **D-005** | Write Authorization | Operasi tulis administratif. | Operasi administratif/write engine memerlukan JWT admin; public submit memiliki validasi tersendiri. |
