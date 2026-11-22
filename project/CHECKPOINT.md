@@ -313,3 +313,23 @@ Status: R-013 source + focused verification recorded; integrated RBAC/Developmen
 - `npm test`: NOT RUN. Remote tests excluded and not run.
 - Workflow file was re-read from GitHub, but YAML/workflow execution and actual CI result are NOT VERIFIED. A PR `dev` → `main` is needed to trigger validation.
 - Next: CICD-006 Development-only credential isolation review, then CICD-007 deployment safety controls. Do not implement CICD-005 deployment workflow until both are addressed.
+
+## Latest Checkpoint — Branches Synchronized & CI/CD Audit (2026-11-22)
+
+- Repository: `wahyuajismustofa30/dekeku-api`.
+- Branch inventory: exactly `main` and `dev`; no third branch was created.
+- Before synchronization, `main` was one commit ahead of `dev` and `dev` had no unique commits. `dev` was fast-forwarded to `main` with `force=false` and expected old SHA `64fe87a2df0d3aa90e0e4c8943f5b364e98d6fc6`.
+- Synchronized commit: `1649701419f6d1b03b5f659c76f02d02b4355ad8`; GitHub comparison reported identical after the update.
+- No source-code changes, secrets, Wrangler configuration, Cloudflare settings, Worker deployment, or Production resources were changed.
+- `.github/workflows/pr-validation.yml` exists and is PR-only; it does not deploy. Workflow run for the synchronized commit was not present/returned. Actual PR validation is NOT VERIFIED until triggered.
+- Owner reports Cloudflare Workers GitHub auto-deployment is configured and a GitHub deployment succeeded. Dashboard configuration, exact trigger branch, deployed version and health were not independently verified in this audit.
+- No open PR existed before this documentation update. Next: documentation-only PR `dev` → `main`, then inspect required CI checks. Do not merge independently.
+- `npm test`: NOT RUN. Remote tests: NOT RUN. Production untouched.
+
+## PR #23 — Documentation Validation Pending (2026-11-22)
+
+- Open PR: https://github.com/wahyuajismustofa30/dekeku-api/pull/23 (`dev` → `main`).
+- Head commit: `49a0b92dbe8a8530907c0c50879a07c7026a7abf`; base commit: `1649701419f6d1b03b5f659c76f02d02b4355ad8`.
+- PR changes 8 documentation files only; no source/test files, Wrangler configuration, secrets, Cloudflare settings, deployment, or Production resources changed.
+- PR validation was expected to trigger, but workflow-runs lookup and combined commit status returned no runs/statuses at this checkpoint. CI remains NOT VERIFIED.
+- Do not merge independently. Next: inspect PR #23 check results when available; then verify Cloudflare Git deployment settings and Development version/health using authorized dashboard evidence.

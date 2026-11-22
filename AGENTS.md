@@ -141,3 +141,12 @@ Setiap pengujian yang dijalankan wajib mencatat format berikut:
 - A PR itself must not deploy. Deployment must use Development-only credentials and configuration; Production credentials, Worker `github`, domain `api.dekeku.my.id`, and Production data are out of scope.
 - The deployment workflow must prevent overlapping deployments, identify the source commit, and fail closed if the target cannot be confirmed as Development.
 - This is an approved target policy, not evidence that CI/CD has been implemented. Until the relevant tasks are completed and verified, no automatic deployment is assumed to exist.
+
+## Owner Update — Branch Synchronization and Deployment Evidence (2026-11-22)
+
+- Repository branch inventory is limited to exactly two branches: `main` and `dev`. Do not create additional long-lived or temporary branches.
+- Development changes continue on `dev`; stable changes are proposed to `main` through PR. Do not commit/push directly to `main` and do not merge PRs independently.
+- On 2026-11-22, `dev` was fast-forwarded to `main` commit `1649701419f6d1b03b5f659c76f02d02b4355ad8` using a non-force update with an expected previous SHA. No unique `dev` commits were lost.
+- Owner reports Cloudflare Workers automatic deployment from GitHub has been configured and a deployment from GitHub succeeded. This is owner-reported evidence; Cloudflare dashboard settings and deployed version were not independently inspected in this audit.
+- The repository contains a PR validation workflow only. Do not confuse `.github/workflows/pr-validation.yml` with Cloudflare's separately configured Git integration/deployment. The PR workflow itself does not deploy.
+- Deployment scope remains Development only (`dekeku-api-dev`). Production Worker `github`, `api.dekeku.my.id`, Production credentials/configuration/data must remain untouched.

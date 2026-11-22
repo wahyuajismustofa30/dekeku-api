@@ -215,3 +215,10 @@
 - Includes dependency install, full JS syntax scan, explicit Development Worker guard + Wrangler dry-run, mapped focused tests, and warning-only dependency audit.
 - Actual workflow run remains NOT VERIFIED until a PR triggers GitHub Actions. `npm test` and remote tests remain excluded.
 - Next: CICD-006 Development credentials isolation and CICD-007 deployment safeguards before CICD-005.
+
+## Current CI/CD Audit Update (2026-11-22)
+- Exactly two branches are permitted: `main` and `dev`; they are synchronized at `1649701419f6d1b03b5f659c76f02d02b4355ad8`.
+- `.github/workflows/pr-validation.yml` exists and validates PRs to `main`; it does not deploy.
+- Owner reports a separate Cloudflare Workers GitHub auto-deployment setup and a successful GitHub deployment. Independent verification of Cloudflare dashboard settings, branch mapping, Worker target, deployed version and health remains pending.
+- Next: documentation-only PR `dev` → `main` to obtain real CI evidence; then verify the existing Cloudflare integration. Do not create duplicate deployment automation until the existing setup is audited.
+- `npm test` remains NOT RUN; Production remains untouched.
