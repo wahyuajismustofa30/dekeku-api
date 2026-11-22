@@ -1,6 +1,6 @@
 ## [Unreleased] — PUB-002 Public Repository Validation (2026-11-22)
 ### Changed
-- Enforced schema-v1 config shape in `src/modules/github/repositories.js`: exact keys, supported version, project ID, repository owner/name, and control-character rejection.
+- Enforced schema-v1 config shape in `src/modules/github/repositories.js`: exact keys, supported version, project ID, repository owner/name, control-character rejection, and dot-segment repository-name rejection.
 - Restricted repository discovery to exact canonical HTTPS origins explicitly listed in `ALLOWED_ORIGINS`; wildcard CORS entries no longer establish repository trust.
 - Added upstream metadata checks for exact requested repository identity, public visibility, and a valid default branch.
 - Expanded `test/repository-metadata.test.js` with focused regression cases for schema errors, wildcard origins, owner/repository validation, GitHub identity, visibility, and default branch.
