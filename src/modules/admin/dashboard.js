@@ -156,22 +156,31 @@ export const inspectPublicRepository = async (env, repository) => {
     assetsData: { exists: false, valid: false },
     error: null
   };
-  try {
-    const config = await inspectFile(env, repository, "config.json");
-    result.config = config;
-    result.stage = "cname";
-    const cname = await inspectFile(env, repository, "CNAME");
-    result.cname = { exists: cname.exists, valid: cname.valid, domain: cname.content || null };
-    result.stage = "assets-data";
-    result.assetsData = await inspectDirectory(env, repository, "assets/data");
-    if (repository.archived) result.status = "inactive";
-    else if ((config.exists && !config.valid) || (cname.exists && !cname.valid)) result.status = "problematic";
-    return result;
-  } catch (error) {
+  const stages = [
+    ["config", () => inspectFile(env, repository, "config.json")],
+    ["cname", () => inspectFile(env, repository, "CNAME")],
+    ["assets-data", () => inspectDirectory(env, repository, "assets/data")]
+  ];
+  const outcomes = await Promise.all(stages.map(async ([stage, run]) => {
+    try { return { stage, value: await run() }; }
+    catch (error) { return { stage, error }; }
+  }));
+  const failed = outcomes.find(item => item.error);
+  if (failed) {
+    result.stage = failed.stage;
     result.status = "problematic";
-    result.error = { ...safeError(error), stage: result.stage };
+    result.error = { ...safeError(failed.error), stage: failed.stage };
     return result;
   }
+  result.config = outcomes[0].value;
+  const cname = outcomes[1].value;
+  result.cname = { exists: cname.exists, valid: cname.valid, domain: cname.content || null };
+  result.assetsData = outcomes[2].value;
+  if (repository.archived) result.status = "inactive";
+  else if ((result.config.exists && !result.config.valid) || (result.cname.exists && !result.cname.valid)) {
+    result.status = "problematic";
+  }
+  return result;
 };
 
 const parseBody = async request => {
