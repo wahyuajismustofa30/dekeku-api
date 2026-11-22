@@ -295,4 +295,21 @@ describe("Public Data API and Guestbook legacy alias", () => {
     assert.equal(nested.status, 404);
     assert.equal(calls, 0);
   });
+
+  test("public route ignores the File Manager project-origin override header", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => { calls += 1; throw new Error("unexpected fetch"); };
+    const spoofed = new Request("https://api.example.test/api/v1/public/data/guestbook", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Origin: "https://evil.example",
+        "X-DEKEKU-Project-Origin": "https://example.com"
+      },
+      body: JSON.stringify({ name: "A", message: "B" })
+    });
+    const response = await worker.fetch(spoofed, env);
+    assert.equal(response.status, 403);
+    assert.equal(calls, 0);
+  });
 });
