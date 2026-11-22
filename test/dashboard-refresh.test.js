@@ -112,3 +112,48 @@ test("retry schedules only repositories marked failed in the previous result", a
     globalThis.fetch = originalFetch;
   }
 });
+
+test("background alarm inspects one repository and persists only encrypted latest metadata", async () => {
+  const originalFetch = globalThis.fetch;
+  let writtenEnvelope = null;
+  globalThis.fetch = async (url, options = {}) => {
+    const parsed = new URL(url);
+    if (parsed.pathname === "/users/wahyuajismustofa30/repos") {
+      return response([repository("demo")]);
+    }
+    if (parsed.pathname === "/repos/wahyuajismustofa30/demo/contents/config.json" ||
+        parsed.pathname === "/repos/wahyuajismustofa30/demo/contents/CNAME" ||
+        parsed.pathname === "/repos/wahyuajismustofa30/demo/contents/assets/data") {
+      return response("{}", 404);
+    }
+    if (parsed.pathname === "/repos/wahyuajismustofa30/dekeku-db/contents/private/dashboard/projects.json" &&
+        options.method === "GET") {
+      return response("{}", 404);
+    }
+    if (parsed.pathname === "/repos/wahyuajismustofa30/dekeku-db" && options.method === "GET") {
+      return response({ full_name: "wahyuajismustofa30/dekeku-db" });
+    }
+    if (parsed.pathname === "/repos/wahyuajismustofa30/dekeku-db/contents/private/dashboard/projects.json" &&
+        options.method === "PUT") {
+      const body = JSON.parse(options.body);
+      writtenEnvelope = JSON.parse(Buffer.from(body.content, "base64").toString("utf8"));
+      return response({ content: { sha: "c".repeat(40) } });
+    }
+    return response("unexpected request", 404);
+  };
+  const state = makeState();
+  const coordinator = new DashboardRefreshCoordinator(state, env);
+  try {
+    await coordinator.fetch(new Request("https://internal/start", { method: "POST", body: "{}" }));
+    await coordinator.alarm();
+    const job = await state.storage.get("latest-job");
+    assert.equal(job.status, "completed");
+    assert.equal(job.completed, 1);
+    assert.equal(job.succeeded, 1);
+    assert.equal(job.results[0].repository, "demo");
+    assert.equal(writtenEnvelope.algorithm, "A256GCM");
+    assert.equal(JSON.stringify(writtenEnvelope).includes("demo"), false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
