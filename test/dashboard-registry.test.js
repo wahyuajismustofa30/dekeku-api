@@ -26,7 +26,7 @@ const repoRecord = (name, overrides = {}) => ({
 test("public repository discovery follows pagination and excludes private or foreign repositories", async () => {
   const originalFetch = globalThis.fetch;
   const pages = [];
-  const first = Array.from({ length: 100 }, (_, i) => repoRecord("project-" + i));
+  const first = Array.from({ length: 98 }, (_, i) => repoRecord("project-" + i));
   first.push(repoRecord("private-repo", { private: true }));
   first.push(repoRecord("foreign-repo", { owner: { login: "another-owner" }, full_name: "another-owner/foreign-repo" }));
   const second = [repoRecord("last-public"), repoRecord("archived-public", { archived: true })];
@@ -38,7 +38,7 @@ test("public repository discovery follows pagination and excludes private or for
   try {
     const result = await discoverPublicRepositories(env);
     assert.deepEqual(pages, [1, 2]);
-    assert.equal(result.length, 102);
+    assert.equal(result.length, 100);
     assert.equal(result.some(item => item.name === "private-repo"), false);
     assert.equal(result.some(item => item.name === "foreign-repo"), false);
     assert.equal(result.find(item => item.name === "archived-public").archived, true);
