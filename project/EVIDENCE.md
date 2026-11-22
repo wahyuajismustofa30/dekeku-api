@@ -50,6 +50,6 @@ Instruksi pemilik: testing ditunda sampai seluruh implementasi ADM-001..ADM-007 
 | Admin UI | `src/modules/admin/dashboard-page.js` | PRESENT — NOT TESTED |
 | Routing and DO export | `src/core/router.js`, `src/index.js` | PRESENT — NOT TESTED |
 | Development binding/migration | `wrangler.jsonc` | PRESENT — Wrangler validation NOT RUN |
-| Development encryption secret | `DB_ENCRYPTION_KEY` | NOT CONFIGURED / NOT VERIFIED from this session |
+| Development encryption secret | `DB_ENCRYPTION_KEY` | NOT VERIFIED from this session |
 
 Test files prepared: `test/dashboard-crypto.test.js`, `test/dashboard-storage.test.js`, `test/dashboard-registry.test.js`, `test/dashboard-refresh.test.js`, and `test/dashboard-router.test.js`; included in `npm test` and focused PR validation mapping. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on Development is also NOT VERIFIED from this session. No test command was run for this workstream. No test counts are claimed. Cloudflare Development deployment/runtime was not changed or verified. Production was not touched.
