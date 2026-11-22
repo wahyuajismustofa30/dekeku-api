@@ -120,7 +120,7 @@ export class DashboardRefreshCoordinator {
     );
     const timestamp = new Date().toISOString();
     if (index >= 0) {
-      projects[index] = { ...projects[index], updatedAt: timestamp, lastCheck: result };
+      projects[index] = { ...projects[index], updatedAt: timestamp, lastCheck: result, domain: projects[index].domain || result.cname?.domain || null };
     } else {
       projects.push({
         id: crypto.randomUUID().replace(/-/g, "").slice(0, 24),
