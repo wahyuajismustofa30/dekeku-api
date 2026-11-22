@@ -43,8 +43,8 @@ Tanggal pembaruan: 2026-11-23
 - Deployment Cloudflare Worker Development (`dekeku-api-dev`): NOT RUN (sengaja dilewati sesuai batasan instruksi "jangan melakukan deployment").
 - Production: NOT TOUCHED.
 
-## Langkah berikutnya
-Menunggu review pemilik dan instruksi lebih lanjut. Jangan membuat PR, merge, atau deploy tanpa instruksi eksplisit.
+## Langkah berikutnya (historical Admin Dashboard checkpoint)
+Historical Dashboard checkpoint instruction: wait for owner review. It is superseded for Public Data API by PR #29, which is already OPEN. Merge and deployment still require explicit owner approval.
 
 
 ## Owner priority update — Public Data API (2026-11-23)
