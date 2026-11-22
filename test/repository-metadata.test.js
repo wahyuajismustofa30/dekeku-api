@@ -158,6 +158,36 @@ describe("Caller repository metadata", () => {
     assert.equal(calls, 1);
   });
 
+  test("rejects GitHub metadata that does not match the requested repository", async () => {
+    globalThis.fetch = async (url) => String(url).endsWith("/config.json")
+      ? configResponse()
+      : githubResponse(200, {
+          full_name: "wahyuajismustofa30/other",
+          description: "Unexpected repository",
+          html_url: "https://github.com/wahyuajismustofa30/other",
+          default_branch: "main",
+          visibility: "public"
+        });
+
+    const response = await worker.fetch(request(), env);
+    assert.equal(response.status, 502);
+  });
+
+  test("rejects GitHub metadata without a valid default branch", async () => {
+    globalThis.fetch = async (url) => String(url).endsWith("/config.json")
+      ? configResponse()
+      : githubResponse(200, {
+          full_name: "wahyuajismustofa30/demo",
+          description: "Demo repository",
+          html_url: "https://github.com/wahyuajismustofa30/demo",
+          default_branch: "",
+          visibility: "public"
+        });
+
+    const response = await worker.fetch(request(), env);
+    assert.equal(response.status, 502);
+  });
+
   test("does not expose metadata for a private repository", async () => {
     let calls = 0;
     globalThis.fetch = async () => {
