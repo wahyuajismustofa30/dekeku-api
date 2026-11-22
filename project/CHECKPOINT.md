@@ -1,3 +1,11 @@
+## Latest Owner Scope Update — 2026-11-22
+
+- Fokus proyek sekarang adalah pengelolaan data publik di repository masing-masing proyek.
+- Tugas pengaturan repository privat `dekeku-db`, private account storage, repository mapping, dan RBAC dipindahkan ke arsip A-003. Source code dan riwayat keputusan tidak dihapus.
+- Current tasks: PUB-001 through PUB-006 in `project/BACKLOG.md`; execution order in `project/EXECUTION_POLICY.md`.
+- Belum ada implementasi kode, perubahan konfigurasi Worker/Cloudflare, penghapusan data, atau deployment sebagai bagian dari perubahan ruang lingkup ini.
+- Baseline GitHub `dev` saat perubahan dimulai: `bbd841c5636bd5fad3db0f85c0dabbd215bc3093`; `main` identik pada commit tersebut.
+
 DEKEKU GATEWAY — PROJECT CHECKPOINT
 
 Tanggal checkpoint: 2026-11-21
