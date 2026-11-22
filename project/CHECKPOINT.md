@@ -31,3 +31,17 @@
 - Owner acceptance is still pending. Do not start PUB-005 until owner explicitly accepts PUB-004-FIX and authorizes the UI task.
 - No PR, deployment, Cloudflare changes, secrets changes, or Production access/modification.
 - Next action: await owner's acceptance/direction; if accepted, proceed with PUB-005 on `dev` only.
+
+## Active Checkpoint — PUB-005 File Manager Implementation (2026-11-22)
+- Owner accepted PUB-004-FIX and explicitly authorized PUB-005.
+- Initial implementation committed directly to GitHub branch dev (no PR, no deployment).
+- Backend: resolveProjectRepository() now accepts X-DEKEKU-Project-Origin as a project selector when present, validates it using the exact existing canonical HTTPS ALLOWED_ORIGINS allowlist, rejects invalid explicit values without fallback, and retains request Origin behavior when the selector is absent.
+- Backend: GET /api/v1/admin/write/file returns parsed JSON + size + SHA after Admin JWT, public/data/*.json path validation, project resolution, and file-size/type checks.
+- UI: src/modules/tester/index.js and public/tester.html now include Project Origin connection, folder navigation, pagination, file listing, JSON editing, CREATE, UPDATE with fresh SHA, and DELETE with confirmation + fresh SHA. The UI uses textContent for repository-derived values and stores the selected Origin only in tab sessionStorage. Admin JWT remains in memory.
+- Tests added: test/project-origin-selector.test.js and test/tester-file-manager.test.js.
+- Static syntax check of extracted inline JS for both Tester copies: PASS (V8 new Function parsing). This does not replace Node test execution or Worker module syntax checks.
+- Node tests: NOT RUN. Development runtime: NOT VERIFIED. npm test remains prohibited.
+- Next: owner runs focused tests after syncing dev; expected command is:
+  node --test test/project-origin-selector.test.js test/tester-file-manager.test.js test/tester-dashboard.test.js test/repository-metadata.test.js test/browse-router.test.js test/browse-git-tree.test.js test/write-router.test.js
+- Review and fix any failures before accepting PUB-005.
+- Production, Cloudflare configuration, secrets, and deployment remain untouched.
