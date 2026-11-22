@@ -26,8 +26,9 @@
 
 ### Outstanding blockers / limitations
 - Availability of Development secret `DB_ENCRYPTION_KEY` was NOT VERIFIED in this session. Availability of `GITHUB_TOKEN`, `JWT_SECRET`, and `ADMIN_PASSWORD_HASH` on the Development Worker is also NOT VERIFIED. Add secrets only through Cloudflare Worker Secret management; never commit values to Git.
-- Test suites for crypto, encrypted storage, discovery/inspection, refresh lifecycle, route authorization, and metadata API integration have been added to `test/`, `npm test`, and PR validation mapping. They remain NOT RUN by explicit owner instruction; defer execution until ADM-008.
-- Wrangler dry-run/build is also NOT RUN; defer until ADM-008.
+- Owner-run `npm test` result: 261 total, 259 PASS, 2 FAIL (exit code 1). Both failures were test-only issues and fixes were committed as `4ffe0f9` and `eab878a`; rerun is PENDING.
+- Owner-run Wrangler dry-run reported exit code 0 and showed `DASHBOARD_REFRESH` Durable Object binding plus Development variables. This does not verify secrets or runtime.
+- Wrangler dry-run has been run by owner and reported successful; independently inspect full output/target/migration during final review.
 - Development deployment/runtime NOT VERIFIED and not attempted.
 - GitHub connector commits files immediately; source checkpoints are interim and untested. No PR has been created, no merge has occurred, and no deployment has been triggered by this work.
 - Production Worker `github`, `api.dekeku.my.id`, secrets, variables, and data: NOT TOUCHED.
