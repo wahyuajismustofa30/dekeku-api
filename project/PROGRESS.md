@@ -22,7 +22,7 @@ Tanggal pembaruan: 2026-11-23
 | ADM-005 | IMPLEMENTED — NOT TESTED | Pemeriksaan config.json, CNAME, assets/data dan status repository. |
 | ADM-006 | IMPLEMENTED — NOT TESTED | Durable Object background refresh, progress, cancel, retry gagal saja, snapshot terbaru. |
 | ADM-007 | IMPLEMENTED — NOT TESTED | Quick actions, checkbox, bulk refresh, export, bulk project-type update. |
-| ADM-008 | PENDING | Security review, seluruh regression/integration test, Wrangler validation, Development runtime verification, evidence. Mulai setelah ADM-001 s.d. ADM-007 selesai direview. |
+| ADM-008 | READY TO EXECUTE — NOT RUN | Test suite dan rencana final tersedia di `project/ADM-008_TEST_PLAN.md`. Perlu Node.js 22/Wrangler untuk menjalankan test dan dry-run; secret inventory serta runtime Development belum diverifikasi. |
 
 ## Implementasi Dashboard yang sudah masuk branch dev
 - `src/utils/dashboard-crypto.js`
