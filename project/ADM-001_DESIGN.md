@@ -1,7 +1,7 @@
 # ADM-001 — Durable Object & Encrypted Storage Design
 
 Tanggal: 2026-11-23  
-Status: TECHNICAL DESIGN RECORDED / IMPLEMENTATION NOT STARTED  
+Status: DESIGN RECORDED / SOURCE IMPLEMENTED — TESTING DEFERRED  
 Target branch: `dev`  
 Target environment: Development Worker `dekeku-api-dev` only
 
@@ -69,7 +69,7 @@ Gunakan Web Crypto API yang tersedia di Workers:
 - Tidak boleh ada fallback membaca atau menulis plaintext.
 - Jangan mengembalikan plaintext parsial jika dekripsi gagal.
 - Parsing hasil dekripsi menggunakan UTF-8 fatal dan JSON parse; dokumen hasil parse harus lolos schema validator sebelum digunakan.
-- Batasi ukuran plaintext dan ciphertext sesuai batas file yang telah disepakati (maksimal 1 MiB untuk payload plaintext; overhead envelope diperhitungkan saat mengirim ke GitHub).
+- Batasi ukuran plaintext dan ciphertext sesuai batas file yang telah disepakati (maksimal 700 KiB untuk payload plaintext agar base64 envelope dan metadata tetap muat di batas file GitHub 1 MiB).
 - Jangan memasukkan key, plaintext sensitif, ciphertext lengkap, nonce, atau detail kriptografi internal ke log aplikasi.
 - Error yang diteruskan ke UI harus generik dan disanitasi; detail diagnosis hanya boleh berupa kategori error non-rahasia.
 
@@ -144,10 +144,11 @@ ADM-001 baru dapat dinyatakan selesai jika:
 ## 8. Status saat dokumen dibuat
 
 - Repository source audit: dilakukan secara read-only pada branch `dev`.
-- Durable Object implementation: NOT FOUND / NOT STARTED.
-- Encryption utility untuk Dashboard: NOT FOUND / NOT STARTED.
-- `wrangler.jsonc` Durable Object binding/migration: NOT PRESENT.
+- Durable Object implementation: PRESENT in `src/modules/admin/refresh-coordinator.js`; NOT TESTED.
+- Encryption utility: PRESENT in `src/utils/dashboard-crypto.js`; NOT TESTED.
+- Encrypted metadata adapter: PRESENT in `src/modules/admin/dashboard-storage.js`; NOT TESTED.
+- `wrangler.jsonc` Development Durable Object binding/migration: PRESENT on `dev`; Wrangler validation deferred.
 - Development secret availability: NOT VERIFIED.
-- Automated tests: NOT RUN.
+- Automated tests: DEFERRED until all ADM-001 through ADM-007 implementations are complete, per owner instruction.
 - Cloudflare Development runtime: NOT VERIFIED.
 - Production: NOT TOUCHED.
