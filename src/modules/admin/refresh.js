@@ -26,5 +26,5 @@ export const handleDashboardRefresh = async (request, env, action) => {
   if (!response.ok || !payload?.success) {
     throw new HttpError(payload?.error || "Dashboard refresh request failed", response.status || 502);
   }
-  return success(action === "state" ? { job: payload.job } : { job: payload.job }, response.status);
+  return success({ job: payload.job }, response.status, { "Cache-Control": "no-store" });
 };
