@@ -196,7 +196,7 @@ export const handleDashboardRepositories = async (request, env) => {
       domain: project?.domain || null, notes: project?.notes || "",
       lastCheck: project?.lastCheck || null, metadataExists: Boolean(project) };
   });
-  return success({ items, total: items.length, storageSha: stored.sha });
+  return success({ items, total: items.length, storageSha: stored.sha }, 200, { "Cache-Control": "no-store" });
 };
 
 export const handleDashboardMetadata = async (request, env) => {
@@ -231,7 +231,7 @@ export const handleDashboardMetadata = async (request, env) => {
   const document = { version: 1, projects: next };
   validateDashboardDocument(document);
   const saved = await writeDashboardDocument(github, env, document, stored.sha);
-  return success({ project, sha: saved.sha });
+  return success({ project, sha: saved.sha }, 200, { "Cache-Control": "no-store" });
 };
 
 export const handleDashboardBulkType = async (request, env) => {
@@ -275,7 +275,7 @@ export const handleDashboardBulkType = async (request, env) => {
   const document = { version: 1, projects };
   validateDashboardDocument(document);
   const saved = await writeDashboardDocument(github, env, document, stored.sha);
-  return success({ updated: body.repositories.length, sha: saved.sha });
+  return success({ updated: body.repositories.length, sha: saved.sha }, 200, { "Cache-Control": "no-store" });
 };
 
 export const handleDashboardExport = async (request, env) => {
@@ -302,5 +302,5 @@ export const handleDashboardExport = async (request, env) => {
     projectType: metadata.get(repo.name.toLowerCase())?.projectType || "other",
     domain: metadata.get(repo.name.toLowerCase())?.domain || null
   }));
-  return success({ items, exportedAt: now() });
+  return success({ items, exportedAt: now() }, 200, { "Cache-Control": "no-store" });
 };
