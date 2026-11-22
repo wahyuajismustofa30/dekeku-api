@@ -44,4 +44,4 @@ Tanggal pembaruan: 2026-11-23
 - Production: NOT TOUCHED.
 
 ## Langkah berikutnya
-Selesaikan review dan implementasi sisa ADM-001..ADM-007, lengkapi dokumentasi teknis, lalu jalankan satu tahap verifikasi menyeluruh ADM-008. Jangan buat PR, merge, atau deploy sebelum tahap verifikasi dan instruksi pemilik.
+Implementasi ADM-001..ADM-007 dan test suite sudah tersedia di `dev`. Langkah berikutnya jalankan ADM-008 sesuai `project/ADM-008_TEST_PLAN.md` pada lingkungan Node.js/Wrangler; setelah itu tunggu review dan instruksi pemilik. Jangan buat PR, merge, atau deploy.
