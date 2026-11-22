@@ -25,3 +25,17 @@
 - Recorded as OWNER-REPORTED PASS; exact tested HEAD SHA and Node.js version were not included in the supplied terminal output.
 - Remaining: confirm full Wrangler dry-run target/migration output and Development secret names; runtime smoke test requires separate deployment approval.
 - No secret write/rotation, PR, merge, or deployment performed. Production untouched.
+
+
+## 2026-11-23 — Public Data API approved and prioritized (D-030)
+
+### Added
+- Approved extensible public submission pattern `POST /api/v1/public/data/{resource}`.
+- Planned server-side Resource Registry, resource-specific validators, shared Project Origin resolver, and shared storage engine.
+- Guestbook selected as first resource; legacy `POST /api/v1/public/submit` retained as a temporary alias.
+- Added `project/PUBLIC_DATA_API_PLAN.md` with seven work items and acceptance criteria.
+
+### Priority
+- Public Data API PUB-DATA-001..007 is now the active priority.
+- Admin Dashboard ADM-001..ADM-008 is paused temporarily; existing implementation and records are preserved.
+- Planning/documentation only. No Public Data API implementation, tests, PR, merge, deployment, Cloudflare configuration, or Production changes are claimed.
