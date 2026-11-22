@@ -76,7 +76,7 @@ Private-repository setup, private account storage, User repository mapping, and 
 
 **Execution order:** CICD-001 → CICD-002 → CICD-003 → CICD-004/CICD-006/CICD-007 → CICD-005 → CICD-008 → CICD-009 → CICD-010.
 
-**Current status:** CICD-001 through CICD-004 implementation COMPLETE; CICD-004 CI run NOT VERIFIED. CICD-006 is next active task, followed by CICD-007 safeguards; CICD-005 deployment workflow remains gated on those tasks. CICD-005..010 remain PLANNED / NOT STARTED. This task list does not authorize Production changes or deployment before the Development-only workflow is implemented and verified.
+**Status:** CICD-001 through CICD-004 are historical implementation records; CICD-005..010 are PLANNED / NOT STARTED and are NOT the active work queue. Public repository management PUB-001..PUB-006 now takes priority. Revisit CI/CD follow-ups only after the owner requests them or the public-repository milestone is complete. This task list does not authorize Production changes.
 
 ## Owner Update — Branch Sync & Existing Cloudflare Deployment (2026-11-22)
 
