@@ -87,7 +87,7 @@ document.getElementById("guestbook-form").addEventListener("submit", async (even
 </script>
 ```
 
-Browser mengirim header `Origin` secara otomatis. Jangan mencoba mengatur header tersebut secara manual dan jangan mengirim owner, repository, branch, atau storage path dari frontend.
+Browser mengirim header `Origin` secara otomatis. Public Data API mengabaikan `X-DEKEKU-Project-Origin` (header selector khusus File Manager). Jangan mencoba mengatur `Origin` secara manual dan jangan mengirim owner, repository, branch, atau storage path dari frontend.
 
 ## 4. Cara Worker menentukan repository
 
