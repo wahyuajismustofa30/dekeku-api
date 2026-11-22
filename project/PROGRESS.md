@@ -72,3 +72,11 @@ Tanggal Pembaruan: 2026-11-22 (PUB-004-FIX Public Repository File Browser Securi
 - Automated Node test suites and full Worker module syntax checks: NOT RUN in this session. Development runtime: NOT VERIFIED. npm test remains prohibited.
 - No PR, deployment, Cloudflare configuration, secrets, or Production resources changed.
 - Next: run focused local tests for project-origin selector, file manager, repository metadata, browse router/Git Trees, and write router. Fix any failures before marking PUB-005 verified.
+
+
+## PUB-005 — Syntax Regression Remediation (2026-11-22)
+- Owner ran the focused test command: 62 tests, 60 PASS, 2 FAIL; git diff --check PASS.
+- Both failures were the same root cause: the generated Worker-served Tester template interpreted `\n` inside a JavaScript single-quoted string, emitting literal line breaks and invalid JavaScript. The static Tester file already contained the correct escaped sequence.
+- Fixed the template source by escaping the backslashes one additional level. Expected generated inline script now retains the literal `\\n` escape, matching the static page.
+- Existing dashboard and file-manager tests both parse inline scripts with `vm.Script`; these cover this regression.
+- Fix committed on dev. Retest is pending; PUB-005 remains IN PROGRESS / NOT VERIFIED.
