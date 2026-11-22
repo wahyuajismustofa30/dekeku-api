@@ -33,15 +33,15 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 
 Rincian kontrak, desain, acceptance criteria, keamanan, dan batas operasional: `project/PUBLIC_DATA_API_PLAN.md`.
 
-- [x] **PUB-DATA-001 — API Contract.** IMPLEMENTED on GitHub; Termux validation pending. Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
+- [x] **PUB-DATA-001 — API Contract.** IMPLEMENTED on GitHub; implementation present on dev. Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
 - [x] **PUB-DATA-002 — Resource Registry.** IMPLEMENTED on GitHub; Termux validation pending. Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
 - [x] **PUB-DATA-003 — Shared Storage Engine.** IMPLEMENTED on GitHub; Termux validation pending. Bounded body parsing, Origin enforcement, Project Origin resolver, repository validation, GitHub write, SHA concurrency, safe errors.
 - [x] **PUB-DATA-004 — Guestbook Migration.** IMPLEMENTED on GitHub; Termux validation pending. Jadikan Guestbook resource pertama dengan kompatibilitas payload dan storage berdasarkan source aktual.
 - [x] **PUB-DATA-005 — Legacy Compatibility.** IMPLEMENTED on GitHub; Termux validation pending. Pertahankan `POST /api/v1/public/submit` sebagai alias ke handler Guestbook yang sama.
-- [ ] **PUB-DATA-006 — Security & Integration Tests.** Test cases updated; NOT RUN, pending Termux. Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
-- [x] **PUB-DATA-007 — Documentation & Checkpoint.** IMPLEMENTED on GitHub; Termux validation pending. Sinkronkan seluruh dokumen teknis dan bukti.
+- [ ] **PUB-DATA-006 — Security & Integration Tests.** OWNER-REPORTED Termux PASS: 14/14 focused tests; exact tested SHA not supplied. Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
+- [x] **PUB-DATA-007 — Documentation & Checkpoint.** IMPLEMENTED on GitHub. Documentation synchronized; owner-reported focused validation recorded.
 
-Semua item PUB-DATA berstatus NOT STARTED sampai implementasi/test aktual dibuktikan.
+Historical planning note from before implementation. Superseded by the current status in `project/PROGRESS.md` and the validation evidence `PUBDATA-TERMUX-02` in `project/EVIDENCE.md`.
 Tidak ada GET API publik baru pada fase awal; website membaca file langsung dari repository publik/CDN.
 
 ## Status Selanjutnya
@@ -74,4 +74,4 @@ The full automated test suite now reports OWNER-REPORTED PASS: 261 tests, 0 fail
 
 ### PUB-DATA implementation status — 2026-11-23
 
-PUB-DATA-001..005 and PUB-DATA-007 are implemented on GitHub branch `dev`. PUB-DATA-006 test cases are authored/updated but have NOT RUN. All work remains unverified until local Termux validation. Do not create a PR or deploy from this checkpoint. The Admin Dashboard remains paused.
+PUB-DATA-001..005 and PUB-DATA-007 are implemented on GitHub branch `dev`. PUB-DATA-006 focused tests are owner-reported PASS (14/14) from Termux; 7 source syntax checks also passed. Exact tested local SHA is unknown and must be matched against PR #29 head before treating that PR candidate as test-verified. Full suite, remote integration, live write, Worker runtime, and deployment remain NOT VERIFIED. PR #29 exists and remains unmerged. Admin Dashboard remains paused.
