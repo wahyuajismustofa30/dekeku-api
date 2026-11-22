@@ -1,3 +1,28 @@
+
+
+## Owner validation update — Public Data API (2026-11-23)
+
+This section supersedes the earlier Public Data API validation statements above that say the focused tests were NOT RUN.
+
+### Termux validation reported by owner
+- Command: `node --test test/public-submission.test.js`
+- Result: **14 PASS, 0 FAIL, 0 cancelled, 0 skipped, 0 todo**.
+- All 14 focused cases passed, covering generic Guestbook submission without JWT, legacy alias, append with SHA, unknown resource, Origin validation, payload/schema rejection, private repository rejection, POST-only behavior, body-size limit, config schema validation, SHA-conflict retry, malformed stored document, path traversal/nested resource rejection, and ignoring the File Manager override header on the public route.
+- `node --check` also succeeded for all 7 changed JavaScript files:
+  - `src/core/router.js`
+  - `src/modules/public/index.js`
+  - `src/modules/public/resource-registry.js`
+  - `src/modules/public/resource-validators.js`
+  - `src/modules/public/storage-engine.js`
+  - `src/modules/public/submit.js`
+  - `src/modules/github/repositories.js`
+
+### Verification limits and next step
+- This is **OWNER-REPORTED LOCAL TERMUX evidence**. The exact local `git rev-parse HEAD` was not provided, so the tested local commit cannot yet be matched conclusively to the current GitHub `dev` HEAD.
+- No remote integration test, live project repository write, Worker runtime smoke test, or deployment is claimed by this validation.
+- Before merge/release, confirm the local tested SHA and compare it with the PR #29 head; if they differ, rerun the focused tests on the exact candidate commit.
+- PR #29 remains open; no merge or deployment is authorized by this checkpoint update.
+- Production Worker/domain/config/secrets/data remain untouched.
 # CHECKPOINT — DEKEKU API Gateway
 
 ## Latest checkpoint — 2026-11-23 (Admin Dashboard implementation)
