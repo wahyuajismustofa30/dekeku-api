@@ -9,6 +9,7 @@ Before starting any task in this repository, you MUST read the following canonic
 6. `project/EVIDENCE.md` - Index of audit, testing, deployment, and verification evidence.
 7. `project/CHECKPOINT.md` - Short instructions and state to resume work.
 8. `project/CHANGELOG.md` - Historical changelog.
+9. `project/PUBLIC_DATA_API_PLAN.md` - Active Public Data API work plan and acceptance criteria.
 
 Adhere to the authority and security principles defined in `project/MASTER.md`.
 
@@ -144,3 +145,12 @@ Instruksi eksplisit terbaru Wahyu untuk workstream Admin Dashboard:
 - Jangan membuat PR ke `main`, merge, atau melakukan deployment sebelum tahap ADM-008 selesai, hasil test aktual ditinjau, dan pemilik memberi instruksi lanjutan.
 - Tetap lakukan review kode dan dokumentasi saat implementasi; “test ditunda” bukan izin mengabaikan validasi input, keamanan, atau konsistensi desain.
 - Secret `DB_ENCRYPTION_KEY` dan seluruh binding/migration Dashboard hanya untuk Development. Jika tindakan memerlukan akses Cloudflare yang tidak tersedia, catat sebagai BLOCKED / NOT VERIFIED dan jangan mengarang hasil.
+
+
+## OWNER PRIORITY OVERRIDE — PUBLIC DATA API (2026-11-23)
+
+Wahyu's latest explicit instruction prioritizes Public Data API PUB-DATA-001..007 and pauses Admin Dashboard ADM-001..ADM-008. This instruction supersedes the earlier Dashboard implementation sequencing above for current work priority. Preserve Dashboard code, tests, docs, and evidence; do not continue or remove Dashboard work during this priority window.
+
+Current Public Data API implementation is committed to GitHub branch `dev` and awaits local Termux validation. Test cases have been authored but are NOT RUN in this GitHub-only phase. Do not claim test success. The next execution must validate the local checkout safely, avoid overwriting unknown local changes, and must not run `test:remote` because it may mutate active project data.
+
+No PR, merge, deployment, Cloudflare configuration/binding/secret/variable change, or Production access is authorized by this priority instruction.
