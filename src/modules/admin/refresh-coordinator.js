@@ -30,6 +30,7 @@ export class DashboardRefreshCoordinator {
     if (url.pathname === "/start" && request.method === "POST") {
       let body;
       try { body = await request.json(); } catch { return response({ success: false, error: "Invalid request body" }, 400); }
+      if (!body || typeof body !== "object" || Array.isArray(body)) return response({ success: false, error: "Invalid request body" }, 400);
       const repositories = await discoverPublicRepositories(this.env);
       const previous = await this.readState();
       if (previous && ACTIVE.has(previous.status)) {
@@ -94,10 +95,11 @@ export class DashboardRefreshCoordinator {
     if (url.pathname === "/retry" && request.method === "POST") {
       const previous = await this.readState();
       if (!previous || ACTIVE.has(previous.status)) return response({ success: false, error: "No completed job is available for retry" }, 409);
-      const failedNames = new Set(previous.results.filter(item => !item.success).map(item => item.repository));
+      const failedNames = new Set(previous.results.filter(item => !item.success).map(item => item.repository.toLowerCase()));
       if (failedNames.size === 0) return response({ success: false, error: "There are no failed repositories to retry" }, 409);
       const discovered = await discoverPublicRepositories(this.env);
-      const targets = discovered.filter(repo => failedNames.has(repo.name));
+      const targets = discovered.filter(repo => failedNames.has(repo.name.toLowerCase()));
+      if (targets.length === 0) return response({ success: false, error: "Failed repositories are no longer available for retry" }, 409);
       const job = {
         jobId: crypto.randomUUID(),
         generation: (previous.generation || 0) + 1,
