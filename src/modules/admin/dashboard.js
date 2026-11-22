@@ -175,10 +175,34 @@ export const inspectPublicRepository = async (env, repository) => {
 };
 
 const parseBody = async request => {
-  const length = Number(request.headers.get("content-length"));
-  if (Number.isFinite(length) && length > 65536) throw new HttpError("Request body is too large", 413);
+  const maxBytes = 128 * 1024;
+  const declaredLength = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    throw new HttpError("Request body is too large", 413);
+  }
+  const reader = request.body?.getReader();
+  if (!reader) throw new HttpError("Request body is required", 400);
+  const chunks = [];
+  let totalBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > maxBytes) {
+      await reader.cancel();
+      throw new HttpError("Request body is too large", 413);
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
   let body;
-  try { body = await request.json(); } catch { throw new HttpError("Invalid JSON request body", 400); }
+  try { body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
+  catch { throw new HttpError("Invalid JSON request body", 400); }
   if (!body || typeof body !== "object" || Array.isArray(body)) throw new HttpError("Invalid request body", 400);
   return body;
 };
