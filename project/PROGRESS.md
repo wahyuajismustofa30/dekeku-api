@@ -367,7 +367,7 @@ See [EXECUTION_POLICY.md](EXECUTION_POLICY.md) for the ordered queue and mandato
 - Config is published at the website origin root as `/config.json`; required fields: `schema_version: 1`, `project.id`, and `repository.username` + `repository.repo`.
 - Repository owner must match trusted `GITHUB_OWNER`; target repository must be public. GitHub API `default_branch` is authoritative; schema v1 intentionally has no branch override.
 - Discovery requires an explicitly trusted canonical HTTPS Origin. CORS wildcard alone is not a trusted repository mapping. Origin is a selector, never authentication.
-- Existing `repositories.js` reads username/repo, checks owner, and checks public visibility, but does not yet enforce schema_version/project.id or explicit-Origin mapping. Admin write routes still use Worker-bound GitHubClient. Those gaps remain open for PUB-002/PUB-003.
+- At the PUB-001 specification checkpoint, schema version/project ID and exact-Origin enforcement were still gaps. PUB-002 source enforcement is now recorded below; Admin write routes still use Worker-bound GitHubClient and remain the PUB-003 gap.
 - **Source code changes**: none. **Automated tests/schema validation**: NOT RUN. **Development runtime**: NOT VERIFIED. **Production/Cloudflare settings/secrets/data**: untouched.
 
 
