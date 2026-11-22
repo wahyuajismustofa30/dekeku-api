@@ -73,6 +73,10 @@ function installMockFetch() {
         encoding: "base64"
       });
     }
+    if (value === "https://api.github.com/repos/mock-owner/project-repo/contents/public/data/created.json" &&
+        options.method === "PUT") {
+      return jsonResponse({ content: { sha: "e".repeat(40) } });
+    }
     throw new Error("Unexpected outbound request: " + value);
   };
   return calls;
@@ -170,4 +174,27 @@ test("Admin JSON file reader rejects paths outside the writable JSON area", asyn
 
   assert.equal(response.status, 403);
   assert.equal(calls.length, 0);
+});
+
+test("Admin CREATE writes to the selected project without relying on browser Origin", async () => {
+  installMockFetch();
+  const token = await adminToken();
+  const response = await worker.fetch(new Request("https://gateway.example/api/v1/admin/write/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+      "X-DEKEKU-Project-Origin": PROJECT_ORIGIN
+    },
+    body: JSON.stringify({
+      path: "public/data/created.json",
+      content: { created: true }
+    })
+  }), { ...env, ADMIN_PASSWORD_HASH: ADMIN_HASH });
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(body.success, true);
+  assert.equal(body.path, "public/data/created.json");
+  assert.equal(body.sha, "e".repeat(40));
 });
