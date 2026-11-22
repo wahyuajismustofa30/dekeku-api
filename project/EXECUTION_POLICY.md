@@ -46,5 +46,5 @@ Execution remains on `dev`; PR to `main` only after stable and owner review. No 
 
 ## PUB-004-FIX Follow-up Gate (2026-11-22)
 - The prior PUB-004-FIX completion claim is superseded by the follow-up audit finding that the Git Trees API was not invoked at runtime.
-- Actual Git Trees traversal has now been added on `dev`, with a new focused integration-style test file. This change is NOT VERIFIED because tests were not run and existing browse-router fixtures still use the old Contents-only flow.
-- PUB-004-FIX remains open until legacy fixtures are migrated and the focused regression suite passes with evidence. PUB-005 is blocked until the owner accepts PUB-004-FIX.
+- Actual Git Trees traversal has now been added on `dev`, with a new focused integration-style test file. This change is NOT VERIFIED because tests were not run. `test/browse-router.test.js` has now been migrated to branch/tree fixtures; execute the migrated focused suite locally before acceptance.
+- PUB-004-FIX remains open until the migrated focused regression suite passes with evidence. PUB-005 is blocked until the owner accepts PUB-004-FIX.
