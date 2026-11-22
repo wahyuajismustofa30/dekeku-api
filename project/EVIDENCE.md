@@ -63,13 +63,13 @@ Dokumen ini adalah indeks bukti pengujian, audit, verifikasi, dan investigasi te
 | PUBDATA-SRC-01 | Source | GitHub branch dev | `src/modules/public/resource-registry.js`, `resource-validators.js` | Resource allowlist and Guestbook schema added; execution NOT VERIFIED |
 | PUBDATA-SRC-02 | Source | GitHub branch dev | `src/modules/public/storage-engine.js`, `src/modules/public/index.js` | Shared bounded parser, Project Origin resolver, public repository check, fixed-path write and SHA retry added; execution NOT VERIFIED |
 | PUBDATA-SRC-03 | Source | GitHub branch dev | `src/modules/public/submit.js`, `src/core/router.js` | Generic route and legacy alias added; execution NOT VERIFIED |
-| PUBDATA-TEST-01 | Test source | GitHub branch dev | `test/public-submission.test.js` | Mock/fixture test cases updated; NOT RUN |
+| PUBDATA-TEST-01 | Test source (historical checkpoint) | GitHub branch dev | `test/public-submission.test.js` | NOT RUN at initial GitHub-only handoff; later owner-reported execution is recorded under `PUBDATA-TERMUX-02`. |
 | PUBDATA-DOC-01 | Documentation | GitHub branch dev | `docs/PUBLIC_DATA_API.md`, `docs/USAGE.md`, `docs/GUESTBOOK_INTEGRATION.md` | Documentation updated |
 | PUBDATA-TERMUX-01 | Historical pending checkpoint (superseded) | Local Termux required | Focused test, syntax/build, approved full suite, diff review | NOT RUN at that earlier checkpoint; superseded by owner-reported `PUBDATA-TERMUX-02` for the focused test and syntax checks. |
 
 No live project repository data was written or deleted by this GitHub source/documentation work. No Cloudflare deployment or Production change was performed.
 
-| PUBDATA-SEC-02 | Test source | GitHub branch dev | `test/public-submission.test.js` | Added regression case proving public route ignores `X-DEKEKU-Project-Origin`; NOT RUN |
+| PUBDATA-SEC-02 | Test source (historical checkpoint) | GitHub branch dev | `test/public-submission.test.js` | Regression case added; initially NOT RUN. Later included in owner-reported focused 14/14 run `PUBDATA-TERMUX-02`. |
 
 
 ## 5. Public Data API focused Termux validation — owner-reported (2026-11-23)
