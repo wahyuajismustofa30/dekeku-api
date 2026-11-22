@@ -66,3 +66,14 @@ This section supersedes the earlier planning-only status for PUB-DATA. The earli
 - **Validation:** Node tests, syntax/build, full suite, Wrangler dry-run, and Worker runtime are **NOT RUN / NOT VERIFIED** for these changes. Do not claim PASS.
 - **Next required action:** Termux validation on the local `dev` checkout. Run `node --test test/public-submission.test.js` and syntax checks for changed source files. `docs/USAGE.md` records the owner's restriction on `npm test`; do not run it without renewed approval. Do not run `test:remote`; it may write to live project data.
 - **Operational boundary:** no PR, no merge, no deployment, no Cloudflare config/secret/variable change, and no Production access. Admin Dashboard remains PAUSED.
+
+
+## Latest owner validation — Public Data API (2026-11-23)
+
+- PUB-DATA-001..005: IMPLEMENTED on GitHub branch `dev`.
+- PUB-DATA-006 focused local test: **OWNER-REPORTED PASS — 14/14**, using `node --test test/public-submission.test.js`.
+- Syntax validation: **OWNER-REPORTED PASS** — `node --check` succeeded for all 7 changed JavaScript files.
+- This is local Termux evidence. Exact tested local HEAD SHA is not yet known, so it is not conclusively tied to the GitHub `dev` HEAD or PR #29 head.
+- No remote integration, live repository write, Worker runtime smoke test, or deployment is claimed.
+- PR #29 remains open and unmerged. Before merge, confirm tested SHA equals PR head or rerun tests against the candidate.
+- Admin Dashboard remains PAUSED. Production Worker/domain/config/secrets/data remain untouched.
