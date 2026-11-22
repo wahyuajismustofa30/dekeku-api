@@ -7,7 +7,7 @@ Tanggal Pembaruan: 2026-11-22 (Fokus Aktif: Pengelolaan Repository Publik — PU
 - **PUB-001 specification complete**: `project/PUBLIC_REPOSITORY_CONTRACT.md` and `docs/schemas/public-repository-config.schema.json` define the versioned public project config contract.
 - **PUB-002 verified locally**: syntax checks PASS and `test/repository-metadata.test.js` 12/12 PASS. Development runtime remains unverified.
 - **PUB-003 complete**: Admin SHA/CREATE/UPDATE/DELETE use the shared validated project repository resolver and GitHub-reported default branch; verified via `node --test`.
-- **PUB-004 implemented; PUB-004-FIX follow-up remediation added but NOT VERIFIED**: `GET /api/v1/admin/browse` implemented with Admin JWT, path allowlisting, child path matching, hidden/sensitive file rejection, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), accurate upstream truncation handling (Contents API >= 1,000 items & Git Trees API `truncated`), 1,000 items cap, and pagination; 22/22 PASS in focused suite (54/54 PASS total).
+- **PUB-004 implemented; PUB-004-FIX focused tests VERIFIED LOCALLY (47/47 PASS); Development runtime NOT VERIFIED**: `GET /api/v1/admin/browse` implemented with Admin JWT, path allowlisting, child path matching, hidden/sensitive file rejection, mode `"120000"` (symlink) & mode `"160000"` (submodule) rejection, mode allowlist (`100644`/`100755`/`040000`), accurate upstream truncation handling (Contents API >= 1,000 items & Git Trees API `truncated`), 1,000 items cap, and pagination; 22/22 PASS in focused suite (54/54 PASS total).
 - Prioritas: kelola data publik pada repository masing-masing proyek.
 - Tahapan aktif: PUB-001 sampai PUB-006 di [BACKLOG.md](BACKLOG.md).
 - Pengaturan repository privat, private account storage, mapping, dan perluasan RBAC diarsipkan (A-003); catatan milestone lama di bawah dipertahankan sebagai sejarah, bukan antrean kerja.
@@ -52,3 +52,10 @@ The earlier NOT VERIFIED test note above is superseded by the owner's local exec
 - Local branch `dev` is clean at `4f9747a`; remote `origin/dev` head matches the same full commit SHA.
 - PUB-004-FIX focused regression tests: VERIFIED. Development runtime: NOT VERIFIED. Owner acceptance: PENDING.
 - PUB-005 remains BLOCKED until explicit owner acceptance and authorization.
+
+## PUB-005 Implementation Update (2026-11-22)
+- Owner approval received after PUB-004-FIX acceptance.
+- Added a project Origin selector header (X-DEKEKU-Project-Origin) validated against the exact server-side ALLOWED_ORIGINS allowlist; no client-supplied owner/repository/branch is accepted.
+- Added Admin-authenticated JSON read endpoint GET /api/v1/admin/write/file restricted to public/data/*.json.
+- Updated generated and static Tester pages with project connection, directory browser, navigation/pagination, JSON editor, CREATE/UPDATE/DELETE workflows, fresh SHA lookup, and delete confirmation.
+- New focused tests added; automated execution is pending local verification. PUB-005 remains IN PROGRESS, not verified.
