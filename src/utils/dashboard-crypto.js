@@ -2,7 +2,7 @@ import { HttpError } from "../core/errors.js";
 
 const KEY_ID_PATTERN = /^[A-Za-z0-9._-]{1,32}$/;
 const ENVELOPE_KEYS = ["version", "algorithm", "keyId", "iv", "ciphertext"];
-const MAX_PLAINTEXT_BYTES = 1024 * 1024;
+const MAX_PLAINTEXT_BYTES = 700 * 1024;
 const MAX_CIPHERTEXT_BYTES = MAX_PLAINTEXT_BYTES + 64;
 
 const encodeBase64Url = bytes => {
