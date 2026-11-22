@@ -5,7 +5,7 @@
 ## Current Focus — Public Repository Management (2026-11-22)
 
 - **PUB-001 specification complete**: `project/PUBLIC_REPOSITORY_CONTRACT.md` and `docs/schemas/public-repository-config.schema.json` define the versioned public project config contract.
-- **PUB-002 implementation in progress**: server-side schema v1 validation, exact trusted-Origin checks, owner/repository validation, public visibility, and default-branch checks added; focused test execution and Development runtime verification pending.
+- **PUB-002 verified locally (owner-reported)**: syntax checks PASS and `test/repository-metadata.test.js` 12/12 PASS. Development runtime remains unverified.\n- **PUB-003 implementation in progress**: Admin SHA/CREATE/UPDATE/DELETE now use the shared validated project repository resolver and GitHub-reported default branch; focused tests pending.
 - Prioritas: kelola data publik pada repository masing-masing proyek.
 - Tahapan aktif: PUB-001 sampai PUB-006 di [BACKLOG.md](BACKLOG.md).
 - Pengaturan repository privat, private account storage, mapping, dan perluasan RBAC diarsipkan (A-003); catatan milestone lama di bawah dipertahankan sebagai sejarah, bukan antrean kerja.
