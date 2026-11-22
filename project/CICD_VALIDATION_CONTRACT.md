@@ -1,7 +1,7 @@
 # CICD-003 — PR Validation Contract
 
 Tanggal: 2026-11-21
-Status: IMPLEMENTED — historical PR validation run #51 SUCCESS on commit `98d7163`; latest audited `dev` HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477` has no PR-triggered workflow run returned by the commit-runs query (2026-11-23).
+Status: IMPLEMENTED — historical PR validation run #51 SUCCESS on commit `98d7163`; pre-repair baseline `dev` HEAD `e2bc6f41000b756120ac4dc1405dbe9341a89477` had no PR-triggered workflow run returned by the commit-runs query (2026-11-23).
 Target PR: `dev` → `main`.
 Batas: validasi CI saja; tidak melakukan deployment.
 
@@ -53,6 +53,12 @@ Batas: validasi CI saja; tidak melakukan deployment.
 - [x] Implementasi workflow PR: `.github/workflows/pr-validation.yml` dibuat pada CICD-004.
 - [x] Bukti run PR aktual: VERIFIED — GitHub Actions run #51 (ID `45080601189`) pada commit `98d7163add0452832afefeda1462aad5f187ac43`; hasil SUCCESS. Laporan: 139 PASS, 0 FAIL, 0 skipped, 19 suites; `npm ci` PASS; syntax check 64 JavaScript files PASS; Wrangler dry-run PASS; `npm audit` 0 vulnerabilities. Run: https://github.com/wahyuajismustofa30/dekeku-api/actions/runs/45080601189.
 
+
+## Documentation repair CI update — 2026-11-23
+
+- Documentation repair commit `70046cfcba5cefec99e8772f62aeef644bfd91a5` received PR Validation run #74 (ID `45082714389`): **SUCCESS**.
+- The PR Validation job completed all listed steps successfully: checkout PR head, Node setup, locked dependency install, JavaScript syntax validation, Development Worker config/bundle dry-run, focused regression test selection/execution, and dependency security audit (warning-only step).
+- This run validates that specific documentation-repair commit, not a subsequent commit unless a new run confirms it. It is not a deployment, live Worker runtime test, or live repository write.
 
 ## Latest HEAD evidence boundary — 2026-11-23
 
