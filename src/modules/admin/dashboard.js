@@ -1,7 +1,6 @@
 import { GitHubClient } from "../../core/github.js";
 import { HttpError } from "../../core/errors.js";
 import { success } from "../../utils/response.js";
-import { decodeBase64 } from "../../utils/github-content.js";
 import {
   readDashboardDocument,
   writeDashboardDocument,
@@ -13,6 +12,13 @@ const OWNER_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPO_PATTERN = /^[A-Za-z0-9_.-]{1,100}$/;
 const PROJECT_TYPES = new Set(["website", "invitation", "repository", "other"]);
 const now = () => new Date().toISOString();
+const decodeUtf8Base64 = value => {
+  try {
+    const binary = atob(String(value || "").replace(/\\s/g, ""));
+    const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch { return null; }
+};
 const safeError = error => ({
   message: error instanceof HttpError ? error.message : "Upstream request failed",
   status: error instanceof HttpError ? error.status : 502
@@ -112,7 +118,11 @@ const inspectFile = async (env, repository, path) => {
   try {
     const item = await readRepoPath(env, repository, path);
     if (!item || item.type !== "file") return { exists: false, valid: false, error: "Expected a file" };
-    const raw = decodeBase64(item.content || "");
+    const maxSize = path === "config.json" ? 32 * 1024 : 1024;
+    if (!Number.isInteger(item.size) || item.size < 0 || item.size > maxSize) {
+      return { exists: true, valid: false, error: "File size is invalid or exceeds the inspection limit" };
+    }
+    const raw = decodeUtf8Base64(item.content || "");
     if (raw === null) return { exists: true, valid: false, error: "File content is not valid UTF-8" };
     if (path === "config.json") {
       try {
