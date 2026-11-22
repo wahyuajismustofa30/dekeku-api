@@ -31,3 +31,21 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 
 ## Status Selanjutnya
 Seluruh workstream PUB dan CI/CD telah dinyatakan selesai oleh pemilik. Menunggu instruksi berikutnya untuk pengembangan atau penyempurnaan fitur lanjutan.
+
+## Workstream ADM — Centralized Admin Dashboard (owner-approved 2026-11-23)
+
+Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jalankan pengujian menyeluruh setelah implementasi selesai pada ADM-008. Jangan menandai kode sebagai VERIFIED sebelum test aktual.
+
+- [x] **ADM-001 — Durable Object + encrypted storage foundation.** Source, binding dan migration sudah ditambahkan ke `dev`; `DB_ENCRYPTION_KEY` Dev belum diverifikasi. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-002 — Paginated public repository discovery.** Source discovery berdasarkan `GITHUB_OWNER` dan filter repository publik. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-003 — Private metadata CRUD/storage.** Encrypted `dekeku-db` document, schema validation, SHA optimistic concurrency, bulk project-type update. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-004 — Admin Dashboard UI.** `/admin`, Admin login, table/card, search/filter, details, project navigation. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-005 — Repository inspection pipeline.** `config.json`, `CNAME`, `assets/data`, GitHub archive/visibility facts. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-006 — Background refresh.** Durable Object, latest-only state, progress, cancellation, failed-only retry. IMPLEMENTED — NOT TESTED.
+- [x] **ADM-007 — Quick/bulk actions.** Three-dot actions, selection, refresh selected/all, JSON export, bulk project type. IMPLEMENTED — NOT TESTED.
+- [ ] **ADM-008 — Final verification.** Security review, unit/integration/regression tests, Wrangler dry-run/build, Dev secret/binding/runtime verification, evidence index. Mulai setelah review ADM-001..ADM-007 selesai.
+
+### Catatan operasional
+- `DB_ENCRYPTION_KEY` harus dibuat sebagai Development Worker Secret melalui Cloudflare/Wrangler; jangan pernah commit nilainya.
+- Test dan deployment belum dilakukan. Status seluruh ADM-001..ADM-007 tetap NOT TESTED.
+- Jangan merge ke `main`, jangan membuat PR, dan jangan deploy sampai ADM-008 selesai dan pemilik memberi instruksi.
