@@ -238,7 +238,7 @@ export const getRepositoryMetadata = async (request, env) => {
     typeof data.default_branch !== "string" ||
     !data.default_branch ||
     data.default_branch.length > 255 ||
-    /[\\x00-\\x1F\\x7F]/.test(data.default_branch)
+    /[\x00-\x1F\x7F]/.test(data.default_branch)
   ) {
     throw new HttpError("GitHub repository metadata is invalid", 502);
   }
