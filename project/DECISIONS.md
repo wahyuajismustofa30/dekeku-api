@@ -140,5 +140,5 @@ The approved architecture has now been implemented on GitHub branch `dev`:
 - Guestbook now resolves repository using the File Manager's `resolveProjectRepository()` and schema-v1 `config.json`.
 - Public submissions explicitly ignore `X-DEKEKU-Project-Origin`; they are bound to the request's actual `Origin`. The selector header remains available to File Manager workflows.
 - Legacy `/api/v1/public/submit` delegates to the same Guestbook handler.
-- Focused mock/fixture tests are authored but NOT RUN. Implementation remains NOT VERIFIED pending Termux.
-- No PR, merge, deployment, Cloudflare configuration/secret change, or Production access.
+- Focused mock/fixture tests were run by the owner in Termux: 14/14 PASS; syntax checks passed for 7 changed source files. Exact tested local HEAD SHA was not supplied, so the result is not conclusively tied to GitHub `dev`/PR #29 head. Full suite, remote integration, live repository write, Worker runtime, and deployment remain NOT VERIFIED.
+- PR #29 (`dev` → `main`) exists and remains unmerged. No merge, deployment, Cloudflare configuration/secret change, or Production access is authorized.
