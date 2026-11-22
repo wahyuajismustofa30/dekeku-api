@@ -13,7 +13,17 @@ Tanggal Pembaruan: 2026-11-22 (PUB-003 implementation in progress)
 - **Bukti historis**: laporan pengguna untuk commit `a6a089d` (149 PASS, 0 FAIL, 0 SKIP dan `npm run check` PASS) adalah bukti historis, bukan verifikasi HEAD saat ini.
 - **Larangan tes**: `npm test` NOT RUN sesuai instruksi pemilik proyek. Jangan menjalankannya.
 
-## PUB-002 Verification Update (2026-11-22)\n- Owner-reported local verification on branch `dev`: `node --check src/modules/github/repositories.js` PASS; `node --check test/repository-metadata.test.js` PASS; `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP).\n- PUB-002 source and focused test verification are COMPLETE. Development runtime remains NOT VERIFIED.\n\n## PUB-003 Implementation Update (2026-11-22)\n- `resolveProjectRepository(request, env)` is now the shared server-side resolver for metadata and Admin file operations. It requires a canonical trusted Origin, fetches `/config.json`, validates schema v1 and owner, verifies GitHub repository identity/public visibility, and takes `default_branch` only from GitHub metadata.\n- Admin SHA lookup and CREATE/UPDATE/DELETE now construct their GitHub client from that validated repository context; static `GITHUB_REPO`/`GITHUB_BRANCH` no longer determine these write targets. Admin JWT remains enforced by the outer router.\n- `test/write-router.test.js` was updated to mock the config/metadata discovery sequence and assert the GitHub-reported branch is used. These updated tests and syntax checks are NOT RUN yet.\n- Development runtime NOT VERIFIED. No real website repository data was written; no deployment, Wrangler/Cloudflare setting, secret, or Production resource was changed.\n\n## Daftar Fitur & Status
+## PUB-002 Verification Update (2026-11-22)
+- Owner-reported local verification on branch `dev`: `node --check src/modules/github/repositories.js` PASS; `node --check test/repository-metadata.test.js` PASS; `node --test test/repository-metadata.test.js` PASS (12 PASS, 0 FAIL, 0 SKIP).
+- PUB-002 source and focused test verification are COMPLETE. Development runtime remains NOT VERIFIED.
+
+## PUB-003 Implementation Update (2026-11-22)
+- `resolveProjectRepository(request, env)` is now the shared server-side resolver for metadata and Admin file operations. It requires a canonical trusted Origin, fetches `/config.json`, validates schema v1 and owner, verifies GitHub repository identity/public visibility, and takes `default_branch` only from GitHub metadata.
+- Admin SHA lookup and CREATE/UPDATE/DELETE now construct their GitHub client from that validated repository context; static `GITHUB_REPO`/`GITHUB_BRANCH` no longer determine these write targets. Admin JWT remains enforced by the outer router.
+- `test/write-router.test.js` was updated to mock the config/metadata discovery sequence and assert the GitHub-reported branch is used. These updated tests and syntax checks are NOT RUN yet.
+- Development runtime NOT VERIFIED. No real website repository data was written; no deployment, Wrangler/Cloudflare setting, secret, or Production resource was changed.
+
+## Daftar Fitur & Status
 
 | Komponen | Fitur | Status | Catatan & Temuan Aktual |
 | :--- | :--- | :--- | :--- |
