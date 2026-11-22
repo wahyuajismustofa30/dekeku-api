@@ -116,7 +116,7 @@ test("retry schedules only repositories marked failed in the previous result", a
 test("background alarm persists the latest inspection snapshot without writing project repositories", async () => {
   const originalFetch = globalThis.fetch;
   let privateWriteCount = 0;
-  globalThis.fetch = async url => {
+  globalThis.fetch = async (url, options = {}) => {
     const parsed = new URL(url);
     if (parsed.pathname === "/users/wahyuajismustofa30/repos") {
       return response([repository("demo")]);
@@ -126,7 +126,7 @@ test("background alarm persists the latest inspection snapshot without writing p
         parsed.pathname === "/repos/wahyuajismustofa30/demo/contents/assets/data") {
       return response("{}", 404);
     }
-    if (parsed.pathname.includes("/contents/")) privateWriteCount += 1;
+    if (options.method === "PUT" || options.method === "DELETE") privateWriteCount += 1;
     return response("unexpected request", 404);
   };
   const state = makeState();
