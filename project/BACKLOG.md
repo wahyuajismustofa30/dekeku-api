@@ -29,10 +29,28 @@ Dokumen ini adalah checklist teknis. Status otoritatif terkini berada di `projec
 - [x] **CICD-007 — Post-merge Development deployment evidence.** Dianggap selesai oleh pemilik.
 - [x] **CICD-008 — Development smoke test evidence.** Dianggap selesai oleh pemilik.
 
-## Status Selanjutnya
-Seluruh workstream PUB dan CI/CD telah dinyatakan selesai oleh pemilik. Menunggu instruksi berikutnya untuk pengembangan atau penyempurnaan fitur lanjutan.
+## Workstream PUB-DATA — Extensible Public Data API (ACTIVE, owner-approved 2026-11-23)
 
-## Workstream ADM — Centralized Admin Dashboard (owner-approved 2026-11-23)
+Rincian kontrak, desain, acceptance criteria, keamanan, dan batas operasional: `project/PUBLIC_DATA_API_PLAN.md`.
+
+- [ ] **PUB-DATA-001 — API Contract.** Definisikan `POST /api/v1/public/data/{resource}`, request/response, status/error contract.
+- [ ] **PUB-DATA-002 — Resource Registry.** Server-side allowlist, enabled flag, validator, fixed storage path, JSON shape, per-resource limits.
+- [ ] **PUB-DATA-003 — Shared Storage Engine.** Bounded body parsing, Origin enforcement, Project Origin resolver, repository validation, GitHub write, SHA concurrency, safe errors.
+- [ ] **PUB-DATA-004 — Guestbook Migration.** Jadikan Guestbook resource pertama dengan kompatibilitas payload dan storage berdasarkan source aktual.
+- [ ] **PUB-DATA-005 — Legacy Compatibility.** Pertahankan `POST /api/v1/public/submit` sebagai alias ke handler Guestbook yang sama.
+- [ ] **PUB-DATA-006 — Security & Integration Tests.** Uji validasi, Origin, limits, resolver, repository, concurrency, alias, dan public no-JWT flow menggunakan mock/fixture.
+- [ ] **PUB-DATA-007 — Documentation & Checkpoint.** Sinkronkan seluruh dokumen teknis dan bukti.
+
+Semua item PUB-DATA berstatus NOT STARTED sampai implementasi/test aktual dibuktikan.
+Tidak ada GET API publik baru pada fase awal; website membaca file langsung dari repository publik/CDN.
+
+## Status Selanjutnya
+Prioritas aktif adalah PUB-DATA-001 s.d. PUB-DATA-007. Admin Dashboard ADM-001..ADM-008 dijeda sementara sesuai keputusan terbaru pemilik; seluruh pekerjaan yang sudah ada dipertahankan dan tidak dihapus.
+
+## Workstream ADM — Centralized Admin Dashboard (PAUSED 2026-11-23)
+
+Workstream ini dijeda sementara oleh instruksi eksplisit pemilik yang lebih baru. Seluruh implementasi, test, dokumen, dan blocker yang tercatat di bawah tetap dipertahankan sebagai status historis/terakhir; jangan hapus atau lanjutkan perubahan Dashboard selama PUB-DATA menjadi prioritas aktif kecuali diminta pemilik.
+
 
 Instruksi pemilik: implementasikan seluruh ADM-001..ADM-007 terlebih dahulu; jalankan pengujian menyeluruh setelah implementasi selesai pada ADM-008. Jangan menandai kode sebagai VERIFIED sebelum test aktual.
 
