@@ -17,7 +17,7 @@ Resource pertama adalah `guestbook`. Penambahan resource berikutnya dilakukan me
 
 1. **Resource Registry** — server-side allowlist, enabled flag, method, validator, fixed storage path, JSON shape, dan limits.
 2. **Resource Validator** — validasi payload terpisah per resource; client tidak dapat mengubah aturan.
-3. **Project Repository Resolver** — menggunakan `resolveProjectRepository()` yang juga dipakai File Manager. Resolver Guestbook lama yang membaca private `users.json`/mapping dibandingkan dengan resolver File Manager; pendekatan private mapping dihapus dari jalur Guestbook baru.
+3. **Project Repository Resolver** — migrasi selesai. Guestbook memakai `resolveProjectRepository()` yang juga dipakai File Manager, dengan Project Origin aktual dan `config.json` schema-v1. Resolver lama yang membaca private `users.json`/mapping tidak lagi digunakan pada jalur Guestbook.
 4. **Shared Storage Engine** — bounded body parsing, UTF-8/JSON validation, Origin enforcement melalui shared resolver, repository visibility, fixed-path GitHub write, SHA concurrency, bounded retry, dan safe errors.
 5. **Guestbook Migration** — Guestbook menjadi resource `guestbook`, mempertahankan payload, timestamp, JSON array, storage path historis, serta batas ukuran.
 6. **Legacy Alias** — `POST /api/v1/public/submit` meneruskan ke handler Guestbook yang sama.
@@ -87,8 +87,8 @@ Request:
 ## 7. Batas operasional dan langkah berikutnya
 
 - Semua perubahan dilakukan hanya pada branch `dev`.
-- Tidak membuat PR, tidak merge, tidak menyentuh `main`.
+- PR #29 (`dev` → `main`) sudah dibuat dan saat audit 2026-11-23 berstatus OPEN, belum merged. Tidak ada perubahan langsung ke `main`.
 - Tidak melakukan deployment atau perubahan Cloudflare config/bindings/secrets/variables.
 - Production Worker, domain, credentials, dan data Production tidak disentuh.
-- **Langkah berikutnya:** dapatkan SHA dari checkout Termux yang menjalankan focused test, lalu cocokkan dengan HEAD PR #29. Jika berbeda, jalankan ulang focused test pada kandidat yang tepat. Jangan jalankan `test:remote` tanpa persetujuan eksplisit karena dapat menulis ke repository proyek aktif.
+- **Langkah berikutnya:** dapatkan `git rev-parse HEAD` dari checkout Termux yang menjalankan focused test dan cocokkan dengan PR #29 HEAD `9d010b4f10159975d378df10b2b505d584d535a6`. Jika berbeda, jalankan ulang focused test pada checkout kandidat tersebut. Jangan jalankan `test:remote` tanpa persetujuan eksplisit karena dapat menulis ke repository proyek aktif.
 - Setelah provenance test cocok, berhenti untuk review pemilik. PR #29 sudah ada tetapi belum digabung; merge dan deployment tetap memerlukan instruksi/approval terpisah.
