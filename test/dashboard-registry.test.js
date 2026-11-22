@@ -58,7 +58,7 @@ test("repository inspection validates config, CNAME, and assets/data", async () 
     const path = new URL(url).pathname;
     let payload;
     if (path.endsWith("/contents/config.json")) payload = { type: "file", size: Buffer.byteLength(JSON.stringify(config)), content: b64(JSON.stringify(config)) };
-    else if (path.endsWith("/contents/CNAME")) payload = { type: "file", content: b64("demo.example.com\n") };
+    else if (path.endsWith("/contents/CNAME")) payload = { type: "file", size: Buffer.byteLength("demo.example.com\n"), content: b64("demo.example.com\n") };
     else if (path.endsWith("/contents/assets/data")) payload = [];
     else return new Response("not found", { status: 404 });
     return new Response(JSON.stringify(payload), { status: 200, headers: { "content-type": "application/json" } });
