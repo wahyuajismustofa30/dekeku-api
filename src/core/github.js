@@ -40,7 +40,7 @@ export class GitHubClient {
     if (status === 403) {
       const remaining = headers.get("x-ratelimit-remaining");
       if (remaining === "0") return true;
-      // Check for secondary rate limit indicators in body
+
       if (body && typeof body === "object") {
         const message = String(body.message || "").toLowerCase();
         if (message.includes("rate limit") || message.includes("abuse") || message.includes("secondary rate limit")) {
@@ -64,7 +64,6 @@ export class GitHubClient {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-    // Link caller signal if provided
     if (options.signal) {
       if (options.signal.aborted) {
         clearTimeout(timeoutId);
@@ -86,7 +85,6 @@ export class GitHubClient {
         return await response.json();
       }
 
-      // Parse error response for better error mapping
       let errorBody = null;
       try {
         errorBody = await response.json();
@@ -94,7 +92,6 @@ export class GitHubClient {
         // Ignore JSON parse errors for error responses
       }
 
-      // Handle specific GitHub error codes with refined mapping
       const status = response.status;
       let gatewayStatus = status;
       let errorMessage = "GitHub API error";
@@ -132,17 +129,13 @@ export class GitHubClient {
         errorMessage = "Upstream server error";
       }
 
-      // Create HttpError with mapped status
       const httpError = new HttpError(errorMessage, gatewayStatus);
-
-      // Attach Retry-After header if present
       const retryAfter = response.headers.get("retry-after");
       if (retryAfter) {
         httpError.retryAfter = retryAfter;
       }
 
       throw httpError;
-
     } catch (err) {
       if (err instanceof HttpError) throw err;
 
@@ -153,11 +146,29 @@ export class GitHubClient {
         throw new HttpError("Gateway timeout", 504);
       }
 
-      // Network or other fetch errors
       throw new HttpError("Bad gateway", 502);
     } finally {
       clearTimeout(timeoutId);
     }
+  }
+
+  async getDirectoryContents(path) {
+    if (!path || typeof path !== "string") {
+      throw new HttpError("Invalid path", 400);
+    }
+
+    const segments = path.split("/").filter(Boolean);
+    const encodedPath = segments.map(encodeURIComponent).join("/");
+    const endpoint = encodedPath
+      ? `/contents/${encodedPath}?ref=${encodeURIComponent(this.branch)}`
+      : `/contents?ref=${encodeURIComponent(this.branch)}`;
+
+    return this.request(endpoint, { method: "GET" });
+  }
+
+  async getTree(shaOrRef = this.branch, recursive = false) {
+    const endpoint = `/git/trees/${encodeURIComponent(shaOrRef)}${recursive ? "?recursive=1" : ""}`;
+    return this.request(endpoint, { method: "GET" });
   }
 
   async getRepository() {
@@ -165,7 +176,7 @@ export class GitHubClient {
   }
 
   async getBranch(branchName = this.branch) {
-    return this.request(`/branches/${branchName}`, { method: "GET" });
+    return this.request(`/branches/${encodeURIComponent(branchName)}`, { method: "GET" });
   }
 
   async getFile(path) {
@@ -203,7 +214,7 @@ export class GitHubClient {
     }
 
     const encodedPath = segments.map(encodeURIComponent).join("/");
-    return this.request(`/contents/${encodedPath}?ref=${this.branch}`, { method: "GET" });
+    return this.request(`/contents/${encodedPath}?ref=${encodeURIComponent(this.branch)}`, { method: "GET" });
   }
 
   async createFile(path, content, message) {
@@ -227,23 +238,15 @@ export class GitHubClient {
   }
 
   async putFile(path, content, sha, message) {
-    // Validate SHA
     this.validateSha(sha);
-
-    // Encode content to Base64 in chunks
     const base64Content = uint8ArrayToBase64(content);
-
-    // Prepare request body
     const body = {
       message,
       content: base64Content,
       sha,
       branch: this.branch
     };
-
-    // Encode path for URL
     const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-
     return this.request(`/contents/${encodedPath}`, {
       method: "PUT",
       body: JSON.stringify(body)
@@ -251,19 +254,13 @@ export class GitHubClient {
   }
 
   async deleteFile(path, sha, message) {
-    // Validate SHA
     this.validateSha(sha);
-
-    // Prepare request body
     const body = {
       message,
       sha,
       branch: this.branch
     };
-
-    // Encode path for URL
     const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-
     return this.request(`/contents/${encodedPath}`, {
       method: "DELETE",
       body: JSON.stringify(body)

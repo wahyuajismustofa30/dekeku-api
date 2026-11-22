@@ -6,11 +6,13 @@ Dokumen ini memuat panduan lengkap mengenai cara menjalankan, menguji, dan mengg
 
 ## 1. Arsitektur & Lingkungan
 
-DEKEKU API Gateway adalah Cloudflare Worker modular yang berinteraksi dengan repository GitHub privat sebagai penyimpanan data backend (menggunakan GitHub Contents API).
+DEKEKU API Gateway adalah Cloudflare Worker modular yang menggunakan GitHub Contents API. Fokus pengembangan saat ini adalah pengelolaan data publik di repository masing-masing proyek. Website membaca data publik langsung dari URL GitHub Raw/CDN; operasi administratif akan diarahkan ke repository proyek yang telah divalidasi.
+
+**Batas implementasi saat ini:** `GITHUB_OWNER`, `GITHUB_REPO`, dan `GITHUB_BRANCH` masih menjadi konfigurasi repository Worker. Pemetaan dinamis ke beberapa repository publik belum selesai. Jangan menganggap dukungan multi-repository sudah aktif hanya berdasarkan dokumentasi.
 
 ### Environment Variables (`wrangler.jsonc` & `.dev.vars`)
 - `GITHUB_OWNER`: Pemilik repository GitHub (contoh: `wahyuajismustofa30`).
-- `GITHUB_REPO`: Nama repository (konfigurasi development saat ini pada `wrangler.jsonc`: `dekeku-db`).
+- `GITHUB_REPO`: Nama repository yang saat ini dikonfigurasi pada Worker Development. Nilai aktual harus diperiksa dari `wrangler.jsonc` sebelum pengujian; dukungan pemilihan repository publik per proyek belum selesai.
 - `GITHUB_BRANCH`: Branch target (contoh: `main`).
 - `ALLOWED_ORIGINS`: Daftar origin CORS yang diizinkan (mendukung domain eksak dan wildcard subdomain seperti `*.dekeku.my.id`, `*.artoprintingpbg.com`).
 - `GITHUB_TOKEN`: Personal Access Token GitHub (Secret, disimpan di Cloudflare Secrets / `.dev.vars`).
@@ -44,6 +46,9 @@ Dashboard tersedia pada route `/` dan `/tester`.
 - Origin remote wajib HTTPS. HTTP hanya diizinkan untuk host loopback saat pengembangan lokal.
 - JWT admin hanya disimpan di memori halaman, tidak ditampilkan, dan tidak dipersistenkan. Memuat ulang halaman, logout, atau respons HTTP 401 menghapus sesi.
 - Request publik tidak membawa Authorization; hanya request administratif yang menggunakan helper terpisah.
+- File Manager menyediakan pemilihan proyek melalui Project Origin canonical HTTPS. Tester mengirimkannya sebagai `X-DEKEKU-Project-Origin`; server tetap memvalidasi exact entry di `ALLOWED_ORIGINS` dan membaca `/config.json` dari Origin tersebut. Header ini bukan autentikasi.
+- Setelah Admin login, File Manager menampilkan pohon direktori dari `public/`. Pembacaan/edit JSON dan CREATE/UPDATE/DELETE dibatasi server ke `public/data/*.json`; operasi UPDATE/DELETE mengambil SHA terbaru sebelum mutasi.
+- Project Origin yang dipilih hanya disimpan di `sessionStorage` tab saat ini. Admin JWT tetap hanya di memori halaman.
 
 ### Pengembangan Lokal (Wrangler Dev)
 Catatan lingkungan Termux/PRoot mungkin memerlukan penanganan khusus TCMalloc; dianjurkan menjalankan pengujian berbasis Node.js test runner atau menggunakan remote/simulation testing.
@@ -116,13 +121,19 @@ Authorization: Bearer <JWT_TOKEN>
    - **Deskripsi**: Memverifikasi kredensial PBKDF2 dan menerbitkan JWT token (`role: admin`, masa berlaku terbatas).
    - **Respons**: `200 OK` dengan token JWT.
 
-2. **Retrieve Current File SHA (Write Engine)**
+2. **Read JSON File for Admin File Manager**
+   - **Method**: `GET`
+   - **Path**: `/api/v1/admin/write/file?path=public/data/myfile.json`
+   - **Header**: `Authorization: Bearer <TOKEN>` and `X-DEKEKU-Project-Origin: https://project.example`
+   - **Description**: Reads parsed JSON content, size, and current Blob SHA from the selected validated public project repository. Restricted to JSON files under `public/data/`.
+   
+3. **Retrieve Current File SHA (Write Engine)**
    - **Method**: `GET`
    - **Path**: `/api/v1/admin/write/sha?path=public/data/myfile.json`
    - **Header**: `Authorization: Bearer <TOKEN>`
    - **Deskripsi**: Mengambil SHA Blob GitHub terkini untuk file JSON yang sudah ada di `public/data/`. Respons hanya mengembalikan path dan SHA, bukan isi file. Endpoint ini dipakai Tester sebelum UPDATE/DELETE; klien tetap boleh mengirim SHA secara eksplisit.
 
-3. **Create File (Write Engine)**
+4. **Create File (Write Engine)**
    - **Method**: `POST`
    - **Path**: `/api/v1/admin/write/create`
    - **Header**: `Authorization: Bearer <TOKEN>`
@@ -135,7 +146,7 @@ Authorization: Bearer <JWT_TOKEN>
      ```
    - **Deskripsi**: Membuat file baru di dalam `public/data/` (tanpa memerlukan SHA, aman terhadap race condition).
 
-4. **Update File (Write Engine)**
+5. **Update File (Write Engine)**
    - **Method**: `PUT`
    - **Path**: `/api/v1/admin/write/update`
    - **Header**: `Authorization: Bearer <TOKEN>`
@@ -149,7 +160,7 @@ Authorization: Bearer <JWT_TOKEN>
      ```
    - **Deskripsi**: Memperbarui file yang ada dengan validasi SHA (Optimistic Concurrency Control mencegah *overwrite* konflik). Tester mengambil SHA terkini otomatis sebelum request; API tetap mewajibkan SHA.
 
-5. **Delete File (Write Engine)**
+6. **Delete File (Write Engine)**
    - **Method**: `DELETE`
    - **Path**: `/api/v1/admin/write/delete`
    - **Header**: `Authorization: Bearer <TOKEN>`

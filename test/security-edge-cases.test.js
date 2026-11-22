@@ -75,7 +75,7 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
         body: JSON.stringify({ path: "public/data/test.json", content: {} })
       });
       const resAuth = await worker.fetch(req, env);
-      assert.strictEqual(resAuth.status, 403);
+      assert.strictEqual(resAuth.status, 401);
     });
 
     test("Token with invalid 3-segment format rejected", async () => {
@@ -94,15 +94,23 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
     
     test("Old SHA when file has changed in GitHub (409 Conflict)", async () => {
       const originalFetch = global.fetch;
-      global.fetch = async () => new Response(JSON.stringify({ message: "Conflict" }), {
-        status: 409,
-        headers: { "Content-Type": "application/json" }
-      });
+      global.fetch = async (url) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({ schema_version: 1, project: { id: "mock-project" }, repository: { username: "wahyuajismustofa30", repo: "dekeku-api" } }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url).includes("/repos/wahyuajismustofa30/dekeku-api") && !String(url).includes("/contents/")) {
+          return new Response(JSON.stringify({ full_name: "wahyuajismustofa30/dekeku-api", name: "dekeku-api", default_branch: "main", visibility: "public" }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ message: "Conflict" }), {
+          status: 409,
+          headers: { "Content-Type": "application/json" }
+        });
+      };
 
       const token = await signJwt({ iss: "dekeku-api", aud: "dekeku-admin", sub: "admin", role: "admin", iat: Math.floor(Date.now()/1000), exp: Math.floor(Date.now()/1000)+600 }, env.JWT_SECRET);
       const req = new Request("http://api/api/v1/admin/write/update", {
         method: "PUT",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", "Origin": "https://dekeku.my.id" },
         body: JSON.stringify({ path: "public/data/test.json", content: { a: 1 }, sha: "0123456789abcdef0123456789abcdef01234567" })
       });
       const res = await worker.fetch(req, env);
@@ -118,15 +126,23 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
 
     test("File not found when DELETE (404)", async () => {
       const originalFetch = global.fetch;
-      global.fetch = async () => new Response(JSON.stringify({ message: "Not Found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" }
-      });
+      global.fetch = async (url) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({ schema_version: 1, project: { id: "mock-project" }, repository: { username: "wahyuajismustofa30", repo: "dekeku-api" } }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url).includes("/repos/wahyuajismustofa30/dekeku-api") && !String(url).includes("/contents/")) {
+          return new Response(JSON.stringify({ full_name: "wahyuajismustofa30/dekeku-api", name: "dekeku-api", default_branch: "main", visibility: "public" }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ message: "Not Found" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" }
+        });
+      };
 
       const token = await signJwt({ iss: "dekeku-api", aud: "dekeku-admin", sub: "admin", role: "admin", iat: Math.floor(Date.now()/1000), exp: Math.floor(Date.now()/1000)+600 }, env.JWT_SECRET);
       const req = new Request("http://api/api/v1/admin/write/delete", {
         method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", "Origin": "https://dekeku.my.id" },
         body: JSON.stringify({ path: "public/data/missing.json", sha: "0123456789abcdef0123456789abcdef01234567" })
       });
       const res = await worker.fetch(req, env);
@@ -138,14 +154,22 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
     test("GitHub 403 Rate Limit vs Permission mapping", async () => {
       const originalFetch = global.fetch;
       
-      global.fetch = async () => new Response(JSON.stringify({ message: "API rate limit exceeded" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json", "x-ratelimit-remaining": "0" }
-      });
+      global.fetch = async (url, options) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({ schema_version: 1, project: { id: "mock-project" }, repository: { username: "wahyuajismustofa30", repo: "dekeku-api" } }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url).includes("/repos/wahyuajismustofa30/dekeku-api") && !String(url).includes("/contents/")) {
+          return new Response(JSON.stringify({ full_name: "wahyuajismustofa30/dekeku-api", name: "dekeku-api", default_branch: "main", visibility: "public" }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ message: "API rate limit exceeded" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json", "x-ratelimit-remaining": "0" }
+        });
+      };
       const token = await signJwt({ iss: "dekeku-api", aud: "dekeku-admin", sub: "admin", role: "admin", iat: Math.floor(Date.now()/1000), exp: Math.floor(Date.now()/1000)+600 }, env.JWT_SECRET);
       let req = new Request("http://api/api/v1/admin/write/delete", {
         method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", "Origin": "https://dekeku.my.id" },
         body: JSON.stringify({ path: "public/data/test.json", sha: "0123456789abcdef0123456789abcdef01234567" })
       });
       let res = await worker.fetch(req, env);
@@ -155,7 +179,7 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
         status: 403,
         headers: { "Content-Type": "application/json", "x-ratelimit-remaining": "5000" }
       });
-      const req2 = new Request("http://api/api/v1/admin/write/delete", { method: "DELETE", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ path: "public/data/test.json", sha: "0123456789abcdef0123456789abcdef01234567" }) });
+      const req2 = new Request("http://api/api/v1/admin/write/delete", { method: "DELETE", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", "Origin": "https://dekeku.my.id" }, body: JSON.stringify({ path: "public/data/test.json", sha: "0123456789abcdef0123456789abcdef01234567" }) });
       res = await worker.fetch(req2, env);
       assert.strictEqual(res.status, 502);
 
@@ -205,7 +229,7 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
       for (const prim of primitives) {
         const req = new Request("http://api/api/v1/admin/write/create", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+          headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", "Origin": "https://dekeku.my.id" },
           body: JSON.stringify({ path: "public/data/prim.json", content: prim })
         });
         const res = await worker.fetch(req, env);
@@ -220,7 +244,7 @@ describe("Comprehensive Security & Edge Case Test Suite", () => {
       const token = await signJwt({ iss: "dekeku-api", aud: "dekeku-admin", sub: "admin", role: "admin", iat: Math.floor(Date.now()/1000), exp: Math.floor(Date.now()/1000)+600 }, env.JWT_SECRET);
       const req = new Request("http://api/api/v1/admin/write/create", {
         method: "POST",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json", "Origin": "https://dekeku.my.id" },
         body: "{\"path\": \"public/data/test.json\""
       });
       const res = await worker.fetch(req, env);

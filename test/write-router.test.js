@@ -4,6 +4,7 @@ import worker from "../src/index.js";
 
 const JWT_SECRET = "test-secret-key-1234567890";
 const ADMIN_PASSWORD = "secure-password";
+const ADMIN_ORIGIN = "https://dekeku.my.id";
 let ADMIN_HASH;
 
 // Mock GitHub token for env
@@ -37,10 +38,15 @@ function mockResponse(status, body, headers = {}) {
 function setupMockFetch() {
   const mockFetch = mock.fn(async (url, options) => {
     if (String(url).endsWith("/config.json")) {
-      return new Response(JSON.stringify({ repository: { username: "mock-owner", repo: "mock-repo" } }), { status: 200, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ schema_version: 1, project: { id: "mock-project" }, repository: { username: "mock-owner", repo: "mock-repo" } }), { status: 200, headers: { "Content-Type": "application/json" } });
     }
     const method = options?.method || "GET";
     const path = url.split("repos/mock-owner/mock-repo/")[1] || "";
+
+    // Repository metadata is resolved before every administrative file operation
+    if (method === "GET" && path === "") {
+      return mockResponse(200, { full_name: "mock-owner/mock-repo", name: "mock-repo", html_url: "https://github.com/mock-owner/mock-repo", default_branch: "data-release", visibility: "public" });
+    }
 
     // GitHub Contents API responses
     if (method === "PUT" && path.startsWith("contents/")) {
@@ -119,7 +125,7 @@ describe("Write Engine - Router Integration Tests", () => {
       const env = createEnv();
       const token = await getAuthToken(env);
       const req = new Request("http://api/api/v1/admin/write/sha?path=public%2Fdata%2Ftest.json", {
-        headers: { Authorization: "Bearer " + token }
+        headers: { Origin: ADMIN_ORIGIN, Authorization: "Bearer " + token }
       });
 
       const res = await worker.fetch(req, env);
@@ -130,9 +136,10 @@ describe("Write Engine - Router Integration Tests", () => {
       assert.strictEqual(data.path, "public/data/test.json");
       assert.strictEqual(data.sha, "a".repeat(40));
       assert.strictEqual(data.message, "File SHA retrieved successfully");
-      assert.strictEqual(mockFetch.mock.calls.length, 1);
-      assert.strictEqual(mockFetch.mock.calls[0].arguments[1].method, "GET");
-      assert.ok(String(mockFetch.mock.calls[0].arguments[0]).includes("/contents/public/data/test.json?ref=main"));
+      assert.strictEqual(mockFetch.mock.calls.length, 3);
+      const fileCall = mockFetch.mock.calls.at(-1);
+      assert.strictEqual(fileCall.arguments[1].method, "GET");
+      assert.ok(String(fileCall.arguments[0]).includes("/repos/mock-owner/mock-repo/contents/public/data/test.json?ref=data-release"));
 
       restoreFetch();
     });
@@ -185,6 +192,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -201,12 +209,12 @@ describe("Write Engine - Router Integration Tests", () => {
       // Verify GitHub API was called with correct params
       const calls = mockFetch.mock.calls;
       assert.ok(calls.length > 0);
-      const call = calls[0];
-      assert.strictEqual(call.arguments[1].method, "PUT");
+      const call = calls.find((entry) => entry.arguments[1].method === "PUT");
+      assert.ok(String(call.arguments[0]).includes("/repos/mock-owner/mock-repo/contents/"));
       const body = JSON.parse(call.arguments[1].body);
       assert.ok(!body.sha); // CREATE should not have SHA
       assert.ok(body.content); // Base64 content
-      assert.ok(body.branch);
+      assert.strictEqual(body.branch, "data-release");
 
       restoreFetch();
     });
@@ -225,6 +233,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -251,6 +260,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -275,6 +285,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -300,6 +311,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -322,6 +334,7 @@ describe("Write Engine - Router Integration Tests", () => {
         body: invalidUtf8,
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -365,6 +378,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -392,6 +406,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -408,8 +423,9 @@ describe("Write Engine - Router Integration Tests", () => {
       // Verify GitHub API was called with correct params including SHA
       const calls = mockFetch.mock.calls;
       assert.ok(calls.length > 0);
-      const call = calls[0];
+      const call = calls.find((entry) => entry.arguments[1].method === "PUT");
       const body = JSON.parse(call.arguments[1].body);
+      assert.strictEqual(body.branch, "data-release");
       assert.strictEqual(body.sha, "a".repeat(40));
 
       restoreFetch();
@@ -430,6 +446,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -455,6 +472,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -495,6 +513,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -521,6 +540,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -537,10 +557,11 @@ describe("Write Engine - Router Integration Tests", () => {
       // Verify GitHub API was called with correct params including SHA
       const calls = mockFetch.mock.calls;
       assert.ok(calls.length > 0);
-      const call = calls[0];
+      const call = calls.find((entry) => entry.arguments[1].method === "DELETE");
       assert.strictEqual(call.arguments[1].method, "DELETE");
       const body = JSON.parse(call.arguments[1].body);
       assert.strictEqual(body.sha, "b".repeat(40));
+      assert.strictEqual(body.branch, "data-release");
       assert.ok(!body.content); // DELETE should not have content
 
       restoreFetch();
@@ -560,6 +581,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -584,6 +606,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });
@@ -652,6 +675,7 @@ describe("Write Engine - Router Integration Tests", () => {
         }),
         headers: {
           "Content-Type": "application/json",
+          "Origin": ADMIN_ORIGIN,
           "Authorization": `Bearer ${token}`
         }
       });

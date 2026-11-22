@@ -1,14 +1,18 @@
 # DEKEKU API Gateway
 
-Cloudflare Workers-based API gateway that centrally mediates access to GitHub private repositories.
+Cloudflare Workers-based API gateway for securely managing public project data stored in each project's GitHub repository.
 
 ## Deskripsi
 
-DEKEKU API Gateway adalah layanan backend for website/app untuk:
+DEKEKU API Gateway adalah layanan backend untuk website/app. Fokus pengembangan saat ini adalah pengelolaan file publik pada repository masing-masing proyek. Website membaca data publik langsung dari GitHub Raw/CDN; operasi administratif diarahkan melalui Gateway.
+
+Layanan saat ini masih memiliki konfigurasi repository tetap pada Worker; pemetaan dinamis ke beberapa repository publik sedang menjadi pekerjaan berikutnya.
+
+Fitur yang tersedia:
 - **Membaca** data JSON di direktori `public/` - Gratis (no API key).
 - **Menulis** data JSON di direktori `public/data/` - Wajib login admin (JWT).
 - **Mengirim** guestbook publik via `POST /api/v1/public/submit` - Tanpa auth admin, concurrent-safe.
-- **Mengelola** repository GitHub menggunakan Contents API.
+- **Mengelola** file melalui GitHub Contents API pada repository yang dikonfigurasi.
 
 ## Fitur
 
@@ -92,6 +96,7 @@ dekeku-api/
 
 | Method | Path | Description |
 |--------|------|-------------|
+| GET | `/api/v1/admin/write/file?path=...` | Read parsed JSON content from selected public project repository (admin JWT required) |
 | GET | `/api/v1/admin/write/sha?path=...` | Retrieve current Blob SHA for an existing JSON file (admin JWT required) |
 | POST | `/api/v1/admin/write/create` | Create new JSON file in `public/data/` |
 | PUT | `/api/v1/admin/write/update` | Update existing JSON file (tester retrieves SHA automatically; API still requires SHA) |

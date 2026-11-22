@@ -1,8 +1,10 @@
 # RBAC Implementation Plan — DEKEKU API
 
 Tanggal pencatatan: 2026-11-21
-Status: RBAC-01–08 source implemented; integrated system NOT VERIFIED; RBAC-09 tests added but NOT RUN; R-013 focused verification PASS by owner report
+Status: PAUSED / ARCHIVED — OUT OF CURRENT SCOPE as of 2026-11-22. Historical implementation records retained.
 Target branch: `dev`
+
+**NOTICE — NON-ACTIVE:** Atas instruksi pemilik pada 2026-11-22, pengaturan repository privat `dekeku-db`, private account storage, repository mapping, User RBAC, dan verifikasi terkait dipindahkan ke arsip A-003. Dokumen ini hanya referensi historis; jangan melanjutkan implementasi atau verifikasi dari sini sampai pemilik mengaktifkannya kembali.
 
 Dokumen ini menyimpan arsitektur, acceptance criteria, dan catatan implementasi RBAC. Keputusan arsitektur di bawah telah disetujui pemilik proyek. Status terkini mengikuti `PROGRESS.md`; antrean mengikuti `EXECUTION_POLICY.md`. Catatan "Next" pada stage lama adalah historis dan tidak menjadi antrean aktif. Persetujuan desain bukan bukti implementasi atau verifikasi runtime.
 

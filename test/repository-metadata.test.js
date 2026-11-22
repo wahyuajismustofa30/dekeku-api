@@ -15,9 +15,13 @@ const env = {
   ALLOWED_ORIGINS: "https://demo.dekeku.my.id,*.dekeku.my.id"
 };
 
-const configResponse = (status = 200, body = {
+const validConfig = {
+  schema_version: 1,
+  project: { id: "demo" },
   repository: { username: "wahyuajismustofa30", repo: "demo" }
-}) => new Response(
+};
+
+const configResponse = (status = 200, body = validConfig) => new Response(
   body === null ? "" : JSON.stringify(body),
   { status, headers: { "Content-Type": "application/json" } }
 );
@@ -86,6 +90,98 @@ describe("Caller repository metadata", () => {
     assert.equal(response.status, 403);
   });
 
+  test("accepts any HTTPS subdomain covered by the configured wildcard", async () => {
+    const calls = [];
+    globalThis.fetch = async (url) => {
+      calls.push(String(url));
+      return String(url) === "https://shop.dekeku.my.id/config.json"
+        ? configResponse()
+        : githubResponse();
+    };
+
+    const response = await worker.fetch(request("https://shop.dekeku.my.id"), env);
+    const body = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(body.name, "wahyuajismustofa30/demo");
+    assert.deepEqual(calls, [
+      "https://shop.dekeku.my.id/config.json",
+      "https://api.github.com/repos/wahyuajismustofa30/demo"
+    ]);
+  });
+
+  test("accepts nested HTTPS subdomains covered by the configured wildcard", async () => {
+    globalThis.fetch = async (url) => String(url).endsWith("/config.json")
+      ? configResponse()
+      : githubResponse();
+
+    const response = await worker.fetch(request("https://store.eu.dekeku.my.id"), env);
+    assert.equal(response.status, 200);
+  });
+
+  test("rejects lookalike domains outside the wildcard DNS boundary", async () => {
+    globalThis.fetch = async () => {
+      assert.fail("untrusted lookalike domain must not trigger outbound requests");
+    };
+
+    const response = await worker.fetch(request("https://notdekeku.my.id"), env);
+    assert.equal(response.status, 403);
+  });
+
+  test("wildcard does not authorize the apex domain by itself", async () => {
+    globalThis.fetch = async () => {
+      assert.fail("wildcard must not authorize the apex domain");
+    };
+
+    const response = await worker.fetch(request("https://dekeku.my.id"), {
+      ...env,
+      ALLOWED_ORIGINS: "*.dekeku.my.id"
+    });
+    assert.equal(response.status, 403);
+  });
+
+  test("wildcard subdomain trust still requires canonical HTTPS Origin", async () => {
+    globalThis.fetch = async () => {
+      assert.fail("invalid Origin must not trigger outbound requests");
+    };
+
+    for (const origin of [
+      "http://shop.dekeku.my.id",
+      "https://shop.dekeku.my.id:8443",
+      "https://shop.dekeku.my.id/path",
+      "https://shop.dekeku.my.id.evil.example"
+    ]) {
+      const response = await worker.fetch(request(origin), env);
+      assert.equal(response.status, 403, origin);
+    }
+  });
+
+  test("rejects unsupported schema versions and missing required fields", async () => {
+    const invalidConfigs = [
+      { ...validConfig, schema_version: 2 },
+      { project: validConfig.project, repository: validConfig.repository },
+      { ...validConfig, project: { id: "Invalid Project" } },
+      { ...validConfig, project: { id: "demo\n" } },
+      { ...validConfig, repository: { ...validConfig.repository, username: "wahyuajismustofa30\n" } },
+      { ...validConfig, repository: { ...validConfig.repository, repo: "demo\n" } },
+      { ...validConfig, repository: { ...validConfig.repository, repo: "." } },
+      { ...validConfig, repository: { ...validConfig.repository, repo: ".." } },
+      { ...validConfig, extra: true },
+      { ...validConfig, repository: { ...validConfig.repository, extra: true } }
+    ];
+
+    for (const invalidConfig of invalidConfigs) {
+      let calls = 0;
+      globalThis.fetch = async () => {
+        calls += 1;
+        return configResponse(200, invalidConfig);
+      };
+
+      const response = await worker.fetch(request(), env);
+      assert.equal(response.status, 422);
+      assert.equal(calls, 1, "invalid config must be rejected before GitHub API access");
+    }
+  });
+
   test("returns 404 when caller config.json does not exist", async () => {
     globalThis.fetch = async () => configResponse(404, null);
     const response = await worker.fetch(request(), env);
@@ -100,6 +196,7 @@ describe("Caller repository metadata", () => {
 
   test("rejects repository owner different from the Worker owner", async () => {
     globalThis.fetch = async () => configResponse(200, {
+      ...validConfig,
       repository: { username: "attacker", repo: "demo" }
     });
 
@@ -112,6 +209,7 @@ describe("Caller repository metadata", () => {
     globalThis.fetch = async () => {
       calls += 1;
       return configResponse(200, {
+        ...validConfig,
         repository: { username: "wahyuajismustofa30", repo: "../private" }
       });
     };
@@ -119,6 +217,36 @@ describe("Caller repository metadata", () => {
     const response = await worker.fetch(request(), env);
     assert.equal(response.status, 422);
     assert.equal(calls, 1);
+  });
+
+  test("rejects GitHub metadata that does not match the requested repository", async () => {
+    globalThis.fetch = async (url) => String(url).endsWith("/config.json")
+      ? configResponse()
+      : githubResponse(200, {
+          full_name: "wahyuajismustofa30/other",
+          description: "Unexpected repository",
+          html_url: "https://github.com/wahyuajismustofa30/other",
+          default_branch: "main",
+          visibility: "public"
+        });
+
+    const response = await worker.fetch(request(), env);
+    assert.equal(response.status, 502);
+  });
+
+  test("rejects GitHub metadata without a valid default branch", async () => {
+    globalThis.fetch = async (url) => String(url).endsWith("/config.json")
+      ? configResponse()
+      : githubResponse(200, {
+          full_name: "wahyuajismustofa30/demo",
+          description: "Demo repository",
+          html_url: "https://github.com/wahyuajismustofa30/demo",
+          default_branch: "",
+          visibility: "public"
+        });
+
+    const response = await worker.fetch(request(), env);
+    assert.equal(response.status, 502);
   });
 
   test("does not expose metadata for a private repository", async () => {
