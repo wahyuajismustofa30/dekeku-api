@@ -61,7 +61,7 @@ describe("Public Data API and Guestbook legacy alias", () => {
           default_branch: "main"
         });
       }
-      if (target.includes("/contents/assets/data/bukutamu.json?ref=main")) {
+      if (target.includes("/contents/assets/data/bukutamu.json")) {
         if (options.method === "GET") {
           if (existingEntries === null) return githubResponse(404, { message: "Not Found" });
           return githubResponse(200, fileResponse(existingEntries, sha));
@@ -223,7 +223,7 @@ describe("Public Data API and Guestbook legacy alias", () => {
           full_name: "testowner/site-repo", visibility: "public", default_branch: "main"
         });
       }
-      if (target.includes("/contents/assets/data/bukutamu.json?ref=main")) {
+      if (target.includes("/contents/assets/data/bukutamu.json")) {
         if (options.method === "GET") {
           reads += 1;
           const entries = reads === 1
@@ -264,7 +264,7 @@ describe("Public Data API and Guestbook legacy alias", () => {
           full_name: "testowner/site-repo", visibility: "public", default_branch: "main"
         });
       }
-      if (target.includes("/contents/assets/data/bukutamu.json?ref=main")) {
+      if (target.includes("/contents/assets/data/bukutamu.json")) {
         if (options.method === "GET") {
           return githubResponse(200, fileResponse({ not: "an array" }, "f".repeat(40)));
         }
