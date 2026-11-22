@@ -72,9 +72,11 @@ Do not publish any of the following in `config.json`:
 
 `src/modules/github/repositories.js` now enforces the schema-v1 object shape, required project ID and repository fields, rejects unknown fields, validates owner against `GITHUB_OWNER`, and accepts repository discovery only from exact canonical HTTPS entries in `ALLOWED_ORIGINS` (wildcard entries are excluded). It also verifies that GitHub returns the requested repository identity, public visibility, and a non-empty safe default branch.
 
-PUB-002 resolver/metadata enforcement is implemented and its focused test suite was reported PASS by the owner (12 PASS, 0 FAIL, 0 SKIP); syntax checks were also reported PASS.\n\nPUB-003 reuses `resolveProjectRepository(request, env)` for Admin SHA lookup and CREATE/UPDATE/DELETE operations.
+PUB-002 resolver/metadata enforcement is implemented and its focused test suite was reported PASS by the owner (12 PASS, 0 FAIL, 0 SKIP); syntax checks were also reported PASS.
 
-PUB-004 implements `GET /api/v1/admin/browse` using `resolveProjectRepository(request, env)`. It enforces `public/` path restriction, rejects traversal, hidden/sensitive files, symlinks, and submodules (including items carrying `target` or `submodule_git_url` properties), requires exact child path matching (`item.path === \`\${pathValidation.path}/\${item.name}\`), limits upstream items to 1,000 per directory (with `truncated: true` flag), supports pagination (max 100 per page), and returns metadata only (`name`, `path`, `type`, `size`, `sha`) without file contents or internal API URLs. Automated tests verified (20/20 PASS in PUB-004 suite; 52/52 PASS across PUB-002/003/004 combined suites). Development runtime remains NOT VERIFIED.
+PUB-003 reuses `resolveProjectRepository(request, env)` for Admin SHA lookup and CREATE/UPDATE/DELETE operations.
+
+PUB-004 & PUB-004-FIX implement `GET /api/v1/admin/browse` using `resolveProjectRepository(request, env)`. It enforces `public/` path restriction, rejects traversal, hidden/sensitive files, symlinks (mode `"120000"`, type `"symlink"`, or `target`), submodules (mode `"160000"`, type `"submodule"`/`"commit"`, or `submodule_git_url`), requires exact child path matching (`item.path === '${pathValidation.path}/${name}'`), flags upstream truncation accurately (Contents API >= 1,000 items & Git Trees API `truncated: true`), supports pagination (max 100 per page), and returns metadata only (`name`, `path`, `type`, `size`, `sha`) without file contents or internal API URLs. Automated tests verified (22/22 PASS in PUB-004 suite; 54/54 PASS across PUB-002/003/004 combined suites). Development runtime remains NOT VERIFIED.
 
 ## 7. Acceptance criteria for PUB-001
 

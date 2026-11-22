@@ -210,7 +210,6 @@ describe("PUB-004 Public Repository File Browser Router", () => {
       const env = createEnv();
       const token = await getAuthToken(env);
 
-      // Page 1 with per_page = 2
       const req1 = new Request("http://api/api/v1/admin/browse?path=public&page=1&per_page=2", {
         headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
       });
@@ -226,7 +225,6 @@ describe("PUB-004 Public Repository File Browser Router", () => {
       assert.strictEqual(body1.items[0].name, "file1.json");
       assert.strictEqual(body1.items[1].name, "file2.json");
 
-      // Page 2 with per_page = 2
       const req2 = new Request("http://api/api/v1/admin/browse?path=public&page=2&per_page=2", {
         headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
       });
@@ -244,14 +242,12 @@ describe("PUB-004 Public Repository File Browser Router", () => {
       const env = createEnv();
       const token = await getAuthToken(env);
 
-      // Invalid page=0
       const reqInvalidPage = new Request("http://api/api/v1/admin/browse?path=public&page=0", {
         headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
       });
       const resPage = await worker.fetch(reqInvalidPage, env);
       assert.strictEqual(resPage.status, 400);
 
-      // Invalid per_page=abc
       const reqInvalidPerPage = new Request("http://api/api/v1/admin/browse?path=public&per_page=abc", {
         headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
       });
@@ -336,12 +332,15 @@ describe("PUB-004 Public Repository File Browser Router", () => {
         }
         if (String(url).includes("/contents/public?ref=main")) {
           return mockResponse(200, [
-            { name: "normal.json", path: "public/normal.json", sha: "1".repeat(40), size: 10, type: "file" },
+            { name: "normal.json", path: "public/normal.json", sha: "1".repeat(40), size: 10, type: "file", mode: "100644" },
             { name: ".hidden", path: "public/.hidden", sha: "2".repeat(40), size: 10, type: "file" },
             { name: "secrets.json", path: "public/secrets.json", sha: "3".repeat(40), size: 10, type: "file" },
             { name: "package.json", path: "public/package.json", sha: "4".repeat(40), size: 10, type: "file" },
             { name: "link", path: "public/link", sha: "5".repeat(40), size: 0, type: "symlink" },
             { name: "submod", path: "public/submod", sha: "6".repeat(40), size: 0, type: "submodule" },
+            { name: "sym_mode", path: "public/sym_mode", sha: "a".repeat(40), size: 0, type: "blob", mode: "120000" },
+            { name: "sub_mode", path: "public/sub_mode", sha: "b".repeat(40), size: 0, type: "commit", mode: "160000" },
+            { name: "unverifiable", path: "public/unverifiable", sha: "c".repeat(40), size: 0, type: "custom", mode: "999999" },
             { name: "fake_symlink", path: "public/fake_symlink", sha: "7".repeat(40), size: 0, type: "file", target: "../private" },
             { name: "fake_submod", path: "public/fake_submod", sha: "8".repeat(40), size: 0, type: "dir", submodule_git_url: "git@github.com:evil/repo.git" }
           ]);
@@ -362,6 +361,7 @@ describe("PUB-004 Public Repository File Browser Router", () => {
       assert.strictEqual(res.status, 200);
       assert.strictEqual(body.items.length, 1);
       assert.strictEqual(body.items[0].name, "normal.json");
+      assert.strictEqual(body.items[0].type, "file");
 
       globalThis.fetch = originalFetch;
     });
@@ -411,6 +411,145 @@ describe("PUB-004 Public Repository File Browser Router", () => {
     });
   });
 
+  describe("Upstream Truncation and Item Limits", () => {
+    test("returns truncated: false when directory has fewer than 1000 items", async () => {
+      const items = Array.from({ length: 50 }, (_, i) => ({
+        name: `item${i}.json`,
+        path: `public/item${i}.json`,
+        sha: "0".repeat(40),
+        size: 10,
+        type: "file",
+        mode: "100644"
+      }));
+
+      globalThis.fetch = mock.fn(async (url) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({
+            schema_version: 1,
+            project: { id: "dekeku" },
+            repository: { username: "mock-owner", repo: "mock-repo" }
+          }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url) === "https://api.github.com/repos/mock-owner/mock-repo") {
+          return mockResponse(200, {
+            full_name: "mock-owner/mock-repo",
+            default_branch: "main",
+            visibility: "public"
+          });
+        }
+        return mockResponse(200, items);
+      });
+
+      const env = createEnv();
+      const token = await getAuthToken(env);
+
+      const req = new Request("http://api/api/v1/admin/browse?path=public", {
+        headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
+      });
+
+      const res = await worker.fetch(req, env);
+      const body = await res.json();
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(body.truncated, false);
+      assert.strictEqual(body.total_items, 50);
+
+      globalThis.fetch = originalFetch;
+    });
+
+    test("sets truncated: true when Contents API returns exactly 1000 items", async () => {
+      const items = Array.from({ length: 1000 }, (_, i) => ({
+        name: `item${i}.json`,
+        path: `public/item${i}.json`,
+        sha: "0".repeat(40),
+        size: 5,
+        type: "file",
+        mode: "100644"
+      }));
+
+      globalThis.fetch = mock.fn(async (url) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({
+            schema_version: 1,
+            project: { id: "dekeku" },
+            repository: { username: "mock-owner", repo: "mock-repo" }
+          }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url) === "https://api.github.com/repos/mock-owner/mock-repo") {
+          return mockResponse(200, {
+            full_name: "mock-owner/mock-repo",
+            default_branch: "main",
+            visibility: "public"
+          });
+        }
+        return mockResponse(200, items);
+      });
+
+      const env = createEnv();
+      const token = await getAuthToken(env);
+
+      const req = new Request("http://api/api/v1/admin/browse?path=public", {
+        headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
+      });
+
+      const res = await worker.fetch(req, env);
+      const body = await res.json();
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(body.truncated, true);
+      assert.strictEqual(body.total_items, 1000);
+
+      globalThis.fetch = originalFetch;
+    });
+
+    test("sets truncated: true when Git Trees API object has truncated: true", async () => {
+      const treeResponse = {
+        sha: "master-sha",
+        truncated: true,
+        tree: [
+          { name: "a.json", path: "public/a.json", sha: "1".repeat(40), size: 10, type: "blob", mode: "100644" },
+          { name: "b", path: "public/b", sha: "2".repeat(40), size: 0, type: "tree", mode: "040000" }
+        ]
+      };
+
+      globalThis.fetch = mock.fn(async (url) => {
+        if (String(url).endsWith("/config.json")) {
+          return new Response(JSON.stringify({
+            schema_version: 1,
+            project: { id: "dekeku" },
+            repository: { username: "mock-owner", repo: "mock-repo" }
+          }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (String(url) === "https://api.github.com/repos/mock-owner/mock-repo") {
+          return mockResponse(200, {
+            full_name: "mock-owner/mock-repo",
+            default_branch: "main",
+            visibility: "public"
+          });
+        }
+        return mockResponse(200, treeResponse);
+      });
+
+      const env = createEnv();
+      const token = await getAuthToken(env);
+
+      const req = new Request("http://api/api/v1/admin/browse?path=public", {
+        headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
+      });
+
+      const res = await worker.fetch(req, env);
+      const body = await res.json();
+
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(body.truncated, true);
+      assert.strictEqual(body.total_items, 2);
+      assert.strictEqual(body.items[0].type, "file");
+      assert.strictEqual(body.items[1].type, "dir");
+
+      globalThis.fetch = originalFetch;
+    });
+  });
+
   describe("Upstream Error and Type Edge Cases", () => {
     test("returns 404 when directory is not found upstream", async () => {
       globalThis.fetch = mock.fn(async (url) => {
@@ -444,7 +583,7 @@ describe("PUB-004 Public Repository File Browser Router", () => {
       globalThis.fetch = originalFetch;
     });
 
-    test("returns 400 when upstream response is not an array (e.g. target is a file)", async () => {
+    test("returns 400 when upstream response is not an array or tree object", async () => {
       globalThis.fetch = mock.fn(async (url) => {
         if (String(url).endsWith("/config.json")) {
           return new Response(JSON.stringify({
@@ -460,7 +599,6 @@ describe("PUB-004 Public Repository File Browser Router", () => {
             visibility: "public"
           });
         }
-        // Returns a single object for file path instead of an array
         return mockResponse(200, {
           name: "file.json",
           path: "public/file.json",
@@ -479,50 +617,6 @@ describe("PUB-004 Public Repository File Browser Router", () => {
 
       const res = await worker.fetch(req, env);
       assert.strictEqual(res.status, 400);
-
-      globalThis.fetch = originalFetch;
-    });
-
-    test("limits upstream items to 1000 and sets truncated: true", async () => {
-      const manyItems = Array.from({ length: 1050 }, (_, i) => ({
-        name: `item${i}.json`,
-        path: `public/item${i}.json`,
-        sha: "0".repeat(40),
-        size: 5,
-        type: "file"
-      }));
-
-      globalThis.fetch = mock.fn(async (url) => {
-        if (String(url).endsWith("/config.json")) {
-          return new Response(JSON.stringify({
-            schema_version: 1,
-            project: { id: "dekeku" },
-            repository: { username: "mock-owner", repo: "mock-repo" }
-          }), { status: 200, headers: { "Content-Type": "application/json" } });
-        }
-        if (String(url) === "https://api.github.com/repos/mock-owner/mock-repo") {
-          return mockResponse(200, {
-            full_name: "mock-owner/mock-repo",
-            default_branch: "main",
-            visibility: "public"
-          });
-        }
-        return mockResponse(200, manyItems);
-      });
-
-      const env = createEnv();
-      const token = await getAuthToken(env);
-
-      const req = new Request("http://api/api/v1/admin/browse?path=public", {
-        headers: { Origin: ADMIN_ORIGIN, Authorization: `Bearer ${token}` }
-      });
-
-      const res = await worker.fetch(req, env);
-      const body = await res.json();
-
-      assert.strictEqual(res.status, 200);
-      assert.strictEqual(body.truncated, true);
-      assert.strictEqual(body.total_items, 1000);
 
       globalThis.fetch = originalFetch;
     });

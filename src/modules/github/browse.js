@@ -104,9 +104,9 @@ export const handleBrowse = async (request, env) => {
 
   const { client } = await resolveProjectRepository(request, env);
 
-  let rawItems;
+  let rawResponse;
   try {
-    rawItems = await client.getDirectoryContents(pathValidation.path);
+    rawResponse = await client.getDirectoryContents(pathValidation.path);
   } catch (err) {
     if (err instanceof HttpError && err.status === 404) {
       throw new HttpError("Directory not found", 404);
@@ -114,26 +114,73 @@ export const handleBrowse = async (request, env) => {
     throw err;
   }
 
-  if (!Array.isArray(rawItems)) {
+  let rawItems = [];
+  let isUpstreamTruncated = false;
+
+  if (Array.isArray(rawResponse)) {
+    rawItems = rawResponse;
+    if (rawItems.length >= 1000) {
+      isUpstreamTruncated = true;
+    }
+  } else if (rawResponse && typeof rawResponse === "object" && Array.isArray(rawResponse.tree)) {
+    rawItems = rawResponse.tree;
+    isUpstreamTruncated = Boolean(rawResponse.truncated) || rawItems.length >= 1000;
+  } else {
     throw new HttpError("Path is not a directory", 400);
   }
 
   const UPSTREAM_MAX_ITEMS = 1000;
-  const isUpstreamTruncated = rawItems.length > UPSTREAM_MAX_ITEMS;
-
   const filteredItems = [];
+
   for (const item of rawItems) {
     if (!item || typeof item !== "object") continue;
 
-    if (item.type !== "file" && item.type !== "dir") {
+    const mode = typeof item.mode === "string" ? item.mode : "";
+    if (mode === "120000" || mode === "160000") {
       continue;
     }
 
-    if (item.target !== undefined || item.submodule_git_url !== undefined) {
+    const type = typeof item.type === "string" ? item.type : "";
+    if (type === "symlink" || type === "submodule" || type === "commit") {
       continue;
     }
 
-    const name = typeof item.name === "string" ? item.name : "";
+    if (item.target !== undefined && item.target !== null) {
+      continue;
+    }
+    if (item.submodule_git_url !== undefined && item.submodule_git_url !== null) {
+      continue;
+    }
+    if (typeof item.git_url === "string" && item.git_url.includes("/commits/")) {
+      continue;
+    }
+
+    let normalizedType = null;
+    if (type === "file" || type === "blob" || mode === "100644" || mode === "100755") {
+      normalizedType = "file";
+    } else if (type === "dir" || type === "tree" || mode === "040000") {
+      normalizedType = "dir";
+    }
+
+    if (!normalizedType) {
+      continue;
+    }
+
+    if (mode !== "") {
+      if (normalizedType === "file" && mode !== "100644" && mode !== "100755") {
+        continue;
+      }
+      if (normalizedType === "dir" && mode !== "040000") {
+        continue;
+      }
+    }
+
+    const itemPath = typeof item.path === "string" ? item.path : "";
+    let name = typeof item.name === "string" ? item.name : "";
+    if (!name && itemPath) {
+      name = itemPath.split("/").pop() || "";
+    }
+
     if (!name) continue;
 
     if (name.startsWith(".")) continue;
@@ -144,20 +191,19 @@ export const handleBrowse = async (request, env) => {
     if (SENSITIVE_FILENAMES.has(lowerName)) continue;
     if (SENSITIVE_PATTERNS.some((p) => p.test(lowerName))) continue;
 
-    const itemPath = typeof item.path === "string" ? item.path : "";
     const expectedPath = `${pathValidation.path}/${name}`;
     if (!itemPath || itemPath !== expectedPath) continue;
 
     filteredItems.push({
-      name: item.name,
-      path: item.path,
-      type: item.type,
+      name,
+      path: expectedPath,
+      type: normalizedType,
       size: typeof item.size === "number" ? item.size : 0,
       sha: typeof item.sha === "string" ? item.sha : ""
     });
   }
 
-  const truncated = isUpstreamTruncated || filteredItems.length > UPSTREAM_MAX_ITEMS;
+  const truncated = isUpstreamTruncated || rawItems.length > UPSTREAM_MAX_ITEMS || filteredItems.length > UPSTREAM_MAX_ITEMS;
   const safeItems = filteredItems.slice(0, UPSTREAM_MAX_ITEMS);
 
   const totalItems = safeItems.length;
