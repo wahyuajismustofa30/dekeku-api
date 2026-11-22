@@ -19,3 +19,15 @@
 - IMPORTANT: NOT VERIFIED. No test command was executed. `test/browse-router.test.js` has now been migrated to branch/tree fixtures. Previous 54/54 test evidence predates this code change and cannot be carried forward; the migrated suite still needs to be run.
 - Next: update legacy browse test fixtures, run focused tests locally (`node --test` only; never `npm test`), inspect diff, and update this checkpoint with actual results. PUB-005 must not start before PUB-004-FIX is accepted.
 - No deployment, Cloudflare settings, secrets, Production Worker/domain, or Production data changed.
+
+
+## Latest Checkpoint — PUB-004-FIX Focused Tests Passed (2026-11-22)
+- Local branch: `dev`; latest local commit: `4f9747a` (`test(pub-004): normalize fixture formatting`). `git status --short` kosong; working tree bersih.
+- Remote `origin/dev` head independently confirmed at full SHA `4f9747a3cb0fcddfb50cc9ef9ee595d30a427a86`, matching the user's local HEAD.
+- Owner-reported command: `node --test test/browse-router.test.js test/browse-git-tree.test.js test/repository-metadata.test.js test/write-router.test.js`.
+- Result: **47 tests PASS, 0 FAIL, 0 skipped, 8 suites**, duration about 2.88 seconds.
+- `git diff --check`: no output (recorded PASS from local report).
+- PUB-004-FIX test status: VERIFIED for the selected focused regression set. Development Worker runtime remains NOT VERIFIED. No `npm test` was run.
+- Owner acceptance is still pending. Do not start PUB-005 until owner explicitly accepts PUB-004-FIX and authorizes the UI task.
+- No PR, deployment, Cloudflare changes, secrets changes, or Production access/modification.
+- Next action: await owner's acceptance/direction; if accepted, proceed with PUB-005 on `dev` only.
