@@ -2,7 +2,7 @@
 
 > **Current-state authority (2026-11-23):** The latest Public Data API status is recorded in the final section below and supersedes earlier planning-only / NOT STARTED / NOT RUN statements. `PUB-001..PUB-006` refer to the separate Public Repository Manager workstream; `PUB-DATA-001..007` refer to the active Public Data API. Admin Dashboard ADM-001..ADM-008 is PAUSED. Historical entries are retained as history, not current status.
 >
-> **Evidence qualification:** Dashboard `npm test` 261/261 and Wrangler dry-run are OWNER-REPORTED local results with no exact tested SHA/Node version supplied; they are not current-HEAD CI or Development runtime evidence. Public Data API focused 14/14 plus seven syntax checks are also owner-reported local evidence with tested SHA unknown. CI run #51 is separately tied only to commit `98d7163`; latest audited `dev` HEAD `e2bc6f4` returned no PR-triggered workflow runs in the commit-runs query.
+> **Evidence qualification:** Dashboard `npm test` 261/261 and Wrangler dry-run are OWNER-REPORTED local results with no exact tested SHA/Node version supplied; they are not current-HEAD CI or Development runtime evidence. Public Data API focused 14/14 plus seven syntax checks are also owner-reported local evidence with tested SHA unknown. CI run #51 is separately tied only to commit `98d7163`. The pre-repair baseline `e2bc6f4` returned no PR-triggered run; documentation repair run #79 passed on `f951f1a`, while the later final correction commit `86bd680` has no PR-triggered run returned by the current query.
 
 Tanggal pembaruan: 2026-11-23
 
